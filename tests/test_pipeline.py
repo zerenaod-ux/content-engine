@@ -159,6 +159,17 @@ class PipelineTests(unittest.TestCase):
                 self.assertFalse(Path('second.mp4').exists())
             finally: os.chdir(prior)
 
+    def test_wide_view_focuses_legible_evidence_without_rewriting_claim(self):
+        from scene_lib.writer import auto_camera
+        s=contract(); s['duration']=5.3
+        s['parts'].append({'type':'ellipse','id':'endpoint','x':100,'y':0,'rx':10,'ry':20})
+        s['steps'][0]['say']='A ray reaches the surface.'
+        s['steps'][0]['shows']='endpoint'
+        s['parts'][0]['pts']=[[-400,0],[100,0]]
+        auto_camera(s)
+        self.assertEqual('ray',s['steps'][0]['shows'])
+        self.assertEqual('A ray reaches the surface.',s['steps'][0]['say'])
+
     def test_budget_stops_before_network(self):
         import llm
         with tempfile.TemporaryDirectory() as d, patch.dict(os.environ,{'CE_METRICS_PATH':str(Path(d)/'metrics.json'),'CE_MAX_REQUESTS':'0'}):

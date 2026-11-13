@@ -1,4 +1,5 @@
 name: bounded-evidence-samples
+# Validation revision: retain complete patches and resolve wide-diagram focus.
 on:
   push:
     branches: [improve-evidence-pipeline]

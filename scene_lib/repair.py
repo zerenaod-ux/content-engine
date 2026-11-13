@@ -46,9 +46,8 @@ The supplied error list is incomplete: visibility alone cannot prove the claim.
 Preserve correct parts and timings. Build missing physical demonstrations and
 correct scientifically misleading narration. Keep speech plain and natural: 4–18 words per sentence, fitting its existing window. Focus shows may be a ray/path for a wide diagram; do not focus on a tiny endpoint object that the whole composition makes unreadable.
 If claiming distinct colours, paths or states, include all of them as separate
-parts, evidence for each and contrasts with the distinguishing fields. A rotating
-object is not evidence of internal reflection; a lone coloured line is not a
-spectrum. Do not use decorative motion as a substitute for the mechanism.
+parts, evidence for each and contrasts with the distinguishing fields. A named object moving is not sufficient evidence of a distinct internal process.
+Do not use decorative motion as a substitute for the claimed mechanism.
 Reference context (human supplied, do not invent external verification):
 '''+context+'\nProblems: '+json.dumps(problems)+'\nSaved scene: '+json.dumps(spec,ensure_ascii=False)+'''
 Return a patch JSON, not a whole new scene:
