@@ -30,7 +30,7 @@ def _where(p):
 SOLID = ('wheel', 'pump', 'house', 'tower')
 SCENERY = ('sky', 'ground', 'label', 'arrow', 'night', 'glow', 'tree', 'plant')
 THIN = ('pipe', 'wire', 'line', 'stream', 'spray', 'particles', 'arrow', 'label', 'text', 'circle', 'glow', 'bar', 'plant')
-OBJECTS = ('emoji', 'house', 'tower', 'wheel', 'pump', 'tree')
+OBJECTS = ('emoji', 'icon', 'house', 'tower', 'wheel', 'pump', 'tree')
 
 def _box(p):
     """Bounding box (x0, x1, y0, y1) of a part at its largest."""
@@ -38,7 +38,7 @@ def _box(p):
     if t in ('wheel', 'pump', 'circle', 'glow'): r = _at(p.get('r'), 1e9, 40 if t == 'wheel' else 20 if t == 'pump' else 60 if t == 'glow' else 10); return x - r, x + r, y - r, y + r
     if t == 'house': return x, x + p.get('w', 170), y, y + p.get('h', 140) + 70
     if t == 'prop':
-        sc = _at(p.get('s'), 1e9, 1); w, h = {'microwave': (270, 155), 'toaster': (240, 150), 'fridge': (210, 330), 'pizza': (120, 120)}.get(p.get('kind'), (220, 160))
+        sc = _at(p.get('s'), 1e9, 1); w, h = {'microwave': (270, 155), 'toaster': (240, 150), 'fridge': (210, 330), 'pizza': (120, 120), 'plate': (140, 24), 'molecule': (70, 50)}.get(p.get('kind'), (220, 160))
         return x - w / 2 * sc, x + w / 2 * sc, y, y + h * sc
     if t == 'tower': return x - p.get('w', 170) / 2, x + p.get('w', 170) / 2, y, y + p.get('legH', 240) + p.get('h', 130) + 46
     if t == 'rect':
@@ -54,12 +54,12 @@ def _box(p):
 def _box_at(p, t):
     """Where a part is at time t (for parts that travel)."""
     ty = p.get('type')
-    if ty in ('emoji', 'path', 'ellipse', 'circle', 'particles', 'text', 'glow'):
+    if ty in ('emoji', 'icon', 'path', 'ellipse', 'circle', 'particles', 'text', 'glow'):
         o = p.get('orbit')
         if isinstance(o, dict) and all(_num(o.get(k)) for k in ('cx', 'cy', 'rx')):
             a = (t / max(1, o.get('period', 6)) + o.get('phase', 0)) * 2 * math.pi; x = o['cx'] + o['rx'] * math.cos(a); y = o['cy'] + o.get('ry', o['rx']) * math.sin(a)
         else: x = _at(p.get('x'), t, 0); y = _at(p.get('y'), t, 0)
-        h = {'emoji': _at(p.get('size'), t, 80) / 2, 'path': 55 * _at(p.get('scale'), t, 1), 'ellipse': max(_at(p.get('rx'), t, 40), _at(p.get('ry'), t, 20)), 'circle': _at(p.get('r'), t, 10), 'particles': 45, 'text': 40, 'glow': p.get('r', 60)}[ty]
+        h = {'icon': _at(p.get('size'), t, 120) / 2, 'emoji': _at(p.get('size'), t, 80) / 2, 'path': 55 * _at(p.get('scale'), t, 1), 'ellipse': max(_at(p.get('rx'), t, 40), _at(p.get('ry'), t, 20)), 'circle': _at(p.get('r'), t, 10), 'particles': 45, 'text': 40, 'glow': p.get('r', 60)}[ty]
         return x - h, x + h, y - h, y + h
     if ty == 'bar': return p.get('x', 0), p.get('x', 0) + p.get('w', 26), p.get('y', 0), p.get('y', 0) + p.get('h', 160)
     return _box(p)
@@ -242,7 +242,7 @@ def check(spec):
                     if len({k[1] for k in v}) > 1: moving = True; anim_times += ts
                 else: E.append('%s: "%s" must be a number or keyframes [[time, value], ...]' % (tag, f))
             elif f in ('x0', 'x1', 'legH', 'lw', 'teeth', 'dir', 'head', 'floor', 'bob', 'speed', 'count') and not _num(v): E.append('%s: "%s" must be a number' % (tag, f))
-            elif f in ('fill', 'stroke', 'color', 'bg', 'text', 'preset', 'kind', 'wall', 'roof', 'rgb', 'outline', 'char', 'd') and not isinstance(v, str): E.append('%s: "%s" must be text' % (tag, f))
+            elif f in ('fill', 'stroke', 'color', 'bg', 'text', 'preset', 'kind', 'wall', 'roof', 'rgb', 'outline', 'char', 'd', 'find') and not isinstance(v, str): E.append('%s: "%s" must be text' % (tag, f))
             elif f == 'char' and (not 1 <= len(v) <= 8 or all(ord(ch) < 128 for ch in v)): E.append('%s: "char" must be ONE emoji character' % tag)
             elif f == 'd' and (not 5 <= len(v) <= 1800 or not re.fullmatch(r'[MmLlHhVvCcSsQqTtAaZz0-9eE\s,.+-]+', v)): E.append('%s: "d" must be a plain SVG path string (letters MLHVCSQTAZ and numbers only, under 1800 characters)' % tag)
             elif f == 'preset' and v not in PRESETS: E.append('%s: unknown preset %r (allowed: %s)' % (tag, v, ', '.join(sorted(PRESETS))))

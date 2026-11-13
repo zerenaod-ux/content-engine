@@ -20,6 +20,33 @@ const fs = require('fs'), path = require('path');
     }
     if (badE.length) { console.log('EMOJI NOT DRAWABLE: ' + badE.join(' ')); await b.close(); process.exit(3); }
   }
+  // free pictures: every "icon" part names what it shows ("find"); look it up in open-licensed sets on Iconify, keep a copy in data/icons/ (so the system depends on the service less over time)
+  const finds = [...new Set(spec.parts.filter(q => q.type === 'icon').map(q => q.find))];
+  if (finds.length) {
+    const dir = path.join(__dirname, '..', 'data', 'icons'); fs.mkdirSync(dir, { recursive: true });
+    const idx = path.join(dir, 'index.json'); let known = {}; try { known = JSON.parse(fs.readFileSync(idx, 'utf8')); } catch (e) {}
+    const SETS = 'fluent-emoji-flat,noto,twemoji,openmoji,flat-color-icons';   // licences: MIT, Apache-2.0, CC-BY-4.0, CC-BY-SA-4.0, MIT (credits in data/icons/CREDITS.md)
+    const map = {}, missing = [];
+    for (const f of finds) {
+      let file = known[f];
+      if (!file || !fs.existsSync(path.join(dir, file))) {
+        file = null;
+        try {
+          const r = await fetch('https://api.iconify.design/search?limit=12&prefixes=' + SETS + '&query=' + encodeURIComponent(f));
+          const hits = ((await r.json()).icons || []);
+          for (const h of hits) {
+            const [pre, name] = h.split(':'); const sv = await fetch('https://api.iconify.design/' + pre + '/' + name + '.svg?height=512');
+            if (sv.ok) { const txt = await sv.text(); if (txt.startsWith('<svg')) { file = pre + '--' + name + '.svg'; fs.writeFileSync(path.join(dir, file), txt); break; } }
+          }
+        } catch (e) { console.log('icon lookup failed for', f, String(e).slice(0, 80)); }
+        if (file) known[f] = file;
+      }
+      if (file) map[f] = 'data:image/svg+xml;base64,' + fs.readFileSync(path.join(dir, file)).toString('base64'); else missing.push(f);
+    }
+    fs.writeFileSync(idx, JSON.stringify(known, null, 1));
+    await p.evaluate(m => window.loadIcons(m), map);
+    if (missing.length) { console.log('ICON NOT FOUND: ' + missing.join(' | ')); await b.close(); process.exit(4); }
+  }
   fs.mkdirSync('fr', { recursive: true });
   for (let f = 0; f < total; f++) {
     if (only && !only.has(f)) continue;
