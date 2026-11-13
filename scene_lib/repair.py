@@ -8,6 +8,7 @@ from pathlib import Path
 import sys
 sys.path.insert(0,str(Path(__file__).resolve().parent.parent))
 from scene_lib.validate import check
+from scene_lib.catalog import catalog_text
 from scene_lib.writer import _call, auto_camera, SYS
 
 
@@ -33,6 +34,9 @@ def apply_patch(spec, patch):
         new['steps'][update['index']].update({k:v for k,v in update.items() if k != 'index'})
     if isinstance(patch.get('principle'),str): new['principle']=patch['principle']
     new.pop('_path_bounds',None)  # geometry belongs to the old shapes
+    if spec.get("animation_source") == "evidence":
+        from scene_lib.evidence import compile_animation
+        new=compile_animation(new)
     auto_camera(new)
     return new
 
@@ -48,6 +52,8 @@ correct scientifically misleading narration. Keep speech plain and natural: 4–
 If claiming distinct colours, paths or states, include all of them as separate
 parts, evidence for each and contrasts with the distinguishing fields. A named object moving is not sufficient evidence of a distinct internal process.
 Do not use decorative motion as a substitute for the claimed mechanism.
+PART CATALOG (single source shared with the structural checker):
+'''+catalog_text()+'''
 Reference context (human supplied, do not invent external verification):
 '''+context+'\nProblems: '+json.dumps(problems)+'\nSaved scene: '+json.dumps(spec,ensure_ascii=False)+'''
 Return a patch JSON, not a whole new scene:

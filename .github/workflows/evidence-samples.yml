@@ -1,5 +1,5 @@
 name: bounded-evidence-samples
-# Validation revision: resume retained automatic patch using rendered occlusion feedback.
+# Validation revision: compile declared animations and normalize duration arithmetic.
 on:
   push:
     branches: [improve-evidence-pipeline]

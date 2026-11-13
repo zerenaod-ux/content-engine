@@ -3,7 +3,7 @@ changes, not factual accuracy or human comprehension. Render checks add visibili
 """
 import json
 import math
-from scene_lib.catalog import ANIM
+from scene_lib.catalog import ANIM, CATALOG
 
 
 def number(v):
@@ -42,8 +42,9 @@ def check_contract(spec):
             if not isinstance(item, dict): errors.append(tag + ': evidence must be an object'); continue
             part = parts.get(item.get('part')) if isinstance(item.get('part'),str) else None; field = item.get('field')
             at, values = item.get('at'), item.get('values')
-            if part is None or not isinstance(field, str) or field not in ANIM or field in ('show',):
-                errors.append(tag + ': use an existing part and a physical numeric field (alpha allowed for reveal only)'); continue
+            allowed = CATALOG.get(part.get('type'), ([],[],'')) if part else ([],[],'')
+            if part is None or not isinstance(field, str) or field not in ANIM or field not in allowed[0]+allowed[1] or field in ('show',):
+                errors.append(tag + ': %s.%s is not a supported numeric animation field; choose a part/field from the catalog (alpha is reveal only)' % (item.get('part'),field)); continue
             if not (isinstance(at, list) and len(at) == 2 and all(number(x) for x in at) and isinstance(values, list) and len(values) == 2 and all(number(x) for x in values)):
                 errors.append(tag + ': at and values need two finite numbers'); continue
             if not (number(step.get('start')) and number(step.get('end')) and step['start'] <= at[0] < at[1] <= step['end']):
@@ -70,3 +71,34 @@ def check_contract(spec):
                 values = [json.dumps(p[field], sort_keys=True) for p in members]
                 if len(set(values)) != len(values): errors.append(tag + ': contrasted parts must have distinct ' + field)
     return errors
+
+
+def compile_animation(spec):
+    """Compile declared numeric changes into real renderer keyframes.
+
+    The declaration is the animation source, not a second copy of hand-written
+    keyframes that a model must keep in sync. Validation/rendering still check
+    the resulting drawing; this cannot establish the declaration's meaning.
+    """
+    import copy
+    from scene_lib.catalog import CATALOG
+    out=copy.deepcopy(spec)
+    parts={p.get('id'):p for p in out.get('parts',[]) if isinstance(p,dict) and isinstance(p.get('id'),str)}
+    schedules={}
+    for step in out.get('steps',[]):
+        if not isinstance(step,dict): continue
+        for e in step.get('evidence',[]) if isinstance(step.get('evidence'),list) else []:
+            if not isinstance(e,dict) or not isinstance(e.get('part'),str): continue
+            p=parts.get(e['part']);field=e.get('field');times=e.get('at');values=e.get('values')
+            if p is None or p.get('type') not in CATALOG or not isinstance(field,str): continue
+            req,opt,_=CATALOG[p['type']]
+            if field not in ANIM or field not in req+opt: continue
+            if not (isinstance(times,list) and len(times)==2 and all(number(t) for t in times) and isinstance(values,list) and len(values)==2 and all(number(v) for v in values)): continue
+            schedule=schedules.setdefault((e['part'],field),{})
+            for t,v in zip(times,values):
+                if t in schedule and abs(schedule[t]-v)>.001: raise ValueError('conflicting animation declarations for %s.%s at %s' % (e['part'],field,t))
+                schedule[t]=v
+    for (id,field),schedule in schedules.items():
+        parts[id][field]=[[t,v] for t,v in sorted(schedule.items())]
+    out['animation_source']='evidence'
+    return out

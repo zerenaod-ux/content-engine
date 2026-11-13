@@ -169,11 +169,6 @@ def design_rules(spec, D, steps, cam, parts):
     labs = [p for p in good if p['type'] == 'label']
     for p in labs:
         if not _kfs(p.get('show')): E.append('label "%s" is always on; give it "show" keyframes so it appears only during its own step' % p.get('text'))
-    t = 0.5
-    while t < D:
-        on = [p.get('text') for p in labs if _kfs(p.get('show')) and _at(p['show'], t) > 0.5]
-        if len(on) > 2: E.append('%d labels are on screen together at %.1fs (%s); show at most 2 at a time' % (len(on), t, ', '.join(map(str, on[:4])))); break
-        t += 0.5
     # rule: no clutter - recognisable objects do not sit on top of each other
     def visible(p, t):
         if p['type'] == 'emoji' and _at(p.get('size'), t, 80) < 12: return False

@@ -4,7 +4,7 @@
   3. CHECK - the checker applies structural design checks (physics heuristics, connections, camera, labels, numeric demonstration contracts). Problems go back to the writer to fix.
 A description that still fails after the tries is rejected: no video is made from it.
   python3 scene_lib/writer.py --topic-file topic.txt out.json        (needs the free LLM keys in the environment)"""
-import json, os, re, sys, time
+import copy, json, math, os, re, sys, time
 from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
@@ -25,7 +25,25 @@ def timeline(plan):
 SYS = 'You are a brilliant science animator and scene designer. You answer with ONE JSON object and nothing else.'
 STAGE_TEXT = 'x goes right, y goes up. If there is ground, its surface is y=0 and things below 0 are underground. Keep everything between x=-380 and x=700 and between y=-220 and y=420. Objects are about 60 to 300 units big.'
 
-def _num(v): return isinstance(v, (int, float)) and not isinstance(v, bool)
+def _num(v): return isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v)
+
+def normalize_plan(plan):
+    """Fit proposed pacing to the owner's short duration, preserving its ratios.
+    This is arithmetic, not a reason to spend another model request.
+    """
+    out=copy.deepcopy(plan)
+    if not isinstance(out,dict): return out
+    steps=out.get('steps')
+    if not isinstance(steps,list) or not steps or not all(isinstance(s,dict) and _num(s.get('seconds')) and s['seconds']>0 for s in steps): return out
+    overhead=.6+.2*(len(steps)-1)
+    total=sum(s['seconds'] for s in steps)
+    duration=total+overhead
+    target=min(65,max(45,duration))
+    if target != duration:
+        desired=round(target-overhead,2)
+        for s in steps: s['seconds']=round(s['seconds']*desired/total,2)
+        steps[-1]['seconds']=round(steps[-1]['seconds']+desired-sum(s['seconds'] for s in steps),2)
+    return out
 
 def plan_prompt(topic, lessons=""):
     context = "\nObserved prior attempts (diagnostics, not verified scientific facts):\n" + lessons if lessons else ""
@@ -125,7 +143,7 @@ ANIMATION: any number field can be a fixed number or keyframes [[time, value], .
 STEPS: copy the steps from the plan (label, say, shows) and use exactly these times: {', '.join('step %d: %.2f-%.2f' % (i + 1, a, b) for i, (a, b) in enumerate(times))}.
 
 DESIGN GUIDANCE:
-- Each step copies "demonstration" from the plan and adds "evidence": [{{"part":"id", "field":"progress", "at":[start,end], "values":[0,1]}}]. These are actual numeric values at those times, not guesses. Map every indispensable part of the narrated mechanism. Copy the plan contrasts exactly; every member needs evidence and distinct values for the declared fields. Use physical changes rather than decorative jiggling; alpha may be used only for an explanatory reveal. Distinct paths must be separately visible in position and colour. Numeric and visibility checks cannot establish scientific truth.
+- Each step copies "demonstration" from the plan and adds "evidence": [{{"part":"id", "field":"progress", "at":[start,end], "values":[0,1]}}]. These declarations compile into the real part keyframes: do not duplicate those animations in parts. Values describe the physical state at those times, not a label or a guess. Map every indispensable part of the narrated mechanism. Copy the plan contrasts exactly; every member needs evidence and distinct values for the declared fields. Use physical changes rather than decorative jiggling; alpha may be used only for an explanatory reveal. Distinct paths must be separately visible in position and colour. Numeric and visibility checks cannot establish scientific truth.
 - Camera is computed from the focus and all evidence parts. Keep these close enough to read together; the focus needs at least 110 screen pixels (thin paths 45). Give a placeholder camera spanning the whole duration; the system replaces it. Labels must not cover the demonstration.
 - Real-looking objects: use a matching detailed prop when available; otherwise an exact icon/emoji or detailed path. Simple shapes may make supporting details. No wrong stand-in images. Show internal mechanisms with a cutaway. A diagram must depict the causal relationship, not unrelated movement.
 - Real layout: gravity water flows down; pressure/pump may lift it. For every pipe/stream include flows: [{{"from":[x,y],"to":[x,y],"by":"gravity|pressure|pump"}}]. Pipes/wires touch endpoints or leave the stage. Solids stand on dry ground; water has a container or ground. Objects only overlap when physically appropriate; declare inside for contents.
@@ -220,6 +238,9 @@ def tidy(spec, plan=None):
             if isinstance(q, dict) and q.get('type') == 'tree' and indoors: continue      # no trees in a kitchen, in space or inside a body
             keep.append(q)
         spec['parts'] = keep
+    if plan:
+        from scene_lib.evidence import compile_animation
+        spec=compile_animation(spec)
     for q in spec.get('parts', []) if isinstance(spec.get('parts'), list) else []:
         if isinstance(q, dict) and q.get('type') in CATALOG:
             req, opt, _ = CATALOG[q['type']]
@@ -283,7 +304,7 @@ def write_scene(topic, log=print):
     cache = StageCache(topic + lessons)
     plan = cache.accepted('plan', check_plan)
     if plan is None:
-        plan = _ask(llm, plan_prompt(topic, lessons), check_plan, 3, 0.9, log, 'plan')
+        plan = _ask(llm, plan_prompt(topic, lessons), check_plan, 3, 0.9, log, 'plan', post=normalize_plan)
         cache.save('plan', plan)
     log('principle: ' + plan['principle']); log('cast: ' + ', '.join('%s (%s)' % (c['id'], c.get('what', '')) for c in plan['cast']))
     spec = cache.accepted('scene', check)

@@ -139,7 +139,7 @@ class PipelineTests(unittest.TestCase):
         from scene_lib.build import main, result_key, digest
         spec=json.loads(Path('tests/fixtures/rainbow.json').read_text())
         prior=Path.cwd()
-        with tempfile.TemporaryDirectory() as d, patch.dict(os.environ,{'CE_CACHE_DIR':str(Path(d)/'cache'),'CE_METRICS_PATH':str(Path(d)/'metrics.json')}):
+        with tempfile.TemporaryDirectory() as d, patch.dict(os.environ,{'CE_CACHE_DIR':str(Path(d)/'cache'),'CE_METRICS_PATH':str(Path(d)/'metrics.json'),'CE_REPAIR_CONTEXT':''}):
             path=Path(d)/'scene.json';path.write_text(json.dumps(spec))
             cache=Path(d)/'cache/results'/result_key(spec);cache.mkdir(parents=True)
             (cache/'video.mp4').write_bytes(b'cached-result')
@@ -176,12 +176,56 @@ class PipelineTests(unittest.TestCase):
         s['steps'][0]['shows']='ray'
         self.assertFalse(any('main object of the video must' in e for e in check(s)))
 
+    def test_declarations_compile_into_real_animation_and_reject_conflicts(self):
+        from scene_lib.evidence import compile_animation
+        original=contract(); original['parts'][0]['progress']=0
+        original['parts'][0]['color']='#ffffff'
+        compiled=compile_animation(original)
+        self.assertEqual(0,original['parts'][0]['progress'])
+        self.assertEqual(.5,value_at(compiled['parts'][0]['progress'],2.5))
+        self.assertEqual('#ffffff',compiled['parts'][0]['color'])
+        self.assertEqual([],check_contract(compiled))
+        conflicting=copy.deepcopy(original['steps'][0])
+        conflicting['evidence'][0]['values']=[1,0]
+        original['steps'].append(conflicting)
+        with self.assertRaises(ValueError): compile_animation(original)
+
+    def test_duration_fit_preserves_variable_pacing_without_another_call(self):
+        from scene_lib.writer import normalize_plan
+        source={'steps':[{'seconds':s} for s in [2,4,3,2,1,3]]}
+        fixed=normalize_plan(source)
+        self.assertEqual(2,source['steps'][0]['seconds'])
+        self.assertEqual(45,round(timeline(fixed)[-1][1]+.3,2))
+        self.assertAlmostEqual(2,fixed['steps'][1]['seconds']/fixed['steps'][0]['seconds'],places=2)
+        long={'steps':[{'seconds':15} for _ in range(8)]}
+        self.assertEqual(65,round(timeline(normalize_plan(long))[-1][1]+.3,2))
+
     def test_budget_stops_before_network(self):
         import llm
         with tempfile.TemporaryDirectory() as d, patch.dict(os.environ,{'CE_METRICS_PATH':str(Path(d)/'metrics.json'),'CE_MAX_REQUESTS':'0'}):
             with patch('urllib.request.urlopen') as network:
                 with self.assertRaises(llm.BudgetExceeded): llm._req('https://example.invalid','unused')
                 network.assert_not_called()
+
+    def test_request_ledger_spans_calls_and_records_usage(self):
+        import llm
+        class Response:
+            def __enter__(self): return self
+            def __exit__(self,*args): pass
+            def read(self): return b'{"usage":{"total_tokens":17}}'
+        with tempfile.TemporaryDirectory() as d, patch.dict(os.environ,{'CE_METRICS_PATH':str(Path(d)/'metrics.json'),'CE_MAX_REQUESTS':'1'}):
+            with patch('urllib.request.urlopen',return_value=Response()) as network:
+                llm._req('https://example.invalid','unused')
+                with self.assertRaises(llm.BudgetExceeded): llm._req('https://example.invalid','unused')
+                self.assertEqual(1,network.call_count)
+                ledger=json.loads((Path(d)/'metrics.json').read_text())
+                self.assertEqual(17,ledger['usage']['total_tokens'])
+                self.assertEqual(1,ledger['responses'])
+                # A new call reads the persisted ledger rather than resetting it.
+                ledger['requests']=0;ledger['started_at']=0
+                (Path(d)/'metrics.json').write_text(json.dumps(ledger))
+                with self.assertRaises(llm.BudgetExceeded): llm._req('https://example.invalid','unused')
+                self.assertEqual(1,network.call_count)
 
     def test_hidden_rendered_evidence_is_rejected(self):
         from PIL import Image

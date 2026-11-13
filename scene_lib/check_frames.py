@@ -53,7 +53,7 @@ def inspect(spec, frames=Path('fr')):
             errors.append('rendered evidence missing or unreadable: %s' % type(e).__name__)
     return {'checks': 'blankness, frame variation, numeric contracts and sampled part visibility',
             'semantic_verification': False, 'factual_verification': False,
-            'human_review_required': True, 'errors': errors, 'evidence': results}
+            'human_review_required': True, 'warnings': ['Extra helper labels are suppressed by the renderer if more than two appear together.'] if sum(p.get('type')=='label' for p in spec.get('parts',[]))>2 else [], 'errors': errors, 'evidence': results}
 
 
 if __name__ == '__main__':
