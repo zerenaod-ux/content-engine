@@ -38,7 +38,7 @@ def pick(log=print):
     import llm
     hist = load(); made = '; '.join(h.get('topic', '') for h in hist[-60:]) or 'nothing yet'
     for cat in next_categories(hist)[:5]:
-        prompt = f"""Think of 10 fresh ideas for a 33-second animated explainer video in the category: {cat}.
+        prompt = f"""Think of 10 fresh ideas for a 55-second animated explainer video in the category: {cat}.
 Each idea answers "How does X work?" or "Why does X happen?" about ONE concrete thing, from the tiny to the huge, that almost everyone has seen or used but few can explain.
 It must be something you can SHOW happening step by step in one picture: things move, flow, fill, spin, grow, heat up, light up or change. No abstract ideas, no opinions.
 Safe for all ages. NOT about: medicine or treatment, diets, weapons, war, politics, religion, money or investing, adult themes.

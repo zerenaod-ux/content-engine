@@ -38,7 +38,7 @@ def _box(p):
     if t in ('wheel', 'pump', 'circle', 'glow'): r = _at(p.get('r'), 1e9, 40 if t == 'wheel' else 20 if t == 'pump' else 60 if t == 'glow' else 10); return x - r, x + r, y - r, y + r
     if t == 'house': return x, x + p.get('w', 170), y, y + p.get('h', 140) + 70
     if t == 'prop':
-        sc = _at(p.get('s'), 1e9, 1); w, h = {'microwave': (270, 155), 'toaster': (240, 150), 'fridge': (210, 330), 'pizza': (120, 120), 'plate': (140, 24), 'molecule': (70, 50)}.get(p.get('kind'), (220, 160))
+        sc = _at(p.get('s'), 1e9, 1); w, h = {'microwave': (270, 155), 'toaster': (240, 150), 'fridge': (210, 330), 'pizza': (120, 120), 'plate': (140, 24), 'molecule': (70, 50), 'windturbine': (320, 470)}.get(p.get('kind'), (220, 160))
         return x - w / 2 * sc, x + w / 2 * sc, y, y + h * sc
     if t == 'tower': return x - p.get('w', 170) / 2, x + p.get('w', 170) / 2, y, y + p.get('legH', 240) + p.get('h', 130) + 46
     if t == 'rect':
@@ -98,6 +98,7 @@ def design_rules(spec, D, steps, cam, parts):
         if sh not in ids: E.append('step %d: "shows" must be the id of the part that proves this sentence on screen' % i); continue
         p = ids[sh]; a, b = s['start'] - 0.3, s['end']
         bx_ = _box_at(p, (s['start'] + s['end']) / 2)
+        if i == 1 and p['type'] not in ('prop', 'icon', 'emoji', 'house', 'tower'): E.append('step 1: the main object "%s" is a %s; the main object of the video must look like the real thing: use a "prop" from the library or an "icon" (a picture found by name, e.g. find: "wind turbine")' % (sh, p['type']))
         if p['type'] in ('rect', 'circle', 'ellipse') and max(bx_[1] - bx_[0], bx_[3] - bx_[2]) >= 90: E.append('step %d: the star "%s" is a plain %s; draw it as a real-looking object: a "prop" from the library, an "emoji", or a detailed "path" (owner rule: things must look like the real thing)' % (i, sh, p['type']))
         if i > 1 and not changes_in(p, a, b): E.append('step %d: part "%s" does not change during %.1f-%.1f; give it keyframes inside this step so the viewer sees the sentence happen' % (i, sh, s['start'], s['end']))
         if cam and p['type'] not in ('night', 'sky', 'ground'):
@@ -191,10 +192,10 @@ def check(spec):
     E = []
     if not isinstance(spec, dict): return ['the description must be one JSON object']
     D = spec.get('duration')
-    if not _num(D) or not 20 <= D <= 50: E.append('duration must be a number of seconds between 20 and 50'); D = 33.6
+    if not _num(D) or not 20 <= D <= 66: E.append('duration must be a number of seconds between 20 and 66'); D = 55.6
     if not isinstance(spec.get('title'), str) or not 3 <= len(spec['title']) <= 70: E.append('title must be a short text')
     steps = spec.get('steps')
-    if not isinstance(steps, list) or not 5 <= len(steps) <= 9: E.append('steps must be a list of 5 to 9 steps'); steps = []
+    if not isinstance(steps, list) or not 5 <= len(steps) <= 12: E.append('steps must be a list of 5 to 12 steps'); steps = []
     last = -1.0
     for i, s in enumerate(steps, 1):
         if not isinstance(s, dict) or not _num(s.get('start')) or not _num(s.get('end')): E.append('step %d needs start and end times' % i); continue
