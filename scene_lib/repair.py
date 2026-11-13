@@ -39,13 +39,12 @@ def apply_patch(spec, patch):
 
 def repair(spec, problems, context='', log=print):
     import llm
-    original=copy.deepcopy(spec)
     for attempt in range(2):
         prompt='''Repair this saved animated scene, not the whole production pipeline.
 First identify every narrated mechanism that its actual drawing fails to show.
 The supplied error list is incomplete: visibility alone cannot prove the claim.
 Preserve correct parts and timings. Build missing physical demonstrations and
-correct scientifically misleading narration. Keep speech plain and natural.
+correct scientifically misleading narration. Keep speech plain and natural: 4–18 words per sentence, fitting its existing window. Focus shows may be a ray/path for a wide diagram; do not focus on a tiny endpoint object that the whole composition makes unreadable.
 If claiming distinct colours, paths or states, include all of them as separate
 parts, evidence for each and contrasts with the distinguishing fields. A rotating
 object is not evidence of internal reflection; a lone coloured line is not a
@@ -72,7 +71,7 @@ Use as many separate parts as the demonstration needs. Preserve sound and music 
         except Exception as e:
             problems=[str(e)[:200]];log('repair patch unusable: '+problems[0]);continue
         Path('attempts').mkdir(exist_ok=True)
-        Path('attempts/repair.json').write_text(json.dumps({'patch':patch,'errors':errors},indent=1,ensure_ascii=False))
+        Path('attempts/repair-%d.json' % attempt).write_text(json.dumps({'candidate':candidate,'patch':patch,'errors':errors},indent=1,ensure_ascii=False))
         if not errors:
             candidate['repair_provenance']={'method':'bounded automatic patch of saved scene',
                 'replaced_parts':list(patch.get('replace_parts',{})),

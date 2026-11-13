@@ -106,6 +106,59 @@ class PipelineTests(unittest.TestCase):
         with self.assertRaises(ValueError): apply_patch(s,{'step_updates':[{'index':0,'start':99}]})
         with self.assertRaises(ValueError): apply_patch(s,{'replace_parts':{'missing':p}})
 
+    def test_narration_partial_failure_reuses_completed_lines(self):
+        import wave
+        from scene_lib import audio as A
+        import local_voice
+        lines=[(0,1,'First sentence'),(1.2,2.2,'Second sentence')]
+        prior=Path.cwd()
+        with tempfile.TemporaryDirectory() as d, patch.dict(os.environ,{'CE_CACHE_DIR':str(Path(d)/'cache'),'SCENE_VOICE':'test-voice'}):
+            os.chdir(d)
+            try:
+                calls=[]
+                def synth(jobs):
+                    job=jobs[0];calls.append(job['text'])
+                    if len(calls)==2: raise RuntimeError('temporary failure')
+                    with wave.open(job['wav'],'wb') as w:
+                        w.setnchannels(1);w.setsampwidth(2);w.setframerate(24000);w.writeframes(b'\x01\x00'*4800)
+                    Path(job['timing']).write_text(json.dumps({'duration':.2}))
+                with patch.object(local_voice,'edge_run',side_effect=synth):
+                    with self.assertRaises(RuntimeError): A.speak(lines)
+                    calls.clear()
+                    # The first line survived the second line's failure.
+                    _,log=A.speak(lines)
+                    self.assertEqual(['Second sentence'],calls)
+                    self.assertIn('1 cached, 1 synthesized',log[0])
+                with patch.object(local_voice,'edge_run',side_effect=AssertionError('network must not run')):
+                    _,log=A.speak(lines)
+                    self.assertIn('2 cached, 0 synthesized',log[0])
+            finally: os.chdir(prior)
+
+    def test_finished_cache_reuses_and_rejects_corruption(self):
+        import subprocess
+        from scene_lib.build import main, result_key, digest
+        spec=json.loads(Path('tests/fixtures/rainbow.json').read_text())
+        prior=Path.cwd()
+        with tempfile.TemporaryDirectory() as d, patch.dict(os.environ,{'CE_CACHE_DIR':str(Path(d)/'cache'),'CE_METRICS_PATH':str(Path(d)/'metrics.json')}):
+            path=Path(d)/'scene.json';path.write_text(json.dumps(spec))
+            cache=Path(d)/'cache/results'/result_key(spec);cache.mkdir(parents=True)
+            (cache/'video.mp4').write_bytes(b'cached-result')
+            (cache/'scene.json').write_text(json.dumps(spec))
+            (cache/'evidence-report.json').write_text(json.dumps({'errors':[],'semantic_verification':False}))
+            (cache/'metadata.json').write_text(json.dumps({n:digest(cache/n) for n in ['video.mp4','scene.json','evidence-report.json']}))
+            os.chdir(d)
+            try:
+                with patch('subprocess.run',side_effect=AssertionError('render/network must not run')):
+                    main(str(path),'out.mp4')
+                self.assertEqual(b'cached-result',Path('out.mp4').read_bytes())
+                self.assertTrue(json.loads(Path('metrics.json').read_text())['result_cache_hit'])
+                (cache/'video.mp4').write_bytes(b'corrupt')
+                with patch('subprocess.run',side_effect=subprocess.CalledProcessError(1,'render')) as run:
+                    with self.assertRaises(subprocess.CalledProcessError): main(str(path),'second.mp4')
+                    run.assert_called_once()
+                self.assertFalse(Path('second.mp4').exists())
+            finally: os.chdir(prior)
+
     def test_budget_stops_before_network(self):
         import llm
         with tempfile.TemporaryDirectory() as d, patch.dict(os.environ,{'CE_METRICS_PATH':str(Path(d)/'metrics.json'),'CE_MAX_REQUESTS':'0'}):

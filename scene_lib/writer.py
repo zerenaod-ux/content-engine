@@ -162,6 +162,26 @@ def auto_camera(spec):
             bs = [_box_at(q, a + (b - a) * k / 4, spec.get('_path_bounds')) for q in focus for k in range(5)]   # a moving star: keep its whole path in the picture
             f = frame((min(q[0] for q in bs), max(q[1] for q in bs), min(q[2] for q in bs), max(q[3] for q in bs)))
         except Exception: continue
+        # A wide explanatory diagram may focus on a path rather than a tiny
+        # object at its endpoint. Prefer an actual declared evidence part that
+        # is legible in this same composition; narration/claims are unchanged.
+        try:
+            focus_box = _box_at(p, (a+b)/2, spec.get('_path_bounds'))
+            from scene_lib.validate import THIN
+            need = 45 if p.get('type') in THIN else 110
+            if max(focus_box[1]-focus_box[0],focus_box[3]-focus_box[2])*f[2] < need:
+                choices=[]
+                for ev in st.get('evidence',[]):
+                    q=ids.get(ev.get('part'))
+                    if q is None: continue
+                    box=_box_at(q,(a+b)/2,spec.get('_path_bounds'))
+                    extent=max(box[1]-box[0],box[3]-box[2])*f[2]
+                    required=45 if q.get('type') in THIN else 110
+                    if extent>=required: choices.append((extent,q['id']))
+                if choices:
+                    previous=st['shows'];st['shows']=max(choices)[1]
+                    spec.setdefault('_focus_repairs',[]).append({'from':previous,'to':st['shows'],'step':len(cam)//2+1})
+        except (TypeError,KeyError): pass
         if p.get('type') in ('night',): f = wide
         cam.append([round(a + 0.6, 2)] + list(f)); cam.append([round(b - 0.2, 2)] + list(f))
     cam.append([spec['duration']] + list(wide))
