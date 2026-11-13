@@ -55,6 +55,12 @@ jobs:
           if [ "$(tr -d '[:space:]' < topic.txt | tr 'A-Z' 'a-z')" = "auto" ]; then python3 scene_lib/ideas.py pick topic.txt; fi
           python3 scene_lib/writer.py --topic-file topic.txt auto-scene.json
       - name: Draw, check and assemble the video
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
         run: |
           npm init -y > /dev/null
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 npm install --silent playwright@1.49.1 @fontsource/noto-color-emoji || PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 npm install --silent playwright@1.49.1

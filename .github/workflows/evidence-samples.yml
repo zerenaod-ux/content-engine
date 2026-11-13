@@ -1,5 +1,5 @@
 name: bounded-evidence-samples
-# Validation revision: retain complete patches and resolve wide-diagram focus.
+# Validation revision: resume retained automatic patch using rendered occlusion feedback.
 on:
   push:
     branches: [improve-evidence-pipeline]
@@ -13,6 +13,7 @@ jobs:
     env:
       CE_MAX_REQUESTS: '16'
       CE_MAX_SECONDS: '300'
+      CE_REPAIR_CONTEXT: tests/fixtures/rainbow-reference.txt
       GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
       GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
     steps:
@@ -29,7 +30,7 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - name: Repair the saved rejected scene without repeating idea or plan calls
         run: |
-          python3 scene_lib/repair.py tests/fixtures/rainbow-rejected.json tests/fixtures/rainbow-rejected-report.json auto-scene.json tests/fixtures/rainbow-reference.txt
+          python3 scene_lib/repair.py tests/fixtures/rainbow-automatic-repair.json tests/fixtures/rainbow-automatic-repair-report.json auto-scene.json tests/fixtures/rainbow-reference.txt
           python3 scene_lib/build.py auto-scene.json sample.mp4
       - name: Retain repair outcome, including failures
         if: always()
@@ -46,7 +47,6 @@ jobs:
             fr/evidence/
           retention-days: 14
   samples:
-    needs: repair-rainbow
     runs-on: ubuntu-latest
     timeout-minutes: 25
     strategy:

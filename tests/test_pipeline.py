@@ -170,6 +170,12 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual('ray',s['steps'][0]['shows'])
         self.assertEqual('A ray reaches the surface.',s['steps'][0]['say'])
 
+    def test_demonstration_can_focus_on_light_instead_of_forced_object_hook(self):
+        from scene_lib.validate import check
+        s=json.loads(Path('tests/fixtures/rainbow-rejected.json').read_text())
+        s['steps'][0]['shows']='ray'
+        self.assertFalse(any('main object of the video must' in e for e in check(s)))
+
     def test_budget_stops_before_network(self):
         import llm
         with tempfile.TemporaryDirectory() as d, patch.dict(os.environ,{'CE_METRICS_PATH':str(Path(d)/'metrics.json'),'CE_MAX_REQUESTS':'0'}):

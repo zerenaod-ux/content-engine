@@ -42,7 +42,13 @@ def inspect(spec, frames=Path('fr')):
                     counts.append(int(mask.sum()))
                 visible = len(counts) == 2 and max(counts) >= 80
                 results.append({**row, 'visible_pixels': counts, 'visible': visible})
-                if not visible: errors.append('step %s: declared evidence %s is absent, tiny or occluded' % (row['step'], row['part']))
+                if not visible:
+                    errors.append('step %s: declared evidence %s is absent, tiny or occluded' % (row['step'], row['part']))
+                    part=next((p for p in spec.get('parts',[]) if p.get('id')==row['part']),None)
+                    if part:
+                        fields={'path':('d','x','y','scale','rot'),'line':('pts',),'ellipse':('x','y','rx','ry','rot')}.get(part.get('type'),())
+                        overlap=[p.get('id') for p in spec.get('parts',[]) if p is not part and p.get('type')==part.get('type') and fields and all(p.get(k)==part.get(k) for k in fields)]
+                        if overlap: errors.append('hidden evidence %s shares the same geometry with %s; later drawing layers can cover it. Distinct comparison elements need separately visible geometry.' % (row['part'], ', '.join(str(x) for x in overlap)))
         except (OSError, ValueError, KeyError, TypeError) as e:
             errors.append('rendered evidence missing or unreadable: %s' % type(e).__name__)
     return {'checks': 'blankness, frame variation, numeric contracts and sampled part visibility',

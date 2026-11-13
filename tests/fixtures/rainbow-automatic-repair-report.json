@@ -1,0 +1,152 @@
+{
+ "checks": "blankness, frame variation, numeric contracts and sampled part visibility",
+ "semantic_verification": false,
+ "factual_verification": false,
+ "human_review_required": true,
+ "errors": [
+  "step 6: declared evidence rainbow_red is absent, tiny or occluded",
+  "hidden evidence rainbow_red shares the same geometry with rainbow, rainbow_orange, rainbow_yellow, rainbow_green, rainbow_blue, rainbow_indigo, rainbow_violet; later drawing layers can cover it. Distinct comparison elements need separately visible geometry."
+ ],
+ "evidence": [
+  {
+   "step": 1,
+   "part": "sun",
+   "field": "size",
+   "files": [
+    "0-0-0",
+    "0-0-1"
+   ],
+   "visible_pixels": [
+    0,
+    16953
+   ],
+   "visible": true
+  },
+  {
+   "step": 1,
+   "part": "ray",
+   "field": "progress",
+   "files": [
+    "0-1-0",
+    "0-1-1"
+   ],
+   "visible_pixels": [
+    0,
+    1437
+   ],
+   "visible": true
+  },
+  {
+   "step": 2,
+   "part": "raindrop",
+   "field": "y",
+   "files": [
+    "1-0-0",
+    "1-0-1"
+   ],
+   "visible_pixels": [
+    0,
+    17357
+   ],
+   "visible": true
+  },
+  {
+   "step": 3,
+   "part": "refract_red",
+   "field": "progress",
+   "files": [
+    "2-0-0",
+    "2-0-1"
+   ],
+   "visible_pixels": [
+    0,
+    371
+   ],
+   "visible": true
+  },
+  {
+   "step": 3,
+   "part": "refract_violet",
+   "field": "progress",
+   "files": [
+    "2-1-0",
+    "2-1-1"
+   ],
+   "visible_pixels": [
+    0,
+    566
+   ],
+   "visible": true
+  },
+  {
+   "step": 4,
+   "part": "internal_reflection",
+   "field": "progress",
+   "files": [
+    "3-0-0",
+    "3-0-1"
+   ],
+   "visible_pixels": [
+    0,
+    430
+   ],
+   "visible": true
+  },
+  {
+   "step": 5,
+   "part": "exit_red",
+   "field": "progress",
+   "files": [
+    "4-0-0",
+    "4-0-1"
+   ],
+   "visible_pixels": [
+    0,
+    1898
+   ],
+   "visible": true
+  },
+  {
+   "step": 5,
+   "part": "exit_violet",
+   "field": "progress",
+   "files": [
+    "4-1-0",
+    "4-1-1"
+   ],
+   "visible_pixels": [
+    0,
+    1510
+   ],
+   "visible": true
+  },
+  {
+   "step": 6,
+   "part": "rainbow_red",
+   "field": "alpha",
+   "files": [
+    "5-0-0",
+    "5-0-1"
+   ],
+   "visible_pixels": [
+    0,
+    0
+   ],
+   "visible": false
+  },
+  {
+   "step": 6,
+   "part": "rainbow_violet",
+   "field": "alpha",
+   "files": [
+    "5-1-0",
+    "5-1-1"
+   ],
+   "visible_pixels": [
+    0,
+    4565
+   ],
+   "visible": true
+  }
+ ]
+}

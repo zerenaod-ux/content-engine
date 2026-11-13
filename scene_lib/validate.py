@@ -108,7 +108,7 @@ def design_rules(spec, D, steps, cam, parts):
         if sh not in ids: E.append('step %d: "shows" must be the id of the part that proves this sentence on screen' % i); continue
         p = ids[sh]; a, b = s['start'] - 0.3, s['end']
         bx_ = _box_at(p, (s['start'] + s['end']) / 2, spec.get('_path_bounds'))
-        if i == 1 and p['type'] not in ('prop', 'icon', 'emoji', 'path', 'house', 'tower'): E.append('step 1: the main object "%s" is a %s; the main object of the video must look like the real thing: use a "prop" from the library or an "icon" (a picture found by name, e.g. find: "wind turbine")' % (sh, p['type']))
+        if i == 1 and spec.get('evidence_version') != 1 and p['type'] not in ('prop', 'icon', 'emoji', 'path', 'house', 'tower'): E.append('step 1: the main object "%s" is a %s; the main object of the video must look like the real thing: use a "prop" from the library or an "icon" (a picture found by name, e.g. find: "wind turbine")' % (sh, p['type']))
         if p['type'] in ('rect', 'circle', 'ellipse') and max(bx_[1] - bx_[0], bx_[3] - bx_[2]) >= 90: E.append('step %d: the star "%s" is a plain %s; draw it as a real-looking object: a "prop" from the library, an "emoji", or a detailed "path" (owner rule: things must look like the real thing)' % (i, sh, p['type']))
         if i > 1 and not s.get('evidence') and not changes_in(p, a, b): E.append('step %d: part "%s" does not change during %.1f-%.1f; give it keyframes inside this step so the viewer sees the sentence happen' % (i, sh, s['start'], s['end']))
         if cam and p['type'] not in ('night', 'sky', 'ground'):

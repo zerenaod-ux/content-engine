@@ -30,6 +30,8 @@ def result_key(spec):
               'scene_lib/prepare.py','scene_lib/repair.py','scene_lib/writer.py']:
         h.update((ROOT/p).read_bytes())
     h.update(os.environ.get('SCENE_VOICE','default').encode())
+    context=os.environ.get('CE_REPAIR_CONTEXT')
+    if context: h.update(Path(context).read_bytes())
     # Dependency versions affect rendering/audio; cache is platform-specific too.
     import platform, importlib.metadata
     h.update(platform.platform().encode())
@@ -87,6 +89,8 @@ def main(spec_path, out):
     p=Path(os.environ.get('CE_METRICS_PATH','metrics.json'))
     try: metrics=json.loads(p.read_text())
     except (OSError,ValueError): metrics={'requests':0,'responses':0,'failures':0,'seconds':0}
+    metrics['total_run_seconds'] = round(time.time()-metrics.get('started_at',time.time()),3)
+    metrics['llm_http_requests_per_checked_video'] = metrics.get('requests',0)
     metrics.update(accepted_build_seconds=round(time.monotonic()-started,3),result_cache_hit=hit,
                    automatic_checks_passed=True,semantic_verification=False)
     p.write_text(json.dumps(metrics,indent=1))
