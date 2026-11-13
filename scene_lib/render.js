@@ -63,8 +63,34 @@ const fs = require('fs'), path = require('path');
     fs.writeFileSync(path.join('fr', String(f).padStart(4, '0') + '.jpg'), Buffer.from(d.split(',')[1], 'base64'));
     if (f % 200 === 0) console.log('frame', f, '/', total);
   }
+  // Render actual/part-removed pairs at both contract endpoints. Difference
+  // measures a part's visible contribution in the final composition, even if
+  // another object covers it. It does not interpret what the drawing means.
+  if (spec.evidence_version === 1) {
+    const dir = 'fr/evidence'; fs.mkdirSync(dir, { recursive: true });
+    const manifest = [];
+    for (const [i, step] of spec.steps.entries()) {
+      for (const [j, ev] of (step.evidence || []).entries()) {
+        const files = [];
+        for (const [k, t] of ev.at.entries()) {
+          const f = Math.round(t * 30), base = `${i}-${j}-${k}`;
+          await p.evaluate(s => window.loadSpec(s), spec);
+          const actual = await p.evaluate(n => window.frame(n), f);
+          const hidden = {...spec, parts: spec.parts.filter(q => q.id !== ev.part)};
+          await p.evaluate(s => window.loadSpec(s), hidden);
+          const removed = await p.evaluate(n => window.frame(n), f);
+          for (const [name, data] of [['actual', actual], ['removed', removed]]) {
+            fs.writeFileSync(`${dir}/${base}-${name}.jpg`, Buffer.from(data.split(',')[1], 'base64'));
+          }
+          files.push(base);
+        }
+        manifest.push({step: i + 1, part: ev.part, field: ev.field, files});
+      }
+    }
+    fs.writeFileSync(`${dir}/manifest.json`, JSON.stringify(manifest));
+  }
   const pe = await p.evaluate(() => [window.partErrors || 0, window.partErrorMsg || '']);
   if (pe[0]) console.log('PART SKIPPED ' + pe[0] + ' times (first: ' + pe[1] + ')');
   await b.close();
-  if (bad) process.exit(1);
+  if (bad || pe[0]) process.exit(1);
 })();

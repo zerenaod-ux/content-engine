@@ -20,3 +20,13 @@ What already exists in the other repo and gets copied here after step 5: review 
 
 ## Picture rules
 See PICTURE-RULES.md (owner feedback: pictures must look like the real thing).
+
+## 2026-11-13 — implementation progress (append-only handover)
+
+Evidence inspected: current Content Engine source and workflow at `da2c1f998f81152c17d6844d9dd06477907e16ff`, generation, rendering and review-card path. The preceding review of release `ce-20261113-2105` and its scene JSON/frames found a technically valid video with a narration/visual mismatch: narration promised separated colours while the drawing largely showed a single white line. Its explanation incorrectly suggested beams curl into the rainbow arch; observer geometry and multiple droplets matter. This is not an accurate example to publish. No audio listening or audience testing has been performed.
+
+Edits currently written on the implementation branch (not yet validated as a complete pipeline): variable beat timings within the intended 45–65 seconds; natural narration without compulsory questions/exclamations; per-beat demonstration descriptions and numeric part-change contracts; sampled actual/part-removed rendered visibility checks with explicit limits; accepted plan/scene caching; per-line narration caching; bounded free-service request accounting; preserved last rejected stage/errors; failed ideas no longer permanently ban a subject. Blind post-plan narration rewriting has been removed because it could invalidate the demonstration mapping. Python compilation passed; regression tests and sample verification are still pending.
+
+Remaining work and expected evidence: test claim-to-demonstration mapping and schema failures, timing, cache invalidation/reuse, free-call limits and failure memory; consolidate documentation and creative constraints; render a revised rainbow and substantially different topics. Distinguish deterministic hand-authored fixtures, fresh AI output, actual video renders and human judgment. Numeric/visibility checks cannot establish scientific correctness or viewer understanding. Measure calls and elapsed time per accepted result where live credentials permit; report missing evidence plainly.
+
+Deployment: implementation and samples are in progress. No merge or production rollout. Content Engine posting remains OFF; ShelfMade, MindLore and AnimationDoodles are unchanged. Free quotas are finite; unlimited output and perfect quality are not guaranteed. Preserve existing README text and append further dated measured outcomes instead of replacing this entry.

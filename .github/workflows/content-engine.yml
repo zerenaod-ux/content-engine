@@ -34,6 +34,13 @@ jobs:
         with:
           python-version: '3.11'
       - run: pip install --quiet numpy pillow imageio-ffmpeg edge-tts requests
+      - name: Restore accepted stages and narration
+        uses: actions/cache/restore@v4
+        with:
+          path: .ce-cache
+          key: ce-v1-${{ runner.os }}-${{ github.ref_name }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            ce-v1-${{ runner.os }}-${{ github.ref_name }}-
       - name: Think of the idea and write the scene (free LLMs + checkers)
         env:
           TOPIC_IN: ${{ github.event.inputs.topic }}
@@ -60,6 +67,7 @@ jobs:
             grep "EMOJI NOT DRAWABLE" render-log.txt >> writer-log.txt || true
           fi
           [ "$rc" = "0" ] || exit 1
+          set -o pipefail
           python3 scene_lib/check_frames.py auto-scene.json | tee -a writer-log.txt
           python3 scene_lib/assemble.py auto-scene.json scene-factory.mp4
       - name: Save the video in the Content Engine folder and show it in the Review tab
@@ -69,7 +77,7 @@ jobs:
         run: |
           TAG="ce-$(date -u +%Y%m%d-%H%M)"; TITLE=$(python3 -c "import json;print(json.load(open('auto-scene.json')).get('title','Content Engine video'))")
           cp scene-factory.mp4 "$TAG.mp4"
-          gh release create "$TAG" "$TAG.mp4" auto-scene.json --title "Content Engine: $TITLE" --notes "Content Engine video (not posted). Made by itself from idea to video." --prerelease
+          gh release create "$TAG" "$TAG.mp4" auto-scene.json evidence-report.json metrics.json --title "Content Engine: $TITLE" --notes "Content Engine video (not posted). Automatic structural and sampled visibility checks passed. Scientific accuracy and narration/visual meaning still require human review; not approved to publish." --prerelease
           URL="https://github.com/${{ github.repository }}/releases/download/$TAG/$TAG.mp4"
           python3 - "$TAG" "$TITLE" "$URL" <<'PY'
           import json, sys, datetime
@@ -84,7 +92,7 @@ jobs:
           printf 'Content Engine video (4th system, NOT posted).\n\nWatch: %s\n\nSaved in the Content Engine folder: release %s. Tap Done in the app when you have seen it.\n' "$URL" "$TAG" > body.txt
           gh issue create --title "Content Engine: $TITLE" --label scene-review --body-file body.txt
           [ -n "$NTFY_TOPIC" ] && curl -s -H "Title: Content Engine: new video" -H "Click: https://zerenaod-ux.github.io/shelfmade-dashboard/app/#review" -d "$TITLE (not posted) is ready to watch in the app." "https://ntfy.sh/$NTFY_TOPIC" > /dev/null || true
-      - name: Remember this idea so it is never repeated (also when it failed, so the system moves on)
+      - name: Remember this angle and retain failed-attempt diagnostics
         if: always()
         run: |
           if [ -f scene-factory.mp4 ]; then python3 scene_lib/ideas.py record auto-scene.json; elif [ -f idea.json ]; then python3 scene_lib/ideas.py record auto-scene.json failed; else exit 0; fi
@@ -96,7 +104,26 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          files=(); for f in scene-factory.mp4 auto-scene.json auto-plan.json idea.json idea-log.txt writer-log.txt voice-log.txt render-log.txt; do [ -f "$f" ] && files+=("$f"); done
+          files=(); for f in scene-factory.mp4 auto-scene.json auto-plan.json idea.json idea-log.txt writer-log.txt voice-log.txt render-log.txt metrics.json evidence-report.json; do [ -f "$f" ] && files+=("$f"); done
           echo "attaching: ${files[*]}"
           gh release delete scene-factory -y --cleanup-tag || true
           gh release create scene-factory "${files[@]}" --title "Scene factory test (not posted)" --notes "test only: idea in, video out" --prerelease
+      - name: Save reusable stages even after failure
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: .ce-cache
+          key: ce-v1-${{ runner.os }}-${{ github.ref_name }}-${{ github.run_id }}-${{ github.run_attempt }}
+      - name: Preserve repair evidence and measurements
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: repair-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            attempts/
+            *-log.txt
+            auto-*.json
+            metrics.json
+            evidence-report.json
+            fr/evidence/
+          retention-days: 14

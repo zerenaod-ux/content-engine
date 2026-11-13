@@ -1,0 +1,13 @@
+.ce-cache/
+attempts/
+node_modules/
+fr/
+__pycache__/
+*.pyc
+*.wav
+*.mp4
+auto-*.json
+*-log.txt
+metrics.json
+evidence-report.json
+package*.json

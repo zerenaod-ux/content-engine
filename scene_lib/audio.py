@@ -102,18 +102,44 @@ def speak(lines, rate='+16%', pitch='+2Hz'):
     ensure_ffmpeg(); sys.path.insert(0, str(ROOT)); import local_voice
     T = max(b for a, b, _ in lines) + 0.5; n = int(T * SR); out = np.zeros(n); log = []
     os.environ['CE_EDGE_RATE'] = rate; os.environ['CE_EDGE_PITCH'] = pitch
-    jobs = [{'text': tx, 'wav': 'v%d.wav' % i, 'timing': 't%d.json' % i} for i, (a, b, tx) in enumerate(lines)]
+    import hashlib, shutil
+    cache = Path(os.environ.get('CE_CACHE_DIR', '.ce-cache')) / 'narration'
+    cache.mkdir(parents=True, exist_ok=True)
     used = None; last = None
     for v in ([os.environ['SCENE_VOICE']] if os.environ.get('SCENE_VOICE') else VOICES):
         os.environ['CE_EDGE_VOICE'] = v
-        try: local_voice.edge_run(jobs); used = v; break
+        jobs = []; keys = []
+        for i, (a, b, tx) in enumerate(lines):
+            key = hashlib.sha256(json.dumps([tx, v, rate, pitch, 'edge-wav-24000-v1']).encode()).hexdigest()
+            keys.append(key)
+            wav, timing = cache / (key + '.wav'), cache / (key + '.json')
+            valid = False
+            try:
+                with wave.open(str(wav)) as w:
+                    valid = w.getnframes() > 0 and w.getnchannels() == 1 and w.getsampwidth() == 2
+                valid = valid and json.loads(timing.read_text())['duration'] > 0
+            except (OSError, ValueError, KeyError, wave.Error): pass
+            if valid:
+                shutil.copyfile(wav, 'v%d.wav' % i); shutil.copyfile(timing, 't%d.json' % i)
+            else: jobs.append({'text': tx, 'wav': 'v%d.wav' % i, 'timing': 't%d.json' % i})
+        try:
+            # Each successful line is persisted immediately, even if a later line fails.
+            for job in jobs:
+                local_voice.edge_run([job])
+                i = int(job['wav'][1:-4]); key = keys[i]
+                shutil.copyfile(job['wav'], cache / (key + '.wav'))
+                shutil.copyfile(job['timing'], cache / (key + '.json'))
+            used = v
+            log.append('narration: %d cached, %d synthesized' % (len(lines) - len(jobs), len(jobs)))
+            break
         except Exception as e: last = e
     if not used: raise RuntimeError('voice failed: %s' % last)
     log.append('voice: %s rate %s pitch %s' % (used, rate, pitch))
     for i, (a, b, tx) in enumerate(lines):
         dur = json.loads(Path('t%d.json' % i).read_text())['duration']; room = b - a - 0.1; src = 'v%d.wav' % i
+        if dur > room * 1.4: raise RuntimeError('line %d exceeds its narration window; repair its sentence or timing' % (i + 1))
         if dur > room:
-            k = min(1.4, dur / room); subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', src, '-filter:a', 'atempo=%.3f' % k, 'f%d.wav' % i], check=True); src = 'f%d.wav' % i
+            k = dur / room; subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', src, '-filter:a', 'atempo=%.3f' % k, 'f%d.wav' % i], check=True); src = 'f%d.wav' % i
         with wave.open(src) as w:
             sr = w.getframerate(); x = np.frombuffer(w.readframes(w.getnframes()), dtype=np.int16).astype(np.float64) / 32768
         m = int(len(x) * SR / sr); x = np.interp(np.arange(m) * sr / SR, np.arange(len(x)), x); i0 = int((a + 0.05) * SR); x = x[:n - i0]; out[i0:i0 + len(x)] += x

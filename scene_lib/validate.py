@@ -189,7 +189,8 @@ def design_rules(spec, D, steps, cam, parts):
     return E
 
 def check(spec):
-    E = []
+    from scene_lib.evidence import check_contract
+    E = check_contract(spec) if isinstance(spec, dict) and 'evidence_version' in spec else []
     if not isinstance(spec, dict): return ['the description must be one JSON object']
     D = spec.get('duration')
     if not _num(D) or not 20 <= D <= 66: E.append('duration must be a number of seconds between 20 and 66'); D = 55.6
@@ -209,7 +210,7 @@ def check(spec):
         if not 4 <= w <= 18: E.append('step %d: "say" must be 4 to 18 words (it has %d)' % (i, w))
         if w / 3.3 > (s['end'] - s['start']) + 0.4: E.append('step %d: the sentence is too long to speak in %.1f seconds; cut it to about %d words' % (i, s['end'] - s['start'], int((s['end'] - s['start']) * 3.3)))
     says = [str(s.get('say', '')) for s in steps if isinstance(s, dict)]
-    if len(says) >= 5 and sum(1 for x in says if x.strip().endswith(('!', '?'))) < 4: E.append('the script is flat: at least 4 sentences must end with ! or ? and use strong action verbs')
+
     cam = spec.get('camera')
     if not isinstance(cam, list) or len(cam) < 3 or not all(isinstance(c, list) and len(c) == 4 and all(_num(v) for v in c) for c in cam): E.append('camera must be a list of at least 3 [time, x, y, zoom] entries'); cam = []
     else:

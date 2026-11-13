@@ -2,7 +2,8 @@
 Providers (all free tiers, OpenAI-compatible), tried in order when their key is present in the environment:
   GROQ_API_KEY (api.groq.com), CEREBRAS_API_KEY (api.cerebras.ai), OPENROUTER_API_KEY (openrouter.ai, ':free' models), MISTRAL_API_KEY (api.mistral.ai).
 Model names change, so each provider is asked for its model list and the best known family is chosen. Returns text / parsed JSON, or raises ValueError."""
-import json, os, re, urllib.request, urllib.error
+import json, os, re, time, urllib.request, urllib.error
+from pathlib import Path
 
 PROVIDERS = [
     ('GROQ_API_KEY', 'https://api.groq.com/openai/v1', ('gpt-oss-120b', 'llama-3.3-70b', 'qwen3', 'llama', 'gpt-oss')),
@@ -13,10 +14,33 @@ PROVIDERS = [
 _CACHE = {}
 
 
+class BudgetExceeded(ValueError):
+    pass
+
+_STARTED = time.monotonic()
+
 def _req(url, key, body=None):
-    r = urllib.request.Request(url, json.dumps(body).encode() if body is not None else None, {'Authorization': 'Bearer ' + key, 'Content-Type': 'application/json', 'User-Agent': 'studio/1.0'})
-    with urllib.request.urlopen(r, timeout=90) as x:
-        return json.load(x)
+    # Shared on-disk ledger covers idea maker and writer subprocesses in one run.
+    path = Path(os.environ.get('CE_METRICS_PATH', 'metrics.json'))
+    try: metrics = json.loads(path.read_text())
+    except (OSError, ValueError): metrics = {'requests': 0, 'seconds': 0, 'responses': 0, 'failures': 0}
+    if metrics['requests'] >= int(os.environ.get('CE_MAX_REQUESTS', '24')) or metrics['seconds'] + time.monotonic() - _STARTED >= float(os.environ.get('CE_MAX_SECONDS', '480')):
+        raise BudgetExceeded('free request/time budget exhausted; accepted stages remain cached')
+    metrics['requests'] += 1
+    path.write_text(json.dumps(metrics, indent=1))
+    started = time.monotonic()
+    try:
+        r = urllib.request.Request(url, json.dumps(body).encode() if body is not None else None, {'Authorization': 'Bearer ' + key, 'Content-Type': 'application/json', 'User-Agent': 'studio/1.0'})
+        with urllib.request.urlopen(r, timeout=90) as x:
+            result = json.load(x)
+        metrics['responses'] += 1
+        return result
+    except Exception:
+        metrics['failures'] += 1
+        raise
+    finally:
+        metrics['seconds'] = round(metrics['seconds'] + time.monotonic() - started, 3)
+        path.write_text(json.dumps(metrics, indent=1))
 
 
 def _models(env, base, prefs, key):
@@ -45,6 +69,7 @@ def text(system, prompt, json_mode=True, temperature=0.8, max_tokens=6000):
             continue
         try:
             models = _models(env, base, prefs, key)
+        except BudgetExceeded: raise
         except Exception as e:
             last = '%s model list: %s' % (env, str(e)[:80]); continue
         for model in models:
@@ -59,6 +84,7 @@ def text(system, prompt, json_mode=True, temperature=0.8, max_tokens=6000):
                     if t and t.strip():
                         print('llm.py: answered by', env.split('_')[0], model, flush=True)
                         return t
+                except BudgetExceeded: raise
                 except urllib.error.HTTPError as e:
                     last = '%s %s HTTP %s' % (env.split('_')[0], model, e.code)
                     if e.code == 400 and json_mode and attempt == 0:
