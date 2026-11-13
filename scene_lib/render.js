@@ -32,12 +32,14 @@ const fs = require('fs'), path = require('path');
       if (!file || !fs.existsSync(path.join(dir, file))) {
         file = null;
         const words = String(f).toLowerCase().split(/\s+/).filter(Boolean);
-        for (const q of [f, words[words.length - 1], words[0]].filter((v, i, a) => v && a.indexOf(v) === i)) { if (file) break;
+        for (const q of [f, words.filter(w => w !== 'icon').join(' '), words[words.length - 1], words[0]].filter((v, i, a) => v && a.indexOf(v) === i)) { if (file) break;
         try {
           const r = await fetch('https://api.iconify.design/search?limit=12&prefixes=' + SETS + '&query=' + encodeURIComponent(q));
           const hits = ((await r.json()).icons || []); console.log('icon search', JSON.stringify(q), r.status, hits.slice(0, 3).join(' '));
+          const key = String(q).toLowerCase().split(/[^a-z]+/).filter(w => w.length > 2 && !['icon', 'the', 'and', 'with'].includes(w));
           for (const h of hits) {
-            const [pre, name] = h.split(':'); const sv = await fetch('https://api.iconify.design/' + pre + '/' + name + '.svg?height=512');
+            const [pre, name] = h.split(':');
+            if (!key.some(w => name.includes(w.replace(/s$/, '')))) continue;   // RIGHT_PICTURE: the picture's own name must contain the word asked for (no cup for "wind") const sv = await fetch('https://api.iconify.design/' + pre + '/' + name + '.svg?height=512');
             if (sv.ok) { const txt = await sv.text(); if (txt.startsWith('<svg')) { file = pre + '--' + name + '.svg'; fs.writeFileSync(path.join(dir, file), txt); break; } }
           }
         } catch (e) { console.log('icon lookup failed for', q, String(e).slice(0, 120)); } }
@@ -47,7 +49,10 @@ const fs = require('fs'), path = require('path');
     }
     fs.writeFileSync(idx, JSON.stringify(known, null, 1));
     await p.evaluate(m => window.loadIcons(m), map);
-    if (missing.length) { console.log('ICON NOT FOUND: ' + missing.join(' | ')); await b.close(); process.exit(4); }
+    if (missing.length) {   // no right picture: leave that part out instead of showing a wrong one
+      console.log('ICON NOT FOUND (left out): ' + missing.join(' | '));
+      spec.parts = spec.parts.filter(q => !(q.type === 'icon' && missing.includes(q.find))); await p.evaluate(s => window.loadSpec(s), spec);
+    }
   }
   fs.mkdirSync('fr', { recursive: true });
   for (let f = 0; f < total; f++) {
