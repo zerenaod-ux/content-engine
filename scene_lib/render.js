@@ -51,6 +51,8 @@ const fs = require('fs'), path = require('path');
     await p.evaluate(m => window.loadIcons(m), map);
     if (missing.length) {   // no right picture: leave that part out instead of showing a wrong one
       console.log('ICON NOT FOUND (left out): ' + missing.join(' | '));
+      const stars = new Set(spec.steps.map(st => st.shows)); const lost = spec.parts.filter(q => q.type === 'icon' && missing.includes(q.find) && stars.has(q.id));
+      if (lost.length) { console.log('NO VIDEO: the main picture of a step could not be found (' + lost.map(q => q.find).join(', ') + '); better no video than an empty one'); await b.close(); process.exit(4); }
       spec.parts = spec.parts.filter(q => !(q.type === 'icon' && missing.includes(q.find))); await p.evaluate(s => window.loadSpec(s), spec);
     }
   }
