@@ -1,0 +1,48 @@
+name: scene-test
+# TEST ONLY: builds one "living scene" video from a scene description in scenes/<name>.json (scene engine + narrator + sound) and attaches it to a prerelease. Nothing is posted.
+# Start it by pushing publish/scene-test.trigger whose first word is the scene name.
+on:
+  workflow_dispatch:
+    inputs:
+      scene:
+        description: 'Scene name (file in scenes/, without .json)'
+        default: 'water-tower'
+  push:
+    paths: ['publish/scene-test.trigger']
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install --quiet numpy imageio-ffmpeg edge-tts
+      - name: Build the scene video
+        env:
+          SCENE_IN: ${{ github.event.inputs.scene }}
+        run: |
+          SCENE="$SCENE_IN"; [ -z "$SCENE" ] && SCENE=$(awk '{print $1; exit}' publish/scene-test.trigger)
+          case "$SCENE" in *[!a-z0-9-]*|'') echo "bad scene name"; exit 1;; esac
+          test -f "scenes/$SCENE.json" || { echo "no such scene: $SCENE"; exit 1; }
+          echo "SCENE=$SCENE" >> "$GITHUB_ENV"
+          npm init -y > /dev/null
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 npm install --silent playwright@1.49.1
+          CHROME_CHANNEL=chrome node scene_lib/render.js "scenes/$SCENE.json" || (npx playwright install chromium && node scene_lib/render.js "scenes/$SCENE.json")
+          python3 scene_lib/assemble.py "scenes/$SCENE.json" "scene-$SCENE.mp4"
+      - name: Attach to release
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          [ -n "$SCENE" ] || exit 1
+          files=(); for f in scene-*.mp4 voice-log.txt; do [ -f "$f" ] && files+=("$f"); done
+          echo "attaching: ${files[*]}"
+          gh release delete "scene-$SCENE" -y --cleanup-tag || true
+          gh release create "scene-$SCENE" "${files[@]}" --title "Scene test: $SCENE (not posted)" --notes "test only" --prerelease

@@ -1,0 +1,102 @@
+name: scene-factory
+# CONTENT ENGINE (4th system, own repo since 2026-11-13, not posted): the full factory, with no person and no laptop. Runs twice a day at quiet hours (owner OK 2026-11-13).
+# Each finished video is saved in its own GitHub release (tag ce-YYYYMMDD-HHMM = the system's video folder, list in data/scenes/videos.json) and shown in the app's Review tab.
+# Idea maker thinks of a NEW topic (or a topic is given) -> the writer plans and writes the scene -> checker
+# -> scene engine draws it -> narrator, sounds, music -> video on a prerelease. Nothing is posted.
+# Start it by pushing publish/run.trigger: first line "auto" (the system picks a new idea) or a topic.
+on:
+  schedule:
+    - cron: '5 4 * * *'     # 10:05 PM Chicago
+    - cron: '5 9 * * *'     # 3:05 AM Chicago (quiet: before the channels' morning jobs)
+  workflow_dispatch:
+    inputs:
+      topic:
+        description: 'Topic to explain, or "auto" to let the system think of a new one'
+        default: 'auto'
+  push:
+    paths: ['publish/run.trigger']
+permissions:
+  contents: write
+  issues: write
+concurrency:
+  group: scene-factory
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install --quiet numpy pillow imageio-ffmpeg edge-tts requests
+      - name: Think of the idea and write the scene (free LLMs + checkers)
+        env:
+          TOPIC_IN: ${{ github.event.inputs.topic }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ]; then echo auto > topic.txt
+          elif [ -n "$TOPIC_IN" ]; then printf '%s\n' "$TOPIC_IN" > topic.txt; else head -n 1 publish/run.trigger > topic.txt; fi
+          if [ "$(tr -d '[:space:]' < topic.txt | tr 'A-Z' 'a-z')" = "auto" ]; then python3 scene_lib/ideas.py pick topic.txt; fi
+          python3 scene_lib/writer.py --topic-file topic.txt auto-scene.json
+      - name: Draw, check and assemble the video
+        run: |
+          npm init -y > /dev/null
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 npm install --silent playwright@1.49.1 @fontsource/noto-color-emoji || PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 npm install --silent playwright@1.49.1
+          CHROME_CHANNEL=chrome node scene_lib/render.js auto-scene.json 2>&1 | tee render-log.txt; rc=${PIPESTATUS[0]}
+          if [ "$rc" != "0" ] && ! grep -q "EMOJI NOT DRAWABLE" render-log.txt; then npx playwright install chromium && node scene_lib/render.js auto-scene.json 2>&1 | tee render-log.txt; rc=${PIPESTATUS[0]}; fi
+          grep "EMOJI NOT DRAWABLE" render-log.txt >> writer-log.txt || true
+          if grep -q "EMOJI NOT DRAWABLE" render-log.txt && [ -f auto-scene-safe.json ]; then
+            echo "a reviewed emoji could not be drawn: using the scene from before the review" | tee -a writer-log.txt
+            cp auto-scene-safe.json auto-scene.json; rm -rf fr; node scene_lib/render.js auto-scene.json 2>&1 | tee render-log.txt; rc=${PIPESTATUS[0]}
+            grep "EMOJI NOT DRAWABLE" render-log.txt >> writer-log.txt || true
+          fi
+          [ "$rc" = "0" ] || exit 1
+          python3 scene_lib/check_frames.py auto-scene.json | tee -a writer-log.txt
+          python3 scene_lib/assemble.py auto-scene.json scene-factory.mp4
+      - name: Save the video in the Content Engine folder and show it in the Review tab
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+        run: |
+          TAG="ce-$(date -u +%Y%m%d-%H%M)"; TITLE=$(python3 -c "import json;print(json.load(open('auto-scene.json')).get('title','Content Engine video'))")
+          cp scene-factory.mp4 "$TAG.mp4"
+          gh release create "$TAG" "$TAG.mp4" auto-scene.json --title "Content Engine: $TITLE" --notes "Content Engine video (not posted). Made by itself from idea to video." --prerelease
+          URL="https://github.com/${{ github.repository }}/releases/download/$TAG/$TAG.mp4"
+          python3 - "$TAG" "$TITLE" "$URL" <<'PY'
+          import json, sys, datetime
+          from pathlib import Path
+          p = Path('data/scenes/videos.json')
+          try: v = json.loads(p.read_text())
+          except Exception: v = []
+          v.append({'date': datetime.date.today().isoformat(), 'tag': sys.argv[1], 'title': sys.argv[2], 'video': sys.argv[3]})
+          p.write_text(json.dumps(v, indent=1, ensure_ascii=False) + '\n')
+          PY
+          gh label create scene-review --color 6a55c9 --description "Content Engine video to watch (not posted)" 2>/dev/null || true
+          printf 'Content Engine video (4th system, NOT posted).\n\nWatch: %s\n\nSaved in the Content Engine folder: release %s. Tap Done in the app when you have seen it.\n' "$URL" "$TAG" > body.txt
+          gh issue create --title "Content Engine: $TITLE" --label scene-review --body-file body.txt
+          [ -n "$NTFY_TOPIC" ] && curl -s -H "Title: Content Engine: new video" -H "Click: https://zerenaod-ux.github.io/shelfmade-dashboard/app/#review" -d "$TITLE (not posted) is ready to watch in the app." "https://ntfy.sh/$NTFY_TOPIC" > /dev/null || true
+      - name: Remember this idea so it is never repeated (also when it failed, so the system moves on)
+        if: always()
+        run: |
+          if [ -f scene-factory.mp4 ]; then python3 scene_lib/ideas.py record auto-scene.json; elif [ -f idea.json ]; then python3 scene_lib/ideas.py record auto-scene.json failed; else exit 0; fi
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/scenes/history.json data/scenes/videos.json 2>/dev/null || git add data/scenes/history.json
+          git diff --cached --quiet || { git commit -qm "scene factory: remember idea"; for i in 1 2 3 4 5; do git pull --rebase -q && git push -q && break; sleep 5; done; }
+      - name: Attach to release
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          files=(); for f in scene-factory.mp4 auto-scene.json auto-plan.json idea.json idea-log.txt writer-log.txt voice-log.txt; do [ -f "$f" ] && files+=("$f"); done
+          echo "attaching: ${files[*]}"
+          gh release delete scene-factory -y --cleanup-tag || true
+          gh release create scene-factory "${files[@]}" --title "Scene factory test (not posted)" --notes "test only: idea in, video out" --prerelease
