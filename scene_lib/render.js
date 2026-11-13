@@ -39,7 +39,7 @@ const fs = require('fs'), path = require('path');
           const key = String(q).toLowerCase().split(/[^a-z]+/).filter(w => w.length > 2 && !['icon', 'the', 'and', 'with'].includes(w));
           for (const h of hits) {
             const [pre, name] = h.split(':');
-            if (!key.some(w => name.includes(w.replace(/s$/, '')))) continue;   // RIGHT_PICTURE: the picture's own name must contain the word asked for (no cup for "wind") const sv = await fetch('https://api.iconify.design/' + pre + '/' + name + '.svg?height=512');
+            if (!key.some(w => name.includes(w.replace(/s$/, '')))) continue;   /* RIGHT_PICTURE: the picture's own name must contain the word asked for (no cup for "wind") */ const sv = await fetch('https://api.iconify.design/' + pre + '/' + name + '.svg?height=512');
             if (sv.ok) { const txt = await sv.text(); if (txt.startsWith('<svg')) { file = pre + '--' + name + '.svg'; fs.writeFileSync(path.join(dir, file), txt); break; } }
           }
         } catch (e) { console.log('icon lookup failed for', q, String(e).slice(0, 120)); } }
