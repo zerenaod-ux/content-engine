@@ -23,17 +23,20 @@ def _req(url, key, body=None):
     # Shared on-disk ledger covers idea maker and writer subprocesses in one run.
     path = Path(os.environ.get('CE_METRICS_PATH', 'metrics.json'))
     try: metrics = json.loads(path.read_text())
-    except (OSError, ValueError): metrics = {'requests': 0, 'seconds': 0, 'responses': 0, 'failures': 0}
-    if metrics['requests'] >= int(os.environ.get('CE_MAX_REQUESTS', '24')) or metrics['seconds'] + time.monotonic() - _STARTED >= float(os.environ.get('CE_MAX_SECONDS', '480')):
+    except (OSError, ValueError): metrics = {'requests': 0, 'seconds': 0, 'responses': 0, 'failures': 0, 'started_at': time.time(), 'usage': {}}
+    if metrics['requests'] >= int(os.environ.get('CE_MAX_REQUESTS', '24')) or time.time() - metrics.setdefault('started_at', time.time()) >= float(os.environ.get('CE_MAX_SECONDS', '480')):
         raise BudgetExceeded('free request/time budget exhausted; accepted stages remain cached')
     metrics['requests'] += 1
     path.write_text(json.dumps(metrics, indent=1))
     started = time.monotonic()
     try:
         r = urllib.request.Request(url, json.dumps(body).encode() if body is not None else None, {'Authorization': 'Bearer ' + key, 'Content-Type': 'application/json', 'User-Agent': 'studio/1.0'})
-        with urllib.request.urlopen(r, timeout=90) as x:
+        with urllib.request.urlopen(r, timeout=max(1, min(90, float(os.environ.get('CE_MAX_SECONDS', '480')) - (time.time() - metrics['started_at'])))) as x:
             result = json.load(x)
         metrics['responses'] += 1
+        usage = result.get('usage', {})
+        for name in ('prompt_tokens', 'completion_tokens', 'total_tokens'):
+            if isinstance(usage.get(name), int): metrics.setdefault('usage', {})[name] = metrics.get('usage', {}).get(name, 0) + usage[name]
         return result
     except Exception:
         metrics['failures'] += 1

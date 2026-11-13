@@ -2,11 +2,28 @@
 const { chromium } = require('playwright');
 const fs = require('fs'), path = require('path');
 (async () => {
-  const spec = JSON.parse(fs.readFileSync(process.argv[2], 'utf8')), only = process.argv[3] ? new Set(JSON.parse(process.argv[3])) : null;
+  let spec = JSON.parse(fs.readFileSync(process.argv[2], 'utf8')), only = process.argv[3] ? new Set(JSON.parse(process.argv[3])) : null;
   const b = await chromium.launch(process.env.CHROME_CHANNEL ? { channel: process.env.CHROME_CHANNEL } : {});
   const p = await b.newPage({ viewport: { width: 720, height: 1280 } });
   let bad = 0; p.on('pageerror', e => { bad++; console.log('PAGEERR', e.message); });
   await p.goto('file://' + path.join(__dirname, 'scene.html'));
+  if (spec.evidence_version === 1) {
+    // The browser understands all SVG commands, including arcs and curves.
+    // Measure the path instead of assuming every path is centred at (0,0).
+    const bounds = await p.evaluate(parts => {
+      const ns = 'http://www.w3.org/2000/svg', svg = document.createElementNS(ns, 'svg');
+      document.body.appendChild(svg); const out = {};
+      for (const part of parts.filter(q => q.type === 'path')) {
+        const el = document.createElementNS(ns, 'path'); el.setAttribute('d', part.d); svg.appendChild(el);
+        const b = el.getBBox(); out[part.d] = [b.x,b.y,b.width,b.height]; el.remove();
+      }
+      svg.remove(); return out;
+    }, spec.parts);
+    const cp = require('child_process').spawnSync(process.env.PYTHON || 'python3',
+      [path.join(__dirname,'prepare.py'), process.argv[2]], {input:JSON.stringify(bounds),encoding:'utf8'});
+    if (cp.status !== 0) throw new Error('camera preparation failed: ' + cp.stderr);
+    spec = JSON.parse(fs.readFileSync(process.argv[2],'utf8'));
+  }
   const total = await p.evaluate(s => window.loadSpec(s), spec);
   // emoji pictures: use the machine's emoji font, or the bundled free one (Noto Color Emoji) if the machine has none
   const chars = [...new Set(spec.parts.filter(q => q.type === 'emoji').map(q => q.char))];

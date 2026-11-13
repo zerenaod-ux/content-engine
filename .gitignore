@@ -11,3 +11,7 @@ auto-*.json
 metrics.json
 evidence-report.json
 package*.json
+
+.venv/
+review/
+dam-contact.jpg

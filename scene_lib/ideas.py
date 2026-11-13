@@ -74,7 +74,13 @@ def record(spec_path, idea_path='idea.json', failed=False):
     if failed:
         try: failure = Path('writer-log.txt').read_text()[-2000:]
         except OSError: pass
-    hist.append({'failure_cause': failure, 'date': datetime.date.today().isoformat(), 'topic': idea.get('topic') or spec.get('title', ''), 'title': spec.get('title', ''), 'subject': idea.get('subject', ''),
+    techniques = sorted({p.get('type','') + '.' + e.get('field','') for st in spec.get('steps',[]) for e in st.get('evidence',[]) if isinstance(e,dict) for p in spec.get('parts',[]) if p.get('id') == e.get('part')})
+    if failed:
+        try: failure += '\n' + ' | '.join(json.loads(Path('evidence-report.json').read_text()).get('errors',[]))
+        except (OSError,ValueError,TypeError): pass
+    try: requested = Path('topic.txt').read_text().splitlines()[0]
+    except (OSError,IndexError): requested = ''
+    hist.append({'techniques': techniques if not failed else [], 'failure_cause': failure, 'date': datetime.date.today().isoformat(), 'topic': idea.get('topic') or requested or spec.get('title', ''), 'title': spec.get('title', ''), 'subject': idea.get('subject', ''),
                  'keywords': idea.get('keywords', []), 'category': idea.get('category', ''), **({'failed': True} if failed else {})})
     HIST.parent.mkdir(parents=True, exist_ok=True); HIST.write_text(json.dumps(hist, indent=1, ensure_ascii=False) + '\n'); print('recorded; %d scenes in the history' % len(hist))
 

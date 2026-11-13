@@ -58,18 +58,9 @@ jobs:
         run: |
           npm init -y > /dev/null
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 npm install --silent playwright@1.49.1 @fontsource/noto-color-emoji || PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 npm install --silent playwright@1.49.1
-          CHROME_CHANNEL=chrome node scene_lib/render.js auto-scene.json 2>&1 | tee render-log.txt; rc=${PIPESTATUS[0]}
-          if [ "$rc" != "0" ] && ! grep -q "EMOJI NOT DRAWABLE" render-log.txt; then npx playwright install chromium && node scene_lib/render.js auto-scene.json 2>&1 | tee render-log.txt; rc=${PIPESTATUS[0]}; fi
-          grep "EMOJI NOT DRAWABLE" render-log.txt >> writer-log.txt || true
-          if grep -q "EMOJI NOT DRAWABLE" render-log.txt && [ -f auto-scene-safe.json ]; then
-            echo "a reviewed emoji could not be drawn: using the scene from before the review" | tee -a writer-log.txt
-            cp auto-scene-safe.json auto-scene.json; rm -rf fr; node scene_lib/render.js auto-scene.json 2>&1 | tee render-log.txt; rc=${PIPESTATUS[0]}
-            grep "EMOJI NOT DRAWABLE" render-log.txt >> writer-log.txt || true
-          fi
-          [ "$rc" = "0" ] || exit 1
+          npx playwright install chromium
           set -o pipefail
-          python3 scene_lib/check_frames.py auto-scene.json | tee -a writer-log.txt
-          python3 scene_lib/assemble.py auto-scene.json scene-factory.mp4
+          python3 scene_lib/build.py auto-scene.json scene-factory.mp4 2>&1 | tee render-log.txt
       - name: Save the video in the Content Engine folder and show it in the Review tab
         env:
           GH_TOKEN: ${{ github.token }}
@@ -95,7 +86,7 @@ jobs:
       - name: Remember this angle and retain failed-attempt diagnostics
         if: always()
         run: |
-          if [ -f scene-factory.mp4 ]; then python3 scene_lib/ideas.py record auto-scene.json; elif [ -f idea.json ]; then python3 scene_lib/ideas.py record auto-scene.json failed; else exit 0; fi
+          if [ -f scene-factory.mp4 ]; then python3 scene_lib/ideas.py record auto-scene.json; elif [ -f idea.json ] || [ -f writer-log.txt ]; then python3 scene_lib/ideas.py record auto-scene.json failed; else exit 0; fi
           git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/scenes/history.json data/scenes/videos.json data/icons 2>/dev/null || git add data/scenes/history.json
           git diff --cached --quiet || { git commit -qm "scene factory: remember idea"; for i in 1 2 3 4 5; do git pull --rebase -q && git push -q && break; sleep 5; done; }

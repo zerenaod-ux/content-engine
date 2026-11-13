@@ -27,8 +27,9 @@ STAGE_TEXT = 'x goes right, y goes up. If there is ground, its surface is y=0 an
 
 def _num(v): return isinstance(v, (int, float)) and not isinstance(v, bool)
 
-def plan_prompt(topic):
-    return f"""TOPIC: {topic}
+def plan_prompt(topic, lessons=""):
+    context = "\nObserved prior attempts (diagnostics, not verified scientific facts):\n" + lessons if lessons else ""
+    return f"""TOPIC: {topic}{context}
 
 You will plan a {int(DURATION)}-second animated explainer with topic-appropriate composition: closeups, cutaways and transitions where useful. Choose a clear visual explanation rather than a fixed formula.
 Work like a careful designer. Think in this order:
@@ -45,7 +46,7 @@ Work like a careful designer. Think in this order:
    - EXCEPT things that truly sit inside another thing (clothes in a drum, a seed in a fruit, a piston in a cylinder): give them "inside": "<id of the container>" and place their box inside the container's box. Draw the container as a cut-away so the inside is seen.
 5. STEPS: choose 5 to 12 beats to suit this topic. Give each "seconds" for its spoken sentence and demonstration; total scene including 0.2-second gaps and 0.6-second padding must be 45-65 seconds.
    - "say": 4 to 18 plain words, natural spoken language. Questions and exclamations are optional. Do not exaggerate the science for excitement.
-   - Each sentence must have a concrete visible demonstration, not decorative motion. Add "demonstration": describe what the viewer should observe, and "change": the physical change that supports this claim. Distinguish an illustrative diagram from a literal view.
+   - Each sentence must have a concrete visible demonstration, not decorative motion. Add "demonstration": describe what the viewer should observe, and "change": the physical change that supports this claim. Distinguish an illustrative diagram from a literal view. When comparing distinct colours, paths or states, add "contrasts": [{{"parts":["part1","part2"],"fields":["color","pts"]}}] naming ALL required separate parts and their distinguishing fields. Leave [] when no comparison is needed. These requirements must be retained in the scene, not invented after staging.
    - True, general facts only. No numbers you are not sure of. No medical or money advice.
    - Be creative: choose a surprising, concrete angle, not a textbook definition.
 
@@ -99,6 +100,8 @@ def check_plan(pl):
         w = len(str(s.get('say', '')).split())
         if not 4 <= w <= 18: E.append('step %d: say must have 4 to 18 words' % i)
         if not isinstance(s.get('demonstration'), str) or len(s['demonstration'].split()) < 4: E.append('step %d needs an observable demonstration' % i)
+        contrasts=s.get('contrasts', [])
+        if not isinstance(contrasts,list) or any(not isinstance(c,dict) or not isinstance(c.get('parts'),list) or len(c['parts']) < 2 or not all(isinstance(id,str) for id in c['parts']) or not isinstance(c.get('fields'),list) or not c['fields'] for c in contrasts): E.append('step %d: contrasts need separate part ids and distinguishing fields' % i)
         if not isinstance(s.get('label'), str) or not 2 <= len(s['label']) <= 16: E.append('step %d: label must be 2 to 16 letters' % i)
     return E
 
@@ -121,28 +124,13 @@ ANIMATION: any number field can be a fixed number or keyframes [[time, value], .
 
 STEPS: copy the steps from the plan (label, say, shows) and use exactly these times: {', '.join('step %d: %.2f-%.2f' % (i + 1, a, b) for i, (a, b) in enumerate(times))}.
 
-DESIGN GUIDANCE (structural checks cannot establish scientific truth):
-1. Demonstration contract: each step needs "evidence": [{{"part":"part id", "field":"numeric animated field", "at":[time_before,time_after], "values":[expected_before,expected_after]}}]. Map EVERY narrated mechanism to the actual parts demonstrating it. Use physical changes (position, progress, rotation, level, etc.), not bobbing or opacity alone. For a static explanatory reveal use field alpha explicitly; this is only a reveal, never proof of physical motion. The times must be inside this beat and values must match actual keyframes. Include ALL indispensable parts, not just the focus in shows. Keep distinct paths distinct in position and colour. A diagram must show the causal relationship rather than decorative motion. Preserve each plan demonstration in the step.
-2. Camera: (the system works out the camera itself from your steps; just give a simple list) a list of [time, x, y, zoom]. x is the centre of the picture, y is the height shown a little below the middle. zoom 0.62 shows about 1160 units across, 1.0 shows 720, 1.6 shows 450.
-   Start wide at time 0 (show the whole stage), move to each step's "shows" part and zoom in so it is large (1.1 to 2.0), end wide at {duration}.
-3. Physics: add "flows": [{{"from":[x,y],"to":[x,y],"by":"gravity"|"pump"|"pressure"}}] for every pipe or stream. Gravity flows must go DOWN. A pump flow needs a pump part. Pressure can only lift water to below its source height.
-4. Connections: every pipe and wire must start and end touching the things it joins, or run off the edge of the stage (x=-360 or x=680) if it comes from outside. Mains water is "pressure", not gravity.
-5. Machines, wheels, pumps and houses stand on dry ground, never inside a body of water. Water never floats: it sits in a container, behind a wall, or in the ground.
-6. Houses, towers, trees and plants stand on the ground (y=0) or on top of a shape.
-7. Labels: CAPITALS, at most 16 letters, each with "show" keyframes so it fades in during its own step and out again. Never more than 2 labels at once. No labels in step 1.
-8. Sounds: "sfx" is a list of [time, name, loudness 0.3-1.0, optional value], timed to meaningful action; avoid compulsory noise on every beat.
-   With an optional length in seconds: {', '.join(sorted(SOUNDS_DUR))}. With an optional pitch: {', '.join(sorted(SOUNDS_FREQ))}. Plain: {', '.join(sorted(SOUNDS_PLAIN))}.
-9. Make it alive: animate only changes needed to explain this topic; avoid unrelated decorative motion.
-10. The star of each step must be BIG: at least 110 px on screen (an emoji of size 120 at zoom 1.0, or size 70 at zoom 1.7), near the centre, and in the middle of the screen height (not under the caption at the top).
-11. No clutter: objects never sit on top of each other; scenery (trees) stays away from the action. 8 to 70 parts as needed. Write compact JSON.
-12. Motion words: to make something jiggle or shake give it "bob" (3 to 10); to turn give "rot" keyframes (degrees); to travel give x and y keyframes; to grow give "size" or "scale" keyframes. Only wheel and pump have "spin".
-14. COMMON MISTAKES that make the checker reject a scene (seen in real runs; avoid them the first time):
-   - colours ("fill", "stroke", "color") are text like "#7fb2d9", never numbers or keyframes; "lw" is a plain number.
-   - the part named in "shows" must have keyframes that CHANGE inside that step's own time, in every step including the last one.
-   - fields that a part type does not list do nothing (an emoji has no "spin": use "rot" keyframes or "bob").
-   - two objects must not sit on top of each other unless one has "inside": "<container id>".
-13. REAL-LOOKING OBJECTS (owner rule): the star of every step must look like the real thing. Use a "prop" (detailed library object with moving parts) whenever one fits the topic; otherwise an "icon" (a detailed colourful picture of ANY real thing, found by name from free picture sets); otherwise an exact emoji; otherwise a detailed "path" with its real parts. Plain rect, circle, ellipse or poly may only be scenery or small details, never the star. Show the inside with a cut-away and show the real process (plate turns, coils glow, food steams).
-13b. Emoji must show EXACTLY the thing meant. A whole corn cob is not a kernel; a pan with an egg is not an empty pan. If no emoji is exact, draw the thing yourself with path, ellipse, circle, rect and poly (for example a kernel = a yellow ellipse; a cut-away = an outline with the inside drawn in). Things that travel get x and y keyframes (or an orbit). Use particles for fire, smoke, steam, sparks, bubbles, dust.
+DESIGN GUIDANCE:
+- Each step copies "demonstration" from the plan and adds "evidence": [{{"part":"id", "field":"progress", "at":[start,end], "values":[0,1]}}]. These are actual numeric values at those times, not guesses. Map every indispensable part of the narrated mechanism. Copy the plan contrasts exactly; every member needs evidence and distinct values for the declared fields. Use physical changes rather than decorative jiggling; alpha may be used only for an explanatory reveal. Distinct paths must be separately visible in position and colour. Numeric and visibility checks cannot establish scientific truth.
+- Camera is computed from the focus and all evidence parts. Keep these close enough to read together; the focus needs at least 110 screen pixels (thin paths 45). Give a placeholder camera spanning the whole duration; the system replaces it. Labels must not cover the demonstration.
+- Real-looking objects: use a matching detailed prop when available; otherwise an exact icon/emoji or detailed path. Simple shapes may make supporting details. No wrong stand-in images. Show internal mechanisms with a cutaway. A diagram must depict the causal relationship, not unrelated movement.
+- Real layout: gravity water flows down; pressure/pump may lift it. For every pipe/stream include flows: [{{"from":[x,y],"to":[x,y],"by":"gravity|pressure|pump"}}]. Pipes/wires touch endpoints or leave the stage. Solids stand on dry ground; water has a container or ground. Objects only overlap when physically appropriate; declare inside for contents.
+- Brief labels: at most two together, show keyframes fade each in/out. Text fields <=12 characters; label text <=16. Use only fields in the catalog. Colours are fixed strings and line widths plain numbers. Use rot for rotation, x/y for travel.
+- Sound cues [time,name,gain,optional_value] should support the action, not dictate pacing. Duration sounds: {', '.join(sorted(SOUNDS_DUR))}; pitch sounds: {', '.join(sorted(SOUNDS_FREQ))}; plain: {', '.join(sorted(SOUNDS_PLAIN))}. Music stays at the existing default. Use 8–70 parts as required by the rendering schema.
 
 Return JSON with keys: "title", "principle", "evidence_version": 1, "basis" (copy the plan), "duration": {duration}, "music": {{"bpm": 118}}, "flows", "steps", "camera", "sfx", "parts".
 
@@ -160,7 +148,7 @@ def auto_camera(spec):
     main = [p for p in parts if p.get('type') not in SCENERY + ('sky', 'night', 'particles')]
     bxs = []
     for p in main:
-        try: bxs.append(_box_at(p, spec['duration'] / 2))
+        try: bxs.append(_box_at(p, spec['duration'] / 2, spec.get('_path_bounds')))
         except Exception: pass
     if not bxs: return
     wide = frame((min(b[0] for b in bxs), max(b[1] for b in bxs), min(b[2] for b in bxs), max(b[3] for b in bxs)))
@@ -170,7 +158,8 @@ def auto_camera(spec):
         if not p: continue
         a, b = st['start'], st['end']
         try:
-            bs = [_box_at(p, a + (b - a) * k / 4) for k in range(5)]   # a moving star: keep its whole path in the picture
+            focus = [p] + [ids[e['part']] for e in st.get('evidence', []) if isinstance(e, dict) and e.get('part') in ids]
+            bs = [_box_at(q, a + (b - a) * k / 4, spec.get('_path_bounds')) for q in focus for k in range(5)]   # a moving star: keep its whole path in the picture
             f = frame((min(q[0] for q in bs), max(q[1] for q in bs), min(q[2] for q in bs), max(q[3] for q in bs)))
         except Exception: continue
         if p.get('type') in ('night',): f = wide
@@ -195,6 +184,7 @@ def tidy(spec, plan=None):
                 s['start'], s['end'] = a, b; s.pop('caption', None)
                 if plan:
                     for k in ('label', 'say', 'shows', 'demonstration'): s[k] = plan['steps'][i][k]
+                    s['contrasts'] = plan['steps'][i].get('contrasts', [])
     if plan:
         spec['basis'] = plan['basis']; spec['evidence_version'] = 1
     st_ = (plan or {}).get('setting') if plan else None; parts = spec.get('parts')
@@ -267,10 +257,13 @@ def _ask(llm, prompt, checker, tries, temp, log, name, post=lambda x: x, repair_
 def write_scene(topic, log=print):
     import llm
     from scene_lib.pipeline import StageCache
-    cache = StageCache(topic)
+    from scene_lib.ideas import load, words
+    relevant=[h for h in load() if words(topic) & words(h.get('topic',''))]
+    lessons=json.dumps([{'topic':h.get('topic'), 'failed':h.get('failed',False), 'failure_cause':h.get('failure_cause',''), 'observed_techniques':h.get('techniques',[])} for h in relevant[-4:]],ensure_ascii=False)[:1800] if relevant else ''
+    cache = StageCache(topic + lessons)
     plan = cache.accepted('plan', check_plan)
     if plan is None:
-        plan = _ask(llm, plan_prompt(topic), check_plan, 3, 0.9, log, 'plan')
+        plan = _ask(llm, plan_prompt(topic, lessons), check_plan, 3, 0.9, log, 'plan')
         cache.save('plan', plan)
     log('principle: ' + plan['principle']); log('cast: ' + ', '.join('%s (%s)' % (c['id'], c.get('what', '')) for c in plan['cast']))
     spec = cache.accepted('scene', check)

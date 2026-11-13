@@ -33,6 +33,7 @@ class PipelineTests(unittest.TestCase):
 
     def test_interpolation_and_nan(self):
         self.assertEqual(0.5,value_at([[0,0],[4,1]],2))
+        self.assertEqual(0.15625,value_at([[0,0],[4,1]],1))
         self.assertIsNone(value_at([[2,0],[1,1]],2))
         s = contract(); s['steps'][0]['evidence'][0]['values'][0] = float('nan')
         self.assertTrue(check_contract(s))
@@ -65,6 +66,45 @@ class PipelineTests(unittest.TestCase):
         self.assertTrue(too_close(idea,[idea]))
         other={**idea,'topic':'How polarized glasses reduce reflected glare','keywords':['polarized','glasses','reflection']}
         self.assertEqual('',too_close(other,[idea]))
+
+    def test_camera_uses_measured_svg_geometry(self):
+        from scene_lib.validate import _box_at
+        p={'type':'path','d':'M 200 200 A 200 200 0 0 1 600 200','x':0,'y':0}
+        bounds={p['d']:[200,0,400,200]}
+        box=_box_at(p,0,bounds)
+        self.assertLessEqual(box[0],200)
+        self.assertGreaterEqual(box[1],600)
+        self.assertLessEqual(box[2],-200)
+        self.assertGreaterEqual(box[3],0)
+        self.assertNotEqual(box,_box_at(p,0))
+
+    def test_rainbow_requires_separate_colour_paths(self):
+        from scene_lib.validate import check
+        s=json.loads(Path('tests/fixtures/rainbow.json').read_text())
+        self.assertEqual([],check(s))
+        # The reviewed automatic failure: one red line cannot satisfy a spectrum.
+        bad=copy.deepcopy(s)
+        bad['parts']=[p for p in bad['parts'] if p.get('id') != 'inside1']
+        self.assertTrue(check_contract(bad))
+        bad=copy.deepcopy(s)
+        for p in bad['parts']:
+            if p.get('id','').startswith('inside'): p['color']='#ff554e'
+        self.assertTrue(any('distinct color' in e for e in check_contract(bad)))
+
+    def test_repair_preserves_untouched_parts_and_timing(self):
+        from scene_lib.repair import apply_patch
+        s=json.loads(Path('tests/fixtures/rainbow.json').read_text())
+        original=copy.deepcopy(s)
+        p=copy.deepcopy(next(p for p in s['parts'] if p.get('id')=='inside0'))
+        p['w']=2
+        changed=apply_patch(s,{'replace_parts':{'inside0':p}})
+        self.assertEqual(s,original)
+        self.assertEqual(s['steps'],changed['steps'])
+        self.assertEqual(s['music'],changed['music'])
+        for old,new in zip(s['parts'],changed['parts']):
+            if old.get('id') != 'inside0': self.assertEqual(old,new)
+        with self.assertRaises(ValueError): apply_patch(s,{'step_updates':[{'index':0,'start':99}]})
+        with self.assertRaises(ValueError): apply_patch(s,{'replace_parts':{'missing':p}})
 
     def test_budget_stops_before_network(self):
         import llm
