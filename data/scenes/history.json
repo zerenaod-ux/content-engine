@@ -124,5 +124,20 @@
    "timer"
   ],
   "category": "food and the kitchen"
+ },
+ {
+  "date": "2026-11-13",
+  "topic": "How a car's automatic transmission shifts gears smoothly",
+  "title": "",
+  "subject": "transmission",
+  "keywords": [
+   "gears",
+   "clutch",
+   "fluid",
+   "torque",
+   "shift"
+  ],
+  "category": "vehicles and travel",
+  "failed": true
  }
 ]
