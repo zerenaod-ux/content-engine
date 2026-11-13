@@ -59,7 +59,7 @@ def _box_at(p, t):
         if isinstance(o, dict) and all(_num(o.get(k)) for k in ('cx', 'cy', 'rx')):
             a = (t / max(1, o.get('period', 6)) + o.get('phase', 0)) * 2 * math.pi; x = o['cx'] + o['rx'] * math.cos(a); y = o['cy'] + o.get('ry', o['rx']) * math.sin(a)
         else: x = _at(p.get('x'), t, 0); y = _at(p.get('y'), t, 0)
-        h = {'icon': _at(p.get('size'), t, 120) / 2, 'emoji': _at(p.get('size'), t, 80) / 2, 'path': 55 * _at(p.get('scale'), t, 1), 'ellipse': max(_at(p.get('rx'), t, 40), _at(p.get('ry'), t, 20)), 'circle': _at(p.get('r'), t, 10), 'particles': 45, 'text': 40, 'glow': p.get('r', 60)}[ty]
+        h = {'icon': _at(p.get('size'), t, 120) / 2, 'emoji': _at(p.get('size'), t, 80) / 2, 'path': 55 * _at(p.get('scale'), t, 1), 'ellipse': max(_at(p.get('rx'), t, 40), _at(p.get('ry'), t, 20)), 'circle': _at(p.get('r'), t, 10), 'particles': 45, 'text': 40, 'glow': _at(p.get('r'), t, 60)}[ty]
         return x - h, x + h, y - h, y + h
     if ty == 'bar': return p.get('x', 0), p.get('x', 0) + p.get('w', 26), p.get('y', 0), p.get('y', 0) + p.get('h', 160)
     return _box(p)
@@ -276,7 +276,9 @@ def check(spec):
                 if x1 >= vx0 and x0 <= vx1 and y1 >= vy0 and y0 <= vy1: seen = True; break
             if not seen and any(any(a <= k[0] <= b for f, v in p.items() if f in ANIM and _kfs(v) for k in v) for p in movers):
                 E.append('step %d: the camera (centre %d,%d zoom %.2f) is not pointing at the thing that moves in this step' % (i, cx, cy, z))
-    E += design_rules(spec, D, steps, cam, parts)
+    try: E += design_rules(spec, D, steps, cam, parts)
+    except Exception as e:   # NEVER_CRASH: a malformed value must come back to the writer as a problem to fix, not stop the whole run
+        E.append('a part has a malformed value (%s: %s); every number must be a plain number or keyframes [[time, value], ...]' % (type(e).__name__, str(e)[:120]))
     for n, c in enumerate(spec.get('sfx', []) or [], 1):
         if not (isinstance(c, list) and len(c) >= 2 and _num(c[0]) and isinstance(c[1], str)): E.append('sound %d must be [time, name, loudness]' % n); continue
         if c[1] not in SOUNDS: E.append('sound %d: unknown sound %r (allowed: %s)' % (n, c[1], ', '.join(sorted(SOUNDS))))
