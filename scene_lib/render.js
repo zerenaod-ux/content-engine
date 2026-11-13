@@ -31,14 +31,16 @@ const fs = require('fs'), path = require('path');
       let file = known[f];
       if (!file || !fs.existsSync(path.join(dir, file))) {
         file = null;
+        const words = String(f).toLowerCase().split(/\s+/).filter(Boolean);
+        for (const q of [f, words[words.length - 1], words[0]].filter((v, i, a) => v && a.indexOf(v) === i)) { if (file) break;
         try {
-          const r = await fetch('https://api.iconify.design/search?limit=12&prefixes=' + SETS + '&query=' + encodeURIComponent(f));
-          const hits = ((await r.json()).icons || []);
+          const r = await fetch('https://api.iconify.design/search?limit=12&prefixes=' + SETS + '&query=' + encodeURIComponent(q));
+          const hits = ((await r.json()).icons || []); console.log('icon search', JSON.stringify(q), r.status, hits.slice(0, 3).join(' '));
           for (const h of hits) {
             const [pre, name] = h.split(':'); const sv = await fetch('https://api.iconify.design/' + pre + '/' + name + '.svg?height=512');
             if (sv.ok) { const txt = await sv.text(); if (txt.startsWith('<svg')) { file = pre + '--' + name + '.svg'; fs.writeFileSync(path.join(dir, file), txt); break; } }
           }
-        } catch (e) { console.log('icon lookup failed for', f, String(e).slice(0, 80)); }
+        } catch (e) { console.log('icon lookup failed for', q, String(e).slice(0, 120)); } }
         if (file) known[f] = file;
       }
       if (file) map[f] = 'data:image/svg+xml;base64,' + fs.readFileSync(path.join(dir, file)).toString('base64'); else missing.push(f);

@@ -96,7 +96,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          files=(); for f in scene-factory.mp4 auto-scene.json auto-plan.json idea.json idea-log.txt writer-log.txt voice-log.txt; do [ -f "$f" ] && files+=("$f"); done
+          files=(); for f in scene-factory.mp4 auto-scene.json auto-plan.json idea.json idea-log.txt writer-log.txt voice-log.txt render-log.txt; do [ -f "$f" ] && files+=("$f"); done
           echo "attaching: ${files[*]}"
           gh release delete scene-factory -y --cleanup-tag || true
           gh release create scene-factory "${files[@]}" --title "Scene factory test (not posted)" --notes "test only: idea in, video out" --prerelease
