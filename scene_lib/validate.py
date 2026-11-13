@@ -37,6 +37,9 @@ def _box(p):
     t = p.get('type'); x = _at(p.get('x'), 1e9, 0); y = _at(p.get('y'), 1e9, 0)
     if t in ('wheel', 'pump', 'circle', 'glow'): r = _at(p.get('r'), 1e9, 40 if t == 'wheel' else 20 if t == 'pump' else 60 if t == 'glow' else 10); return x - r, x + r, y - r, y + r
     if t == 'house': return x, x + p.get('w', 170), y, y + p.get('h', 140) + 70
+    if t == 'prop':
+        sc = _at(p.get('s'), 1e9, 1); w, h = {'microwave': (270, 155), 'toaster': (240, 150), 'fridge': (210, 330), 'pizza': (120, 120)}.get(p.get('kind'), (220, 160))
+        return x - w / 2 * sc, x + w / 2 * sc, y, y + h * sc
     if t == 'tower': return x - p.get('w', 170) / 2, x + p.get('w', 170) / 2, y, y + p.get('legH', 240) + p.get('h', 130) + 46
     if t == 'rect':
         ys = [k[1] for k in p['y']] if _kfs(p.get('y')) else [y]; xs = [k[1] for k in p['x']] if _kfs(p.get('x')) else [x]
@@ -94,6 +97,8 @@ def design_rules(spec, D, steps, cam, parts):
         sh = s.get('shows')
         if sh not in ids: E.append('step %d: "shows" must be the id of the part that proves this sentence on screen' % i); continue
         p = ids[sh]; a, b = s['start'] - 0.3, s['end']
+        bx_ = _box_at(p, (s['start'] + s['end']) / 2)
+        if p['type'] in ('rect', 'circle', 'ellipse') and max(bx_[1] - bx_[0], bx_[3] - bx_[2]) >= 90: E.append('step %d: the star "%s" is a plain %s; draw it as a real-looking object: a "prop" from the library, an "emoji", or a detailed "path" (owner rule: things must look like the real thing)' % (i, sh, p['type']))
         if i > 1 and not changes_in(p, a, b): E.append('step %d: part "%s" does not change during %.1f-%.1f; give it keyframes inside this step so the viewer sees the sentence happen' % (i, sh, s['start'], s['end']))
         if cam and p['type'] not in ('night', 'sky', 'ground'):
             need = 45 if p['type'] in THIN else 110; hit = big = mid = clear = False
