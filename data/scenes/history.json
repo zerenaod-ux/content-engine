@@ -139,5 +139,20 @@
   ],
   "category": "vehicles and travel",
   "failed": true
+ },
+ {
+  "date": "2026-11-13",
+  "topic": "How does a LED light emit bright colors from a tiny chip?",
+  "title": "How LED chips paint bright colors 🌈",
+  "subject": "LED",
+  "keywords": [
+   "semiconductor",
+   "electrons",
+   "bandgap",
+   "photons",
+   "color"
+  ],
+  "category": "atoms, germs and tiny things",
+  "failed": true
  }
 ]
