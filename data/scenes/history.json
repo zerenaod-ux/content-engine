@@ -190,5 +190,20 @@
    "audio"
   ],
   "category": "inventions that changed the world"
+ },
+ {
+  "date": "2026-11-13",
+  "topic": "Why does a soccer ball curve when kicked with spin?",
+  "title": "",
+  "subject": "soccer ball",
+  "keywords": [
+   "curve",
+   "spin",
+   "airflow",
+   "Magnus",
+   "trajectory"
+  ],
+  "category": "sports and games",
+  "failed": true
  }
 ]
