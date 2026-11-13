@@ -111,7 +111,7 @@ STEPS: copy the 10 steps from the plan (label, say, shows) and use exactly these
 
 DESIGN RULES (a checker enforces every one):
 1. Proof: in each step the part named in "shows" must have keyframes that change INSIDE that step's time, and nothing important should move before its own step.
-2. Camera: a list of [time, x, y, zoom]. x is the centre of the picture, y is the height shown a little below the middle. zoom 0.62 shows about 1160 units across, 1.0 shows 720, 1.6 shows 450.
+2. Camera: (the system works out the camera itself from your steps; just give a simple list) a list of [time, x, y, zoom]. x is the centre of the picture, y is the height shown a little below the middle. zoom 0.62 shows about 1160 units across, 1.0 shows 720, 1.6 shows 450.
    Start wide at time 0 (show the whole stage), move to each step's "shows" part and zoom in so it is large (1.1 to 2.0), end wide at {DURATION}.
 3. Physics: add "flows": [{{"from":[x,y],"to":[x,y],"by":"gravity"|"pump"|"pressure"}}] for every pipe or stream. Gravity flows must go DOWN. A pump flow needs a pump part. Pressure can only lift water to below its source height.
 4. Connections: every pipe and wire must start and end touching the things it joins, or run off the edge of the stage (x=-360 or x=680) if it comes from outside. Mains water is "pressure", not gravity.
@@ -135,6 +135,40 @@ DESIGN RULES (a checker enforces every one):
 Return JSON with keys: "title", "principle", "duration": {DURATION}, "music": {{"bpm": 118}}, "flows", "steps", "camera", "sfx", "parts".
 
 {('One finished example for a DIFFERENT topic shows the format and the level of care. Do not copy its layout or sentences: ' + ex) if with_example else ''}"""
+
+def auto_camera(spec):
+    """AUTO_CAMERA: the camera is worked out from the scene itself, not guessed by the writer: each step frames its star (the part named in "shows")
+    so it is big, centred and fully in the picture (tall things like a wind turbine are not cut off); it starts and ends on a wide view of everything."""
+    from scene_lib.validate import _box_at, SCENERY
+    parts = [p for p in spec.get('parts', []) if isinstance(p, dict)]; ids = {p['id']: p for p in parts if isinstance(p.get('id'), str)}
+    def frame(bx):
+        w = max(40, bx[1] - bx[0]); h = max(40, bx[3] - bx[2]); z = max(0.55, min(3.0, 430 / w, 600 / h))
+        cx = (bx[0] + bx[1]) / 2; cy = (bx[2] + bx[3]) / 2
+        return round(cx, 1), round(cy - 60 / z, 1), round(z, 2)
+    main = [p for p in parts if p.get('type') not in SCENERY + ('sky', 'night', 'particles')]
+    bxs = []
+    for p in main:
+        try: bxs.append(_box_at(p, spec['duration'] / 2))
+        except Exception: pass
+    if not bxs: return
+    wide = frame((min(b[0] for b in bxs), max(b[1] for b in bxs), min(b[2] for b in bxs), max(b[3] for b in bxs)))
+    cam = [[0] + list(wide)]
+    for st in spec.get('steps', []):
+        p = ids.get(st.get('shows'))
+        if not p: continue
+        a, b = st['start'], st['end']
+        try:
+            bs = [_box_at(p, a + (b - a) * k / 4) for k in range(5)]   # a moving star: keep its whole path in the picture
+            f = frame((min(q[0] for q in bs), max(q[1] for q in bs), min(q[2] for q in bs), max(q[3] for q in bs)))
+        except Exception: continue
+        if p.get('type') in ('night',): f = wide
+        cam.append([round(a + 0.6, 2)] + list(f)); cam.append([round(b - 0.2, 2)] + list(f))
+    cam.append([spec['duration']] + list(wide))
+    out = []
+    for c in cam:
+        if out and c[0] <= out[-1][0] + 0.05: continue
+        out.append(c)
+    spec['camera'] = out
 
 def tidy(spec, plan=None):
     """Small safe repairs that do not change the idea: exact step times, duration, music, and the plan's own sentences."""
@@ -170,6 +204,8 @@ def tidy(spec, plan=None):
                 if speed: q['rot'] = [[0, 0], [DURATION, round(min(abs(speed), 9) * 240)]]
             for k in [k for k in q if k not in req and k not in opt and k not in ('type', 'id', 'inside')]:
                 q.pop(k); spec.setdefault('_dropped', []).append('a %s part%s had "%s", which %s parts do not have, so it did nothing; allowed fields: %s' % (q['type'], ' "%s"' % q['id'] if q.get('id') else '', k, q['type'], ', '.join(req + opt)))
+    try: auto_camera(spec)
+    except Exception: pass
     if plan:
         for k in ('title', 'principle'):
             if isinstance(plan.get(k), str): spec.setdefault(k, plan[k])
