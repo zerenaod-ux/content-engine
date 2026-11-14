@@ -5,9 +5,10 @@ name: scene-factory
 # -> scene engine draws it -> narrator, sounds, music -> video on a prerelease. Nothing is posted.
 # Start it by pushing publish/run.trigger: first line "auto" (the system picks a new idea) or a topic.
 on:
-  schedule:
-    - cron: '5 4 * * *'     # 10:05 PM Chicago
-    - cron: '5 9 * * *'     # 3:05 AM Chicago (quiet: before the channels' morning jobs)
+  # schedule:
+    # PAUSED 2026-11-14 (owner): card-style videos stopped until the drawn car is ready
+    # - cron: '5 4 * * *'     # 10:05 PM Chicago
+    # - cron: '5 9 * * *'     # 3:05 AM Chicago (quiet: before the channels' morning jobs)
   workflow_dispatch:
     inputs:
       topic:
