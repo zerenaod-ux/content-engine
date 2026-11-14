@@ -14,7 +14,7 @@ PROVIDERS = [
     # GITHUB_MODELS: free GitHub Models with the job's own token (no new key, permission models: read). Fixed model names.
     ('GITHUB_MODELS_TOKEN', 'https://models.github.ai/inference', ('openai/gpt-4.1-mini', 'meta/Llama-3.3-70B-Instruct', 'openai/gpt-4.1-nano')),
 ]
-KEY_SHAPE = {'GROQ_API_KEY': 'gsk_', 'CEREBRAS_API_KEY': 'csk-', 'OPENROUTER_API_KEY': 'sk-or-', 'GEMINI_API_KEY': 'AIza'}
+KEY_SHAPE = {'GROQ_API_KEY': 'gsk_', 'CEREBRAS_API_KEY': 'csk-', 'OPENROUTER_API_KEY': 'sk-or-'}
 
 
 def key_check():
