@@ -94,7 +94,7 @@ jobs:
           p.write_text(json.dumps(v, indent=1, ensure_ascii=False) + '\n')
           PY
           gh label create scene-review --color 6a55c9 --description "Content Engine video to watch (not posted)" 2>/dev/null || true
-          printf 'Content Engine video (4th system, NOT posted).\n\nWatch: %s\n\nSaved in the Content Engine folder: release %s. Tap Done in the app when you have seen it.\n' "$URL" "$TAG" > body.txt
+          printf 'Content Engine video (4th system, NOT posted).\n\nWatch: %s\n\nSaved in the Content Engine folder: release %s. Approve in the app to file it under Saved, or Skip to hold it under Delete. Nothing is posted or deleted.\n' "$URL" "$TAG" > body.txt
           gh issue create --title "Content Engine: $TITLE" --label scene-review --body-file body.txt
           [ -n "$NTFY_TOPIC" ] && curl -s -H "Title: Content Engine: new video" -H "Click: https://zerenaod-ux.github.io/shelfmade-dashboard/app/#review" -d "$TITLE (not posted) is ready to watch in the app." "https://ntfy.sh/$NTFY_TOPIC" > /dev/null || true
       - name: Remember this angle and retain failed-attempt diagnostics

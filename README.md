@@ -86,3 +86,12 @@ Reviewable draft PR: https://github.com/zerenaod-ux/content-engine/pull/7 . Revi
 
 ## 2026-11-13 — voice measured from the owner's example (append-only)
 Owner uploaded a 38 s screen recording of the viral Short she likes. Measured with code (music underneath, so numbers are approximate): about 3.5 syllable beats per second, almost no pauses inside speech (a continuous flow), pitch around 154 Hz moving between about 102 and 229 Hz (lively, expressive). Our microwave narrator measured the same way: 2.8 beats per second, pitch around 93 Hz, range about 90-150 Hz (slower, lower, flatter). Change made: narrator speed +16% -> +30% and pitch +2 Hz -> +8 Hz (free edge-tts voice; the voice itself cannot be copied, only speed/pitch/style). Owner judges by ear.
+
+
+## 2026-11-13 — Content Engine review folders (append-only)
+
+Requested phone review behavior: Approve files a video under Saved, ready for a future publishing integration; Skip files it under Delete as a holding folder for possible later deletion. Neither action publishes or deletes a video. The app uses the same two-tap Approve/Skip layout as the other three systems, but its decisions are handled only in this Content Engine repository.
+
+New folder records live under `data/scenes/review/saved/` and `data/scenes/review/delete/`; `data/scenes/review/index.json` records current membership. Each record references the existing stored video so large media files are not duplicated. Original releases and prior decision records are preserved. A review card closes only after its folder record has been committed successfully. Failed saves leave it open for retry. Reclassification retains the previous records. The existing phone key needs Issues write for this repository; no new publishing permission or account connection is introduced.
+
+Implementation is on the review-folders branch pending review/deployment. Six local behavioral tests pass, including save-before-close, failed-push recovery, idempotency and preservation of original files. No existing video was approved or skipped as a test, and no publishing/deletion job was added.
