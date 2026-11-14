@@ -27,3 +27,17 @@ README is append-only: original content must remain verbatim. Append measured da
 - Finish focused draft/reviewable PR with measured results and limitations, no merge. Eventual PR review must explicitly carry README append-only requirement.
 - Rendering failures before check_frames still abort build (no repair on browser exceptions); no queue admission policy beyond existing serialized workflow and job timeout. Do not overclaim those features.
 - No local machine node default works (Homebrew ICU mismatch). Working task renderer uses `/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node`; browser launch needed approved native execution. `.venv` holds existing free dependencies.
+
+## Final continuation notes (later 2026-11-13)
+
+Draft PR: https://github.com/zerenaod-ux/content-engine/pull/7 . README append-only relative to da2c1f9 is verified. Current local tests: 21 passing, also run with the workflow's reference context and 16-request environment. Renderer JS/HTML syntax checked. No new LLM jobs should be dispatched merely by pushing ordinary changes: evidence workflow only triggers if its own file changes. Credential-free offline PR checks added separately.
+
+Additional failed runs and artifacts are described in dated README entries. Last live run43528901592 used seven requests on rainbow repair and hit quota/service failures on toaster; no fresh automatic video is editorially accepted. Subsequent local improvements compile numeric declarations into actual keyframes, preserve unrelated keyframes, inspect all static contrast members, normalize timing/box arithmetic, remove filler cast/chain counts, and suppress extra helper labels in the renderer rather than regenerate. Rate limits retain HTTP status/Retry-After and prevent repeated requests to the same limited host. Plan cache invalidation is now separate from renderer changes; relevant-history updates do not discard an accepted plan.
+
+Local completed samples:
+- `review/rainbow-repaired/rainbow-repaired.mp4`: authored 55s narrated repair; no direct audio listening.
+- `review/automatic-rainbow/silent-review.mp4`: saved automatic repair candidate now passes numeric/visibility rendering checks, but editorially REJECTED; see its editorial-review.json. Observer/return-ray geometry wrong, arc below ground, mechanism unclear. Never present as an accurate automatic success.
+- `review/legacy-dam/silent-review.mp4` and `review/legacy-bee/silent-review.mp4`: full silent renders of existing fixtures, compatibility only.
+- `review/build-cache-verification/measurements.json`: cold build using eight existing narration assets23.174s; immediate exact-result cache hit0.091s; zero LLM requests. Original offline total_run_seconds zero was an instrumentation bug, fixed afterward; use external wall_seconds for these measurements.
+
+The code is improved and reviewable, but the user's overall automatic quality objective is NOT fulfilled. Remaining work is reliable fact-grounded automatic scene design, an editorially accepted fresh sample across different topics, direct listening, and cloud cache/repair verification with the final implementation after free quota is available. Do not merge or enable posting. Do not add a scheduled retry/reminder unless the user requests one. Preserve all previous diagnostic releases; proposed workflow now creates unique per-run diagnostics instead of deleting scene-factory.

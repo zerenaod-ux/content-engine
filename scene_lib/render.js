@@ -87,7 +87,9 @@ const fs = require('fs'), path = require('path');
     const dir = 'fr/evidence'; fs.mkdirSync(dir, { recursive: true });
     const manifest = [];
     for (const [i, step] of spec.steps.entries()) {
-      for (const [j, ev] of (step.evidence || []).entries()) {
+      const requirements=[...(step.evidence||[])], declared=new Set(requirements.map(e=>e.part));
+      for (const group of (step.contrasts||[])) for (const id of group.parts) if(!declared.has(id)){requirements.push({part:id,field:'contrast',at:[step.start,step.end]});declared.add(id)}
+      for (const [j, ev] of requirements.entries()) {
         const files = [];
         for (const [k, t] of ev.at.entries()) {
           const f = Math.round(t * 30), base = `${i}-${j}-${k}`;

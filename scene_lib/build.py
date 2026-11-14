@@ -44,7 +44,7 @@ def result_key(spec):
 
 
 def main(spec_path, out):
-    started = time.monotonic()
+    started = time.monotonic(); started_wall=time.time()
     spec = json.loads(Path(spec_path).read_text())
     errors = check(spec)
     if errors: raise ValueError('scene rejected: ' + ' | '.join(errors[:8]))
@@ -89,7 +89,8 @@ def main(spec_path, out):
     p=Path(os.environ.get('CE_METRICS_PATH','metrics.json'))
     try: metrics=json.loads(p.read_text())
     except (OSError,ValueError): metrics={'requests':0,'responses':0,'failures':0,'seconds':0}
-    metrics['total_run_seconds'] = round(time.time()-metrics.get('started_at',time.time()),3)
+    metrics.setdefault('started_at',started_wall)
+    metrics['total_run_seconds'] = round(time.time()-metrics['started_at'],3)
     metrics['llm_http_requests_per_checked_video'] = metrics.get('requests',0)
     metrics.update(accepted_build_seconds=round(time.monotonic()-started,3),result_cache_hit=hit,
                    automatic_checks_passed=True,semantic_verification=False)

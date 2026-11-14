@@ -63,8 +63,6 @@ def check_contract(spec):
             members = [parts.get(id) for id in group['parts'] if isinstance(id,str)]
             if len(members) != len(group['parts']) or any(p is None for p in members):
                 errors.append(tag + ': contrast references missing parts'); continue
-            declared = {e.get('part') for e in evidence if isinstance(e,dict)}
-            if not set(group['parts']) <= declared: errors.append(tag + ': every contrast member needs visibility evidence')
             for field in group['fields']:
                 if not isinstance(field,str) or any(field not in p for p in members):
                     errors.append(tag + ': contrast field is absent'); continue
@@ -84,7 +82,7 @@ def compile_animation(spec):
     from scene_lib.catalog import CATALOG
     out=copy.deepcopy(spec)
     parts={p.get('id'):p for p in out.get('parts',[]) if isinstance(p,dict) and isinstance(p.get('id'),str)}
-    schedules={}
+    schedules={}; intervals={}
     for step in out.get('steps',[]):
         if not isinstance(step,dict): continue
         for e in step.get('evidence',[]) if isinstance(step.get('evidence'),list) else []:
@@ -94,11 +92,36 @@ def compile_animation(spec):
             req,opt,_=CATALOG[p['type']]
             if field not in ANIM or field not in req+opt: continue
             if not (isinstance(times,list) and len(times)==2 and all(number(t) for t in times) and isinstance(values,list) and len(values)==2 and all(number(v) for v in values)): continue
-            schedule=schedules.setdefault((e['part'],field),{})
+            key=(e['part'],field)
+            schedule=schedules.setdefault(key,{})
+            intervals.setdefault(key,[]).append(tuple(times))
             for t,v in zip(times,values):
                 if t in schedule and abs(schedule[t]-v)>.001: raise ValueError('conflicting animation declarations for %s.%s at %s' % (e['part'],field,t))
                 schedule[t]=v
     for (id,field),schedule in schedules.items():
+        existing=parts[id].get(field)
+        if isinstance(existing,list):
+            for pair in existing:
+                if isinstance(pair,list) and len(pair)==2 and all(number(x) for x in pair):
+                    t,v=pair
+                    if not any(a<=t<=b for a,b in intervals[(id,field)]): schedule.setdefault(t,v)
         parts[id][field]=[[t,v] for t,v in sorted(schedule.items())]
     out['animation_source']='evidence'
+    return out
+
+
+def render_requirements(spec):
+    """Every declared contrast member is inspected even when it is static.
+    Numeric animation declarations and static visibility serve different jobs.
+    """
+    out=[]
+    for i,step in enumerate(spec.get('steps',[]),1):
+        evidence=[dict(e) for e in step.get('evidence',[])]
+        ids={e['part'] for e in evidence}
+        for group in step.get('contrasts',[]):
+            for id in group.get('parts',[]):
+                if id not in ids:
+                    evidence.append({'part':id,'field':'contrast','at':[step['start'],step['end']]})
+                    ids.add(id)
+        out.extend({'step':i,**e} for e in evidence)
     return out

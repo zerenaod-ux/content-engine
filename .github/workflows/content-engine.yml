@@ -103,8 +103,8 @@ jobs:
         run: |
           files=(); for f in scene-factory.mp4 auto-scene.json auto-plan.json idea.json idea-log.txt writer-log.txt voice-log.txt render-log.txt metrics.json evidence-report.json; do [ -f "$f" ] && files+=("$f"); done
           echo "attaching: ${files[*]}"
-          gh release delete scene-factory -y --cleanup-tag || true
-          gh release create scene-factory "${files[@]}" --title "Scene factory test (not posted)" --notes "test only: idea in, video out" --prerelease
+          DIAGNOSTICS="ce-diagnostics-${{ github.run_id }}-${{ github.run_attempt }}"
+          gh release create "$DIAGNOSTICS" "${files[@]}" --title "Scene factory diagnostics (not posted)" --notes "Diagnostic evidence for this run; previous releases are preserved." --prerelease
       - name: Save reusable stages even after failure
         if: always()
         uses: actions/cache/save@v4

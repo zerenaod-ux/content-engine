@@ -219,7 +219,7 @@ def check(spec):
         if cam[0][0] > 0.5 or cam[-1][0] < D - 1.5: E.append('camera must start at time 0 and run to the end of the video')
         if any(not 0.45 <= c[3] <= 3.2 for c in cam): E.append('camera zoom must stay between 0.45 and 3.2')
     parts = spec.get('parts')
-    if not isinstance(parts, list) or not 8 <= len(parts) <= 70: E.append('parts must be a list of 8 to 70 parts'); parts = []
+    if not isinstance(parts, list) or not 2 <= len(parts) <= 70: E.append('parts must be a list of 2 to 70 parts'); parts = []
     if parts and (not isinstance(parts[0], dict) or parts[0].get('type') != 'sky'): E.append('the first part must be the sky (background)')
     anim_times = []; movers = []
     for n, p in enumerate(parts, 1):

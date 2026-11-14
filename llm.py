@@ -2,7 +2,8 @@
 Providers (all free tiers, OpenAI-compatible), tried in order when their key is present in the environment:
   GROQ_API_KEY (api.groq.com), CEREBRAS_API_KEY (api.cerebras.ai), OPENROUTER_API_KEY (openrouter.ai, ':free' models), MISTRAL_API_KEY (api.mistral.ai).
 Model names change, so each provider is asked for its model list and the best known family is chosen. Returns text / parsed JSON, or raises ValueError."""
-import json, os, re, time, urllib.request, urllib.error
+import json, os, re, time, urllib.request, urllib.error, urllib.parse
+import email.utils
 from pathlib import Path
 
 PROVIDERS = [
@@ -17,6 +18,9 @@ _CACHE = {}
 class BudgetExceeded(ValueError):
     pass
 
+class ProviderCoolingDown(ValueError):
+    pass
+
 _STARTED = time.monotonic()
 
 def _req(url, key, body=None):
@@ -26,6 +30,10 @@ def _req(url, key, body=None):
     except (OSError, ValueError): metrics = {'requests': 0, 'seconds': 0, 'responses': 0, 'failures': 0, 'started_at': time.time(), 'usage': {}}
     if metrics['requests'] >= int(os.environ.get('CE_MAX_REQUESTS', '24')) or time.time() - metrics.setdefault('started_at', time.time()) >= float(os.environ.get('CE_MAX_SECONDS', '480')):
         raise BudgetExceeded('free request/time budget exhausted; accepted stages remain cached')
+    host=urllib.parse.urlparse(url).hostname
+    limit=metrics.get('rate_limits',{}).get(host)
+    if limit and (limit.get('retry_at') is None or time.time()<limit['retry_at']):
+        raise ProviderCoolingDown('provider rate-limited; remaining requests preserved')
     metrics['requests'] += 1
     path.write_text(json.dumps(metrics, indent=1))
     started = time.monotonic()
@@ -38,6 +46,19 @@ def _req(url, key, body=None):
         for name in ('prompt_tokens', 'completion_tokens', 'total_tokens'):
             if isinstance(usage.get(name), int): metrics.setdefault('usage', {})[name] = metrics.get('usage', {}).get(name, 0) + usage[name]
         return result
+    except urllib.error.HTTPError as e:
+        metrics['failures'] += 1
+        metrics.setdefault('http_statuses',{})[str(e.code)]=metrics.get('http_statuses',{}).get(str(e.code),0)+1
+        if e.code==429:
+            raw=e.headers.get('Retry-After') if e.headers else None
+            retry_at=None
+            if raw:
+                try: retry_at=time.time()+max(0,float(raw))
+                except ValueError:
+                    try: retry_at=email.utils.parsedate_to_datetime(raw).timestamp()
+                    except (ValueError,TypeError,OverflowError): pass
+            metrics.setdefault('rate_limits',{})[host]={'retry_at':retry_at,'retry_after':raw}
+        raise
     except Exception:
         metrics['failures'] += 1
         raise

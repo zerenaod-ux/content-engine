@@ -24,11 +24,11 @@ def inspect(spec, frames=Path('fr')):
     if len(same) > 1: errors.append('little variation between steps: %s' % same)
     results = []
     if spec.get('evidence_version') == 1:
-        from scene_lib.evidence import check_contract
+        from scene_lib.evidence import check_contract, render_requirements
         errors += check_contract(spec)
         try:
             manifest = json.loads((frames / 'evidence/manifest.json').read_text())
-            expected = [(i + 1, e['part'], e['field']) for i, s in enumerate(spec['steps']) for e in s.get('evidence', [])]
+            expected = [(e['step'],e['part'],e['field']) for e in render_requirements(spec)]
             if [(e['step'], e['part'], e['field']) for e in manifest] != expected:
                 errors.append('rendered evidence manifest does not match this scene')
             for row in manifest:

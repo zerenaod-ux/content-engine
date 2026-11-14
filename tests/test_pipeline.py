@@ -185,6 +185,8 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(.5,value_at(compiled['parts'][0]['progress'],2.5))
         self.assertEqual('#ffffff',compiled['parts'][0]['color'])
         self.assertEqual([],check_contract(compiled))
+        original['parts'][0]['progress']=[[0,0],[5,1],[6,0]]
+        self.assertEqual([6,0],compile_animation(original)['parts'][0]['progress'][-1])
         conflicting=copy.deepcopy(original['steps'][0])
         conflicting['evidence'][0]['values']=[1,0]
         original['steps'].append(conflicting)
@@ -199,6 +201,43 @@ class PipelineTests(unittest.TestCase):
         self.assertAlmostEqual(2,fixed['steps'][1]['seconds']/fixed['steps'][0]['seconds'],places=2)
         long={'steps':[{'seconds':15} for _ in range(8)]}
         self.assertEqual(65,round(timeline(normalize_plan(long))[-1][1]+.3,2))
+
+    def test_static_contrast_members_are_all_render_requirements(self):
+        from scene_lib.evidence import render_requirements
+        s=contract()
+        s['parts'][0]['color']='#ff0000'
+        s['parts'].append({'type':'line','id':'comparison','pts':[[0,20],[100,20]],'color':'#0000ff'})
+        s['steps'][0]['contrasts']=[{'parts':['ray','comparison'],'fields':['color','pts']}]
+        self.assertEqual([],check_contract(s))
+        requirements=render_requirements(s)
+        self.assertEqual(['ray','comparison'],[e['part'] for e in requirements])
+        self.assertEqual('contrast',requirements[1]['field'])
+        self.assertEqual([0,5],requirements[1]['at'])
+
+    def test_simple_plan_does_not_need_filler_cast_or_causal_links(self):
+        p={'principle':'Light changes direction when it crosses between different transparent materials.',
+           'style':'icons','setting':{'preset':'lab','ground':'none'},
+           'basis':{'status':'model_knowledge_unverified','limitations':'Schematic'},
+           'chain':['Light reaches the boundary','Its direction changes'],
+           'cast':[{'id':'object','x0':-100,'x1':100,'y0':0,'y1':200}],
+           'steps':[{'label':'Boundary','say':'The light changes direction at this boundary.',
+                     'shows':'object','seconds':8,'demonstration':'A visible ray changes direction.'} for _ in range(6)]}
+        self.assertEqual([],check_plan(p))
+
+    def test_rate_limit_stops_wasting_calls_on_same_provider(self):
+        import llm, urllib.error
+        from email.message import Message
+        headers=Message();headers['Retry-After']='120'
+        failure=urllib.error.HTTPError('https://example.invalid/models',429,'limited',headers,None)
+        with tempfile.TemporaryDirectory() as d, patch.dict(os.environ,{'CE_METRICS_PATH':str(Path(d)/'metrics.json'),'CE_MAX_REQUESTS':'16'}):
+            with patch('urllib.request.urlopen',side_effect=failure) as network:
+                with self.assertRaises(urllib.error.HTTPError): llm._req('https://example.invalid/models','unused')
+                with self.assertRaises(llm.ProviderCoolingDown): llm._req('https://example.invalid/chat/completions','unused')
+                self.assertEqual(1,network.call_count)
+                ledger=json.loads((Path(d)/'metrics.json').read_text())
+                self.assertEqual(1,ledger['requests'])
+                self.assertEqual(1,ledger['http_statuses']['429'])
+                self.assertGreater(ledger['rate_limits']['example.invalid']['retry_at'],ledger['started_at'])
 
     def test_budget_stops_before_network(self):
         import llm

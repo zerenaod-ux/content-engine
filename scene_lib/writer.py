@@ -33,6 +33,11 @@ def normalize_plan(plan):
     """
     out=copy.deepcopy(plan)
     if not isinstance(out,dict): return out
+    for member in out.get('cast',[]) if isinstance(out.get('cast'),list) else []:
+        if isinstance(member,dict):
+            for a,b in (('x0','x1'),('y0','y1')):
+                if _num(member.get(a)) and _num(member.get(b)):
+                    member[a],member[b]=sorted((member[a],member[b]))
     steps=out.get('steps')
     if not isinstance(steps,list) or not steps or not all(isinstance(s,dict) and _num(s.get('seconds')) and s['seconds']>0 for s in steps): return out
     overhead=.6+.2*(len(steps)-1)
@@ -53,8 +58,8 @@ You will plan a {int(DURATION)}-second animated explainer with topic-appropriate
 Work like a careful designer. Think in this order:
 
 1. PRINCIPLE: establish the actual mechanism before designing pictures. State limitations and common misconceptions. Add "basis": {{"status":"model_knowledge_unverified", "limitations":"what is simplified or uncertain"}}. Do not invent citations or claim external fact verification. If uncertain, choose a simpler defensible explanation.
-2. CHAIN: 5 to 7 links of cause and effect, in the order they happen ("because A, B happens").
-3. CAST: 4 to 8 objects the viewer must see. ANY topic can be drawn: "emoji" gives any recognisable object (animal, organ, planet, vehicle, tool, food, person, building), "path" draws any custom shape, and there are ready parts for water, pipes, wires, wheels, particles (fire, smoke, steam, sparks, bubbles, snow), meters and more. All part types: {', '.join(CATALOG)}.
+2. CHAIN: the necessary links of cause and effect, in the order they happen ("because A, B happens").
+3. CAST: the objects the viewer actually needs to see; avoid adding scenery just to fill a count. ANY topic can be drawn: "emoji" gives any recognisable object (animal, organ, planet, vehicle, tool, food, person, building), "path" draws any custom shape, and there are ready parts for water, pipes, wires, wheels, particles (fire, smoke, steam, sparks, bubbles, snow), meters and more. All part types: {', '.join(CATALOG)}.
    Also choose the SETTING that truly fits the topic: where it really happens. A kitchen, home or workshop topic is indoors: preset "clean" or "lab" with ground "floor" (no hills, no trees). Space has no ground. Only use outdoor presets for things that happen outdoors.
    The STAR of the video (the thing the topic is about) must be drawn LARGE and, when the secret is inside it, shown as a cut-away so the viewer sees inside.
 4. LAYOUT: give every cast member a box on the stage: x0, x1, y0, y1. Stage: {STAGE_TEXT}
@@ -85,27 +90,17 @@ def check_plan(pl):
     st_ = pl.get('setting')
     if not (isinstance(st_, dict) and st_.get('preset') in PRESETS and st_.get('ground') in GROUNDS | {'none'}): E.append('setting must be {"preset": one of %s, "ground": one of %s or "none"}' % (', '.join(sorted(PRESETS)), ', '.join(sorted(GROUNDS))))
     elif st_['preset'] in ('space', 'body') and st_['ground'] != 'none': E.append('a scene in space or inside a body has no ground: set ground to "none"')
-    if not isinstance(pl.get('chain'), list) or not 4 <= len(pl['chain']) <= 8: E.append('chain must have 5 to 7 links')
+    if not isinstance(pl.get('chain'), list) or not pl['chain']: E.append('chain must contain the causal links')
     cast = pl.get('cast'); ids = {}
-    if not isinstance(cast, list) or not 4 <= len(cast) <= 9: E.append('cast must have 4 to 8 objects'); cast = []
+    if not isinstance(cast, list) or not cast: E.append('cast must contain the necessary objects'); cast = []
     for c in cast:
         if not isinstance(c, dict) or not isinstance(c.get('id'), str) or not all(_num(c.get(k)) for k in ('x0', 'x1', 'y0', 'y1')): E.append('each cast member needs id, x0, x1, y0, y1'); continue
         if c['id'] in ids: E.append('cast id "%s" is used twice' % c['id'])
         ids[c['id']] = c
-        if c['x1'] <= c['x0'] or c['y1'] <= c['y0']: E.append('cast "%s": x1 must be greater than x0 and y1 greater than y0' % c['id'])
+        if c['x1'] < c['x0'] or c['y1'] < c['y0']: E.append('cast "%s": bounds must be ordered x0<=x1, y0<=y1' % c['id'])
         if c['x0'] < -420 or c['x1'] > 760 or c['y0'] < -260 or c['y1'] > 460: E.append('cast "%s" is outside the stage' % c['id'])
-    cs = list(ids.values())
-    def anc(c):
-        out = set(); cur = c.get('inside'); n = 0
-        while isinstance(cur, str) and cur in ids and cur not in out and n < 8: out.add(cur); cur = ids[cur].get('inside'); n += 1
-        return out
-    for i, a in enumerate(cs):
-        for b in cs[i + 1:]:
-            ox = min(a['x1'], b['x1']) - max(a['x0'], b['x0']); oy = min(a['y1'], b['y1']) - max(a['y0'], b['y0'])
-            if b['id'] in anc(a) or a['id'] in anc(b) or (anc(a) & anc(b)): continue   # one sits inside the other, or both sit inside the same container
-            if ox > 0 and oy > 0:
-                small = min((a['x1'] - a['x0']) * (a['y1'] - a['y0']), (b['x1'] - b['x0']) * (b['y1'] - b['y0']))
-                if small > 0 and ox * oy / small > 0.35: E.append('cast "%s" and "%s" overlap; give each its own place and join them with a pipe or wire' % (a['id'], b['id']))
+    # Static plan boxes may overlap in different views or phases. Check actual
+    # visible object overlap in the staged scene, where timing is available.
     st = pl.get('steps')
     if not isinstance(st, list) or not 5 <= len(st) <= 12: E.append('steps must have 5 to 12 beats'); st = []
     if not isinstance(pl.get('basis'), dict) or pl['basis'].get('status') != 'model_knowledge_unverified' or not pl['basis'].get('limitations'): E.append('basis must disclose model_knowledge_unverified and limitations')
@@ -143,12 +138,12 @@ ANIMATION: any number field can be a fixed number or keyframes [[time, value], .
 STEPS: copy the steps from the plan (label, say, shows) and use exactly these times: {', '.join('step %d: %.2f-%.2f' % (i + 1, a, b) for i, (a, b) in enumerate(times))}.
 
 DESIGN GUIDANCE:
-- Each step copies "demonstration" from the plan and adds "evidence": [{{"part":"id", "field":"progress", "at":[start,end], "values":[0,1]}}]. These declarations compile into the real part keyframes: do not duplicate those animations in parts. Values describe the physical state at those times, not a label or a guess. Map every indispensable part of the narrated mechanism. Copy the plan contrasts exactly; every member needs evidence and distinct values for the declared fields. Use physical changes rather than decorative jiggling; alpha may be used only for an explanatory reveal. Distinct paths must be separately visible in position and colour. Numeric and visibility checks cannot establish scientific truth.
+- Each step copies "demonstration" from the plan and adds "evidence": [{{"part":"id", "field":"progress", "at":[start,end], "values":[0,1]}}]. These declarations compile into the real part keyframes: do not duplicate those animations in parts. Values describe the physical state at those times, not a label or a guess. Map every indispensable part of the narrated mechanism. Copy the plan contrasts exactly; every member is automatically checked for rendered visibility and needs distinct values for the declared fields. Static comparisons need no invented numeric animation. Use physical changes rather than decorative jiggling; alpha may be used only for an explanatory reveal. Distinct paths must be separately visible in position and colour. Numeric and visibility checks cannot establish scientific truth.
 - Camera is computed from the focus and all evidence parts. Keep these close enough to read together; the focus needs at least 110 screen pixels (thin paths 45). Give a placeholder camera spanning the whole duration; the system replaces it. Labels must not cover the demonstration.
 - Real-looking objects: use a matching detailed prop when available; otherwise an exact icon/emoji or detailed path. Simple shapes may make supporting details. No wrong stand-in images. Show internal mechanisms with a cutaway. A diagram must depict the causal relationship, not unrelated movement.
 - Real layout: gravity water flows down; pressure/pump may lift it. For every pipe/stream include flows: [{{"from":[x,y],"to":[x,y],"by":"gravity|pressure|pump"}}]. Pipes/wires touch endpoints or leave the stage. Solids stand on dry ground; water has a container or ground. Objects only overlap when physically appropriate; declare inside for contents.
-- Brief labels: at most two together, show keyframes fade each in/out. Text fields <=12 characters; label text <=16. Use only fields in the catalog. Colours are fixed strings and line widths plain numbers. Use rot for rotation, x/y for travel.
-- Sound cues [time,name,gain,optional_value] should support the action, not dictate pacing. Duration sounds: {', '.join(sorted(SOUNDS_DUR))}; pitch sounds: {', '.join(sorted(SOUNDS_FREQ))}; plain: {', '.join(sorted(SOUNDS_PLAIN))}. Music stays at the existing default. Use 8–70 parts as required by the rendering schema.
+- Brief labels: at most two together, show keyframes fade each in/out. Text fields <=12 characters; label text <=16. Use only fields in the catalog. For colour changes use a supported numeric effect or reveal separate coloured layers. Colours are fixed strings and line widths plain numbers. Use rot for rotation, x/y for travel.
+- Sound cues [time,name,gain,optional_value] should support the action, not dictate pacing. Duration sounds: {', '.join(sorted(SOUNDS_DUR))}; pitch sounds: {', '.join(sorted(SOUNDS_FREQ))}; plain: {', '.join(sorted(SOUNDS_PLAIN))}. Music stays at the existing default. Use 2–70 parts as required by the rendering schema.
 
 Return JSON with keys: "title", "principle", "evidence_version": 1, "basis" (copy the plan), "duration": {duration}, "music": {{"bpm": 118}}, "flows", "steps", "camera", "sfx", "parts".
 
@@ -176,7 +171,8 @@ def auto_camera(spec):
         if not p: continue
         a, b = st['start'], st['end']
         try:
-            focus = [p] + [ids[e['part']] for e in st.get('evidence', []) if isinstance(e, dict) and e.get('part') in ids]
+            focus_ids = [e['part'] for e in st.get('evidence', []) if isinstance(e,dict) and e.get('part') in ids] + [id for g in st.get('contrasts',[]) for id in g.get('parts',[]) if id in ids]
+            focus = [p] + [ids[id] for id in set(focus_ids)]
             bs = [_box_at(q, a + (b - a) * k / 4, spec.get('_path_bounds')) for q in focus for k in range(5)]   # a moving star: keep its whole path in the picture
             f = frame((min(q[0] for q in bs), max(q[1] for q in bs), min(q[2] for q in bs), max(q[3] for q in bs)))
         except Exception: continue
@@ -301,7 +297,7 @@ def write_scene(topic, log=print):
     from scene_lib.ideas import load, words
     relevant=[h for h in load() if words(topic) & words(h.get('topic',''))]
     lessons=json.dumps([{'topic':h.get('topic'), 'failed':h.get('failed',False), 'failure_cause':h.get('failure_cause',''), 'observed_techniques':h.get('techniques',[])} for h in relevant[-4:]],ensure_ascii=False)[:1800] if relevant else ''
-    cache = StageCache(topic + lessons)
+    cache = StageCache(topic)
     plan = cache.accepted('plan', check_plan)
     if plan is None:
         plan = _ask(llm, plan_prompt(topic, lessons), check_plan, 3, 0.9, log, 'plan', post=normalize_plan)
