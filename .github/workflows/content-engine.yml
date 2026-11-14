@@ -57,9 +57,8 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" = "schedule" ]; then echo auto > topic.txt
           elif [ -n "$TOPIC_IN" ]; then printf '%s\n' "$TOPIC_IN" > topic.txt; else head -n 1 publish/run.trigger > topic.txt; fi
-          if [ "$(tr -d '[:space:]' < topic.txt | tr 'A-Z' 'a-z')" = "auto" ]; then python3 scene_lib/ideas.py pick topic.txt; fi
           python3 -c "import llm; llm.key_check()" || true
-          python3 scene_lib/simple_writer.py --topic-file topic.txt auto-scene.json   # CLEAN_TEMPLATE (owner 2026-11-14: free-form writer pictures were ugly); old free-form writer: scene_lib/writer.py
+          python3 scene_lib/inside_writer.py --topic-file topic.txt auto-scene.json   # INSIDE_STORY (owner 2026-11-14): one drawn object, camera flies inside; card style (simple_writer.py) and free-form (writer.py) kept but unused
       - name: Draw, check and assemble the video
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -103,7 +102,7 @@ jobs:
         run: |
           if [ -f scene-factory.mp4 ]; then python3 scene_lib/ideas.py record auto-scene.json; elif [ -f idea.json ] || [ -f writer-log.txt ]; then python3 scene_lib/ideas.py record auto-scene.json failed; else exit 0; fi
           git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/scenes/history.json data/scenes/videos.json data/icons 2>/dev/null || git add data/scenes/history.json
+          git add data/scenes/history.json data/scenes/videos.json data/scenes/inside-history.json data/icons 2>/dev/null || git add data/scenes/history.json
           git diff --cached --quiet || { git commit -qm "scene factory: remember idea"; for i in 1 2 3 4 5; do git pull --rebase -q && git push -q && break; sleep 5; done; }
       - name: Attach to release
         if: always()

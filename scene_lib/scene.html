@@ -106,6 +106,45 @@ function pizza(r,t,heat,spin){ctx.save();ctx.rotate(spin);disc(0,0,r,'#d9a35a','
   ctx.fillStyle=`rgb(${lerp(250,255,heat)},${lerp(226,206,heat)},${lerp(140,110,heat)})`;for(let k=0;k<9;k++){const a=hash(k)*6.3,d=r*0.6*Math.sqrt(hash(k+3));ctx.beginPath();ctx.ellipse(Math.cos(a)*d,Math.sin(a)*d,r*0.2,r*0.14,a,0,7);ctx.fill()}
   ctx.fillStyle='#b5332a';for(let k=0;k<6;k++){const a=k*1.05+0.3,d=r*0.5;disc(Math.cos(a)*d,Math.sin(a)*d,r*0.12,'#b5332a','#7d1f19',1)}ctx.restore()}
 const PROPS={
+ car(p,t){ /* CAR_PROP (owner 2026-11-14): side view, front to the right, ~330 wide at s=1. Fields: hood 0..1 opens the bonnet, cut 0..1 x-ray of the body,
+   key 0..1 turns the key (dash lights), run engine speed (pistons, crank, exhaust), fuel 0..1 fuel flows tank->engine, spark 0..1 spark plug fires,
+   charge 0..1 battery glows, spin wheel speed (turns), light 0..1 headlights. Inside spots (for the camera): key(32,90) tank(-125,45) engine(93,62) piston(93,62) spark(93,86) crank(93,44) battery(140,59) gearbox(70,34) wheel(105,30) rearwheel(-100,30) exhaust(-158,26) */
+   const hood=clamp(kf(p.hood,t,0),0,1),cut=clamp(kf(p.cut,t,0),0,1),key=clamp(kf(p.key,t,0),0,1),fuel=clamp(kf(p.fuel,t,0),0,1),spark=clamp(kf(p.spark,t,0),0,1),chg=clamp(kf(p.charge,t,0),0,1),li=clamp(kf(p.light,t,0),0,1);
+   const runSp=p.run===undefined?0:kf(p.run,t,0),cr=integ(p.run===undefined?[[0,0]]:p.run,t)*9,wsp=integ(p.spin===undefined?[[0,0]]:p.spin,t)*6.283;
+   ctx.fillStyle='rgba(0,0,0,0.2)';ctx.beginPath();ctx.ellipse(0,-2,175,10,0,0,7);ctx.fill();
+   /* ---- inside (drawn first, body goes over it) ---- */
+   const tlev=0.75;box(-150,30,52,30,6,'#8a2b23','#4a1712',2);box(-147,33,46,24*tlev,4,'#e0a92e');ctx.fillStyle='#fff';ctx.font='bold 9px sans-serif';ctx.save();ctx.scale(1,-1);ctx.fillText('FUEL',-138,-48);ctx.restore();   // fuel tank
+   ctx.strokeStyle='#5b4a3a';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(-98,36);ctx.lineTo(48,36);ctx.lineTo(74,58);ctx.lineTo(74,84);ctx.lineTo(88,84);ctx.stroke();                              // fuel line
+   if(fuel>0.02){ctx.strokeStyle='rgba(255,190,40,'+fuel+')';ctx.lineWidth=3;ctx.setLineDash([7,7]);ctx.lineDashOffset=-t*45;ctx.beginPath();ctx.moveTo(-98,36);ctx.lineTo(48,36);ctx.lineTo(74,58);ctx.lineTo(74,84);ctx.lineTo(88,84);ctx.stroke();ctx.setLineDash([])}
+   box(58,36,72,48,6,'#7d868f','#3c434a',3);for(let k=0;k<5;k++)box(60,40+k*8,6,4,1,'#5b646c');                                                                                          // engine block + fins
+   box(81,48,24,32,3,'#2a2f35');                                                                                                                                                         // cylinder
+   const pin=[93+6*Math.cos(cr),44+6*Math.sin(cr)],py=pin[1]+14;
+   const fire=spark*(Math.cos(cr)>0.6?1:0.25);if(fire>0.05){ctx.fillStyle='rgba(255,140,30,'+0.9*fire+')';ctx.fillRect(82,py+6,22,78-py-4)}                                              // burning mix above the piston
+   box(82,py,22,8,2,'#c9d0d6','#5b646c',1.5);ctx.strokeStyle='#aab3bb';ctx.lineWidth=3.5;ctx.beginPath();ctx.moveTo(93,py+2);ctx.lineTo(pin[0],pin[1]);ctx.stroke();                         // piston + rod
+   disc(93,44,9,'#565e66','#2a2f35',2);disc(pin[0],pin[1],2.6,'#e3e7ea');                                                                                                                  // crankshaft
+   box(90,80,6,8,1,'#e8e8e8','#555',1);if(fire>0.3){ctx.strokeStyle='#bfe8ff';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(93,80);ctx.lineTo(90,76);ctx.lineTo(96,73);ctx.lineTo(92,69);ctx.stroke()} // spark plug
+   box(62,24,20,14,3,'#4b5258','#2a2f35',2);ctx.strokeStyle='#444';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(82,30);ctx.lineTo(105,30);ctx.stroke();                                      // gearbox + axle to front wheel
+   box(130,48,22,22,3,'#22262a','#000',2);box(133,70,5,3,1,'#d33');box(144,70,5,3,1,'#333');if(chg>0.02){ctx.fillStyle='rgba(90,255,140,'+0.8*chg+')';ctx.fillRect(133,51,16*chg,4)}       // battery
+   ctx.strokeStyle='#c43';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(135,73);ctx.quadraticCurveTo(120,92,95,88);ctx.stroke();                                                           // battery cable to the spark plug
+   ctx.strokeStyle='#555';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(58,40);ctx.lineTo(-40,26);ctx.lineTo(-160,26);ctx.stroke();                                                         // exhaust pipe
+   if(runSp>0.05)for(let k=0;k<6;k++){const ph=(t*1.4+k/6)%1;ctx.fillStyle='rgba(150,150,150,'+0.5*(1-ph)*Math.min(1,runSp)+')';ctx.beginPath();ctx.arc(-165-ph*40,28+ph*14,4+ph*10,0,7);ctx.fill()}
+   box(-20,40,28,40,6,'#3d4b8f');box(-48,40,26,34,6,'#3d4b8f');                                                                                                                           // seats
+   box(18,82,34,14,4,'#2b2f33');ctx.fillStyle=key>0.5?'#ffcf3a':'#5a5a3a';ctx.fillRect(22,90,5,3);ctx.fillStyle=key>0.5?'#5dff9d':'#2f4a3a';ctx.fillRect(30,90,5,3);                  // dashboard + lights
+   ctx.save();ctx.translate(36,86);ctx.rotate(-key*Math.PI/2);box(-1.5,-1.5,9,3,1,'#d9b23a');disc(10,0,3,'#d9b23a');ctx.restore();                                                     // key
+   /* ---- body ---- */
+   ctx.globalAlpha*=1-0.82*cut;
+   ctx.beginPath();ctx.moveTo(-162,18);ctx.lineTo(-162,66);ctx.lineTo(-128,78);ctx.lineTo(-92,116);ctx.lineTo(14,118);ctx.lineTo(54,84);ctx.lineTo(54,84);ctx.lineTo(54,18);ctx.closePath();
+   ctx.fillStyle='#d6352b';ctx.fill();ctx.strokeStyle='#7a1712';ctx.lineWidth=3;ctx.stroke();
+   ctx.beginPath();ctx.moveTo(54,18);ctx.lineTo(54,84);ctx.lineTo(54,84);ctx.lineTo(54,84);ctx.lineTo(154,76);ctx.lineTo(164,56);ctx.lineTo(164,18);ctx.closePath();ctx.fillStyle='#d6352b';ctx.globalAlpha*=hood>0.02?Math.max(0,1-hood*1.4):1;ctx.fill();ctx.stroke();ctx.globalAlpha=(1-0.82*cut)*clamp(kf(p.alpha,t,1),0,1);   // front panel fades when the hood opens
+   ctx.fillStyle='rgba(170,220,255,0.85)';ctx.beginPath();ctx.moveTo(-84,82);ctx.lineTo(-86,110);ctx.lineTo(-30,111);ctx.lineTo(-30,82);ctx.fill();ctx.beginPath();ctx.moveTo(-22,82);ctx.lineTo(-22,111);ctx.lineTo(10,111);ctx.lineTo(44,84);ctx.fill();   // windows
+   ctx.strokeStyle='#7a1712';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-26,20);ctx.lineTo(-26,112);ctx.stroke();box(-60,64,14,4,2,'#7a1712');                                       // door line + handle
+   ctx.globalAlpha=clamp(kf(p.alpha,t,1),0,1);
+   ctx.save();ctx.translate(54,84);ctx.rotate(hood*0.95);box(0,-3,102,7,3,'#c42c23','#7a1712',2);ctx.restore();                                                                             // hood on its hinge
+   if(li>0.02){const g=ctx.createLinearGradient(164,50,300,50);g.addColorStop(0,'rgba(255,240,170,'+0.7*li+')');g.addColorStop(1,'rgba(255,240,170,0)');ctx.fillStyle=g;ctx.beginPath();ctx.moveTo(162,58);ctx.lineTo(300,80);ctx.lineTo(300,20);ctx.fill()}
+   box(156,50,9,8,2,li>0.5?'#fff6c8':'#e6e1c0','#777',1);box(-164,52,6,10,2,'#ff4a3a');
+   ctx.globalAlpha=clamp(kf(p.alpha,t,1),0,1)*(1-0.6*cut);   // wheels are ghosted in the x-ray so the engine behind them stays visible
+   for(const wx of [-100,105]){ctx.save();ctx.translate(wx,30);disc(0,0,30,'#1e1f22');disc(0,0,18,'#b9c0c6','#555',2);ctx.rotate(-wsp);ctx.strokeStyle='#6c747b';ctx.lineWidth=3;for(let k=0;k<5;k++){ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(16*Math.cos(k*1.257),16*Math.sin(k*1.257));ctx.stroke()}disc(0,0,4,'#555');ctx.restore()}
+ },
  microwave(p,t){const door=clamp(kf(p.door,t,0),0,1),on=clamp(kf(p.on,t,0),0,1),wav=clamp(kf(p.waves,t,0),0,1),heat=clamp(kf(p.heat,t,0),0,1),sp=integ(p.spin===undefined?[[0,0]]:p.spin,t);
    ctx.fillStyle='rgba(0,0,0,0.18)';ctx.beginPath();ctx.ellipse(0,-2,135,10,0,0,7);ctx.fill();
    box(-130,0,260,150,14,'#d8dde2','#5b646c',4);box(-122,8,170,134,8,'#2b3036');                       // body, cavity
