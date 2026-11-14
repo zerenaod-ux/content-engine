@@ -109,7 +109,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          files=(); for f in scene-factory.mp4 auto-scene.json auto-plan.json idea.json idea-log.txt writer-log.txt voice-log.txt render-log.txt metrics.json evidence-report.json; do [ -f "$f" ] && files+=("$f"); done
+          files=(); for f in scene-factory.mp4 auto-scene.json auto-plan.json idea.json idea-log.txt writer-log.txt voice-log.txt render-log.txt metrics.json evidence-report.json attempts/plan.json attempts/scene.json; do [ -f "$f" ] && files+=("$f"); done
           echo "attaching: ${files[*]}"
           DIAGNOSTICS="ce-diagnostics-${{ github.run_id }}-${{ github.run_attempt }}"
           gh release create "$DIAGNOSTICS" "${files[@]}" --title "Scene factory diagnostics (not posted)" --notes "Diagnostic evidence for this run; previous releases are preserved." --prerelease

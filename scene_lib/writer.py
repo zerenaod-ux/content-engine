@@ -234,6 +234,29 @@ def fix_fields(spec):
             if isinstance(at, list) and len(at) == 2:
                 v = [value_at(part.get(new), t) for t in at]
                 if None not in v: item['values'] = [round(x, 4) for x in v]
+    for step in spec.get('steps', []) if isinstance(spec.get('steps'), list) else []:
+        if not isinstance(step, dict): continue
+        for item in step.get('evidence', []) if isinstance(step.get('evidence'), list) else []:
+            # VALUES_REPAIR: restate the promised numbers from the real keyframes; if that field does not change here, use another field of the same part that does.
+            if not isinstance(item, dict): continue
+            part = parts.get(item.get('part')); at = item.get('at')
+            if not part or not (isinstance(at, list) and len(at) == 2 and all(isinstance(t, (int, float)) for t in at)): continue
+            a = CATALOG.get(part.get('type'), ([], [], ''))
+            ok = [f for f in a[0] + a[1] if f in ANIM and f != 'show']
+            for f in [item.get('field')] + [f for f in ok if isinstance(part.get(f), list) and f != item.get('field')]:
+                if f not in ok: continue
+                v = [value_at(part.get(f), t) for t in at]
+                if None not in v and abs(v[1] - v[0]) >= 0.001:
+                    item['field'] = f; item['values'] = [round(x, 4) for x in v]; break
+        for group in step.get('contrasts', []) if isinstance(step.get('contrasts'), list) else []:
+            # CONTRAST_REPAIR: a contrast field missing on some part is swapped for a field all those parts have with different values.
+            if not isinstance(group, dict) or not isinstance(group.get('parts'), list) or not isinstance(group.get('fields'), list): continue
+            members = [parts.get(i) for i in group['parts'] if isinstance(i, str)]
+            if len(members) < 2 or None in members or all(isinstance(f, str) and all(f in m for m in members) for f in group['fields']): continue
+            shared = [f for f in members[0] if f not in ('id', 'type') and all(f in m for m in members) and len({json.dumps(m[f], sort_keys=True) for m in members}) == len(members)]
+            good = [f for f in group['fields'] if isinstance(f, str) and all(f in m for m in members)]
+            fill = [f for f in ('fill', 'color', 'stroke', 'char', 'x', 'y', 'size', 'r') if f in shared and f not in good] + [f for f in shared if f not in good]
+            if good or fill: group['fields'] = (good + fill)[:max(len(group['fields']), 1)]
     return spec
 
 
