@@ -1,0 +1,1800 @@
+{
+ "title": "Why Rainbows Appear Opposite Sunlight 🌈",
+ "principle": "Sunlight changes direction when entering and leaving water. Different wavelengths refract differently; internal reflection and observer-dependent directions produce the rainbow.",
+ "basis": {
+  "status": "model_knowledge_unverified",
+  "limitations": "Hand-authored regression checked against NWS reference. Three illustrative refractive indices and a spherical drop; Snell-law ray construction, not a photorealistic atmosphere. Observer and front-view diagrams are schematic."
+ },
+ "reference_urls": [
+  "https://www.weather.gov/fgz/Rainbow"
+ ],
+ "evidence_version": 1,
+ "duration": 55.0,
+ "music": {
+  "bpm": 118
+ },
+ "flows": [],
+ "steps": [
+  {
+   "start": 0.3,
+   "end": 5.3,
+   "label": "WHITE LIGHT",
+   "say": "Sunlight contains many colours, even when it looks white.",
+   "shows": "drop",
+   "demonstration": "A white incoming ray approaches an enlarged round water droplet.",
+   "evidence": [
+    {
+     "part": "incoming",
+     "field": "progress",
+     "at": [
+      0.3,
+      4.8
+     ],
+     "values": [
+      0,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "start": 5.5,
+   "end": 11.5,
+   "label": "REFRACTION",
+   "say": "At a raindrop surface, light bends as it enters water.",
+   "shows": "drop",
+   "demonstration": "The ray changes direction at the front surface of the enlarged droplet.",
+   "evidence": [
+    {
+     "part": "bend",
+     "field": "progress",
+     "at": [
+      5.5,
+      10.8
+     ],
+     "values": [
+      0,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "start": 11.7,
+   "end": 18.7,
+   "label": "DISPERSION",
+   "say": "Different colours bend differently, separating their paths inside the drop.",
+   "shows": "drop",
+   "demonstration": "Three colour-coded ray paths separate at the entry surface.",
+   "evidence": [
+    {
+     "part": "inside0",
+     "field": "progress",
+     "at": [
+      11.7,
+      17.8
+     ],
+     "values": [
+      0,
+      1
+     ]
+    },
+    {
+     "part": "inside1",
+     "field": "progress",
+     "at": [
+      11.7,
+      17.8
+     ],
+     "values": [
+      0,
+      1
+     ]
+    },
+    {
+     "part": "inside2",
+     "field": "progress",
+     "at": [
+      11.7,
+      17.8
+     ],
+     "values": [
+      0,
+      1
+     ]
+    }
+   ],
+   "contrasts": [
+    {
+     "parts": [
+      "inside0",
+      "inside1",
+      "inside2"
+     ],
+     "fields": [
+      "color",
+      "pts"
+     ]
+    }
+   ]
+  },
+  {
+   "start": 18.9,
+   "end": 25.9,
+   "label": "REFLECTION",
+   "say": "Some light reflects from the back surface inside the drop.",
+   "shows": "drop",
+   "demonstration": "Three distinct coloured rays turn at the rear inside surface.",
+   "evidence": [
+    {
+     "part": "bounce0",
+     "field": "progress",
+     "at": [
+      18.9,
+      25
+     ],
+     "values": [
+      0,
+      1
+     ]
+    },
+    {
+     "part": "bounce1",
+     "field": "progress",
+     "at": [
+      18.9,
+      25
+     ],
+     "values": [
+      0,
+      1
+     ]
+    },
+    {
+     "part": "bounce2",
+     "field": "progress",
+     "at": [
+      18.9,
+      25
+     ],
+     "values": [
+      0,
+      1
+     ]
+    }
+   ],
+   "contrasts": [
+    {
+     "parts": [
+      "bounce0",
+      "bounce1",
+      "bounce2"
+     ],
+     "fields": [
+      "color",
+      "pts"
+     ]
+    }
+   ]
+  },
+  {
+   "start": 26.1,
+   "end": 32.1,
+   "label": "EXIT RAYS",
+   "say": "As light leaves, it bends again; the colours emerge at different angles.",
+   "shows": "drop",
+   "demonstration": "Three distinct exit rays diverge after crossing the droplet boundary.",
+   "evidence": [
+    {
+     "part": "exit0",
+     "field": "progress",
+     "at": [
+      26.1,
+      31.5
+     ],
+     "values": [
+      0,
+      1
+     ]
+    },
+    {
+     "part": "exit1",
+     "field": "progress",
+     "at": [
+      26.1,
+      31.5
+     ],
+     "values": [
+      0,
+      1
+     ]
+    },
+    {
+     "part": "exit2",
+     "field": "progress",
+     "at": [
+      26.1,
+      31.5
+     ],
+     "values": [
+      0,
+      1
+     ]
+    }
+   ],
+   "contrasts": [
+    {
+     "parts": [
+      "exit0",
+      "exit1",
+      "exit2"
+     ],
+     "fields": [
+      "color",
+      "pts"
+     ]
+    }
+   ]
+  },
+  {
+   "start": 32.3,
+   "end": 39.3,
+   "label": "SIDE VIEW",
+   "say": "To see a rainbow, stand with sunlight behind you and rain ahead.",
+   "shows": "sunlight",
+   "demonstration": "A side-view diagram shows a sun behind a person and drops ahead.",
+   "evidence": [
+    {
+     "part": "sunlight",
+     "field": "progress",
+     "at": [
+      32.3,
+      38.5
+     ],
+     "values": [
+      0,
+      1
+     ]
+    },
+    {
+     "part": "sun",
+     "field": "alpha",
+     "at": [
+      32.3,
+      33
+     ],
+     "values": [
+      0,
+      1
+     ]
+    },
+    {
+     "part": "small1",
+     "field": "alpha",
+     "at": [
+      32.3,
+      33.5
+     ],
+     "values": [
+      0,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "start": 39.5,
+   "end": 46.5,
+   "label": "TO YOUR EYE",
+   "say": "Different droplets send different colours toward your eye.",
+   "shows": "observer",
+   "demonstration": "Separate drops in different directions send straight red and blue rays to the eye.",
+   "evidence": [
+    {
+     "part": "eye0",
+     "field": "progress",
+     "at": [
+      39.5,
+      45.5
+     ],
+     "values": [
+      0,
+      1
+     ]
+    },
+    {
+     "part": "eye2",
+     "field": "progress",
+     "at": [
+      39.5,
+      45.5
+     ],
+     "values": [
+      0,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "start": 46.7,
+   "end": 54.7,
+   "label": "FRONT VIEW",
+   "say": "Droplets in matching directions form a coloured arc around your shadow.",
+   "shows": "arc0",
+   "demonstration": "A front-view diagram reveals droplets on coloured arcs centred opposite the sun.",
+   "evidence": [
+    {
+     "part": "arc0",
+     "field": "progress",
+     "at": [
+      46.7,
+      53.7
+     ],
+     "values": [
+      0,
+      1
+     ]
+    },
+    {
+     "part": "arc1",
+     "field": "progress",
+     "at": [
+      46.7,
+      53.7
+     ],
+     "values": [
+      0,
+      1
+     ]
+    },
+    {
+     "part": "arc2",
+     "field": "progress",
+     "at": [
+      46.7,
+      53.7
+     ],
+     "values": [
+      0,
+      1
+     ]
+    }
+   ],
+   "contrasts": [
+    {
+     "parts": [
+      "arc0",
+      "arc1",
+      "arc2"
+     ],
+     "fields": [
+      "color",
+      "pts"
+     ]
+    }
+   ]
+  }
+ ],
+ "parts": [
+  {
+   "type": "sky",
+   "preset": "lab"
+  },
+  {
+   "type": "path",
+   "id": "drop",
+   "x": 80,
+   "y": 130,
+   "scale": 2.5,
+   "d": "M -50 0 A 50 50 0 1 0 50 0 A 50 50 0 1 0 -50 0 M -35 -25 Q -20 -43 0 -43",
+   "fill": "#346d90",
+   "stroke": "#b7efff",
+   "lw": 2,
+   "alpha": [
+    [
+     0,
+     1
+    ],
+    [
+     32,
+     1
+    ],
+    [
+     32.3,
+     0
+    ]
+   ]
+  },
+  {
+   "type": "line",
+   "id": "incoming",
+   "pts": [
+    [
+     -260,
+     237.5
+    ],
+    [
+     16.2132,
+     237.5
+    ]
+   ],
+   "color": "#ffffff",
+   "w": 5,
+   "progress": [
+    [
+     0,
+     0
+    ],
+    [
+     0.3,
+     0
+    ],
+    [
+     4.8,
+     1
+    ]
+   ],
+   "alpha": [
+    [
+     0,
+     1
+    ],
+    [
+     32,
+     1
+    ],
+    [
+     32.3,
+     0
+    ]
+   ]
+  },
+  {
+   "type": "line",
+   "id": "bend",
+   "pts": [
+    [
+     16.2132,
+     237.5
+    ],
+    [
+     196.8921,
+     174.2859
+    ]
+   ],
+   "color": "#ffffff",
+   "w": 5,
+   "progress": [
+    [
+     0,
+     0
+    ],
+    [
+     5.5,
+     0
+    ],
+    [
+     10.8,
+     1
+    ]
+   ],
+   "alpha": [
+    [
+     0,
+     1
+    ],
+    [
+     11.5,
+     1
+    ],
+    [
+     11.7,
+     0
+    ]
+   ]
+  },
+  {
+   "type": "line",
+   "id": "inside0",
+   "pts": [
+    [
+     16.2132,
+     237.5
+    ],
+    [
+     196.5528,
+     175.1714
+    ]
+   ],
+   "color": "#ff554e",
+   "w": 5,
+   "progress": [
+    [
+     0,
+     0
+    ],
+    [
+     11.7,
+     0
+    ],
+    [
+     17.8,
+     1
+    ]
+   ],
+   "alpha": [
+    [
+     0,
+     1
+    ],
+    [
+     32,
+     1
+    ],
+    [
+     32.3,
+     0
+    ]
+   ]
+  },
+  {
+   "type": "line",
+   "id": "inside1",
+   "pts": [
+    [
+     16.2132,
+     237.5
+    ],
+    [
+     196.8921,
+     174.2859
+    ]
+   ],
+   "color": "#69ef80",
+   "w": 5,
+   "progress": [
+    [
+     0,
+     0
+    ],
+    [
+     11.7,
+     0
+    ],
+    [
+     17.8,
+     1
+    ]
+   ],
+   "alpha": [
+    [
+     0,
+     1
+    ],
+    [
+     32,
+     1
+    ],
+    [
+     32.3,
+     0
+    ]
+   ]
+  },
+  {
+   "type": "line",
+   "id": "inside2",
+   "pts": [
+    [
+     16.2132,
+     237.5
+    ],
+    [
+     197.2207,
+     173.4086
+    ]
+   ],
+   "color": "#8d99ff",
+   "w": 5,
+   "progress": [
+    [
+     0,
+     0
+    ],
+    [
+     11.7,
+     0
+    ],
+    [
+     17.8,
+     1
+    ]
+   ],
+   "alpha": [
+    [
+     0,
+     1
+    ],
+    [
+     32,
+     1
+    ],
+    [
+     32.3,
+     0
+    ]
+   ]
+  },
+  {
+   "type": "line",
+   "id": "bounce0",
+   "pts": [
+    [
+     196.5528,
+     175.1714
+    ],
+    [
+     105.3173,
+     7.5907
+    ]
+   ],
+   "color": "#ff554e",
+   "w": 5,
+   "progress": [
+    [
+     0,
+     0
+    ],
+    [
+     18.9,
+     0
+    ],
+    [
+     25,
+     1
+    ]
+   ],
+   "alpha": [
+    [
+     0,
+     1
+    ],
+    [
+     32,
+     1
+    ],
+    [
+     32.3,
+     0
+    ]
+   ]
+  },
+  {
+   "type": "line",
+   "id": "bounce1",
+   "pts": [
+    [
+     196.8921,
+     174.2859
+    ],
+    [
+     103.4572,
+     7.2207
+    ]
+   ],
+   "color": "#69ef80",
+   "w": 5,
+   "progress": [
+    [
+     0,
+     0
+    ],
+    [
+     18.9,
+     0
+    ],
+    [
+     25,
+     1
+    ]
+   ],
+   "alpha": [
+    [
+     0,
+     1
+    ],
+    [
+     32,
+     1
+    ],
+    [
+     32.3,
+     0
+    ]
+   ]
+  },
+  {
+   "type": "line",
+   "id": "bounce2",
+   "pts": [
+    [
+     197.2207,
+     173.4086
+    ],
+    [
+     101.6143,
+     6.8829
+    ]
+   ],
+   "color": "#8d99ff",
+   "w": 5,
+   "progress": [
+    [
+     0,
+     0
+    ],
+    [
+     18.9,
+     0
+    ],
+    [
+     25,
+     1
+    ]
+   ],
+   "alpha": [
+    [
+     0,
+     1
+    ],
+    [
+     32,
+     1
+    ],
+    [
+     32.3,
+     0
+    ]
+   ]
+  },
+  {
+   "type": "line",
+   "id": "exit0",
+   "pts": [
+    [
+     105.3173,
+     7.5907
+    ],
+    [
+     -101.5528,
+     -181.1016
+    ]
+   ],
+   "color": "#ff554e",
+   "w": 5,
+   "progress": [
+    [
+     0,
+     0
+    ],
+    [
+     26.1,
+     0
+    ],
+    [
+     31.5,
+     1
+    ]
+   ],
+   "alpha": [
+    [
+     0,
+     1
+    ],
+    [
+     32,
+     1
+    ],
+    [
+     32.3,
+     0
+    ]
+   ]
+  },
+  {
+   "type": "line",
+   "id": "exit1",
+   "pts": [
+    [
+     103.4572,
+     7.2207
+    ],
+    [
+     -106.2518,
+     -178.3113
+    ]
+   ],
+   "color": "#69ef80",
+   "w": 5,
+   "progress": [
+    [
+     0,
+     0
+    ],
+    [
+     26.1,
+     0
+    ],
+    [
+     31.5,
+     1
+    ]
+   ],
+   "alpha": [
+    [
+     0,
+     1
+    ],
+    [
+     32,
+     1
+    ],
+    [
+     32.3,
+     0
+    ]
+   ]
+  },
+  {
+   "type": "line",
+   "id": "exit2",
+   "pts": [
+    [
+     101.6143,
+     6.8829
+    ],
+    [
+     -110.852,
+     -175.485
+    ]
+   ],
+   "color": "#8d99ff",
+   "w": 5,
+   "progress": [
+    [
+     0,
+     0
+    ],
+    [
+     26.1,
+     0
+    ],
+    [
+     31.5,
+     1
+    ]
+   ],
+   "alpha": [
+    [
+     0,
+     1
+    ],
+    [
+     32,
+     1
+    ],
+    [
+     32.3,
+     0
+    ]
+   ]
+  },
+  {
+   "type": "emoji",
+   "id": "sun",
+   "char": "☀️",
+   "x": -240,
+   "y": 150,
+   "size": 100,
+   "alpha": [
+    [
+     0,
+     0
+    ],
+    [
+     32.3,
+     0
+    ],
+    [
+     33,
+     1
+    ],
+    [
+     46.5,
+     1
+    ],
+    [
+     46.7,
+     0
+    ]
+   ]
+  },
+  {
+   "type": "path",
+   "id": "observer",
+   "x": -120,
+   "y": 0,
+   "scale": 1.6,
+   "d": "M 0 -30 A 12 12 0 1 0 0 -54 A 12 12 0 1 0 0 -30 M 0 -30 L 0 20 M -25 -10 L 25 -10 M 0 20 L -20 55 M 0 20 L 20 55",
+   "stroke": "#ffffff",
+   "lw": 5,
+   "alpha": [
+    [
+     0,
+     0
+    ],
+    [
+     32.3,
+     0
+    ],
+    [
+     33,
+     1
+    ],
+    [
+     46.5,
+     1
+    ],
+    [
+     46.7,
+     0
+    ]
+   ]
+  },
+  {
+   "type": "path",
+   "id": "small0",
+   "x": 210,
+   "y": 70,
+   "scale": 0.45,
+   "d": "M 0 -50 Q -45 0 -25 25 Q 0 50 25 25 Q 45 0 0 -50 Z",
+   "fill": "#81c9ef",
+   "stroke": "#e9faff",
+   "lw": 3,
+   "alpha": [
+    [
+     0,
+     0
+    ],
+    [
+     32.3,
+     0
+    ],
+    [
+     33.5,
+     1
+    ],
+    [
+     46.5,
+     1
+    ],
+    [
+     46.7,
+     0
+    ]
+   ]
+  },
+  {
+   "type": "path",
+   "id": "small1",
+   "x": 210,
+   "y": 140,
+   "scale": 0.45,
+   "d": "M 0 -50 Q -45 0 -25 25 Q 0 50 25 25 Q 45 0 0 -50 Z",
+   "fill": "#81c9ef",
+   "stroke": "#e9faff",
+   "lw": 3,
+   "alpha": [
+    [
+     0,
+     0
+    ],
+    [
+     32.3,
+     0
+    ],
+    [
+     33.5,
+     1
+    ],
+    [
+     46.5,
+     1
+    ],
+    [
+     46.7,
+     0
+    ]
+   ]
+  },
+  {
+   "type": "path",
+   "id": "small2",
+   "x": 210,
+   "y": 210,
+   "scale": 0.45,
+   "d": "M 0 -50 Q -45 0 -25 25 Q 0 50 25 25 Q 45 0 0 -50 Z",
+   "fill": "#81c9ef",
+   "stroke": "#e9faff",
+   "lw": 3,
+   "alpha": [
+    [
+     0,
+     0
+    ],
+    [
+     32.3,
+     0
+    ],
+    [
+     33.5,
+     1
+    ],
+    [
+     46.5,
+     1
+    ],
+    [
+     46.7,
+     0
+    ]
+   ]
+  },
+  {
+   "type": "line",
+   "id": "sunlight",
+   "pts": [
+    [
+     -220,
+     150
+    ],
+    [
+     210,
+     150
+    ]
+   ],
+   "w": 5,
+   "color": "#fff6bb",
+   "progress": [
+    [
+     0,
+     0
+    ],
+    [
+     32.3,
+     0
+    ],
+    [
+     38.5,
+     1
+    ]
+   ],
+   "alpha": [
+    [
+     0,
+     0
+    ],
+    [
+     32.3,
+     1
+    ],
+    [
+     46.5,
+     1
+    ],
+    [
+     46.7,
+     0
+    ]
+   ]
+  },
+  {
+   "type": "line",
+   "id": "eye0",
+   "pts": [
+    [
+     210,
+     70
+    ],
+    [
+     -120,
+     45
+    ]
+   ],
+   "w": 5,
+   "color": "#ff554e",
+   "progress": [
+    [
+     0,
+     0
+    ],
+    [
+     39.5,
+     0
+    ],
+    [
+     45.5,
+     1
+    ]
+   ],
+   "alpha": [
+    [
+     0,
+     0
+    ],
+    [
+     39.5,
+     1
+    ],
+    [
+     46.5,
+     1
+    ],
+    [
+     46.7,
+     0
+    ]
+   ]
+  },
+  {
+   "type": "line",
+   "id": "eye2",
+   "pts": [
+    [
+     210,
+     210
+    ],
+    [
+     -120,
+     45
+    ]
+   ],
+   "w": 5,
+   "color": "#8d99ff",
+   "progress": [
+    [
+     0,
+     0
+    ],
+    [
+     39.5,
+     0
+    ],
+    [
+     45.5,
+     1
+    ]
+   ],
+   "alpha": [
+    [
+     0,
+     0
+    ],
+    [
+     39.5,
+     1
+    ],
+    [
+     46.5,
+     1
+    ],
+    [
+     46.7,
+     0
+    ]
+   ]
+  },
+  {
+   "type": "line",
+   "id": "arc0",
+   "pts": [
+    [
+     200.0,
+     -30.0
+    ],
+    [
+     196.96,
+     4.73
+    ],
+    [
+     187.94,
+     38.4
+    ],
+    [
+     173.21,
+     70.0
+    ],
+    [
+     153.21,
+     98.56
+    ],
+    [
+     128.56,
+     123.21
+    ],
+    [
+     100.0,
+     143.21
+    ],
+    [
+     68.4,
+     157.94
+    ],
+    [
+     34.73,
+     166.96
+    ],
+    [
+     0.0,
+     170.0
+    ],
+    [
+     -34.73,
+     166.96
+    ],
+    [
+     -68.4,
+     157.94
+    ],
+    [
+     -100.0,
+     143.21
+    ],
+    [
+     -128.56,
+     123.21
+    ],
+    [
+     -153.21,
+     98.56
+    ],
+    [
+     -173.21,
+     70.0
+    ],
+    [
+     -187.94,
+     38.4
+    ],
+    [
+     -196.96,
+     4.73
+    ],
+    [
+     -200.0,
+     -30.0
+    ]
+   ],
+   "color": "#ff554e",
+   "w": 6,
+   "progress": [
+    [
+     0,
+     0
+    ],
+    [
+     46.7,
+     0
+    ],
+    [
+     53.7,
+     1
+    ]
+   ],
+   "alpha": [
+    [
+     0,
+     0
+    ],
+    [
+     46.7,
+     1
+    ]
+   ]
+  },
+  {
+   "type": "line",
+   "id": "arc1",
+   "pts": [
+    [
+     183.0,
+     -30.0
+    ],
+    [
+     180.22,
+     1.78
+    ],
+    [
+     171.96,
+     32.59
+    ],
+    [
+     158.48,
+     61.5
+    ],
+    [
+     140.19,
+     87.63
+    ],
+    [
+     117.63,
+     110.19
+    ],
+    [
+     91.5,
+     128.48
+    ],
+    [
+     62.59,
+     141.96
+    ],
+    [
+     31.78,
+     150.22
+    ],
+    [
+     0.0,
+     153.0
+    ],
+    [
+     -31.78,
+     150.22
+    ],
+    [
+     -62.59,
+     141.96
+    ],
+    [
+     -91.5,
+     128.48
+    ],
+    [
+     -117.63,
+     110.19
+    ],
+    [
+     -140.19,
+     87.63
+    ],
+    [
+     -158.48,
+     61.5
+    ],
+    [
+     -171.96,
+     32.59
+    ],
+    [
+     -180.22,
+     1.78
+    ],
+    [
+     -183.0,
+     -30.0
+    ]
+   ],
+   "color": "#69ef80",
+   "w": 6,
+   "progress": [
+    [
+     0,
+     0
+    ],
+    [
+     46.7,
+     0
+    ],
+    [
+     53.7,
+     1
+    ]
+   ],
+   "alpha": [
+    [
+     0,
+     0
+    ],
+    [
+     46.7,
+     1
+    ]
+   ]
+  },
+  {
+   "type": "line",
+   "id": "arc2",
+   "pts": [
+    [
+     166.0,
+     -30.0
+    ],
+    [
+     163.48,
+     -1.17
+    ],
+    [
+     155.99,
+     26.78
+    ],
+    [
+     143.76,
+     53.0
+    ],
+    [
+     127.16,
+     76.7
+    ],
+    [
+     106.7,
+     97.16
+    ],
+    [
+     83.0,
+     113.76
+    ],
+    [
+     56.78,
+     125.99
+    ],
+    [
+     28.83,
+     133.48
+    ],
+    [
+     0.0,
+     136.0
+    ],
+    [
+     -28.83,
+     133.48
+    ],
+    [
+     -56.78,
+     125.99
+    ],
+    [
+     -83.0,
+     113.76
+    ],
+    [
+     -106.7,
+     97.16
+    ],
+    [
+     -127.16,
+     76.7
+    ],
+    [
+     -143.76,
+     53.0
+    ],
+    [
+     -155.99,
+     26.78
+    ],
+    [
+     -163.48,
+     -1.17
+    ],
+    [
+     -166.0,
+     -30.0
+    ]
+   ],
+   "color": "#8d99ff",
+   "w": 6,
+   "progress": [
+    [
+     0,
+     0
+    ],
+    [
+     46.7,
+     0
+    ],
+    [
+     53.7,
+     1
+    ]
+   ],
+   "alpha": [
+    [
+     0,
+     0
+    ],
+    [
+     46.7,
+     1
+    ]
+   ]
+  },
+  {
+   "type": "path",
+   "x": 187.94,
+   "y": 38.4,
+   "scale": 0.18,
+   "d": "M 0 -50 Q -45 0 -25 25 Q 0 50 25 25 Q 45 0 0 -50 Z",
+   "fill": "#e3f9ff",
+   "alpha": [
+    [
+     0,
+     0
+    ],
+    [
+     46.7,
+     0
+    ],
+    [
+     48,
+     1
+    ]
+   ]
+  },
+  {
+   "type": "path",
+   "x": 100.0,
+   "y": 143.21,
+   "scale": 0.18,
+   "d": "M 0 -50 Q -45 0 -25 25 Q 0 50 25 25 Q 45 0 0 -50 Z",
+   "fill": "#e3f9ff",
+   "alpha": [
+    [
+     0,
+     0
+    ],
+    [
+     46.7,
+     0
+    ],
+    [
+     48,
+     1
+    ]
+   ]
+  },
+  {
+   "type": "path",
+   "x": 0.0,
+   "y": 170.0,
+   "scale": 0.18,
+   "d": "M 0 -50 Q -45 0 -25 25 Q 0 50 25 25 Q 45 0 0 -50 Z",
+   "fill": "#e3f9ff",
+   "alpha": [
+    [
+     0,
+     0
+    ],
+    [
+     46.7,
+     0
+    ],
+    [
+     48,
+     1
+    ]
+   ]
+  },
+  {
+   "type": "path",
+   "x": -100.0,
+   "y": 143.21,
+   "scale": 0.18,
+   "d": "M 0 -50 Q -45 0 -25 25 Q 0 50 25 25 Q 45 0 0 -50 Z",
+   "fill": "#e3f9ff",
+   "alpha": [
+    [
+     0,
+     0
+    ],
+    [
+     46.7,
+     0
+    ],
+    [
+     48,
+     1
+    ]
+   ]
+  },
+  {
+   "type": "path",
+   "x": -187.94,
+   "y": 38.4,
+   "scale": 0.18,
+   "d": "M 0 -50 Q -45 0 -25 25 Q 0 50 25 25 Q 45 0 0 -50 Z",
+   "fill": "#e3f9ff",
+   "alpha": [
+    [
+     0,
+     0
+    ],
+    [
+     46.7,
+     0
+    ],
+    [
+     48,
+     1
+    ]
+   ]
+  },
+  {
+   "type": "path",
+   "id": "shadow",
+   "x": 0,
+   "y": -30,
+   "scale": 0.5,
+   "d": "M -18 0 L 18 0 M 0 -18 L 0 18",
+   "stroke": "#ffffff",
+   "lw": 4,
+   "alpha": [
+    [
+     0,
+     0
+    ],
+    [
+     46.7,
+     0
+    ],
+    [
+     48,
+     1
+    ]
+   ]
+  }
+ ],
+ "sfx": [],
+ "camera": [
+  [
+   0,
+   -32.7,
+   -33.6,
+   0.84
+  ],
+  [
+   0.9,
+   -26.2,
+   64.8,
+   0.92
+  ],
+  [
+   5.1,
+   -26.2,
+   64.8,
+   0.92
+  ],
+  [
+   6.1,
+   80.0,
+   94.4,
+   1.69
+  ],
+  [
+   11.3,
+   80.0,
+   94.4,
+   1.69
+  ],
+  [
+   12.3,
+   80.0,
+   94.4,
+   1.69
+  ],
+  [
+   18.5,
+   80.0,
+   94.4,
+   1.69
+  ],
+  [
+   19.5,
+   80.0,
+   94.4,
+   1.69
+  ],
+  [
+   25.7,
+   80.0,
+   94.4,
+   1.69
+  ],
+  [
+   26.7,
+   48.3,
+   -6.2,
+   1.35
+  ],
+  [
+   31.9,
+   48.3,
+   -6.2,
+   1.35
+  ],
+  [
+   32.9,
+   -32.7,
+   78.2,
+   0.84
+  ],
+  [
+   39.1,
+   -32.7,
+   78.2,
+   0.84
+  ],
+  [
+   40.1,
+   23.0,
+   6.8,
+   1.15
+  ],
+  [
+   46.3,
+   23.0,
+   6.8,
+   1.15
+  ],
+  [
+   47.3,
+   0.0,
+   14.2,
+   1.07
+  ],
+  [
+   54.5,
+   0.0,
+   14.2,
+   1.07
+  ],
+  [
+   55.0,
+   -32.7,
+   -33.6,
+   0.84
+  ]
+ ],
+ "repair_provenance": {
+  "source": "saved first automatic rainbow attempt",
+  "method": "human-authored scene repair; no new LLM calls",
+  "changed": "Rebuilt the defective optical demonstration using Snell-law paths; added observer/front-view diagrams and aligned narration. This authored repair does not prove automatic generation quality.",
+  "automatic_generation_proven": false
+ },
+ "_path_bounds": {
+  "M -50 0 A 50 50 0 1 0 50 0 A 50 50 0 1 0 -50 0 M -35 -25 Q -20 -43 0 -43": [
+   -50,
+   -50,
+   100,
+   100
+  ],
+  "M 0 -30 A 12 12 0 1 0 0 -54 A 12 12 0 1 0 0 -30 M 0 -30 L 0 20 M -25 -10 L 25 -10 M 0 20 L -20 55 M 0 20 L 20 55": [
+   -25,
+   -54,
+   50,
+   109
+  ],
+  "M 0 -50 Q -45 0 -25 25 Q 0 50 25 25 Q 45 0 0 -50 Z": [
+   -31.153846740722656,
+   -50,
+   62.30769348144531,
+   87.5
+  ],
+  "M -18 0 L 18 0 M 0 -18 L 0 18": [
+   -18,
+   -18,
+   36,
+   36
+  ]
+ }
+}

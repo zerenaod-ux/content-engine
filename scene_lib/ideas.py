@@ -1,4 +1,4 @@
-"""THE IDEA MAKER: thinks up a NEW topic every time, from the tiny to the huge, and never repeats one.
+"""THE IDEA MAKER: thinks up a NEW topic every time, from the tiny to the huge, and avoids repeating successful angles.
 Strong rules: categories take turns; an idea is thrown out if its subject, its key words or its wording is close to anything already made
 (data/scenes/history.json); unsafe subjects are thrown out; the best remaining idea (surprise + how well it can be shown) wins.
   python3 scene_lib/ideas.py pick topic.txt        python3 scene_lib/ideas.py record auto-scene.json"""
@@ -23,9 +23,12 @@ def too_close(idea, hist):
     """Why this idea repeats something already made, or '' if it is new."""
     subj = words(idea.get('subject', '')); kw = words(' '.join(idea.get('keywords', []))) | subj; tw = words(idea.get('topic', ''))
     for h in hist:
+        if h.get('failed'):
+            # Failure is diagnostic history, not a permanent subject ban.
+            continue
         hs = words(h.get('subject', '')); hk = words(' '.join(h.get('keywords', []))) | hs; ht = words(h.get('topic', '')) | words(h.get('title', ''))
-        if subj and hs and (subj <= hs or hs <= subj): return 'same subject as "%s"' % h.get('topic')
-        if jac(kw, hk) >= 0.34: return 'key words too close to "%s"' % h.get('topic')
+        # A subject may return with a substantially different explanatory angle.
+        if jac(kw, hk) >= 0.65 and jac(tw, ht) >= 0.35: return 'key words too close to "%s"' % h.get('topic')
         if jac(tw, ht) >= 0.5: return 'wording too close to "%s"' % h.get('topic')
     return ''
 
@@ -36,8 +39,8 @@ def next_categories(hist):
 
 def pick(log=print):
     import llm
-    hist = load(); made = '; '.join(h.get('topic', '') for h in hist[-60:]) or 'nothing yet'
-    for cat in next_categories(hist)[:5]:
+    hist = load(); made = '; '.join(h.get('topic', '') for h in [h for h in hist if not h.get('failed')][-60:]) or 'nothing yet'
+    for cat in next_categories(hist)[:3]:
         prompt = f"""Think of 10 fresh ideas for a 55-second animated explainer video in the category: {cat}.
 Each idea answers "How does X work?" or "Why does X happen?" about ONE concrete thing, from the tiny to the huge, that almost everyone has seen or used but few can explain.
 It must be something you can SHOW happening step by step in one picture: things move, flow, fill, spin, grow, heat up, light up or change. No abstract ideas, no opinions.
@@ -67,7 +70,17 @@ def record(spec_path, idea_path='idea.json', failed=False):
     except Exception: spec = {}
     try: idea = json.loads(Path(idea_path).read_text())
     except Exception: idea = {}
-    hist.append({'date': datetime.date.today().isoformat(), 'topic': idea.get('topic') or spec.get('title', ''), 'title': spec.get('title', ''), 'subject': idea.get('subject', ''),
+    failure = ''
+    if failed:
+        try: failure = Path('writer-log.txt').read_text()[-2000:]
+        except OSError: pass
+    techniques = sorted({p.get('type','') + '.' + e.get('field','') for st in spec.get('steps',[]) for e in st.get('evidence',[]) if isinstance(e,dict) for p in spec.get('parts',[]) if p.get('id') == e.get('part')})
+    if failed:
+        try: failure += '\n' + ' | '.join(json.loads(Path('evidence-report.json').read_text()).get('errors',[]))
+        except (OSError,ValueError,TypeError): pass
+    try: requested = Path('topic.txt').read_text().splitlines()[0]
+    except (OSError,IndexError): requested = ''
+    hist.append({'techniques': techniques if not failed else [], 'failure_cause': failure, 'date': datetime.date.today().isoformat(), 'topic': idea.get('topic') or requested or spec.get('title', ''), 'title': spec.get('title', ''), 'subject': idea.get('subject', ''),
                  'keywords': idea.get('keywords', []), 'category': idea.get('category', ''), **({'failed': True} if failed else {})})
     HIST.parent.mkdir(parents=True, exist_ok=True); HIST.write_text(json.dumps(hist, indent=1, ensure_ascii=False) + '\n'); print('recorded; %d scenes in the history' % len(hist))
 

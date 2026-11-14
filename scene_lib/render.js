@@ -2,11 +2,28 @@
 const { chromium } = require('playwright');
 const fs = require('fs'), path = require('path');
 (async () => {
-  const spec = JSON.parse(fs.readFileSync(process.argv[2], 'utf8')), only = process.argv[3] ? new Set(JSON.parse(process.argv[3])) : null;
+  let spec = JSON.parse(fs.readFileSync(process.argv[2], 'utf8')), only = process.argv[3] ? new Set(JSON.parse(process.argv[3])) : null;
   const b = await chromium.launch(process.env.CHROME_CHANNEL ? { channel: process.env.CHROME_CHANNEL } : {});
   const p = await b.newPage({ viewport: { width: 720, height: 1280 } });
   let bad = 0; p.on('pageerror', e => { bad++; console.log('PAGEERR', e.message); });
   await p.goto('file://' + path.join(__dirname, 'scene.html'));
+  if (spec.evidence_version === 1) {
+    // The browser understands all SVG commands, including arcs and curves.
+    // Measure the path instead of assuming every path is centred at (0,0).
+    const bounds = await p.evaluate(parts => {
+      const ns = 'http://www.w3.org/2000/svg', svg = document.createElementNS(ns, 'svg');
+      document.body.appendChild(svg); const out = {};
+      for (const part of parts.filter(q => q.type === 'path')) {
+        const el = document.createElementNS(ns, 'path'); el.setAttribute('d', part.d); svg.appendChild(el);
+        const b = el.getBBox(); out[part.d] = [b.x,b.y,b.width,b.height]; el.remove();
+      }
+      svg.remove(); return out;
+    }, spec.parts);
+    const cp = require('child_process').spawnSync(process.env.PYTHON || 'python3',
+      [path.join(__dirname,'prepare.py'), process.argv[2]], {input:JSON.stringify(bounds),encoding:'utf8'});
+    if (cp.status !== 0) throw new Error('camera preparation failed: ' + cp.stderr);
+    spec = JSON.parse(fs.readFileSync(process.argv[2],'utf8'));
+  }
   const total = await p.evaluate(s => window.loadSpec(s), spec);
   // emoji pictures: use the machine's emoji font, or the bundled free one (Noto Color Emoji) if the machine has none
   const chars = [...new Set(spec.parts.filter(q => q.type === 'emoji').map(q => q.char))];
@@ -63,8 +80,36 @@ const fs = require('fs'), path = require('path');
     fs.writeFileSync(path.join('fr', String(f).padStart(4, '0') + '.jpg'), Buffer.from(d.split(',')[1], 'base64'));
     if (f % 200 === 0) console.log('frame', f, '/', total);
   }
+  // Render actual/part-removed pairs at both contract endpoints. Difference
+  // measures a part's visible contribution in the final composition, even if
+  // another object covers it. It does not interpret what the drawing means.
+  if (spec.evidence_version === 1) {
+    const dir = 'fr/evidence'; fs.mkdirSync(dir, { recursive: true });
+    const manifest = [];
+    for (const [i, step] of spec.steps.entries()) {
+      const requirements=[...(step.evidence||[])], declared=new Set(requirements.map(e=>e.part));
+      for (const group of (step.contrasts||[])) for (const id of group.parts) if(!declared.has(id)){requirements.push({part:id,field:'contrast',at:[step.start,step.end]});declared.add(id)}
+      for (const [j, ev] of requirements.entries()) {
+        const files = [];
+        for (const [k, t] of ev.at.entries()) {
+          const f = Math.round(t * 30), base = `${i}-${j}-${k}`;
+          await p.evaluate(s => window.loadSpec(s), spec);
+          const actual = await p.evaluate(n => window.frame(n), f);
+          const hidden = {...spec, parts: spec.parts.filter(q => q.id !== ev.part)};
+          await p.evaluate(s => window.loadSpec(s), hidden);
+          const removed = await p.evaluate(n => window.frame(n), f);
+          for (const [name, data] of [['actual', actual], ['removed', removed]]) {
+            fs.writeFileSync(`${dir}/${base}-${name}.jpg`, Buffer.from(data.split(',')[1], 'base64'));
+          }
+          files.push(base);
+        }
+        manifest.push({step: i + 1, part: ev.part, field: ev.field, files});
+      }
+    }
+    fs.writeFileSync(`${dir}/manifest.json`, JSON.stringify(manifest));
+  }
   const pe = await p.evaluate(() => [window.partErrors || 0, window.partErrorMsg || '']);
   if (pe[0]) console.log('PART SKIPPED ' + pe[0] + ' times (first: ' + pe[1] + ')');
   await b.close();
-  if (bad) process.exit(1);
+  if (bad || pe[0]) process.exit(1);
 })();

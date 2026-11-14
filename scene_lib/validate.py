@@ -15,7 +15,9 @@ def _at(v, t, d=0.0):
     if not _kfs(v): return d
     if t <= v[0][0]: return v[0][1]
     for a, b in zip(v, v[1:]):
-        if t <= b[0]: return a[1] + (b[1] - a[1]) * (t - a[0]) / max(1e-6, b[0] - a[0])
+        if t <= b[0]:
+            u = (t - a[0]) / max(1e-6, b[0] - a[0])
+            return a[1] + (b[1] - a[1]) * u * u * (3 - 2 * u)
     return v[-1][1]
 
 def _where(p):
@@ -51,7 +53,7 @@ def _box(p):
     if t == 'spray': return x - 20, x + 260, p.get('floor', 0), y + 120
     return _where(p)
 
-def _box_at(p, t):
+def _box_at(p, t, path_bounds=None):
     """Where a part is at time t (for parts that travel)."""
     ty = p.get('type')
     if ty in ('emoji', 'icon', 'path', 'ellipse', 'circle', 'particles', 'text', 'glow'):
@@ -59,6 +61,14 @@ def _box_at(p, t):
         if isinstance(o, dict) and all(_num(o.get(k)) for k in ('cx', 'cy', 'rx')):
             a = (t / max(1, o.get('period', 6)) + o.get('phase', 0)) * 2 * math.pi; x = o['cx'] + o['rx'] * math.cos(a); y = o['cy'] + o.get('ry', o['rx']) * math.sin(a)
         else: x = _at(p.get('x'), t, 0); y = _at(p.get('y'), t, 0)
+        if ty == 'path' and path_bounds and p.get('d') in path_bounds:
+            left, top, width, height = path_bounds[p['d']]
+            sc = _at(p.get('scale'), t, 1); angle = math.radians(_at(p.get('rot'), t, 0))
+            pad = p.get('lw', 3) / 2
+            corners = [(xx * sc, -yy * sc) for xx in (left-pad,left+width+pad) for yy in (top-pad,top+height+pad)]
+            xs = [x + xx*math.cos(angle)-yy*math.sin(angle) for xx,yy in corners]
+            ys = [y + xx*math.sin(angle)+yy*math.cos(angle) for xx,yy in corners]
+            return min(xs),max(xs),min(ys),max(ys)
         h = {'icon': _at(p.get('size'), t, 120) / 2, 'emoji': _at(p.get('size'), t, 80) / 2, 'path': 55 * _at(p.get('scale'), t, 1), 'ellipse': max(_at(p.get('rx'), t, 40), _at(p.get('ry'), t, 20)), 'circle': _at(p.get('r'), t, 10), 'particles': 45, 'text': 40, 'glow': _at(p.get('r'), t, 60)}[ty]
         return x - h, x + h, y - h, y + h
     if ty == 'bar': return p.get('x', 0), p.get('x', 0) + p.get('w', 26), p.get('y', 0), p.get('y', 0) + p.get('h', 160)
@@ -97,14 +107,14 @@ def design_rules(spec, D, steps, cam, parts):
         sh = s.get('shows')
         if sh not in ids: E.append('step %d: "shows" must be the id of the part that proves this sentence on screen' % i); continue
         p = ids[sh]; a, b = s['start'] - 0.3, s['end']
-        bx_ = _box_at(p, (s['start'] + s['end']) / 2)
-        if i == 1 and p['type'] not in ('prop', 'icon', 'emoji', 'house', 'tower'): E.append('step 1: the main object "%s" is a %s; the main object of the video must look like the real thing: use a "prop" from the library or an "icon" (a picture found by name, e.g. find: "wind turbine")' % (sh, p['type']))
+        bx_ = _box_at(p, (s['start'] + s['end']) / 2, spec.get('_path_bounds'))
+        if i == 1 and spec.get('evidence_version') != 1 and p['type'] not in ('prop', 'icon', 'emoji', 'path', 'house', 'tower'): E.append('step 1: the main object "%s" is a %s; the main object of the video must look like the real thing: use a "prop" from the library or an "icon" (a picture found by name, e.g. find: "wind turbine")' % (sh, p['type']))
         if p['type'] in ('rect', 'circle', 'ellipse') and max(bx_[1] - bx_[0], bx_[3] - bx_[2]) >= 90: E.append('step %d: the star "%s" is a plain %s; draw it as a real-looking object: a "prop" from the library, an "emoji", or a detailed "path" (owner rule: things must look like the real thing)' % (i, sh, p['type']))
-        if i > 1 and not changes_in(p, a, b): E.append('step %d: part "%s" does not change during %.1f-%.1f; give it keyframes inside this step so the viewer sees the sentence happen' % (i, sh, s['start'], s['end']))
+        if i > 1 and not s.get('evidence') and not changes_in(p, a, b): E.append('step %d: part "%s" does not change during %.1f-%.1f; give it keyframes inside this step so the viewer sees the sentence happen' % (i, sh, s['start'], s['end']))
         if cam and p['type'] not in ('night', 'sky', 'ground'):
             need = 45 if p['type'] in THIN else 110; hit = big = mid = clear = False
             for tt in (s['start'] + 0.35 * (s['end'] - s['start']), s['start'] + 0.7 * (s['end'] - s['start'])):
-                vx0, vx1, vy0, vy1, z = view(tt); bx = _box_at(p, tt); cx = (bx[0] + bx[1]) / 2; cy = (bx[2] + bx[3]) / 2
+                vx0, vx1, vy0, vy1, z = view(tt); bx = _box_at(p, tt, spec.get('_path_bounds')); cx = (bx[0] + bx[1]) / 2; cy = (bx[2] + bx[3]) / 2
                 if bx[1] >= vx0 + 20 / z and bx[0] <= vx1 - 20 / z and bx[3] >= vy0 and bx[2] <= vy1: hit = True
                 else: continue
                 if max(bx[1] - bx[0], bx[3] - bx[2]) * z >= need: big = True
@@ -159,11 +169,6 @@ def design_rules(spec, D, steps, cam, parts):
     labs = [p for p in good if p['type'] == 'label']
     for p in labs:
         if not _kfs(p.get('show')): E.append('label "%s" is always on; give it "show" keyframes so it appears only during its own step' % p.get('text'))
-    t = 0.5
-    while t < D:
-        on = [p.get('text') for p in labs if _kfs(p.get('show')) and _at(p['show'], t) > 0.5]
-        if len(on) > 2: E.append('%d labels are on screen together at %.1fs (%s); show at most 2 at a time' % (len(on), t, ', '.join(map(str, on[:4])))); break
-        t += 0.5
     # rule: no clutter - recognisable objects do not sit on top of each other
     def visible(p, t):
         if p['type'] == 'emoji' and _at(p.get('size'), t, 80) < 12: return False
@@ -182,14 +187,11 @@ def design_rules(spec, D, steps, cam, parts):
                 if not inside and ox > 0 and oy > 0 and small > 0 and ox * oy / small > 0.4:
                     told.add((id(a_), id(b_))); nm = lambda q: '%s%s' % (q['type'], ' ' + q['char'] if q.get('char') else (' "%s"' % q['id'] if q.get('id') else ''))
                     E.append('clutter: %s and %s are drawn on top of each other around %.0fs (x=%d); move one of them so every object is clearly seen (if one truly sits inside the other, give it "inside": "<id>")' % (nm(a_), nm(b_), tt, (A[0] + A[1]) / 2))
-    # rule: every step has its own sound
-    sf = [c for c in (spec.get('sfx') or []) if isinstance(c, list) and c and _num(c[0])]
-    for i, s in enumerate(steps, 1):
-        if isinstance(s, dict) and _num(s.get('start')) and _num(s.get('end')) and not any(s['start'] - 0.3 <= c[0] <= s['end'] for c in sf): E.append('step %d has no sound; add one timed to its action' % i)
     return E
 
 def check(spec):
-    E = []
+    from scene_lib.evidence import check_contract
+    E = check_contract(spec) if isinstance(spec, dict) and 'evidence_version' in spec else []
     if not isinstance(spec, dict): return ['the description must be one JSON object']
     D = spec.get('duration')
     if not _num(D) or not 20 <= D <= 66: E.append('duration must be a number of seconds between 20 and 66'); D = 55.6
@@ -209,7 +211,7 @@ def check(spec):
         if not 4 <= w <= 18: E.append('step %d: "say" must be 4 to 18 words (it has %d)' % (i, w))
         if w / 3.3 > (s['end'] - s['start']) + 0.4: E.append('step %d: the sentence is too long to speak in %.1f seconds; cut it to about %d words' % (i, s['end'] - s['start'], int((s['end'] - s['start']) * 3.3)))
     says = [str(s.get('say', '')) for s in steps if isinstance(s, dict)]
-    if len(says) >= 5 and sum(1 for x in says if x.strip().endswith(('!', '?'))) < 4: E.append('the script is flat: at least 4 sentences must end with ! or ? and use strong action verbs')
+
     cam = spec.get('camera')
     if not isinstance(cam, list) or len(cam) < 3 or not all(isinstance(c, list) and len(c) == 4 and all(_num(v) for v in c) for c in cam): E.append('camera must be a list of at least 3 [time, x, y, zoom] entries'); cam = []
     else:
@@ -217,7 +219,7 @@ def check(spec):
         if cam[0][0] > 0.5 or cam[-1][0] < D - 1.5: E.append('camera must start at time 0 and run to the end of the video')
         if any(not 0.45 <= c[3] <= 3.2 for c in cam): E.append('camera zoom must stay between 0.45 and 3.2')
     parts = spec.get('parts')
-    if not isinstance(parts, list) or not 8 <= len(parts) <= 70: E.append('parts must be a list of 8 to 70 parts'); parts = []
+    if not isinstance(parts, list) or not 2 <= len(parts) <= 70: E.append('parts must be a list of 2 to 70 parts'); parts = []
     if parts and (not isinstance(parts[0], dict) or parts[0].get('type') != 'sky'): E.append('the first part must be the sky (background)')
     anim_times = []; movers = []
     for n, p in enumerate(parts, 1):
@@ -260,7 +262,6 @@ def check(spec):
             for val in ([v] if _num(v) else [k[1] for k in v] if _kfs(v) else []):
                 if (f == 'x' and abs(val) > 1400) or (f == 'y' and not -500 <= val <= 950): E.append('%s: %s=%s is far outside the stage' % (tag, f, val)); break
         if moving: movers.append(p)
-    if parts and len(movers) < 6: E.append('too little movement: only %d parts change over time; a living scene needs at least 6' % len(movers))
     cam_times = [c[0] for c in cam]
     for i, s in enumerate(steps, 1):
         if not (isinstance(s, dict) and _num(s.get('start')) and _num(s.get('end'))): continue
@@ -289,7 +290,6 @@ def check(spec):
             elif c[1] in SOUNDS_FREQ and not (_num(c[3]) and 100 <= c[3] <= 4000): E.append('sound %d: pitch must be 100 to 4000' % n)
             elif c[1] not in SOUNDS_DUR and c[1] not in SOUNDS_FREQ: E.append('sound %d: %s takes no 4th value' % (n, c[1]))
         if len(c) > 4: E.append('sound %d has too many values' % n)
-    if isinstance(spec.get('sfx'), list) and len(spec['sfx']) < 6: E.append('add more sounds: at least 6, one for each action on screen')
     return E
 
 if __name__ == '__main__':

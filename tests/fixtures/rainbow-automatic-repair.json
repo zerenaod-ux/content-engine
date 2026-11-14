@@ -1,0 +1,1093 @@
+{
+ "title": "Why rainbows appear opposite the Sun 🌈",
+ "principle": "Sunlight refracts, reflects, and disperses in spherical droplets; each droplet sends each wavelength toward the observer at ~42°, producing a circular, observer‑dependent rainbow.",
+ "evidence_version": 1,
+ "basis": {
+  "status": "model_knowledge_unverified",
+  "limitations": "Simplifies droplet shape as perfect spheres, ignores variations in droplet size and atmospheric scattering; exact angle given as typical value"
+ },
+ "duration": 49.6,
+ "music": {
+  "bpm": 118
+ },
+ "flows": [],
+ "steps": [
+  {
+   "start": 0.3,
+   "end": 8.3,
+   "label": "Sunlight",
+   "say": "Sunlight shines down toward the clouds.",
+   "shows": "ray",
+   "evidence": [
+    {
+     "part": "sun",
+     "field": "size",
+     "at": [
+      0.3,
+      8.3
+     ],
+     "values": [
+      0,
+      120
+     ]
+    },
+    {
+     "part": "ray",
+     "field": "progress",
+     "at": [
+      0.3,
+      8.3
+     ],
+     "values": [
+      0,
+      1
+     ]
+    }
+   ],
+   "demonstration": "Bright rays radiate from the Sun and reach the cloud"
+  },
+  {
+   "start": 8.5,
+   "end": 16.5,
+   "label": "Rain",
+   "say": "Rain drops fall through the sunlight.",
+   "shows": "raindrop",
+   "evidence": [
+    {
+     "part": "raindrop",
+     "field": "y",
+     "at": [
+      8.5,
+      16.5
+     ],
+     "values": [
+      200,
+      50
+     ]
+    }
+   ],
+   "demonstration": "A cascade of translucent droplets passes through the sun rays"
+  },
+  {
+   "start": 16.7,
+   "end": 24.7,
+   "label": "Refraction",
+   "say": "Light bends inside each drop, spreading into seven colors.",
+   "shows": "raindrop",
+   "evidence": [
+    {
+     "part": "refract_red",
+     "field": "progress",
+     "at": [
+      16.7,
+      24.7
+     ],
+     "values": [
+      0,
+      1
+     ]
+    },
+    {
+     "part": "refract_violet",
+     "field": "progress",
+     "at": [
+      16.7,
+      24.7
+     ],
+     "values": [
+      0,
+      1
+     ]
+    }
+   ],
+   "demonstration": "refract_red through refract_violet appear."
+  },
+  {
+   "start": 24.9,
+   "end": 32.9,
+   "label": "Reflection",
+   "say": "The split beam reflects off the back surface of the drop.",
+   "shows": "raindrop",
+   "evidence": [
+    {
+     "part": "internal_reflection",
+     "field": "progress",
+     "at": [
+      24.9,
+      32.9
+     ],
+     "values": [
+      0,
+      1
+     ]
+    }
+   ],
+   "demonstration": "internal_reflection shows the bounce."
+  },
+  {
+   "start": 33.1,
+   "end": 41.1,
+   "label": "Exit",
+   "say": "Each color exits the drop toward you at about 42°.",
+   "shows": "viewer",
+   "evidence": [
+    {
+     "part": "exit_red",
+     "field": "progress",
+     "at": [
+      33.1,
+      41.1
+     ],
+     "values": [
+      0,
+      1
+     ]
+    },
+    {
+     "part": "exit_violet",
+     "field": "progress",
+     "at": [
+      33.1,
+      41.1
+     ],
+     "values": [
+      0,
+      1
+     ]
+    }
+   ],
+   "demonstration": "exit_red through exit_violet converge on viewer."
+  },
+  {
+   "start": 41.3,
+   "end": 49.3,
+   "label": "Rainbow",
+   "say": "Many drops create a multicolored arc opposite the Sun.",
+   "shows": "rainbow",
+   "evidence": [
+    {
+     "part": "rainbow_red",
+     "field": "alpha",
+     "at": [
+      41.3,
+      49.3
+     ],
+     "values": [
+      0,
+      1
+     ]
+    },
+    {
+     "part": "rainbow_violet",
+     "field": "alpha",
+     "at": [
+      41.3,
+      49.3
+     ],
+     "values": [
+      0,
+      1
+     ]
+    }
+   ],
+   "demonstration": "rainbow_red through rainbow_violet form the full rainbow."
+  }
+ ],
+ "camera": [
+  [
+   0,
+   122.5,
+   -56.6,
+   0.55
+  ],
+  [
+   0.9,
+   -230.0,
+   208.7,
+   1.65
+  ],
+  [
+   8.1,
+   -230.0,
+   208.7,
+   1.65
+  ],
+  [
+   9.1,
+   -100.0,
+   104.0,
+   2.86
+  ],
+  [
+   16.3,
+   -100.0,
+   104.0,
+   2.86
+  ],
+  [
+   17.3,
+   -100.0,
+   30.0,
+   3.0
+  ],
+  [
+   24.5,
+   -100.0,
+   30.0,
+   3.0
+  ],
+  [
+   25.5,
+   -100.0,
+   30.0,
+   3.0
+  ],
+  [
+   32.7,
+   -100.0,
+   30.0,
+   3.0
+  ],
+  [
+   33.7,
+   170.0,
+   -19.8,
+   0.86
+  ],
+  [
+   40.9,
+   170.0,
+   -19.8,
+   0.86
+  ],
+  [
+   41.9,
+   400.0,
+   -157.2,
+   1.05
+  ],
+  [
+   49.1,
+   400.0,
+   -157.2,
+   1.05
+  ],
+  [
+   49.6,
+   122.5,
+   -56.6,
+   0.55
+  ]
+ ],
+ "sfx": [
+  [
+   0.3,
+   "hum",
+   0.6,
+   3.0
+  ],
+  [
+   8.5,
+   "whoosh",
+   0.7,
+   3.0
+  ],
+  [
+   16.7,
+   "chime",
+   0.5
+  ],
+  [
+   24.9,
+   "chime",
+   0.5
+  ],
+  [
+   33.1,
+   "chime",
+   0.5
+  ],
+  [
+   41.3,
+   "sparkle",
+   0.8,
+   3.0
+  ]
+ ],
+ "parts": [
+  {
+   "type": "sky",
+   "preset": "day"
+  },
+  {
+   "type": "ground",
+   "y": 0,
+   "kind": "grass"
+  },
+  {
+   "id": "sun",
+   "type": "emoji",
+   "char": "☀️",
+   "x": -300,
+   "y": 250,
+   "size": [
+    [
+     0.3,
+     0
+    ],
+    [
+     8.3,
+     120
+    ]
+   ]
+  },
+  {
+   "id": "cloud",
+   "type": "emoji",
+   "char": "☁️",
+   "x": -100,
+   "y": 180,
+   "size": 100
+  },
+  {
+   "id": "raindrop",
+   "type": "ellipse",
+   "x": -100,
+   "y": [
+    [
+     0,
+     200
+    ],
+    [
+     8.5,
+     200
+    ],
+    [
+     16.5,
+     50
+    ],
+    [
+     49.6,
+     50
+    ]
+   ],
+   "rx": 20,
+   "ry": 30,
+   "rot": [
+    [
+     24.9,
+     0
+    ],
+    [
+     32.9,
+     15
+    ],
+    [
+     49.6,
+     15
+    ]
+   ],
+   "fill": "#FFFFFF",
+   "stroke": "#00AEEF",
+   "lw": 2,
+   "alpha": [
+    [
+     0,
+     0
+    ],
+    [
+     8.5,
+     0
+    ],
+    [
+     16.5,
+     1
+    ],
+    [
+     49.6,
+     1
+    ]
+   ]
+  },
+  {
+   "id": "viewer",
+   "type": "emoji",
+   "char": "👤",
+   "x": 350,
+   "y": 50,
+   "size": [
+    [
+     0,
+     120
+    ],
+    [
+     33.1,
+     120
+    ],
+    [
+     41.1,
+     140
+    ],
+    [
+     49.6,
+     140
+    ]
+   ]
+  },
+  {
+   "id": "rainbow",
+   "type": "path",
+   "d": "M 200 200 A 200 200 0 0 1 600 200",
+   "stroke": "#FFFFFF",
+   "lw": 10,
+   "alpha": [
+    [
+     0,
+     0
+    ],
+    [
+     49.6,
+     0
+    ]
+   ]
+  },
+  {
+   "id": "ray",
+   "type": "line",
+   "pts": [
+    [
+     -300,
+     250
+    ],
+    [
+     -100,
+     180
+    ]
+   ],
+   "color": "#FFFFFF",
+   "w": 2,
+   "progress": [
+    [
+     0.3,
+     0
+    ],
+    [
+     8.3,
+     1
+    ],
+    [
+     49.6,
+     1
+    ]
+   ]
+  },
+  {
+   "id": "refract_line",
+   "type": "line",
+   "pts": [
+    [
+     -100,
+     50
+    ],
+    [
+     -80,
+     80
+    ]
+   ],
+   "color": "#FFFFFF",
+   "w": 2,
+   "progress": [
+    [
+     0,
+     0
+    ],
+    [
+     49.6,
+     0
+    ]
+   ]
+  },
+  {
+   "id": "arrow",
+   "type": "line",
+   "pts": [
+    [
+     -80,
+     80
+    ],
+    [
+     -80,
+     60
+    ]
+   ],
+   "color": "#FFFFFF",
+   "w": 2,
+   "progress": [
+    [
+     0,
+     0
+    ],
+    [
+     49.6,
+     0
+    ]
+   ]
+  },
+  {
+   "id": "exit_line",
+   "type": "line",
+   "pts": [
+    [
+     -80,
+     80
+    ],
+    [
+     350,
+     80
+    ]
+   ],
+   "color": "#FFFFFF",
+   "w": 2,
+   "progress": [
+    [
+     0,
+     0
+    ],
+    [
+     49.6,
+     0
+    ]
+   ]
+  },
+  {
+   "id": "refract_red",
+   "type": "line",
+   "pts": [
+    [
+     -100,
+     50
+    ],
+    [
+     -90,
+     70
+    ]
+   ],
+   "color": "#FF0000",
+   "w": 2,
+   "progress": [
+    [
+     16.7,
+     0
+    ],
+    [
+     24.7,
+     1
+    ]
+   ]
+  },
+  {
+   "id": "refract_orange",
+   "type": "line",
+   "pts": [
+    [
+     -100,
+     50
+    ],
+    [
+     -88,
+     68
+    ]
+   ],
+   "color": "#FF7F00",
+   "w": 2,
+   "progress": [
+    [
+     16.7,
+     0
+    ],
+    [
+     24.7,
+     1
+    ]
+   ]
+  },
+  {
+   "id": "refract_yellow",
+   "type": "line",
+   "pts": [
+    [
+     -100,
+     50
+    ],
+    [
+     -86,
+     66
+    ]
+   ],
+   "color": "#FFFF00",
+   "w": 2,
+   "progress": [
+    [
+     16.7,
+     0
+    ],
+    [
+     24.7,
+     1
+    ]
+   ]
+  },
+  {
+   "id": "refract_green",
+   "type": "line",
+   "pts": [
+    [
+     -100,
+     50
+    ],
+    [
+     -84,
+     64
+    ]
+   ],
+   "color": "#00FF00",
+   "w": 2,
+   "progress": [
+    [
+     16.7,
+     0
+    ],
+    [
+     24.7,
+     1
+    ]
+   ]
+  },
+  {
+   "id": "refract_blue",
+   "type": "line",
+   "pts": [
+    [
+     -100,
+     50
+    ],
+    [
+     -82,
+     62
+    ]
+   ],
+   "color": "#0000FF",
+   "w": 2,
+   "progress": [
+    [
+     16.7,
+     0
+    ],
+    [
+     24.7,
+     1
+    ]
+   ]
+  },
+  {
+   "id": "refract_indigo",
+   "type": "line",
+   "pts": [
+    [
+     -100,
+     50
+    ],
+    [
+     -80,
+     60
+    ]
+   ],
+   "color": "#4B0082",
+   "w": 2,
+   "progress": [
+    [
+     16.7,
+     0
+    ],
+    [
+     24.7,
+     1
+    ]
+   ]
+  },
+  {
+   "id": "refract_violet",
+   "type": "line",
+   "pts": [
+    [
+     -100,
+     50
+    ],
+    [
+     -78,
+     58
+    ]
+   ],
+   "color": "#8B00FF",
+   "w": 2,
+   "progress": [
+    [
+     16.7,
+     0
+    ],
+    [
+     24.7,
+     1
+    ]
+   ]
+  },
+  {
+   "id": "internal_reflection",
+   "type": "line",
+   "pts": [
+    [
+     -80,
+     70
+    ],
+    [
+     -80,
+     50
+    ]
+   ],
+   "color": "#FFFFFF",
+   "w": 2,
+   "progress": [
+    [
+     24.9,
+     0
+    ],
+    [
+     32.9,
+     1
+    ]
+   ]
+  },
+  {
+   "id": "exit_red",
+   "type": "line",
+   "pts": [
+    [
+     -80,
+     70
+    ],
+    [
+     350,
+     70
+    ]
+   ],
+   "color": "#FF0000",
+   "w": 2,
+   "progress": [
+    [
+     33.1,
+     0
+    ],
+    [
+     41.1,
+     1
+    ]
+   ]
+  },
+  {
+   "id": "exit_orange",
+   "type": "line",
+   "pts": [
+    [
+     -80,
+     68
+    ],
+    [
+     350,
+     68
+    ]
+   ],
+   "color": "#FF7F00",
+   "w": 2,
+   "progress": [
+    [
+     33.1,
+     0
+    ],
+    [
+     41.1,
+     1
+    ]
+   ]
+  },
+  {
+   "id": "exit_yellow",
+   "type": "line",
+   "pts": [
+    [
+     -80,
+     66
+    ],
+    [
+     350,
+     66
+    ]
+   ],
+   "color": "#FFFF00",
+   "w": 2,
+   "progress": [
+    [
+     33.1,
+     0
+    ],
+    [
+     41.1,
+     1
+    ]
+   ]
+  },
+  {
+   "id": "exit_green",
+   "type": "line",
+   "pts": [
+    [
+     -80,
+     64
+    ],
+    [
+     350,
+     64
+    ]
+   ],
+   "color": "#00FF00",
+   "w": 2,
+   "progress": [
+    [
+     33.1,
+     0
+    ],
+    [
+     41.1,
+     1
+    ]
+   ]
+  },
+  {
+   "id": "exit_blue",
+   "type": "line",
+   "pts": [
+    [
+     -80,
+     62
+    ],
+    [
+     350,
+     62
+    ]
+   ],
+   "color": "#0000FF",
+   "w": 2,
+   "progress": [
+    [
+     33.1,
+     0
+    ],
+    [
+     41.1,
+     1
+    ]
+   ]
+  },
+  {
+   "id": "exit_indigo",
+   "type": "line",
+   "pts": [
+    [
+     -80,
+     60
+    ],
+    [
+     350,
+     60
+    ]
+   ],
+   "color": "#4B0082",
+   "w": 2,
+   "progress": [
+    [
+     33.1,
+     0
+    ],
+    [
+     41.1,
+     1
+    ]
+   ]
+  },
+  {
+   "id": "exit_violet",
+   "type": "line",
+   "pts": [
+    [
+     -80,
+     58
+    ],
+    [
+     350,
+     58
+    ]
+   ],
+   "color": "#8B00FF",
+   "w": 2,
+   "progress": [
+    [
+     33.1,
+     0
+    ],
+    [
+     41.1,
+     1
+    ]
+   ]
+  },
+  {
+   "id": "rainbow_red",
+   "type": "path",
+   "d": "M 200 200 A 200 200 0 0 1 600 200",
+   "stroke": "#FF0000",
+   "lw": 8,
+   "alpha": [
+    [
+     41.3,
+     0
+    ],
+    [
+     49.3,
+     1
+    ]
+   ]
+  },
+  {
+   "id": "rainbow_orange",
+   "type": "path",
+   "d": "M 200 200 A 200 200 0 0 1 600 200",
+   "stroke": "#FF7F00",
+   "lw": 8,
+   "alpha": [
+    [
+     41.3,
+     0
+    ],
+    [
+     49.3,
+     1
+    ]
+   ]
+  },
+  {
+   "id": "rainbow_yellow",
+   "type": "path",
+   "d": "M 200 200 A 200 200 0 0 1 600 200",
+   "stroke": "#FFFF00",
+   "lw": 8,
+   "alpha": [
+    [
+     41.3,
+     0
+    ],
+    [
+     49.3,
+     1
+    ]
+   ]
+  },
+  {
+   "id": "rainbow_green",
+   "type": "path",
+   "d": "M 200 200 A 200 200 0 0 1 600 200",
+   "stroke": "#00FF00",
+   "lw": 8,
+   "alpha": [
+    [
+     41.3,
+     0
+    ],
+    [
+     49.3,
+     1
+    ]
+   ]
+  },
+  {
+   "id": "rainbow_blue",
+   "type": "path",
+   "d": "M 200 200 A 200 200 0 0 1 600 200",
+   "stroke": "#0000FF",
+   "lw": 8,
+   "alpha": [
+    [
+     41.3,
+     0
+    ],
+    [
+     49.3,
+     1
+    ]
+   ]
+  },
+  {
+   "id": "rainbow_indigo",
+   "type": "path",
+   "d": "M 200 200 A 200 200 0 0 1 600 200",
+   "stroke": "#4B0082",
+   "lw": 8,
+   "alpha": [
+    [
+     41.3,
+     0
+    ],
+    [
+     49.3,
+     1
+    ]
+   ]
+  },
+  {
+   "id": "rainbow_violet",
+   "type": "path",
+   "d": "M 200 200 A 200 200 0 0 1 600 200",
+   "stroke": "#8B00FF",
+   "lw": 8,
+   "alpha": [
+    [
+     41.3,
+     0
+    ],
+    [
+     49.3,
+     1
+    ]
+   ]
+  }
+ ],
+ "_focus_repairs": [
+  {
+   "from": "sun",
+   "to": "ray",
+   "step": 1
+  }
+ ],
+ "repair_provenance": {
+  "method": "automatic patch from saved failed scene; reused after correcting incompatible focus validator",
+  "source_run": 43527458395,
+  "manual_scene_edits": false,
+  "semantic_verification": false
+ },
+ "_path_bounds": {
+  "M 200 200 A 200 200 0 0 1 600 200": [
+   200,
+   0,
+   400,
+   200
+  ]
+ }
+}

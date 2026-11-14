@@ -1,0 +1,562 @@
+{
+ "title": "Why rainbows appear opposite the Sun 🌈",
+ "principle": "Rainbows form when sunlight enters spherical water droplets, is refracted, internally reflected, and dispersed. The exiting light leaves each droplet at a fixed angle (~42°) relative to the incoming sun ray. Only droplets that send light toward the observer at that angle contribute, so the observer sees a circular arc centered on the point opposite the Sun. Common misconceptions: the rainbow is a material arc in the sky, and it stays in one place regardless of the viewer. In reality it is a visual effect that moves with the observer.",
+ "evidence_version": 1,
+ "basis": {
+  "status": "model_knowledge_unverified",
+  "limitations": "Simplifies droplet shape as perfect spheres, ignores variations in droplet size and atmospheric scattering; exact angle given as typical value"
+ },
+ "duration": 49.6,
+ "music": {
+  "bpm": 118
+ },
+ "flows": [],
+ "steps": [
+  {
+   "start": 0.3,
+   "end": 8.3,
+   "label": "Sunlight",
+   "say": "Sunlight shines down toward the clouds.",
+   "shows": "sun",
+   "evidence": [
+    {
+     "part": "sun",
+     "field": "size",
+     "at": [
+      0.3,
+      8.3
+     ],
+     "values": [
+      0,
+      120
+     ]
+    },
+    {
+     "part": "ray",
+     "field": "progress",
+     "at": [
+      0.3,
+      8.3
+     ],
+     "values": [
+      0,
+      1
+     ]
+    }
+   ],
+   "demonstration": "Bright rays radiate from the Sun and reach the cloud"
+  },
+  {
+   "start": 8.5,
+   "end": 16.5,
+   "label": "Rain",
+   "say": "Rain drops fall through the sunlight.",
+   "shows": "raindrop",
+   "evidence": [
+    {
+     "part": "raindrop",
+     "field": "y",
+     "at": [
+      8.5,
+      16.5
+     ],
+     "values": [
+      200,
+      50
+     ]
+    }
+   ],
+   "demonstration": "A cascade of translucent droplets passes through the sun rays"
+  },
+  {
+   "start": 16.7,
+   "end": 24.7,
+   "label": "Refraction",
+   "say": "Each drop bends the light, separating colors.",
+   "shows": "raindrop",
+   "evidence": [
+    {
+     "part": "refract_line",
+     "field": "progress",
+     "at": [
+      16.7,
+      24.7
+     ],
+     "values": [
+      0,
+      1
+     ]
+    }
+   ],
+   "demonstration": "Cut‑away view shows rays bending and spreading into red, orange, yellow, green, blue, indigo, violet"
+  },
+  {
+   "start": 24.9,
+   "end": 32.9,
+   "label": "Reflection",
+   "say": "The light reflects off the back of the drop.",
+   "shows": "raindrop",
+   "evidence": [
+    {
+     "part": "raindrop",
+     "field": "rot",
+     "at": [
+      24.9,
+      32.9
+     ],
+     "values": [
+      0,
+      15
+     ]
+    }
+   ],
+   "demonstration": "An arrow inside the droplet shows a bounce off the rear surface"
+  },
+  {
+   "start": 33.1,
+   "end": 41.1,
+   "label": "Exit",
+   "say": "Light exits the drop toward the viewer at a 42° angle.",
+   "shows": "viewer",
+   "evidence": [
+    {
+     "part": "exit_line",
+     "field": "progress",
+     "at": [
+      33.1,
+      41.1
+     ],
+     "values": [
+      0,
+      1
+     ]
+    }
+   ],
+   "demonstration": "Lines leave the droplet and converge on the viewer’s eye at the characteristic angle"
+  },
+  {
+   "start": 41.3,
+   "end": 49.3,
+   "label": "Rainbow",
+   "say": "The viewer sees many drops forming a circular arc opposite the Sun.",
+   "shows": "rainbow",
+   "evidence": [
+    {
+     "part": "rainbow",
+     "field": "alpha",
+     "at": [
+      41.3,
+      49.3
+     ],
+     "values": [
+      0,
+      1
+     ]
+    }
+   ],
+   "demonstration": "A bright, multicolored arc spans the sky with the Sun behind the viewer"
+  }
+ ],
+ "camera": [
+  [
+   0,
+   25.0,
+   20.1,
+   0.56
+  ],
+  [
+   0.9,
+   -300.0,
+   230.0,
+   3.0
+  ],
+  [
+   8.1,
+   -300.0,
+   230.0,
+   3.0
+  ],
+  [
+   9.1,
+   -100.0,
+   104.0,
+   2.86
+  ],
+  [
+   16.3,
+   -100.0,
+   104.0,
+   2.86
+  ],
+  [
+   17.3,
+   -100.0,
+   30.0,
+   3.0
+  ],
+  [
+   24.5,
+   -100.0,
+   30.0,
+   3.0
+  ],
+  [
+   25.5,
+   -100.0,
+   30.0,
+   3.0
+  ],
+  [
+   32.7,
+   -100.0,
+   30.0,
+   3.0
+  ],
+  [
+   33.7,
+   350.0,
+   30.0,
+   3.0
+  ],
+  [
+   40.9,
+   350.0,
+   30.0,
+   3.0
+  ],
+  [
+   41.9,
+   0.0,
+   -20.0,
+   3.0
+  ],
+  [
+   49.1,
+   0.0,
+   -20.0,
+   3.0
+  ],
+  [
+   49.6,
+   25.0,
+   20.1,
+   0.56
+  ]
+ ],
+ "sfx": [
+  [
+   0.3,
+   "hum",
+   0.6,
+   3.0
+  ],
+  [
+   8.5,
+   "whoosh",
+   0.7,
+   3.0
+  ],
+  [
+   16.7,
+   "chime",
+   0.5
+  ],
+  [
+   24.9,
+   "chime",
+   0.5
+  ],
+  [
+   33.1,
+   "chime",
+   0.5
+  ],
+  [
+   41.3,
+   "sparkle",
+   0.8,
+   3.0
+  ]
+ ],
+ "parts": [
+  {
+   "type": "sky",
+   "preset": "day"
+  },
+  {
+   "type": "ground",
+   "y": 0,
+   "kind": "grass"
+  },
+  {
+   "id": "sun",
+   "type": "emoji",
+   "char": "☀️",
+   "x": -300,
+   "y": 250,
+   "size": [
+    [
+     0.3,
+     0
+    ],
+    [
+     8.3,
+     120
+    ]
+   ]
+  },
+  {
+   "id": "cloud",
+   "type": "emoji",
+   "char": "☁️",
+   "x": -100,
+   "y": 180,
+   "size": 100
+  },
+  {
+   "id": "raindrop",
+   "type": "ellipse",
+   "x": -100,
+   "y": [
+    [
+     0,
+     200
+    ],
+    [
+     8.5,
+     200
+    ],
+    [
+     16.5,
+     50
+    ],
+    [
+     49.6,
+     50
+    ]
+   ],
+   "rx": 20,
+   "ry": 30,
+   "rot": [
+    [
+     24.9,
+     0
+    ],
+    [
+     32.9,
+     15
+    ],
+    [
+     49.6,
+     15
+    ]
+   ],
+   "fill": "#FFFFFF",
+   "stroke": "#00AEEF",
+   "lw": 2,
+   "alpha": [
+    [
+     0,
+     0
+    ],
+    [
+     8.5,
+     0
+    ],
+    [
+     16.5,
+     1
+    ],
+    [
+     49.6,
+     1
+    ]
+   ]
+  },
+  {
+   "id": "viewer",
+   "type": "emoji",
+   "char": "👤",
+   "x": 350,
+   "y": 50,
+   "size": [
+    [
+     0,
+     120
+    ],
+    [
+     33.1,
+     120
+    ],
+    [
+     41.1,
+     140
+    ],
+    [
+     49.6,
+     140
+    ]
+   ]
+  },
+  {
+   "id": "rainbow",
+   "type": "path",
+   "d": "M 200 200 A 200 200 0 0 1 600 200",
+   "x": 0,
+   "y": 0,
+   "fill": "none",
+   "stroke": "#FF0000",
+   "lw": 10,
+   "alpha": [
+    [
+     0,
+     0
+    ],
+    [
+     41.3,
+     0
+    ],
+    [
+     49.3,
+     1
+    ],
+    [
+     49.6,
+     1
+    ]
+   ]
+  },
+  {
+   "id": "ray",
+   "type": "line",
+   "pts": [
+    [
+     -300,
+     250
+    ],
+    [
+     -100,
+     180
+    ]
+   ],
+   "color": "#FFFFFF",
+   "w": 2,
+   "progress": [
+    [
+     0.3,
+     0
+    ],
+    [
+     8.3,
+     1
+    ],
+    [
+     49.6,
+     1
+    ]
+   ]
+  },
+  {
+   "id": "refract_line",
+   "type": "line",
+   "pts": [
+    [
+     -100,
+     50
+    ],
+    [
+     -80,
+     80
+    ]
+   ],
+   "color": "#FF0000",
+   "w": 2,
+   "progress": [
+    [
+     0,
+     0
+    ],
+    [
+     16.7,
+     0
+    ],
+    [
+     24.7,
+     1
+    ],
+    [
+     49.6,
+     1
+    ]
+   ]
+  },
+  {
+   "id": "arrow",
+   "type": "line",
+   "pts": [
+    [
+     -80,
+     80
+    ],
+    [
+     -80,
+     60
+    ]
+   ],
+   "color": "#FFFFFF",
+   "w": 2,
+   "progress": [
+    [
+     0,
+     0
+    ],
+    [
+     24.9,
+     0
+    ],
+    [
+     32.9,
+     1
+    ],
+    [
+     49.6,
+     1
+    ]
+   ]
+  },
+  {
+   "id": "exit_line",
+   "type": "line",
+   "pts": [
+    [
+     -80,
+     80
+    ],
+    [
+     350,
+     80
+    ]
+   ],
+   "color": "#FFFFFF",
+   "w": 2,
+   "progress": [
+    [
+     0,
+     0
+    ],
+    [
+     33.1,
+     0
+    ],
+    [
+     41.1,
+     1
+    ],
+    [
+     49.6,
+     1
+    ]
+   ]
+  }
+ ]
+}

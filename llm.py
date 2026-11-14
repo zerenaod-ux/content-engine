@@ -2,7 +2,9 @@
 Providers (all free tiers, OpenAI-compatible), tried in order when their key is present in the environment:
   GROQ_API_KEY (api.groq.com), CEREBRAS_API_KEY (api.cerebras.ai), OPENROUTER_API_KEY (openrouter.ai, ':free' models), MISTRAL_API_KEY (api.mistral.ai).
 Model names change, so each provider is asked for its model list and the best known family is chosen. Returns text / parsed JSON, or raises ValueError."""
-import json, os, re, urllib.request, urllib.error
+import json, os, re, time, urllib.request, urllib.error, urllib.parse
+import email.utils
+from pathlib import Path
 
 PROVIDERS = [
     ('GROQ_API_KEY', 'https://api.groq.com/openai/v1', ('gpt-oss-120b', 'llama-3.3-70b', 'qwen3', 'llama', 'gpt-oss')),
@@ -13,10 +15,56 @@ PROVIDERS = [
 _CACHE = {}
 
 
+class BudgetExceeded(ValueError):
+    pass
+
+class ProviderCoolingDown(ValueError):
+    pass
+
+_STARTED = time.monotonic()
+
 def _req(url, key, body=None):
-    r = urllib.request.Request(url, json.dumps(body).encode() if body is not None else None, {'Authorization': 'Bearer ' + key, 'Content-Type': 'application/json', 'User-Agent': 'studio/1.0'})
-    with urllib.request.urlopen(r, timeout=90) as x:
-        return json.load(x)
+    # Shared on-disk ledger covers idea maker and writer subprocesses in one run.
+    path = Path(os.environ.get('CE_METRICS_PATH', 'metrics.json'))
+    try: metrics = json.loads(path.read_text())
+    except (OSError, ValueError): metrics = {'requests': 0, 'seconds': 0, 'responses': 0, 'failures': 0, 'started_at': time.time(), 'usage': {}}
+    if metrics['requests'] >= int(os.environ.get('CE_MAX_REQUESTS', '24')) or time.time() - metrics.setdefault('started_at', time.time()) >= float(os.environ.get('CE_MAX_SECONDS', '480')):
+        raise BudgetExceeded('free request/time budget exhausted; accepted stages remain cached')
+    host=urllib.parse.urlparse(url).hostname
+    limit=metrics.get('rate_limits',{}).get(host)
+    if limit and (limit.get('retry_at') is None or time.time()<limit['retry_at']):
+        raise ProviderCoolingDown('provider rate-limited; remaining requests preserved')
+    metrics['requests'] += 1
+    path.write_text(json.dumps(metrics, indent=1))
+    started = time.monotonic()
+    try:
+        r = urllib.request.Request(url, json.dumps(body).encode() if body is not None else None, {'Authorization': 'Bearer ' + key, 'Content-Type': 'application/json', 'User-Agent': 'studio/1.0'})
+        with urllib.request.urlopen(r, timeout=max(1, min(90, float(os.environ.get('CE_MAX_SECONDS', '480')) - (time.time() - metrics['started_at'])))) as x:
+            result = json.load(x)
+        metrics['responses'] += 1
+        usage = result.get('usage', {})
+        for name in ('prompt_tokens', 'completion_tokens', 'total_tokens'):
+            if isinstance(usage.get(name), int): metrics.setdefault('usage', {})[name] = metrics.get('usage', {}).get(name, 0) + usage[name]
+        return result
+    except urllib.error.HTTPError as e:
+        metrics['failures'] += 1
+        metrics.setdefault('http_statuses',{})[str(e.code)]=metrics.get('http_statuses',{}).get(str(e.code),0)+1
+        if e.code==429:
+            raw=e.headers.get('Retry-After') if e.headers else None
+            retry_at=None
+            if raw:
+                try: retry_at=time.time()+max(0,float(raw))
+                except ValueError:
+                    try: retry_at=email.utils.parsedate_to_datetime(raw).timestamp()
+                    except (ValueError,TypeError,OverflowError): pass
+            metrics.setdefault('rate_limits',{})[host]={'retry_at':retry_at,'retry_after':raw}
+        raise
+    except Exception:
+        metrics['failures'] += 1
+        raise
+    finally:
+        metrics['seconds'] = round(metrics['seconds'] + time.monotonic() - started, 3)
+        path.write_text(json.dumps(metrics, indent=1))
 
 
 def _models(env, base, prefs, key):
@@ -45,6 +93,7 @@ def text(system, prompt, json_mode=True, temperature=0.8, max_tokens=6000):
             continue
         try:
             models = _models(env, base, prefs, key)
+        except BudgetExceeded: raise
         except Exception as e:
             last = '%s model list: %s' % (env, str(e)[:80]); continue
         for model in models:
@@ -59,6 +108,7 @@ def text(system, prompt, json_mode=True, temperature=0.8, max_tokens=6000):
                     if t and t.strip():
                         print('llm.py: answered by', env.split('_')[0], model, flush=True)
                         return t
+                except BudgetExceeded: raise
                 except urllib.error.HTTPError as e:
                     last = '%s %s HTTP %s' % (env.split('_')[0], model, e.code)
                     if e.code == 400 and json_mode and attempt == 0:

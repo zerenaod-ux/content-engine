@@ -1,0 +1,99 @@
+name: bounded-evidence-samples
+# Validation revision: compile declared animations and normalize duration arithmetic.
+on:
+  push:
+    branches: [improve-evidence-pipeline]
+    paths: [.github/workflows/evidence-samples.yml]
+permissions:
+  contents: read
+jobs:
+  repair-rainbow:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CE_MAX_REQUESTS: '16'
+      CE_MAX_SECONDS: '300'
+      CE_REPAIR_CONTEXT: tests/fixtures/rainbow-reference.txt
+      GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install --quiet numpy pillow imageio-ffmpeg edge-tts requests
+      - run: python3 -m unittest discover -s tests -v
+      - run: npm install --no-save playwright@1.49.1 @fontsource/noto-color-emoji
+      - run: npx playwright install --with-deps chromium
+      - name: Repair the saved rejected scene without repeating idea or plan calls
+        run: |
+          python3 scene_lib/repair.py tests/fixtures/rainbow-automatic-repair.json tests/fixtures/rainbow-automatic-repair-report.json auto-scene.json tests/fixtures/rainbow-reference.txt
+          python3 scene_lib/build.py auto-scene.json sample.mp4
+      - name: Retain repair outcome, including failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: automatic-rainbow-repair
+          path: |
+            auto-scene.json
+            attempts/*.json
+            *-log.txt
+            metrics.json
+            evidence-report.json
+            sample.mp4
+            fr/evidence/
+          retention-days: 14
+  samples:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        topic:
+          - How a toaster browns bread
+          - How a seed grows toward light
+    env:
+      CE_MAX_REQUESTS: '16'
+      CE_MAX_SECONDS: '300'
+      GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install --quiet numpy pillow imageio-ffmpeg edge-tts requests
+      - run: python3 -m unittest discover -s tests -v
+      - run: npm install --no-save playwright@1.49.1 @fontsource/noto-color-emoji
+      - run: npx playwright install --with-deps chromium
+      - name: Fresh automatic writing (bounded; no posting or review notifications)
+        env:
+          SAMPLE_TOPIC: ${{ matrix.topic }}
+        run: |
+          printf '%s\n' "$SAMPLE_TOPIC" > topic.txt
+          python3 scene_lib/writer.py --topic-file topic.txt auto-scene.json
+      - name: Draw and inspect
+        run: |
+          python3 scene_lib/build.py auto-scene.json sample.mp4
+      - name: Retain evidence even if rejected
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sample-${{ strategy.job-index }}
+          path: |
+            auto-*.json
+            topic.txt
+            attempts/*.json
+            *-log.txt
+            metrics.json
+            evidence-report.json
+            sample.mp4
+            fr/evidence/
+          retention-days: 14

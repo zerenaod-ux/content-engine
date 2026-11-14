@@ -1,0 +1,109 @@
+{
+ "checks": "blankness, frame variation, numeric contracts and sampled part visibility",
+ "semantic_verification": false,
+ "factual_verification": false,
+ "human_review_required": true,
+ "errors": [
+  "step 6: declared evidence rainbow is absent, tiny or occluded"
+ ],
+ "evidence": [
+  {
+   "step": 1,
+   "part": "sun",
+   "field": "size",
+   "files": [
+    "0-0-0",
+    "0-0-1"
+   ],
+   "visible_pixels": [
+    0,
+    68121
+   ],
+   "visible": true
+  },
+  {
+   "step": 1,
+   "part": "ray",
+   "field": "progress",
+   "files": [
+    "0-1-0",
+    "0-1-1"
+   ],
+   "visible_pixels": [
+    0,
+    3276
+   ],
+   "visible": true
+  },
+  {
+   "step": 2,
+   "part": "raindrop",
+   "field": "y",
+   "files": [
+    "1-0-0",
+    "1-0-1"
+   ],
+   "visible_pixels": [
+    0,
+    17384
+   ],
+   "visible": true
+  },
+  {
+   "step": 3,
+   "part": "refract_line",
+   "field": "progress",
+   "files": [
+    "2-0-0",
+    "2-0-1"
+   ],
+   "visible_pixels": [
+    0,
+    896
+   ],
+   "visible": true
+  },
+  {
+   "step": 4,
+   "part": "raindrop",
+   "field": "rot",
+   "files": [
+    "3-0-0",
+    "3-0-1"
+   ],
+   "visible_pixels": [
+    18476,
+    18526
+   ],
+   "visible": true
+  },
+  {
+   "step": 5,
+   "part": "exit_line",
+   "field": "progress",
+   "files": [
+    "4-0-0",
+    "4-0-1"
+   ],
+   "visible_pixels": [
+    0,
+    3307
+   ],
+   "visible": true
+  },
+  {
+   "step": 6,
+   "part": "rainbow",
+   "field": "alpha",
+   "files": [
+    "5-0-0",
+    "5-0-1"
+   ],
+   "visible_pixels": [
+    0,
+    0
+   ],
+   "visible": false
+  }
+ ]
+}

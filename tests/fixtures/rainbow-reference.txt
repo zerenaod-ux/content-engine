@@ -1,0 +1,12 @@
+Human-supplied factual context for this regression scenario, consulted 2026-11-13:
+https://www.weather.gov/fgz/Rainbow
+Sunlight refracts into a water droplet, some reflects internally, then refracts out.
+Different wavelengths take slightly different directions. The bow is observer-dependent:
+the Sun is behind the observer, and raindrops ahead send light back toward their eye.
+Different droplets contribute the colours in different viewing directions. Red is outside,
+blue/violet inside in a primary rainbow. About 42 degrees describes the viewing direction
+from the antisolar direction for red, not a universal exit angle relative to the incoming ray.
+The arc is not a beam curling through space. Use clear schematic diagrams with their
+simplifications disclosed. The failed scene promised a spectrum and a multicolour arc but
+provided only one red line and one red arc; it did not actually depict the promised mechanism.
+Do not treat a rotating drop or a generic moving white line as proof of reflection or dispersion.

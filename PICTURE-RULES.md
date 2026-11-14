@@ -21,3 +21,7 @@
 
 ## Status
 - 2026-11-13: rules written; prop library started with the first objects; checker rule added. Next: more props (engine, heart, lungs, plant cell, car, plane, volcano, bridge...), one model scene built with props.
+
+## 2026-11-13 — implementation branch clarification
+
+Recognition, scientific correctness and narration/visual meaning are not established by the structural checker. The old description above overstates enforcement. New scene contracts name the indispensable demonstration parts and their numeric changes; contrasts can require distinct colours and paths. The renderer samples each evidence part's actual visible contribution by comparing the composition with and without it. SVG camera bounds are measured by the browser instead of assuming all paths are small and centred. These checks detect concrete missing/hidden/identical elements; they do not replace factual or human visual review. A detailed path is an allowed first-step subject. Forced punctuation, fixed ten-beat pacing, decorative movement quotas and compulsory per-beat sounds are removed on this branch. The original owner feedback above is preserved.
