@@ -78,3 +78,8 @@ A complete local build of the authored rainbow, starting with its eight accepted
 ## 2026-11-13 — review package and cloud test result (append-only)
 
 Reviewable draft PR: https://github.com/zerenaod-ux/content-engine/pull/7 . Review videos and supporting files: https://github.com/zerenaod-ux/content-engine/releases/tag/ce-review-20261114-000628 . All 21 regression tests, Python compilation and renderer JavaScript syntax passed in credential-free cloud run `43531835923` at source `bb2925980cd04829d2253e8c89cd5e1411f3bdb8`. The package labels the authored narrated repair, rejected automatic silent render and legacy silent compatibility renders separately. It includes cache measurements, scene JSON, a factual rejection note, image contact sheets and file hashes. The overall reliable automatic-quality objective remains incomplete; this is a draft for inspection, not a production rollout. Posting remains OFF and the other systems are unchanged.
+
+## 2026-11-13 — merged and speaker style (append-only)
+- PR #7 merged into main by the owner's approval after she reviewed the 55-second repaired rainbow video ("it's perfect"). The other review videos were silent checks, not finished videos.
+- New speaker style rule in the writer (owner's choice, based on a viral how-to Short she shared): talk straight to the viewer, one concrete action per sentence in clear order, small physical details, say why it works, calm confident tone, reassuring payoff. Only the style is used, never the other video's words.
+- Not yet done: measuring the voice of the YouTube example (https://www.youtube.com/shorts/Dse32ddr_Js). YouTube cannot be reached from the AI's workspace; the owner can upload the video file to measure pace, pauses and loudness.
