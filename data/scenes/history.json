@@ -287,5 +287,22 @@
   ],
   "category": "earth, volcanoes and oceans",
   "failed": true
+ },
+ {
+  "techniques": [],
+  "failure_cause": "topic: How does the heart pump blood throughout the body?\nplan try 1: PASSED\nprinciple: The heart works as a double pump, moving deoxygenated blood to the lungs and oxygen‑rich blood to the body through coordinated chamber contractions and valve direction.\ncast: heart (human heart), ra (right atrium), rv (right ventricle), la (left atrium), lv (left ventricle), pa (pulmonary artery), pv (pulmonary vein), lungs (lungs), aorta (aorta), veins (systemic veins), blood (blood particles)\nscene try 1: 10 problems: step 1 demonstration: blood.progress is not a supported numeric animation field; choose a part/field from the catalog (alpha is reveal only) | step 2 demonstration: blood.progress is not a supported numeric animation field; choose a part/field from the catalog (alpha is reveal only) | step 3 demonstration: blood.progress is not a supported numeric animation field; choose a part/field from the catalog (alpha is reveal only) | step 4 demonstration: blood.progress is not a supported numeric animation field; choose a part/field from the catalog (alpha is reveal only) | step 5 demonstration: blood.progress is not a supported numeric animation field; choose a part/field from the catalog (alpha is reveal only) | step 6 demonstration: blood.progress is not a supported numeric animation field; choose a part/field from the catalog (alpha is reveal only) | step 7 demonstration: blood.progress is not a supported numeric animation field; choose a part/field from the catalog (alpha is reveal only) | step 8 demonstration: blood.progress is not a supported numeric animation field; choose a part/field from the catalog (alpha is reveal only)\nscene: no free LLM answered (GROQ openai/gpt-oss-20b provider rate-limited; remaining requests preserved ; OPENROUTER google/gemma-4-31b-it:free provider rate-limited; remaining requests preserved ; GITHUB openai/gpt-4.1-nano Expecting value: line 1 column 1 (char 0) ; GEMINI models/gemin); waiting 10 s (wait 1 of 1)\n",
+  "date": "2026-11-14",
+  "topic": "How does the heart pump blood throughout the body?",
+  "title": "",
+  "subject": "heart",
+  "keywords": [
+   "pump",
+   "valves",
+   "blood flow",
+   "arteries",
+   "ventricles"
+  ],
+  "category": "the human body",
+  "failed": true
  }
 ]
