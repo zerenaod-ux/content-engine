@@ -381,5 +381,16 @@
   "keywords": [],
   "category": "",
   "failed": true
+ },
+ {
+  "techniques": [],
+  "failure_cause": "real-footage writer: How a car engine starts\ntry 1: PASSED\nclip for \"car key ignition\": pixabay (car key ignition)\nclip for \"car battery terminal\": pixabay (car battery terminal)\nclip for \"starter motor closeup\": pixabay (starter motor closeup)\nclip for \"starter gear flywheel\": pixabay (starter gear flywheel)\nclip for \"camshaft intake valve\": pixabay (camshaft intake valve)\nclip for \"fuel injector spray\": pixabay (fuel injector spray)\nclip for \"spark plug spark\": pixabay (spark plug spark)\nclip for \"engine piston movement\": pixabay (engine piston movement)\nclip for \"engine pistons running\": pixabay (engine pistons running)\nclip for \"exhaust valve opening\": pixabay (exhaust valve opening)\nclip for \"running engine interior\": pixabay (running engine interior)\nclip for \"car moving road\": pixabay (car moving road)\n",
+  "date": "2026-11-14",
+  "topic": "How a car engine starts",
+  "title": "",
+  "subject": "",
+  "keywords": [],
+  "category": "",
+  "failed": true
  }
 ]
