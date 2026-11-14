@@ -11,7 +11,17 @@ PROVIDERS = [
     ('CEREBRAS_API_KEY', 'https://api.cerebras.ai/v1', ('gpt-oss-120b', 'llama-3.3-70b', 'qwen', 'llama')),
     ('OPENROUTER_API_KEY', 'https://openrouter.ai/api/v1', ('gpt-oss-120b', 'llama-3.3-70b', 'qwen', 'deepseek', 'gemma', 'llama', 'mistral')),
     ('MISTRAL_API_KEY', 'https://api.mistral.ai/v1', ('mistral-large', 'mistral-medium', 'mistral-small', 'mistral')),
+    # GITHUB_MODELS: free GitHub Models with the job's own token (no new key, permission models: read). Fixed model names.
+    ('GITHUB_MODELS_TOKEN', 'https://models.github.ai/inference', ('openai/gpt-4.1-mini', 'meta/Llama-3.3-70B-Instruct', 'openai/gpt-4.1-nano')),
 ]
+KEY_SHAPE = {'GROQ_API_KEY': 'gsk_', 'CEREBRAS_API_KEY': 'csk-', 'OPENROUTER_API_KEY': 'sk-or-', 'GEMINI_API_KEY': 'AIza'}
+
+
+def key_check():
+    """KEY_SHAPE: says (without showing any key) whether each saved key looks like that service's key, so a key saved under the wrong name is spotted."""
+    for env, start in KEY_SHAPE.items():
+        k = os.environ.get(env, '').strip()
+        print('key check:', env, 'missing' if not k else ('looks right' if k.startswith(start) else 'DOES NOT look like a %s key (saved under the wrong name?)' % env.split('_')[0]), flush=True)
 _CACHE = {}
 
 
@@ -70,6 +80,8 @@ def _req(url, key, body=None):
 def _models(env, base, prefs, key):
     if env in _CACHE:
         return _CACHE[env]
+    if 'models.github.ai' in base:
+        return list(prefs)
     ids = [m['id'] for m in _req(base + '/models', key).get('data', [])]
     if 'openrouter' in base:
         ids = [i for i in ids if i.endswith(':free')]

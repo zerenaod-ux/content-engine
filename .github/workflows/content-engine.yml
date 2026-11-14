@@ -18,6 +18,7 @@ on:
 permissions:
   contents: write
   issues: write
+  models: read
 concurrency:
   group: scene-factory
   cancel-in-progress: false
@@ -49,10 +50,12 @@ jobs:
           CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GITHUB_MODELS_TOKEN: ${{ github.token }}
         run: |
           if [ "${{ github.event_name }}" = "schedule" ]; then echo auto > topic.txt
           elif [ -n "$TOPIC_IN" ]; then printf '%s\n' "$TOPIC_IN" > topic.txt; else head -n 1 publish/run.trigger > topic.txt; fi
           if [ "$(tr -d '[:space:]' < topic.txt | tr 'A-Z' 'a-z')" = "auto" ]; then python3 scene_lib/ideas.py pick topic.txt; fi
+          python3 -c "import llm; llm.key_check()" || true
           python3 scene_lib/writer.py --topic-file topic.txt auto-scene.json
       - name: Draw, check and assemble the video
         env:
@@ -61,6 +64,7 @@ jobs:
           CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GITHUB_MODELS_TOKEN: ${{ github.token }}
         run: |
           npm init -y > /dev/null
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 npm install --silent playwright@1.49.1 @fontsource/noto-color-emoji || PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 npm install --silent playwright@1.49.1
