@@ -75,7 +75,9 @@ jobs:
           TAG="ce-$(date -u +%Y%m%d-%H%M)"; TITLE=$(python3 -c "import json;print(json.load(open('auto-scene.json')).get('title','Content Engine video'))")
           cp scene-factory.mp4 "$TAG.mp4"
           gh release create "$TAG" "$TAG.mp4" auto-scene.json evidence-report.json metrics.json --title "Content Engine: $TITLE" --notes "Content Engine video (not posted). Automatic structural and sampled visibility checks passed. Scientific accuracy and narration/visual meaning still require human review; not approved to publish." --prerelease
-          URL="https://github.com/${{ github.repository }}/releases/download/$TAG/$TAG.mp4"
+          # PLAYABLE_ON_PHONE: iPhone cannot play GitHub release downloads inline, so a copy goes to the gh-pages branch and the card links it through jsDelivr (free CDN, real video type).
+          git clone -q --depth 1 -b gh-pages "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git" pages && mkdir -p pages/videos && cp "$TAG.mp4" pages/videos/ && (cd pages && git add videos && git -c user.email=41898282+github-actions[bot]@users.noreply.github.com -c user.name=github-actions commit -qm "video $TAG" && git push -q) || echo "pages copy skipped"
+          URL="https://cdn.jsdelivr.net/gh/${{ github.repository }}@gh-pages/videos/$TAG.mp4"
           python3 - "$TAG" "$TITLE" "$URL" <<'PY'
           import json, sys, datetime
           from pathlib import Path
