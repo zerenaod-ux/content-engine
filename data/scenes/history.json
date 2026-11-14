@@ -219,5 +219,22 @@
    "angle"
   ],
   "category": "sound, light and colour"
+ },
+ {
+  "techniques": [],
+  "failure_cause": "topic: How does a chameleon change its color?\nplan try 1: 1 problems: step 6: say must have 4 to 18 words\nplan try 2: 2 problems: step 4: contrasts need separate part ids and distinguishing fields | step 5: contrasts need separate part ids and distinguishing fields\nplan try 3: PASSED\nprinciple: Chameleons change color by adjusting nanocrystals inside specialized dermal iridophore cells, shifting the distance between them to reflect different wavelengths of light.\ncast: cham (chameleon), skin (skin layer cutaway), crystals_initial (nanocrystals (initial)), crystals_spread (nanocrystals (spread)), crystals_compact (nanocrystals (compact)), brain (brain), signal (nerve signal), light (incoming light ray)\nscene try 1: 7 problems: step 1 demonstration: promised change is constant | step 4 demonstration: crystals_spread.alpha is not a supported numeric animation field; choose a part/field from the catalog (alpha is reveal only) | step 4 demonstration: contrast field is absent | step 5 demonstration: crystals_compact.alpha is not a supported numeric animation field; choose a part/field from the catalog (alpha is reveal only) | step 5 demonstration: contrast field is absent | step 6 demonstration: cham.bob is not a supported numeric animation field; choose a part/field from the catalog (alpha is reveal only) | part 11 (particles): unknown particles kind 'spark' (allowed: bubbles, drops, dust, fire, glitter, leaves, smoke, snow, sparks, steam)\nscene: no free LLM answered (GROQ openai/gpt-oss-20b provider rate-limited; remaining requests preserved ; GEMINI models/gemini-flash-lite-latest provider rate-limited; remaining requests preserved); waiting 10 s (wait 1 of 1)\nscene try 2: 2 problems: step 4 demonstration: contrast field is absent | step 5 demonstration: contrast field is absent\nscene try 3: 2 problems: step 4 demonstration: contrast field is absent | step 5 demonstration: contrast field is absent\n",
+  "date": "2026-11-14",
+  "topic": "How does a chameleon change its color?",
+  "title": "",
+  "subject": "chameleon skin",
+  "keywords": [
+   "pigment cells",
+   "chromatophores",
+   "temperature",
+   "camouflage",
+   "hormones"
+  ],
+  "category": "animals",
+  "failed": true
  }
 ]
