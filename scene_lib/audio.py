@@ -97,7 +97,7 @@ def music(T, bpm=118, root=110.0, energy=1.0):
         nt = _t(d); f = root * 2 * prog[c % 4]; pad = (np.sin(2 * np.pi * f * nt) + np.sin(2 * np.pi * f * 1.498 * nt) + np.sin(2 * np.pi * f * 1.26 * nt)) * np.sin(np.pi * nt / d) ** 0.6; pad = pad[:n - i]; out[i:i + len(pad)] += 0.07 * pad
     return norm(out) * energy
 
-def speak(lines, rate='+16%', pitch='+2Hz'):
+def speak(lines, rate='+30%', pitch='+8Hz'):   # owner's example voice measured 2026-11-13: ~25% faster, higher and livelier than ours
     """lines = [(start, end, text)]. Returns (voice track array for the whole video, log lines). Tries the most energetic voice first."""
     ensure_ffmpeg(); sys.path.insert(0, str(ROOT)); import local_voice
     T = max(b for a, b, _ in lines) + 0.5; n = int(T * SR); out = np.zeros(n); log = []

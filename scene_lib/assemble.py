@@ -9,7 +9,7 @@ from scene_lib import audio as A
 def main(spec_path, out):
     spec = json.loads(Path(spec_path).read_text()); T = float(spec['duration'])
     lines = [(s['start'], s['end'], s['say']) for s in spec['steps'] if s.get('say')]
-    voice, log = A.speak(lines, rate=spec.get('voice_rate', '+16%'), pitch=spec.get('voice_pitch', '+2Hz'))
+    voice, log = A.speak(lines, rate=spec.get('voice_rate', '+30%'), pitch=spec.get('voice_pitch', '+8Hz'))
     fx = A.Track(T)
     for cue in spec.get('sfx', []):
         t, name, gain = cue[0], cue[1], (cue[2] if len(cue) > 2 else 0.8); f = A.SFX.get(name)
