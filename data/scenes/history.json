@@ -236,5 +236,22 @@
   ],
   "category": "animals",
   "failed": true
+ },
+ {
+  "techniques": [],
+  "failure_cause": "topic: Why does a comet develop a glowing tail when near the Sun?\nplan try 1: 3 problems: cast \"ionTail\" is outside the stage | cast \"dustTail\" is outside the stage | step 7: \"shows\" must be one of the cast ids\nplan try 2: PASSED\nprinciple: A comet’s tail is not smoke; it forms when sunlight heats the icy nucleus, causing gas to sublimate and drag dust, while the Sun’s solar wind ionizes the gas and radiation pressure pushes dust, creating two distinct tails.\ncast: sun (Sun), comet (Comet), nucleus (Nucleus (cut‑away)), ice (Ice particles), dust (Dust grains), rays (Sunlight), wind (Solar wind), ionTail (Ion tail), dustTail (Dust tail)\nscene: no free LLM answered (GROQ openai/gpt-oss-20b provider rate-limited; remaining requests preserved ; CEREBRAS_API_KEY model list: HTTP Error 401: Unauthorized ; GEMINI models/gemini-flash-lite-latest provider rate-limited; remaining requests preserved); waiting 10 s (wait 1 of 1)\n",
+  "date": "2026-11-14",
+  "topic": "Why does a comet develop a glowing tail when near the Sun?",
+  "title": "",
+  "subject": "comet tail",
+  "keywords": [
+   "sublimation",
+   "solar",
+   "gas",
+   "dust",
+   "radiation"
+  ],
+  "category": "space and planets",
+  "failed": true
  }
 ]
