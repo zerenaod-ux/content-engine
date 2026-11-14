@@ -304,5 +304,22 @@
   ],
   "category": "the human body",
   "failed": true
+ },
+ {
+  "techniques": [],
+  "failure_cause": "topic: How does a suspension bridge distribute weight through its cables?\nplan: no free LLM answered (GROQ openai/gpt-oss-20b provider rate-limited; remaining requests preserved ; OPENROUTER google/gemma-4-31b-it:free provider rate-limited; remaining requests preserved ; GITHUB openai/gpt-4.1-nano Expecting value: line 1 column 1 (char 0) ; GEMINI models/gemin); waiting 30 s (wait 1 of 2)\nplan: no free LLM answered (OPENROUTER google/gemma-4-31b-it:free provider rate-limited; remaining requests preserved ; GITHUB openai/gpt-4.1-nano Expecting value: line 1 column 1 (char 0) ; GEMINI models/gemini-flash-lite-latest provider rate-limited; remaining requests preserved ; GROQ); waiting 30 s (wait 2 of 2)\n",
+  "date": "2026-11-14",
+  "topic": "How does a suspension bridge distribute weight through its cables?",
+  "title": "",
+  "subject": "suspension cables",
+  "keywords": [
+   "towers",
+   "cables",
+   "deck",
+   "tension",
+   "load"
+  ],
+  "category": "buildings, bridges and cities",
+  "failed": true
  }
 ]
