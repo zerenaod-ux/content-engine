@@ -13,6 +13,6 @@ evidence-report.json
 package*.json
 
 .venv/
-review/
+/review/
 dam-contact.jpg
 t[0-9]*.json
