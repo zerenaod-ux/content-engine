@@ -270,5 +270,22 @@
   ],
   "category": "weather and the sky",
   "failed": true
+ },
+ {
+  "techniques": [],
+  "failure_cause": "topic: How does the moon’s pull create ocean tides?\nplan try 1: 2 problems: step 3: say must have 4 to 18 words | step 6: say must have 4 to 18 words\nplan try 2: PASSED\nprinciple: The Moon’s gravity pulls more strongly on the side of Earth that faces it, lifting the ocean there. At the same time Earth’s solid body is pulled toward the Moon, leaving water behind on the opposite side, so two tidal bulges form. As Earth rotates, coastlines move under these bulges, experiencing high and low tides. This model ignores complex factors like coastal shape, ocean depth variations, and solar tides, focusing on the primary lunar effect.\ncast: moon (Moon), earth (Earth cross‑section), bulgeN (Near‑side tide bulge), bulgeF (Far‑side tide bulge), arrow (Gravitational pull arrow), sun (Sun), land (Coastline segment)\nscene try 1: 5 problems: step 1 demonstration: moon.orbit is not a supported numeric animation field; choose a part/field from the catalog (alpha is reveal only) | step 7 demonstration: promised change is constant | part 3 (emoji): \"orbit\" must be {\"cx\",\"cy\",\"rx\",\"ry\",\"period\",\"phase\"} with numbers | part 7 (arrow): \"head\" must be a number | a part has a malformed value (TypeError: unsupported operand type(s) for +: 'float' and 'list'); every number must be a plain number or keyframes [[time, value], ...]\nscene: no free LLM answered (GROQ openai/gpt-oss-20b provider rate-limited; remaining requests preserved ; CEREBRAS_API_KEY model list: HTTP Error 401: Unauthorized ; OPENROUTER google/gemma-4-31b-it:free provider rate-limited; remaining requests preserved ; GITHUB openai/gpt-4.1-nano Exp); waiting 10 s (wait 1 of 1)\n",
+  "date": "2026-11-14",
+  "topic": "How does the moon’s pull create ocean tides?",
+  "title": "",
+  "subject": "tidal bulge",
+  "keywords": [
+   "moon",
+   "gravity",
+   "water",
+   "bulge",
+   "cycle"
+  ],
+  "category": "earth, volcanoes and oceans",
+  "failed": true
  }
 ]
