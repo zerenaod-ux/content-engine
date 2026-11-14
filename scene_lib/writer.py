@@ -206,6 +206,37 @@ def auto_camera(spec):
         out.append(c)
     spec['camera'] = out
 
+FIELD_ORDER = ('progress', 'draw', 'flow', 'level', 'amount', 'value', 'grow', 'fill', 'scale', 'size', 's', 'power', 'x', 'y', 'rot', 'r')
+
+
+def fix_fields(spec):
+    """FIELD_REPAIR: the writer sometimes animates a field the part type does not have (seen: blood.progress on a shape).
+    Move those keyframes to the closest field the part really has and restate the promised values, instead of spending a free request on it."""
+    from scene_lib.catalog import ANIM, CATALOG
+    from scene_lib.evidence import value_at
+    if not isinstance(spec, dict): return spec
+    parts = {p.get('id'): p for p in spec.get('parts', []) if isinstance(p, dict)}
+    for step in spec.get('steps', []) if isinstance(spec.get('steps'), list) else []:
+        for item in step.get('evidence', []) if isinstance(step, dict) and isinstance(step.get('evidence'), list) else []:
+            if not isinstance(item, dict): continue
+            part = parts.get(item.get('part')); bad = item.get('field')
+            if not part or not isinstance(bad, str): continue
+            a = CATALOG.get(part.get('type'), ([], [], ''))
+            ok = [f for f in a[0] + a[1] if f in ANIM and f != 'show']
+            if bad in ok or not ok: continue
+            keyed = [f for f in ok if isinstance(part.get(f), list)]
+            new = next((f for f in FIELD_ORDER if f in ok and f not in keyed), None) if bad in part else None
+            if new: part[new] = part.pop(bad)
+            else: new = next((f for f in FIELD_ORDER if f in keyed), keyed[0] if keyed else None)
+            if not new: continue
+            item['field'] = new
+            at = item.get('at')
+            if isinstance(at, list) and len(at) == 2:
+                v = [value_at(part.get(new), t) for t in at]
+                if None not in v: item['values'] = [round(x, 4) for x in v]
+    return spec
+
+
 def tidy(spec, plan=None):
     """Small safe repairs that do not change the idea: exact step times, duration, music, and the plan's own sentences."""
     if not isinstance(spec, dict): return spec
@@ -278,8 +309,8 @@ def _ask(llm, prompt, checker, tries, temp, log, name, post=lambda x: x, repair_
         except llm.BudgetExceeded as e: raise SystemExit(str(e))
         except Exception as e:
             waits += 1; turn += 1
-            if waits > 1: raise SystemExit('REJECTED: the free LLM services kept refusing (%s). No video was made.' % str(e)[:200])
-            log('%s: no free LLM answered (%s); waiting 10 s (wait %d of 1)' % (name, str(e)[:260], waits)); time.sleep(10); continue
+            if waits > 2: raise SystemExit('REJECTED: the free LLM services kept refusing (%s). No video was made.' % str(e)[:200])
+            log('%s: no free LLM answered (%s); waiting 30 s (wait %d of 2)' % (name, str(e)[:260], waits)); time.sleep(30); continue
         k += 1
         try: out = post(got)
         except Exception as e: log('%s try %d: unusable answer (%s)' % (name, k, str(e)[:120])); errs = ['the answer was not a valid scene object']; continue
@@ -306,7 +337,7 @@ def write_scene(topic, log=print):
     log('principle: ' + plan['principle']); log('cast: ' + ', '.join('%s (%s)' % (c['id'], c.get('what', '')) for c in plan['cast']))
     spec = cache.accepted('scene', check)
     if spec is None:
-        spec = _ask(llm, stage_prompt(topic, plan), check, 4, 0.5, log, 'scene', post=lambda s: tidy(s, plan), repair_prompt=stage_prompt(topic, plan, with_example=False))
+        spec = _ask(llm, stage_prompt(topic, plan), check, 4, 0.5, log, 'scene', post=lambda s: fix_fields(tidy(s, plan)), repair_prompt=stage_prompt(topic, plan, with_example=False))
         cache.save('scene', spec)
     safe = json.loads(json.dumps(spec)); log('review: narration preserved so claim mapping stays intact')
     return plan, spec, safe

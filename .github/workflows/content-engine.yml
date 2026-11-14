@@ -44,6 +44,8 @@ jobs:
             ce-v1-${{ runner.os }}-${{ github.ref_name }}-
       - name: Think of the idea and write the scene (free LLMs + checkers)
         env:
+          CE_MAX_SECONDS: '900'   # MORE_TIME: rate-limit waits used up the old 8 min before the scene could be repaired
+          CE_MAX_REQUESTS: '36'
           TOPIC_IN: ${{ github.event.inputs.topic }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
