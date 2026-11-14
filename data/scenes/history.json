@@ -344,5 +344,21 @@
    "regeneration"
   ],
   "category": "electricity and energy"
+ },
+ {
+  "techniques": [],
+  "failure_cause": "",
+  "date": "2026-11-14",
+  "topic": "How does a gasoline car engine turn fuel into motion?",
+  "title": "How a gasoline engine creates motion 🚗",
+  "subject": "car engine",
+  "keywords": [
+   "fuel",
+   "pistons",
+   "combustion",
+   "crankshaft",
+   "spark plug"
+  ],
+  "category": "machines and engines"
  }
 ]
