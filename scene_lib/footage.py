@@ -94,8 +94,8 @@ def ai_image(desc, i, log):
     """AI_PICTURE: free Pollinations image service (FLUX model, no key): a photorealistic close-up / cut-away made for this exact sentence."""
     prompt = desc + ', photorealistic, ultra detailed, sharp focus, cinematic lighting, vertical 9:16, no text, no letters, no watermark'
     tok = os.environ.get('POLLINATIONS_TOKEN', '').strip()
-    for k, seed in enumerate((7 + i, 101 + i, 211 + i)):
-        time.sleep(16 if i or k else 0)   # PACING: the free tier allows about one picture every 15 seconds
+    for k, seed in enumerate((7 + i, 101 + i, 211 + i, 307 + i, 401 + i)):
+        time.sleep((16 if i else 0) if k == 0 else 35)   # PACING: the free tier allows about one picture every 15 seconds; wait longer after a refusal
         u = 'https://image.pollinations.ai/prompt/' + urllib.parse.quote(prompt) + '?width=1080&height=1920&nologo=true&model=flux&seed=%d' % seed
         try:
             b = _get(u, {'Authorization': 'Bearer ' + tok} if tok else None)
@@ -156,10 +156,10 @@ def main():
     used, t, steps = set(), 0.3, []
     for i, s in enumerate(c['steps']):
         f, u = ai_image(s['image'], i, log)
-        if not f:   # Plan B: a real stock clip
-            u = find_clip(s['query'], s['label'], used, log)
-            if not u: raise SystemExit('REJECTED: no picture or clip for "%s". No video was made.' % s['query'])
-            f = 'clip%02d.mp4' % i; Path(f).write_bytes(_get(u))
+        if not f and steps:   # NO_RANDOM_CLIPS (owner 2026-11-14: unrelated stock clips like the sea looked wrong): reuse the last matching picture
+            f, u = steps[-1]['file'], steps[-1]['clip']; log('picture %d: reusing the previous picture' % (i + 1))
+        if not f:
+            raise SystemExit('REJECTED: the free picture service gave no picture for the first sentence. No video was made.')
         d = round(max(3.0, len(s['say'].split()) / WPS + 0.7), 2)
         steps.append({'start': round(t, 2), 'end': round(t + d, 2), 'say': s['say'], 'label': s['label'], 'query': s['query'], 'clip': u, 'file': f}); t += d
     T = round(t + 0.6, 2)
