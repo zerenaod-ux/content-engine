@@ -93,10 +93,12 @@ def pixabay(q, used):
 def ai_image(desc, i, log):
     """AI_PICTURE: free Pollinations image service (FLUX model, no key): a photorealistic close-up / cut-away made for this exact sentence."""
     prompt = desc + ', photorealistic, ultra detailed, sharp focus, cinematic lighting, vertical 9:16, no text, no letters, no watermark'
-    for seed in (7 + i, 101 + i):
+    tok = os.environ.get('POLLINATIONS_TOKEN', '').strip()
+    for k, seed in enumerate((7 + i, 101 + i, 211 + i)):
+        time.sleep(16 if i or k else 0)   # PACING: the free tier allows about one picture every 15 seconds
         u = 'https://image.pollinations.ai/prompt/' + urllib.parse.quote(prompt) + '?width=1080&height=1920&nologo=true&model=flux&seed=%d' % seed
         try:
-            b = _get(u)
+            b = _get(u, {'Authorization': 'Bearer ' + tok} if tok else None)
             if len(b) > 30000 and b[:3] in (b'\xff\xd8\xff', b'\x89PN'):
                 f = 'img%02d.jpg' % i; Path(f).write_bytes(b); log('AI picture %d: %s' % (i + 1, desc[:90])); return f, u.split('?')[0]
         except Exception as e: log('AI picture %d failed (%s)' % (i + 1, str(e)[:80]))
