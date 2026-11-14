@@ -26,7 +26,20 @@
    "ready_for_future_publish": true,
    "record": "saved/ce-20261113-2050/43547908113-1.json",
    "history": []
+  },
+  {
+   "tag": "ce-20261113-1956",
+   "title": "How Wind Powers Your Home ⚡",
+   "video": "https://github.com/zerenaod-ux/content-engine/releases/download/ce-20261113-1956/ce-20261113-1956.mp4",
+   "folder": "delete",
+   "issue_number": 3,
+   "issue_url": "https://github.com/zerenaod-ux/content-engine/issues/3",
+   "reviewed_at": "2026-11-14T02:44:22.037091+00:00",
+   "publishing_enabled": false,
+   "ready_for_future_publish": false,
+   "record": "delete/ce-20261113-1956/43547926407-1.json",
+   "history": []
   }
  ],
- "updated_at": "2026-11-14T02:44:04.705255+00:00"
+ "updated_at": "2026-11-14T02:44:22.037091+00:00"
 }
