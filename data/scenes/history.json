@@ -253,5 +253,22 @@
   ],
   "category": "space and planets",
   "failed": true
+ },
+ {
+  "techniques": [],
+  "failure_cause": "topic: How does a single snowflake get its intricate shape?\nplan try 1: PASSED\nprinciple: A snowflake forms when water vapor in a cloud deposits onto a tiny ice crystal. The crystal’s hexagonal lattice lets each new molecule attach in a specific orientation. If the surrounding air is supersaturated, growth is fastest at the tips, creating branching. Temperature shifts change the preferred growth direction, adding plates or columns. The final pattern records the exact temperature and humidity the crystal experienced as it fell. Common misconceptions include the idea that each snowflake is a perfect hexagon or that magic shapes them; in reality the shape is a natural result of diffusion‑limited aggregation under varying atmospheric conditions.\ncast: cloud (cloud of humid air), snowflake (large snowflake crystal), vapor (water vapor particles), tempGauge (temperature gauge), humGauge (humidity gauge), microscope (microscope close‑up view)\nscene: no free LLM answered (GROQ openai/gpt-oss-20b provider rate-limited; remaining requests preserved ; CEREBRAS_API_KEY model list: HTTP Error 401: Unauthorized ; OPENROUTER google/gemma-4-31b-it:free provider rate-limited; remaining requests preserved ; GEMINI models/gemini-flash-lit); waiting 10 s (wait 1 of 1)\n",
+  "date": "2026-11-14",
+  "topic": "How does a single snowflake get its intricate shape?",
+  "title": "",
+  "subject": "snowflake",
+  "keywords": [
+   "crystal",
+   "temperature",
+   "humidity",
+   "symmetry",
+   "water"
+  ],
+  "category": "weather and the sky",
+  "failed": true
  }
 ]
