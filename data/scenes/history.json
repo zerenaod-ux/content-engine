@@ -321,5 +321,28 @@
   ],
   "category": "buildings, bridges and cities",
   "failed": true
+ },
+ {
+  "techniques": [
+   "arrow.progress",
+   "emoji.alpha",
+   "icon.alpha",
+   "rect.alpha",
+   "wheel.spin",
+   "wire.progress"
+  ],
+  "failure_cause": "",
+  "date": "2026-11-14",
+  "topic": "How does a kinetic energy recovery system capture braking energy?",
+  "title": "How a KERS captures braking energy 🚗",
+  "subject": "KERS",
+  "keywords": [
+   "flywheel",
+   "brake",
+   "electric motor",
+   "energy storage",
+   "regeneration"
+  ],
+  "category": "electricity and energy"
  }
 ]
