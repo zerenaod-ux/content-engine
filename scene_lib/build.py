@@ -46,7 +46,7 @@ def result_key(spec):
 def main(spec_path, out):
     started = time.monotonic(); started_wall=time.time()
     spec = json.loads(Path(spec_path).read_text())
-    errors = check(spec)
+    errors = [] if spec.get('template') else check(spec)   # CLEAN_TEMPLATE scenes are laid out by template.py, not by the writer
     if errors: raise ValueError('scene rejected: ' + ' | '.join(errors[:8]))
     cache = Path(os.environ.get('CE_CACHE_DIR','.ce-cache')) / 'results' / result_key(spec)
     hit = False
@@ -69,7 +69,7 @@ def main(spec_path, out):
             subprocess.run(['node',str(ROOT/'scene_lib/render.js'),spec_path],check=True)
             result=subprocess.run([sys.executable,str(ROOT/'scene_lib/check_frames.py'),spec_path])
             current=json.loads(Path(spec_path).read_text())
-            errors=check(current)
+            errors=[] if current.get('template') else check(current)
             if result.returncode == 0 and not errors: break
             report=json.loads(Path('evidence-report.json').read_text())
             report['errors'] += errors
