@@ -95,3 +95,8 @@ Requested phone review behavior: Approve files a video under Saved, ready for a 
 New folder records live under `data/scenes/review/saved/` and `data/scenes/review/delete/`; `data/scenes/review/index.json` records current membership. Each record references the existing stored video so large media files are not duplicated. Original releases and prior decision records are preserved. A review card closes only after its folder record has been committed successfully. Failed saves leave it open for retry. Reclassification retains the previous records. The existing phone key needs Issues write for this repository; no new publishing permission or account connection is introduced.
 
 Implementation is on the review-folders branch pending review/deployment. Six local behavioral tests pass, including save-before-close, failed-push recovery, idempotency and preservation of original files. No existing video was approved or skipped as a test, and no publishing/deletion job was added.
+
+
+## 2026-11-13 — Approve/Skip folders deployed (append-only)
+
+Owner authorized deployment. The Content Engine folder handler and matching phone controls are merged and live. Backend setup completed successfully; the shared app Pages deployment completed successfully. Live read-only verification confirmed Content Engine Approve/Skip cards and working Saved/Delete views. Approve retains the video under Saved for future publishing; Skip retains it under Delete for possible later deletion. Neither action publishes or deletes media. No existing video was approved/skipped during verification. The 27 backend tests and mocked phone-browser flow passed in GitHub before deployment. Existing channel decision code is unchanged. Reopen or refresh the phone app to load the updated shell.
