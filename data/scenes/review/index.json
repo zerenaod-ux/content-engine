@@ -117,7 +117,59 @@
    "ready_for_future_publish": false,
    "record": "delete/ce-20261115-0322/43672881456-1.json",
    "history": []
+  },
+  {
+   "tag": "ce-20261115-0520",
+   "title": "How a Car Engine Starts 🚗",
+   "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@gh-pages/videos/ce-20261115-0520.mp4",
+   "folder": "delete",
+   "issue_number": 20,
+   "issue_url": "https://github.com/zerenaod-ux/content-engine/issues/20",
+   "reviewed_at": "2026-11-15T13:01:23.664713+00:00",
+   "publishing_enabled": false,
+   "ready_for_future_publish": false,
+   "record": "delete/ce-20261115-0520/43716787502-1.json",
+   "history": []
+  },
+  {
+   "tag": "ce-20261115-0609",
+   "title": "How a Car Engine Starts 🚗",
+   "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@gh-pages/videos/ce-20261115-0609.mp4",
+   "folder": "delete",
+   "issue_number": 21,
+   "issue_url": "https://github.com/zerenaod-ux/content-engine/issues/21",
+   "reviewed_at": "2026-11-15T13:01:23.889993+00:00",
+   "publishing_enabled": false,
+   "ready_for_future_publish": false,
+   "record": "delete/ce-20261115-0609/43716787502-1.json",
+   "history": []
+  },
+  {
+   "tag": "ce-20261115-0740",
+   "title": "How a Car Engine Starts 🔧",
+   "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@gh-pages/videos/ce-20261115-0740.mp4",
+   "folder": "delete",
+   "issue_number": 22,
+   "issue_url": "https://github.com/zerenaod-ux/content-engine/issues/22",
+   "reviewed_at": "2026-11-15T13:01:24.160246+00:00",
+   "publishing_enabled": false,
+   "ready_for_future_publish": false,
+   "record": "delete/ce-20261115-0740/43716787502-1.json",
+   "history": []
+  },
+  {
+   "tag": "ce-20261115-0839",
+   "title": "How a Car Engine Starts 🚗",
+   "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@gh-pages/videos/ce-20261115-0839.mp4",
+   "folder": "delete",
+   "issue_number": 23,
+   "issue_url": "https://github.com/zerenaod-ux/content-engine/issues/23",
+   "reviewed_at": "2026-11-15T13:01:24.392833+00:00",
+   "publishing_enabled": false,
+   "ready_for_future_publish": false,
+   "record": "delete/ce-20261115-0839/43716787502-1.json",
+   "history": []
   }
  ],
- "updated_at": "2026-11-15T03:33:32.553744+00:00"
+ "updated_at": "2026-11-15T13:01:24.392833+00:00"
 }
