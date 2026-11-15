@@ -21,7 +21,7 @@ for j in jobs:
     t0 = time.time()
     try:
         img = load_image(os.path.join(src, j['img'])).resize((480, 704))
-        import io; _b = io.BytesIO(); img.save(_b, 'JPEG', quality=35); img = load_image(io.BytesIO(_b.getvalue()))   # MORE_MOTION: pristine pictures make LTX freeze; compression noise wakes it up
+        import io; _b = io.BytesIO(); img.save(_b, 'JPEG', quality=35); from PIL import Image as _I; img = _I.open(io.BytesIO(_b.getvalue())).convert('RGB')   # MORE_MOTION: pristine pictures make LTX freeze; compression noise wakes it up
         frames = pipe(image=img, prompt=j['move'] + '. The motion starts right away and is large, fast and clearly visible, like real life. The camera moves with the action. Bright lighting, sharp detail.',
                       negative_prompt=NEG, width=480, height=704, num_frames=49, num_inference_steps=20, guidance_scale=4.0, decode_timestep=0.03, decode_noise_scale=0.025).frames[0]
         export_to_video(frames, os.path.join(OUT, j['out']), fps=24)
