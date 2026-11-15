@@ -124,11 +124,11 @@ def sh(*a):
 def esc(path): return path.replace(':', '\\:')
 
 
-def shot(i, src, d, say, label, first_title=None):
+def shot(i, src, d, say, label, first_title=None, push=0.6):
     """one sentence = one clip: cover-crop to 1080x1920, hard push-in (1.0 -> 1.5), white flash in, caption on top, label + arrow."""
     # CLEAN_SCREEN (owner 2026-11-14): no subtitles, no label or title in the middle; only one small hook line at the top for the whole video
     Path('hook.txt').write_text(HOOK[0])
-    z = '(1+0.6*t/%.2f)' % d   # hard push-in toward the centre
+    z = '(1+%.2f*t/%.2f)' % (push, d)   # push-in toward the centre (small when the clip already moves in 3D)
     vf = [f"scale=w='trunc(1080*{z}/2)*2':h='trunc(1920*{z}/2)*2':force_original_aspect_ratio=increase:eval=frame",
           "crop=1080:1920", "setsar=1", "fps=30", "eq=saturation=1.25:contrast=1.08",
           "fade=in:st=0:d=0.18:color=white",
@@ -159,8 +159,14 @@ def main():
         steps.append({'start': round(t, 2), 'end': round(t + d, 2), 'say': s['say'], 'label': s['label'], 'query': s['query'], 'clip': u, 'file': f}); t += d
     T = round(t + 0.6, 2)
     steps[-1]['end'] = round(T, 2)
+    from scene_lib.parallax import make_clip
+    styles = ['push', 'orbit', 'rise']
     for i, s in enumerate(steps):
-        shot(i, s['file'], (s['end'] - s['start']) + (0.3 if i == 0 else 0), s['say'], s['label'], c['title'] if i == 0 else None)
+        d = (s['end'] - s['start']) + (0.3 if i == 0 else 0); src, push = s['file'], 0.6
+        if src.endswith('.jpg'):   # MOTION_3D: the still becomes a moving 3D clip (depth + camera fly-in)
+            try: src = make_clip(src, 'm3d%02d.mp4' % i, d + 0.1, styles[i % 3]); push = 0.08
+            except Exception as e: log('3D motion failed for picture %d (%s); zoom only' % (i + 1, str(e)[:80]))
+        shot(i, src, d, s['say'], s['label'], c['title'] if i == 0 else None, push)
     Path('shots.txt').write_text(''.join("file 'shot%02d.mp4'\n" % i for i in range(len(steps))))
     sh('ffmpeg', '-v', 'error', '-y', '-f', 'concat', '-safe', '0', '-i', 'shots.txt', '-c', 'copy', 'silent.mp4')
     from scene_lib import audio as A
