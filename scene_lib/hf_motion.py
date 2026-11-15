@@ -7,7 +7,11 @@ SPACES = ['zerogpu-aoti/wan2-2-fp8da-aoti-faster', 'r3gm/wan2-2-fp8da-aoti-previ
 NEG = 'melting, warping, deformed, blurry, low quality, text, watermark, morphing, distorted gears'
 
 
+QUOTA_GONE = []
+
+
 def animate(image_path, move, out, log=print, seconds=3.5):
+    if QUOTA_GONE: return None   # free daily GPU time already used up: do not ask again today
     tok = os.environ.get('HF_TOKEN', '').strip()
     if not tok: log('real motion skipped: no HF_TOKEN'); return None
     try: from gradio_client import Client, handle_file
@@ -40,4 +44,5 @@ def animate(image_path, move, out, log=print, seconds=3.5):
             log('real motion: %s gave no video (%s)' % (sp, str(res)[:120]))
         except Exception as e:
             log('real motion: %s failed (%s)' % (sp, str(e)[:160]))
+            if 'quota' in str(e).lower(): QUOTA_GONE.append(1); log('Hugging Face free GPU time used up for today'); return None
     return None

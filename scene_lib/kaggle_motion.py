@@ -14,6 +14,7 @@ def _kg(*a):
 
 
 def animate_batch(jobs, log=print, max_wait=75 * 60):
+    _log = log; log = lambda *a: _log(' '.join(str(x) for x in a))   # the caller's log takes one text
     """jobs: [{"img": path, "move": text, "out": "real03.mp4"}]. Returns {out: local path} for the clips that came back."""
     user = os.environ.get('KAGGLE_USERNAME', '').strip()
     if not jobs: return {}
