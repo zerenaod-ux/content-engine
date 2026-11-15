@@ -16,7 +16,8 @@ def animate(image_path, move, out, log=print, seconds=3.5):
     for sp in SPACES:
         t0 = time.time()
         try:
-            c = Client(sp, hf_token=tok, verbose=False)
+            try: c = Client(sp, token=tok, verbose=False)        # newer gradio_client
+            except TypeError: c = Client(sp, hf_token=tok, verbose=False)
             res = c.predict(handle_file(image_path), prompt, NEG, seconds, 1, 1, 6, 42, False, api_name='/generate_video')
             vid = res[0] if isinstance(res, (list, tuple)) else res
             if isinstance(vid, dict): vid = vid.get('video') or vid.get('path')
