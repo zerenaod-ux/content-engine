@@ -192,12 +192,12 @@ def speak(lines, rate='+30%', pitch='+8Hz'):   # owner's example voice measured 
         log.append('line %d: %.2fs spoken, %.2fs room%s' % (i + 1, dur, room, ' (sped up)' if dur > room else ''))
     return norm(out, 0.95), log
 
-def mix(T, voice, sfx, bed, sfx_gain=0.62, bed_gain=0.20):
+def mix(T, voice, sfx, bed, sfx_gain=0.5, bed_gain=0.20):
     n = int(T * SR)
     def fit(x): x = x[:n]; return np.pad(x, (0, n - len(x)))
     voice, sfx, bed = fit(voice), fit(sfx), fit(bed)
     w = int(0.06 * SR); env = np.convolve(np.abs(voice), np.ones(w) / w, mode='same'); duck = 1 - 0.55 * np.clip(env * 7, 0, 1)   # music steps back while the narrator talks
-    out = voice + sfx_gain * sfx * (1 - 0.25 * np.clip(env * 7, 0, 1)) + bed_gain * bed * duck
+    out = voice + sfx_gain * sfx * (1 - 0.6 * np.clip(env * 7, 0, 1)) + bed_gain * bed * duck
     t = np.arange(n) / SR; out *= np.minimum(1, np.minimum(t / 0.25, (T - t) / 0.5)); out = np.tanh(out * 1.5) / np.tanh(1.5)
     return norm(out, 0.97)
 

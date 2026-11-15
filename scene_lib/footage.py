@@ -135,6 +135,9 @@ def sh(*a):
 def esc(path): return path.replace(':', '\\:')
 
 
+XF = 0.3   # crossfade seconds between shots
+
+
 def shot(i, src, d, say, label, first_title=None, push=0.6):
     """one sentence = one clip: cover-crop to 1080x1920, hard push-in (1.0 -> 1.5), white flash in, caption on top, label + arrow."""
     # CLEAN_SCREEN (owner 2026-11-14): no subtitles, no label or title in the middle; only one small hook line at the top for the whole video
@@ -142,7 +145,6 @@ def shot(i, src, d, say, label, first_title=None, push=0.6):
     z = '(1+%.2f*t/%.2f)' % (push, d)   # push-in toward the centre (small when the clip already moves in 3D)
     vf = [f"scale=w='trunc(1080*{z}/2)*2':h='trunc(1920*{z}/2)*2':force_original_aspect_ratio=increase:eval=frame",
           "crop=1080:1920", "setsar=1", "fps=30", "eq=saturation=1.25:contrast=1.08",
-          "fade=in:st=0:d=0.18:color=white",
           f"drawtext=fontfile={FONT}:textfile=hook.txt:fontsize=40:line_spacing=8:fontcolor=white:box=1:boxcolor=black@0.45:boxborderw=16:x=(w-tw)/2:y=120"]
     still = src.endswith('.jpg')
     if not still:   # a short moving clip is slowed to fill its sentence instead of jumping back to the start
@@ -215,24 +217,32 @@ def main():
             if m < 0.6: log('shot %d barely moves: using the 3D glide instead' % (i + 1)); del moved[i]
         except Exception as e: log('motion check failed for shot %d (%s)' % (i + 1, str(e)[:80]))
     log('real motion on %d of %d shots' % (len(moved), len(steps)))
+    durs = []
     for i, s in enumerate(steps):
         d = (s['end'] - s['start']) + (0.3 if i == 0 else 0); src, push = s['file'], 0.6
         if i in moved: src, push = moved[i], 0.05
         elif src.endswith('.jpg'):   # MOTION_3D fallback: gentle 3D glide
             try: src = make_clip(src, 'm3d%02d.mp4' % i, d + 0.1, styles[i % 3]); push = 0.08
             except Exception as e: log('3D motion failed for picture %d (%s); zoom only' % (i + 1, str(e)[:80]))
-        shot(i, src, d, s['say'], s['label'], c['title'] if i == 0 else None, push)
-    Path('shots.txt').write_text(''.join("file 'shot%02d.mp4'\n" % i for i in range(len(steps))))
-    sh('ffmpeg', '-v', 'error', '-y', '-f', 'concat', '-safe', '0', '-i', 'shots.txt', '-c', 'copy', 'silent.mp4')
+        durs.append(d)
+        shot(i, src, d + (XF if i < len(steps) - 1 else 0), s['say'], s['label'], c['title'] if i == 0 else None, push)
+    # SMOOTH_CUTS (owner 2026-11-15): shots dissolve into each other (0.3 s crossfade, total length unchanged) instead of hard flash cuts
+    if len(steps) == 1: sh('ffmpeg', '-v', 'error', '-y', '-i', 'shot00.mp4', '-c', 'copy', 'silent.mp4')
+    else:
+        parts, last, off = [], '[0:v]', 0.0
+        for k in range(1, len(steps)):
+            off += durs[k - 1]; nm = '[x%d]' % k
+            parts.append('%s[%d:v]xfade=transition=fade:duration=%.2f:offset=%.3f%s' % (last, k, XF, off, nm)); last = nm
+        sh('ffmpeg', '-v', 'error', '-y', *sum((['-i', 'shot%02d.mp4' % k] for k in range(len(steps))), []), '-filter_complex', ';'.join(parts), '-map', last, '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '20', '-pix_fmt', 'yuv420p', 'silent.mp4')
     from scene_lib import audio as A
     voice, vlog = A.speak([(s['start'], s['end'], s['say']) for s in steps])
     fx = A.Track(T)
     for i, s in enumerate(steps):
-        fx.add(max(0, s['start'] - 0.15), A.whoosh(), 0.35)
+        # QUIET_SOUNDS (owner 2026-11-15): no whoosh on cuts; effects sit quietly under the voice, the heartbeat very quietly
         snd = c['steps'][i].get('sound')   # AUTO_SOUNDS: the writer names the real sound of each shot
         if snd in A.SFX:
             dd = max(0.5, s['end'] - s['start'] - 0.2)
-            fx.add(s['start'] + 0.1, A.SFX[snd](dd) if snd in A.LONG_SFX else A.SFX[snd](), 0.7)
+            fx.add(s['start'] + 0.1, A.SFX[snd](dd) if snd in A.LONG_SFX else A.SFX[snd](), 0.12 if snd == 'heartbeat' else 0.28 if snd in A.LONG_SFX else 0.4)
     bed = A.music(T, bpm=124)
     A.write_wav('audio.wav', A.mix(T, voice, fx.buf, bed))
     sh('ffmpeg', '-v', 'error', '-y', '-i', 'silent.mp4', '-i', 'audio.wav', '-c:v', 'copy', '-c:a', 'aac', '-b:a', '160k', '-shortest', out)
