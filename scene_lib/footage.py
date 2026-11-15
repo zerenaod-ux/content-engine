@@ -25,10 +25,10 @@ Rules:
 - "label": 1-3 words naming the part shown (e.g. "Spark plug").
 - "image": one English sentence describing a photorealistic, extremely detailed close-up picture that SHOWS exactly this sentence, like a high-end engineering cut-away or macro photo: name the exact part, what it is doing, the view (cut-away, macro, inside view), lighting. Example: "photorealistic cut-away of a car engine cylinder, piston at the top, spark plug firing a bright blue spark into fuel mist, dramatic studio lighting". No text or letters in the picture.
 - "move": one short English sentence saying what physically MOVES in that picture (e.g. "the key turns clockwise in the ignition", "the two gears spin and mesh together").
-- Mark exactly 2 sentences with "key": true: the 2 moments where real movement matters most (they get real AI motion).
+- "sound": the ONE real-world sound heard in that shot, chosen from: {sounds}. Pick what the moving thing really sounds like (gears turning = gears, engine running = engine, key turning = click, electricity = buzz, fire = crackle, water = flow).
 - title: starts with How or Why, 4-8 words, ends with ONE emoji.
 - hook: 3-7 words shown small at the top of the whole video, a curiosity hook (e.g. "What really happens when you turn the key"). No emoji.
-Return only JSON: {{"title": "...", "hook": "...", "principle": "one sentence why it works", "steps": [{{"say": "...", "query": "...", "label": "...", "image": "...", "move": "...", "key": false}}]}}"""
+Return only JSON: {{"title": "...", "hook": "...", "principle": "one sentence why it works", "steps": [{{"say": "...", "query": "...", "label": "...", "image": "...", "move": "...", "sound": "click"}}]}}"""
 
 
 def problems(c):
@@ -48,7 +48,8 @@ def problems(c):
 
 
 def write(topic, log):
-    prompt, last, errs, turn = PROMPT.format(topic=topic), None, None, 0
+    from scene_lib.audio import SFX
+    prompt, last, errs, turn = PROMPT.format(topic=topic, sounds=', '.join(sorted(SFX))), None, None, 0
     for k in range(4):
         p = prompt if not errs else prompt + '\n\nYOUR LAST ANSWER HAD THESE PROBLEMS, fix them all and return the full JSON:\n' + '\n'.join('- ' + x for x in errs) + '\n\nLast answer:\n' + json.dumps(last, ensure_ascii=False)[:6000]
         try: last = _call(llm, p, 0.8 if k == 0 else 0.4, turn, log)
@@ -94,6 +95,13 @@ def pixabay(q, used):
     return None
 
 
+def _crop_mark(f):
+    """NO_MARK: the free picture service prints a small name in the bottom-left corner; cut the bottom 7% away."""
+    try:
+        import cv2; im = cv2.imread(f); h = im.shape[0]; cv2.imwrite(f, im[:int(h * 0.93)], [cv2.IMWRITE_JPEG_QUALITY, 95])
+    except Exception: pass
+
+
 def ai_image(desc, i, log):
     """AI_PICTURE: free Pollinations image service (FLUX model, no key): a photorealistic close-up / cut-away made for this exact sentence."""
     prompt = desc + ', photorealistic, ultra detailed, sharp focus, cinematic lighting, vertical 9:16, no text, no letters, no watermark'
@@ -104,7 +112,7 @@ def ai_image(desc, i, log):
         try:
             b = _get(u, {'Authorization': 'Bearer ' + tok} if tok else None)
             if len(b) > 30000 and b[:3] in (b'\xff\xd8\xff', b'\x89PN'):
-                f = 'img%02d.jpg' % i; Path(f).write_bytes(b); log('AI picture %d: %s' % (i + 1, desc[:90])); return f, u.split('?')[0]
+                f = 'img%02d.jpg' % i; Path(f).write_bytes(b); _crop_mark(f); log('AI picture %d: %s' % (i + 1, desc[:90])); return f, u.split('?')[0]
         except Exception as e: log('AI picture %d failed (%s)' % (i + 1, str(e)[:80]))
     return None, None
 
@@ -170,7 +178,7 @@ def main():
     styles = ['push', 'orbit', 'rise']
     for i, s in enumerate(steps):
         d = (s['end'] - s['start']) + (0.3 if i == 0 else 0); src, push = s['file'], 0.6
-        if src.endswith('.jpg') and c['steps'][i].get('key') and c['steps'][i].get('move'):   # REAL_MOTION on the 2 key moments
+        if src.endswith('.jpg') and c['steps'][i].get('move'):   # REAL_MOTION on every shot (owner 2026-11-14: everything must really move); free GPU sources in turn, 3D glide only if all are busy
             from scene_lib.hf_motion import animate
             mv = animate(src, c['steps'][i]['move'], 'real%02d.mp4' % i, log)
             if mv: src, push = mv, 0.05
@@ -183,7 +191,12 @@ def main():
     from scene_lib import audio as A
     voice, vlog = A.speak([(s['start'], s['end'], s['say']) for s in steps])
     fx = A.Track(T)
-    for s in steps: fx.add(max(0, s['start'] - 0.15), A.whoosh(), 0.55)
+    for i, s in enumerate(steps):
+        fx.add(max(0, s['start'] - 0.15), A.whoosh(), 0.35)
+        snd = c['steps'][i].get('sound')   # AUTO_SOUNDS: the writer names the real sound of each shot
+        if snd in A.SFX:
+            dd = max(0.5, s['end'] - s['start'] - 0.2)
+            fx.add(s['start'] + 0.1, A.SFX[snd](dd) if snd in A.LONG_SFX else A.SFX[snd](), 0.7)
     bed = A.music(T, bpm=124)
     A.write_wav('audio.wav', A.mix(T, voice, fx.buf, bed))
     sh('ffmpeg', '-v', 'error', '-y', '-i', 'silent.mp4', '-i', 'audio.wav', '-c:v', 'copy', '-c:a', 'aac', '-b:a', '160k', '-shortest', out)

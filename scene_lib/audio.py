@@ -71,6 +71,52 @@ def powerdown(dur=1.1):
 SFX = {'slice': slice_, 'whump': whump, 'tick': tick, 'pop': pop, 'zip': zip_, 'thunk': thunk, 'click': click, 'snip': snip, 'whoosh': whoosh, 'chime': chime, 'sparkle': sparkle,
        'splash': splash, 'rumble': rumble, 'hum': hum, 'flow': flow, 'spray': spray, 'powerdown': powerdown}
 
+# ---- AUTO_SOUNDS (owner 2026-11-14): more real-world sounds the writer can name for any topic ----
+def _env(t, dur, a=6, r=4): return np.minimum(1, t * a) * np.minimum(1, (dur - t) * r)
+def gears(dur=2.0, rate=14):
+    """meshing gear teeth: fast metallic clicks + a whine"""
+    out = np.zeros(int(dur * SR)); k = 0.0
+    while k < dur - 0.05:
+        c = tick(1100 + 300 * _rs.rand(), 0.05) * 0.6; i = int(k * SR); c = c[:len(out) - i]; out[i:i + len(c)] += c; k += 1 / rate
+    t = _t(dur); return norm(out + 0.35 * np.sin(2 * np.pi * (480 + 40 * np.sin(2 * np.pi * 0.5 * t)) * t) * _env(t, dur))
+def engine(dur=2.5, rpm=900):
+    """running combustion engine: low pulses + rumble"""
+    t = _t(dur); f = rpm / 60 * 2; p = (0.5 + 0.5 * np.sign(np.sin(2 * np.pi * f * t))) * np.exp(-((t * f) % 1) * 6)
+    return norm((p * noise(dur, 60, 420) + 0.6 * noise(dur, 30, 120)) * _env(t, dur, 3, 3))
+def ignition(dur=1.6):
+    """starter cranking then the engine catching"""
+    t = _t(dur); crank = noise(dur, 120, 900) * (0.6 + 0.4 * np.sign(np.sin(2 * np.pi * 9 * t))) * (t < 0.8)
+    run = engine(dur, 1200) * (t >= 0.7) * np.minimum(1, (t - 0.7).clip(0) * 6)
+    return norm(crank * 0.8 + run)
+def spark(dur=0.35):
+    t = _t(dur); return norm(noise(dur, 2500, 12000) * np.exp(-t * 35) + 0.5 * noise(dur, 300, 2000) * np.exp(-t * 20) * (_rs.rand(len(t)) > 0.7))
+def buzz(dur=1.5, f=120):
+    t = _t(dur); return norm(np.sign(np.sin(2 * np.pi * f * t)) * 0.5 * _env(t, dur) + 0.3 * noise(dur, 2000, 6000) * _env(t, dur))
+def whir(dur=2.0):
+    t = _t(dur); f = 300 + 900 * np.minimum(1, t / (dur * 0.4)); return norm(np.sin(2 * np.pi * np.cumsum(f) / SR) * 0.6 * _env(t, dur) + 0.3 * noise(dur, 600, 3000) * _env(t, dur))
+def crackle(dur=2.0):
+    out = noise(dur, 1500, 9000) * (_rs.rand(int(dur * SR)) > 0.985); t = _t(dur); return norm(out + 0.4 * noise(dur, 60, 300) * _env(t, dur))
+def beep(dur=0.4, f=1250):
+    t = _t(dur); return norm(np.sin(2 * np.pi * f * t) * ((t % 0.2) < 0.12))
+def heartbeat(dur=2.0, bpm=72):
+    out = np.zeros(int(dur * SR)); k = 0.0
+    while k < dur - 0.3:
+        for off, g in ((0, 1.0), (0.22, 0.7)):
+            c = whump(0.25) * g; i = int((k + off) * SR); c = c[:max(0, len(out) - i)]; out[i:i + len(c)] += c
+        k += 60 / bpm
+    return norm(out)
+def wind(dur=2.5):
+    t = _t(dur); return norm(noise(dur, 150, 1400) * (0.6 + 0.4 * np.sin(2 * np.pi * 0.4 * t)) * _env(t, dur, 2, 2))
+def bubbles(dur=2.0):
+    out = np.zeros(int(dur * SR)); k = 0.0
+    while k < dur - 0.1:
+        c = pop(0.1) * 0.5; i = int(k * SR); c = c[:len(out) - i]; out[i:i + len(c)] += c; k += 0.05 + 0.15 * _rs.rand()
+    return norm(out)
+SFX.update({'gears': gears, 'engine': engine, 'ignition': ignition, 'spark': spark, 'buzz': buzz, 'whir': whir, 'crackle': crackle,
+            'beep': beep, 'heartbeat': heartbeat, 'wind': wind, 'bubbles': bubbles})
+LONG_SFX = {'gears', 'engine', 'buzz', 'whir', 'crackle', 'heartbeat', 'wind', 'bubbles', 'hum', 'rumble', 'flow', 'spray', 'sparkle'}   # these fill the whole shot
+
+
 class Track:
     def __init__(self, T): self.T = T; self.buf = np.zeros(int(T * SR))
     def add(self, t, x, gain=1.0):
