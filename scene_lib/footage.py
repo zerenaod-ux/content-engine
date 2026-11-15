@@ -9,6 +9,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import llm
 import scene_lib.writer as W
+import scene_lib.quality as Q
 from scene_lib.writer import _call
 W.SYS = 'You write narration for viral, accurate explainer Shorts made from real stock footage. Return only valid JSON.'
 HOOK = ['']
@@ -23,8 +24,8 @@ Rules:
 - Speaker style: talk to the viewer ("you"), calm, direct, confident. No hype words. True general facts only; no numbers you are not sure of.
 - For each sentence "query": 2-4 English words to search a stock video site for a REAL close-up that shows exactly this (e.g. "car key ignition", "spark plug", "engine pistons", "car battery", "gasoline pump nozzle"). Concrete objects, no abstract words, no text, no people's names.
 - "label": 1-3 words naming the part shown (e.g. "Spark plug").
-- "image": one English sentence describing a photorealistic, extremely detailed close-up picture that SHOWS exactly this sentence, like a high-end engineering cut-away or macro photo: name the exact part, what it is doing, the view (cut-away, macro, inside view), lighting. Example: "photorealistic cut-away of a car engine cylinder, piston at the top, spark plug firing a bright blue spark into fuel mist, dramatic studio lighting". No text or letters in the picture.
-- "move": one short English sentence saying what physically MOVES in that picture (e.g. "the key turns clockwise in the ignition", "the two gears spin and mesh together").
+- "image": one English sentence describing a photorealistic, extremely detailed close-up picture that SHOWS exactly this sentence, like a high-end engineering cut-away or macro photo: name the exact part, what it is doing, the view (cut-away, macro, inside view), BRIGHT lighting. Use the exact real name of the object (never a look-alike: a spark plug, not a candle). Example: "photorealistic cut-away of a car engine cylinder, piston at the top, spark plug firing a bright blue spark into fuel mist, bright even studio lighting, light grey background". No text or letters in the picture.
+- "move": one short English sentence saying what physically MOVES in that picture, FAST and clearly visible (e.g. "the key turns clockwise in the ignition", "the two gears spin and mesh together").
 - "sound": the ONE real-world sound heard in that shot, chosen from: {sounds}. Pick what the moving thing really sounds like (gears turning = gears, engine running = engine, key turning = click, electricity = buzz, fire = crackle, water = flow).
 - title: starts with How or Why, 4-8 words, ends with ONE emoji.
 - hook: 3-7 words shown small at the top of the whole video, a curiosity hook (e.g. "What really happens when you turn the key"). No emoji.
@@ -102,11 +103,11 @@ def _crop_mark(f):
     except Exception: pass
 
 
-def ai_image(desc, i, log):
+def ai_image(desc, i, log, seeds=None):
     """AI_PICTURE: free Pollinations image service (FLUX model, no key): a photorealistic close-up / cut-away made for this exact sentence."""
-    prompt = desc + ', photorealistic, ultra detailed, sharp focus, cinematic lighting, vertical 9:16, no text, no letters, no watermark'
+    prompt = desc + ', photorealistic, ultra detailed, tack sharp focus, bright well-lit high-key lighting, vivid colors, vertical 9:16, no text, no letters, no watermark'
     tok = os.environ.get('POLLINATIONS_TOKEN', '').strip()
-    for k, seed in enumerate((7 + i, 101 + i, 211 + i, 307 + i, 401 + i)):
+    for k, seed in enumerate(seeds or (7 + i, 101 + i, 211 + i, 307 + i, 401 + i)):
         time.sleep((16 if i else 0) if k == 0 else 35)   # PACING: the free tier allows about one picture every 15 seconds; wait longer after a refusal
         u = 'https://image.pollinations.ai/prompt/' + urllib.parse.quote(prompt) + '?width=1080&height=1920&nologo=true&model=flux&seed=%d' % seed
         try:
@@ -147,7 +148,15 @@ def shot(i, src, d, say, label, first_title=None, push=0.6):
     if not still:   # a short moving clip is slowed to fill its sentence instead of jumping back to the start
         try:
             cd = float(sh('ffprobe', '-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', src).strip())
-            if 0.5 < cd < d: vf.insert(0, 'setpts=PTS*%.3f' % (d / cd + 0.02))
+            # REAL_SPEED (owner 2026-11-15: motion must look fast and alive): slow down at most 1.3x, then play it back and forth
+            if 0.5 < cd < d: vf.insert(0, 'setpts=PTS*%.3f' % min(1.3, d / cd + 0.02))
+            if cd * 1.3 < d:
+                rb = 'rb%02d.mp4' % i
+                sh('ffmpeg', '-v', 'error', '-y', '-i', src, '-filter_complex', '[0:v]split[a][b];[b]reverse[r];[a][r]concat=n=2:v=1:a=0', '-an', '-c:v', 'libx264', '-crf', '16', '-preset', 'veryfast', rb)
+                src = rb
+            # CRISP_BRIGHT (owner 2026-11-15: clips were blurry and dark): sharp upscale, lift dark parts, sharpen
+            vf.insert(0, 'scale=1080:1920:flags=lanczos:force_original_aspect_ratio=increase')
+            vf.insert(len(vf) - 1, 'eq=gamma=1.18:brightness=0.03:contrast=1.05,unsharp=7:7:1.1:5:5:0.0')
         except Exception: pass
     sh('ffmpeg', '-v', 'error', '-y', *(['-loop', '1', '-framerate', '30'] if still else ['-stream_loop', '-1']), '-i', src, '-t', '%.2f' % d, '-an', '-vf', ','.join(vf),
        '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '21', '-pix_fmt', 'yuv420p', 'shot%02d.mp4' % i)
@@ -166,6 +175,13 @@ def main():
     used, t, steps = set(), 0.3, []
     for i, s in enumerate(c['steps']):
         f, u = ai_image(s['image'], i, log)
+        for tryn in range(3):   # PICTURE_CHECK (owner 2026-11-15): a vision AI confirms the picture shows the named part, else draw again
+            if not f: break
+            ok, note = Q.picture_ok(f, s['say'], s['label'] + ' (' + s['image'][:160] + ')', log)
+            log('picture %d check: %s (%s)' % (i + 1, {True: 'OK', False: 'WRONG', None: 'not checked'}[ok], note))
+            if ok is not False: break
+            f2, u2 = ai_image(s['image'] + ', clearly showing the ' + s['label'], i, log, seeds=(901 + 37 * tryn + i, 1301 + i))
+            if f2: f, u = f2, u2
         if not f and steps:   # NO_RANDOM_CLIPS (owner 2026-11-14: unrelated stock clips like the sea looked wrong): reuse the last matching picture
             f, u = steps[-1]['file'], steps[-1]['clip']; log('picture %d: reusing the previous picture' % (i + 1))
         if not f:
@@ -192,6 +208,12 @@ def main():
         got = animate_batch(rest, log)
         for i, s in enumerate(steps):
             if ('real%02d.mp4' % i) in got: moved[i] = got['real%02d.mp4' % i]
+    for i in list(moved):   # MOTION_CHECK (owner 2026-11-15: many shots did not really move): reject clips that look like a still photo
+        try:
+            m = Q.motion_score(moved[i]); b, sh_ = Q.looks(moved[i])
+            log('shot %d motion %.2f brightness %.0f sharpness %.0f' % (i + 1, m, b, sh_))
+            if m < 0.6: log('shot %d barely moves: using the 3D glide instead' % (i + 1)); del moved[i]
+        except Exception as e: log('motion check failed for shot %d (%s)' % (i + 1, str(e)[:80]))
     log('real motion on %d of %d shots' % (len(moved), len(steps)))
     for i, s in enumerate(steps):
         d = (s['end'] - s['start']) + (0.3 if i == 0 else 0); src, push = s['file'], 0.6

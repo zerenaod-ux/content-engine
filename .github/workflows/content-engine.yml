@@ -26,7 +26,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 150   # the Kaggle GPU batch can take about an hour
+    timeout-minutes: 200   # two Kaggle GPU batches can take up to two hours
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

@@ -13,39 +13,49 @@ def _kg(*a):
     return (r.stdout + r.stderr).strip()
 
 
-def animate_batch(jobs, log=print, max_wait=105 * 60):
+def animate_batch(jobs, log=print, max_wait=120 * 60):
     _log = log; log = lambda *a: _log(' '.join(str(x) for x in a))   # the caller's log takes one text
     """jobs: [{"img": path, "move": text, "out": "real03.mp4"}]. Returns {out: local path} for the clips that came back."""
     user = os.environ.get('KAGGLE_USERNAME', '').strip()
     if not jobs: return {}
     if not (os.environ.get('KAGGLE_API_TOKEN') and user): log('Kaggle GPU skipped: KAGGLE_API_TOKEN / KAGGLE_USERNAME not set'); return {}
-    ins = Path('kg_in'); shutil.rmtree(ins, ignore_errors=True); ins.mkdir()
-    lst = []
-    for j in jobs:
-        shutil.copy(j['img'], ins / Path(j['img']).name); lst.append({'img': Path(j['img']).name, 'move': j['move'], 'out': j['out']})
-    (ins / 'jobs.json').write_text(json.dumps(lst))
-    slug = 'ce-motion-' + time.strftime('%d%H%M%S')
-    (ins / 'dataset-metadata.json').write_text(json.dumps({'title': slug.replace('-', ' '), 'id': f'{user}/{slug}', 'licenses': [{'name': 'CC0-1.0'}]}))
-    for attempt in range(4):
-        r = _kg('datasets', 'create', '-p', str(ins)); log('Kaggle upload:', r[-120:])
-        if 'error' not in r.lower() and 'problem' not in r.lower(): break
+    # TWO_GPUS (owner 2026-11-15: use as much free GPU as possible): split the shots over two Kaggle runs at the same time
+    parts = [jobs[0::2], jobs[1::2]] if len(jobs) > 3 else [jobs]
+    names = []
+    for n, part in enumerate(parts):
+        kern = KERNEL if n == 0 else KERNEL + '-b'
+        ins = Path('kg_in%d' % n); shutil.rmtree(ins, ignore_errors=True); ins.mkdir()
+        lst = []
+        for j in part:
+            shutil.copy(j['img'], ins / Path(j['img']).name); lst.append({'img': Path(j['img']).name, 'move': j['move'], 'out': j['out']})
+        (ins / 'jobs.json').write_text(json.dumps(lst))
+        slug = 'ce-motion-%d-' % n + time.strftime('%d%H%M%S')
+        (ins / 'dataset-metadata.json').write_text(json.dumps({'title': slug.replace('-', ' '), 'id': f'{user}/{slug}', 'licenses': [{'name': 'CC0-1.0'}]}))
+        for attempt in range(4):
+            r = _kg('datasets', 'create', '-p', str(ins)); log('Kaggle upload %d:' % n, r[-120:])
+            if 'error' not in r.lower() and 'problem' not in r.lower(): break
+            time.sleep(45)
+        else: log('Kaggle upload kept failing'); continue
+        for _ in range(60):
+            if 'ready' in _kg('datasets', 'status', f'{user}/{slug}').lower(): break
+            time.sleep(10)
+        kd = Path('kg_kernel%d' % n); shutil.rmtree(kd, ignore_errors=True); kd.mkdir(); shutil.copy(HERE / 'kaggle_motion_kernel.py', kd / 'kaggle_motion_kernel.py')
+        (kd / 'kernel-metadata.json').write_text(json.dumps({'id': f'{user}/{kern}', 'title': kern.replace('-', ' '), 'code_file': 'kaggle_motion_kernel.py', 'language': 'python',
+            'kernel_type': 'script', 'is_private': True, 'enable_gpu': True, 'enable_internet': True, 'dataset_sources': [f'{user}/{slug}'],
+            'competition_sources': [], 'kernel_sources': [], 'model_sources': []}))
+        r = _kg('kernels', 'push', '-p', str(kd)); log('Kaggle GPU %d started:' % n, r[-160:])
+        if 'error' not in r.lower(): names.append(kern)
+    t0 = time.time(); left = set(names)
+    while left and time.time() - t0 < max_wait:
         time.sleep(45)
-    else: log('Kaggle upload kept failing'); return {}
-    for _ in range(60):
-        if 'ready' in _kg('datasets', 'status', f'{user}/{slug}').lower(): break
-        time.sleep(10)
-    kd = Path('kg_kernel'); shutil.rmtree(kd, ignore_errors=True); kd.mkdir(); shutil.copy(HERE / 'kaggle_motion_kernel.py', kd / 'kaggle_motion_kernel.py')
-    (kd / 'kernel-metadata.json').write_text(json.dumps({'id': f'{user}/{KERNEL}', 'title': 'content engine motion', 'code_file': 'kaggle_motion_kernel.py', 'language': 'python',
-        'kernel_type': 'script', 'is_private': True, 'enable_gpu': True, 'enable_internet': True, 'dataset_sources': [f'{user}/{slug}'],
-        'competition_sources': [], 'kernel_sources': [], 'model_sources': []}))
-    r = _kg('kernels', 'push', '-p', str(kd)); log('Kaggle GPU started:', r[-160:])
-    t0 = time.time()
-    while time.time() - t0 < max_wait:
-        time.sleep(45); s = _kg('kernels', 'status', f'{user}/{KERNEL}').lower()
-        if 'complete' in s: break
-        if 'error' in s or 'cancel' in s: log('Kaggle GPU run failed:', s[-120:]); break
-    else: log('Kaggle GPU took too long; using what is ready')
-    dl = Path('kg_out'); shutil.rmtree(dl, ignore_errors=True); dl.mkdir(); _kg('kernels', 'output', f'{user}/{KERNEL}', '-p', str(dl))
+        for kern in list(left):
+            s = _kg('kernels', 'status', f'{user}/{kern}').lower()
+            if 'complete' in s: left.discard(kern)
+            elif 'error' in s or 'cancel' in s: log('Kaggle GPU run failed:', kern, s[-120:]); left.discard(kern)
+    if left: log('Kaggle GPU took too long; using what is ready')
+    dl = Path('kg_out'); shutil.rmtree(dl, ignore_errors=True); dl.mkdir()
+    for n, kern in enumerate(names):
+        d = dl / str(n); d.mkdir(); _kg('kernels', 'output', f'{user}/{kern}', '-p', str(d))
     for f in dl.rglob('motion.log'): log('Kaggle log:', f.read_text()[-800:])
     got = {}
     for j in jobs:
