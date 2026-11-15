@@ -20,9 +20,9 @@ NEG = 'worst quality, inconsistent motion, blurry, jittery, distorted, melting, 
 for j in jobs:
     t0 = time.time()
     try:
-        img = load_image(os.path.join(src, j['img'])).resize((480, 832))
+        img = load_image(os.path.join(src, j['img'])).resize((480, 704))
         frames = pipe(image=img, prompt=j['move'] + '. Fast, clearly visible, realistic motion, bright lighting, rigid parts keep their shape, steady camera, cinematic macro, detailed.',
-                      negative_prompt=NEG, width=480, height=832, num_frames=81, num_inference_steps=20, decode_timestep=0.03, decode_noise_scale=0.025).frames[0]
+                      negative_prompt=NEG, width=480, height=704, num_frames=49, num_inference_steps=20, decode_timestep=0.03, decode_noise_scale=0.025).frames[0]
         export_to_video(frames, os.path.join(OUT, j['out']), fps=24)
         say('ok', j['out'], '%.0f s' % (time.time() - t0))
     except Exception:

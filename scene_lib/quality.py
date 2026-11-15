@@ -21,13 +21,39 @@ def _parse(t):
     return json.loads(t)
 
 
+_MODELS = {}
+
+
+def _gemini_models(key):
+    """ASK_FOR_MODELS: model names change, so ask Google which models this key can use (flash first)."""
+    if not key: return []
+    if 'g' not in _MODELS:
+        try:
+            j = json.loads(urllib.request.urlopen('https://generativelanguage.googleapis.com/v1beta/models?pageSize=200&key=' + key, timeout=30).read())
+            ms = [m['name'].split('/')[-1] for m in j.get('models', []) if 'generateContent' in m.get('supportedGenerationMethods', [])
+                  and 'flash' in m['name'] and not any(w in m['name'] for w in ('tts', 'image', 'audio', 'live', 'embed'))]
+            _MODELS['g'] = sorted(ms, key=lambda n: ('lite' in n, 'preview' in n or 'exp' in n, n), reverse=False)[:4]
+        except Exception: _MODELS['g'] = []
+    return _MODELS['g']
+
+
+def _openrouter_models(key):
+    """free OpenRouter models that accept pictures, asked live."""
+    if not key: return []
+    if 'o' not in _MODELS:
+        try:
+            j = json.loads(urllib.request.urlopen(urllib.request.Request('https://openrouter.ai/api/v1/models', headers={'User-Agent': 'content-engine/1.0'}), timeout=30).read())
+            _MODELS['o'] = [m['id'] for m in j.get('data', []) if m['id'].endswith(':free') and 'image' in (m.get('architecture') or {}).get('input_modalities', [])][:4]
+        except Exception: _MODELS['o'] = []
+    return _MODELS['o']
+
+
 def picture_ok(path, say, label, log=print):
     """Returns (ok, note). ok=None when no vision AI answered (the picture is then kept)."""
     b64 = base64.b64encode(open(path, 'rb').read()).decode()
     q = ASK % (say, label)
     key = os.environ.get('GEMINI_API_KEY', '').strip()
-    for model in ('gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.5-flash-lite'):
-        if not key: break
+    for model in _gemini_models(key):
         try:
             j = _post('https://generativelanguage.googleapis.com/v1beta/models/%s:generateContent?key=%s' % (model, key),
                       {'contents': [{'parts': [{'text': q}, {'inline_data': {'mime_type': 'image/jpeg', 'data': b64}}]}],
@@ -36,8 +62,7 @@ def picture_ok(path, say, label, log=print):
             return bool(a.get('ok')) and a.get('bright', True) is not False, a.get('shows', '') + ('' if a.get('bright', True) else ' (too dark)')
         except Exception as e: log('vision check %s: %s' % (model, str(e)[:90]))
     key = os.environ.get('OPENROUTER_API_KEY', '').strip()
-    for model in ('google/gemma-3-27b-it:free', 'meta-llama/llama-4-maverick:free', 'qwen/qwen2.5-vl-72b-instruct:free'):
-        if not key: break
+    for model in _openrouter_models(key):
         try:
             j = _post('https://openrouter.ai/api/v1/chat/completions',
                       {'model': model, 'temperature': 0, 'messages': [{'role': 'user', 'content': [{'type': 'text', 'text': q},
