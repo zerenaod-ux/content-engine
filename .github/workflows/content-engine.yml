@@ -61,7 +61,7 @@ jobs:
           POLLINATIONS_TOKEN: ${{ secrets.POLLINATIONS_TOKEN }}
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
-          KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
+          KAGGLE_USERNAME: minddoodles   # same Kaggle account as AnimationDoodles
         run: |
           if [ "${{ github.event_name }}" = "schedule" ]; then echo auto > topic.txt
           elif [ -n "$TOPIC_IN" ]; then printf '%s\n' "$TOPIC_IN" > topic.txt; else head -n 1 publish/run.trigger > topic.txt; fi
