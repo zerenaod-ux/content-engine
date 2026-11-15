@@ -5,9 +5,10 @@
 import base64, json, os, urllib.request
 
 UA = {'User-Agent': 'content-engine/1.0', 'Content-Type': 'application/json'}
-ASK = ('You check pictures for an explainer video. The narration says: "%s". The picture must clearly show: %s. '
+ASK = ('You check pictures for an explainer video. The narration says: "%s". The picture should show: %s. '
        'Answer only JSON {"ok": true/false, "shows": "what the picture really shows in 3-8 words", "bright": true/false}. '
-       'ok=false if the main object is a different thing (for example a candle instead of a spark plug), if it is unclear, or if it has text/letters. '
+       'Be lenient: ok=true when the main subject is the named thing or a reasonable depiction of it, even if details differ from the description. '
+       'ok=false ONLY when the main object is clearly a different thing (for example a candle instead of a spark plug), or the picture is unusable or full of text/letters. '
        'bright=false if the picture is mostly dark.')
 
 
