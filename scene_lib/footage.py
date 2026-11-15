@@ -24,9 +24,11 @@ Rules:
 - For each sentence "query": 2-4 English words to search a stock video site for a REAL close-up that shows exactly this (e.g. "car key ignition", "spark plug", "engine pistons", "car battery", "gasoline pump nozzle"). Concrete objects, no abstract words, no text, no people's names.
 - "label": 1-3 words naming the part shown (e.g. "Spark plug").
 - "image": one English sentence describing a photorealistic, extremely detailed close-up picture that SHOWS exactly this sentence, like a high-end engineering cut-away or macro photo: name the exact part, what it is doing, the view (cut-away, macro, inside view), lighting. Example: "photorealistic cut-away of a car engine cylinder, piston at the top, spark plug firing a bright blue spark into fuel mist, dramatic studio lighting". No text or letters in the picture.
+- "move": one short English sentence saying what physically MOVES in that picture (e.g. "the key turns clockwise in the ignition", "the two gears spin and mesh together").
+- Mark exactly 2 sentences with "key": true: the 2 moments where real movement matters most (they get real AI motion).
 - title: starts with How or Why, 4-8 words, ends with ONE emoji.
 - hook: 3-7 words shown small at the top of the whole video, a curiosity hook (e.g. "What really happens when you turn the key"). No emoji.
-Return only JSON: {{"title": "...", "hook": "...", "principle": "one sentence why it works", "steps": [{{"say": "...", "query": "...", "label": "...", "image": "..."}}]}}"""
+Return only JSON: {{"title": "...", "hook": "...", "principle": "one sentence why it works", "steps": [{{"say": "...", "query": "...", "label": "...", "image": "...", "move": "...", "key": false}}]}}"""
 
 
 def problems(c):
@@ -134,6 +136,11 @@ def shot(i, src, d, say, label, first_title=None, push=0.6):
           "fade=in:st=0:d=0.18:color=white",
           f"drawtext=fontfile={FONT}:textfile=hook.txt:fontsize=40:line_spacing=8:fontcolor=white:box=1:boxcolor=black@0.45:boxborderw=16:x=(w-tw)/2:y=120"]
     still = src.endswith('.jpg')
+    if not still:   # a short moving clip is slowed to fill its sentence instead of jumping back to the start
+        try:
+            cd = float(sh('ffprobe', '-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', src).strip())
+            if 0.5 < cd < d: vf.insert(0, 'setpts=PTS*%.3f' % (d / cd + 0.02))
+        except Exception: pass
     sh('ffmpeg', '-v', 'error', '-y', *(['-loop', '1', '-framerate', '30'] if still else ['-stream_loop', '-1']), '-i', src, '-t', '%.2f' % d, '-an', '-vf', ','.join(vf),
        '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '21', '-pix_fmt', 'yuv420p', 'shot%02d.mp4' % i)
 
@@ -163,6 +170,10 @@ def main():
     styles = ['push', 'orbit', 'rise']
     for i, s in enumerate(steps):
         d = (s['end'] - s['start']) + (0.3 if i == 0 else 0); src, push = s['file'], 0.6
+        if src.endswith('.jpg') and c['steps'][i].get('key') and c['steps'][i].get('move'):   # REAL_MOTION on the 2 key moments
+            from scene_lib.hf_motion import animate
+            mv = animate(src, c['steps'][i]['move'], 'real%02d.mp4' % i, log)
+            if mv: src, push = mv, 0.05
         if src.endswith('.jpg'):   # MOTION_3D: the still becomes a moving 3D clip (depth + camera fly-in)
             try: src = make_clip(src, 'm3d%02d.mp4' % i, d + 0.1, styles[i % 3]); push = 0.08
             except Exception as e: log('3D motion failed for picture %d (%s); zoom only' % (i + 1, str(e)[:80]))

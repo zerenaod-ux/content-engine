@@ -1,4 +1,4 @@
-"""MOTION_3D (owner 2026-11-14: pictures must move, not slide): turns one still picture into a moving 3D clip, free, on the CPU.
+"""MOTION_3D (toned down 2026-11-14: strong depth bending made metal parts look melted) (owner 2026-11-14: pictures must move, not slide): turns one still picture into a moving 3D clip, free, on the CPU.
 A free depth model (Depth Anything V2 Small, Apache-2.0, from Hugging Face) guesses how far every pixel is; then the camera
 pushes in and drifts sideways so near parts move more than far parts (parallax), like a real camera flying into the object.
 python3 scene_lib/parallax.py in.jpg out.mp4 seconds [style]   style: push (default), orbit, rise"""
@@ -47,10 +47,10 @@ def make_clip(src, out, seconds, style='push'):
     dsmall = cv2.resize(dep, (W, H))
     for k in range(n):
         t = k / (n - 1); e = t * t * (3 - 2 * t)        # smooth start and stop
-        zoom = 1 + 0.45 * e                              # overall push-in
-        near = 0.30 * e                                  # extra push for near parts (the 3D feel)
-        sx = {'push': 0.0, 'orbit': 70.0, 'rise': 0.0}[style] * (e - 0.5)
-        sy = {'push': 0.0, 'orbit': 0.0, 'rise': -60.0}[style] * (e - 0.5)
+        zoom = 1 + 0.30 * e                              # overall push-in
+        near = 0.06 * e                                  # extra push for near parts (the 3D feel)
+        sx = {'push': 0.0, 'orbit': 18.0, 'rise': 0.0}[style] * (e - 0.5)
+        sy = {'push': 0.0, 'orbit': 0.0, 'rise': -14.0}[style] * (e - 0.5)
         z = zoom * (1 + near * dsmall)
         mx = cx + (xx - W / 2) / z - sx * dsmall
         my = cy + (yy - H / 2) / z - sy * dsmall
