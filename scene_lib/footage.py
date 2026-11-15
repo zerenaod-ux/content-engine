@@ -132,7 +132,7 @@ def shot(i, src, d, say, label, first_title=None, push=0.6):
     vf = [f"scale=w='trunc(1080*{z}/2)*2':h='trunc(1920*{z}/2)*2':force_original_aspect_ratio=increase:eval=frame",
           "crop=1080:1920", "setsar=1", "fps=30", "eq=saturation=1.25:contrast=1.08",
           "fade=in:st=0:d=0.18:color=white",
-          f"drawtext=fontfile={FONT}:textfile=hook.txt:fontsize=40:fontcolor=white:box=1:boxcolor=black@0.45:boxborderw=16:x=(w-tw)/2:y=120"]
+          f"drawtext=fontfile={FONT}:textfile=hook.txt:fontsize=40:line_spacing=8:fontcolor=white:box=1:boxcolor=black@0.45:boxborderw=16:x=(w-tw)/2:y=120"]
     still = src.endswith('.jpg')
     sh('ffmpeg', '-v', 'error', '-y', *(['-loop', '1', '-framerate', '30'] if still else ['-stream_loop', '-1']), '-i', src, '-t', '%.2f' % d, '-an', '-vf', ','.join(vf),
        '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '21', '-pix_fmt', 'yuv420p', 'shot%02d.mp4' % i)
@@ -147,7 +147,7 @@ def main():
         idea = ideas.pick(log); topic = idea['topic']; Path('idea.json').write_text(json.dumps(idea, ensure_ascii=False))
     log('real-footage writer: ' + topic)
     c = write(topic, log)
-    HOOK[0] = ''.join(ch for ch in (c.get('hook') or c['title']) if ord(ch) < 0x2000).strip()[:48]
+    HOOK[0] = '\n'.join(textwrap.wrap(''.join(ch for ch in (c.get('hook') or c['title']) if ord(ch) < 0x2000).strip(), 34)[:2])   # whole hook, at most 2 short lines
     used, t, steps = set(), 0.3, []
     for i, s in enumerate(c['steps']):
         f, u = ai_image(s['image'], i, log)
