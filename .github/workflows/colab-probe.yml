@@ -1,0 +1,15 @@
+name: colab-probe
+# THIRD_GPU research (owner 2026-11-15): install Google's official Colab CLI and print how it signs in. Uses no account, posts nothing.
+on: workflow_dispatch
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - run: pip install -q google-colab-cli && pip show google-colab-cli | head -3
+      - run: colab --help || true
+      - run: colab run --help || true
+      - run: colab auth --help || true
+      - run: |
+          D=$(python3 -c "import os,colab_cli;print(os.path.dirname(colab_cli.__file__))" 2>/dev/null || python3 -c "import site;print(site.getsitepackages()[0])")
+          grep -rhoE "https://www.googleapis.com/auth/[a-z._/-]+|scopes?=.{0,120}|application.default|refresh_token|authorized_user|client_id.{0,60}" $D/colab* 2>/dev/null | sort | uniq -c | head -40 || true
