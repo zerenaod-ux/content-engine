@@ -24,6 +24,10 @@ def animate_batch(jobs, log=print, max_wait=120 * 60):
     names = []
     for n, part in enumerate(parts):
         kern = KERNEL if n == 0 else KERNEL + '-b'
+        for _ in range(20):   # BUSY_CHECK: Kaggle allows 2 GPU runs at once; wait (max 15 min) if an older run is still busy
+            st = _kg('kernels', 'status', f'{user}/{kern}').lower()
+            if 'running' not in st and 'queued' not in st: break
+            log('Kaggle GPU %d still busy with an older run; waiting' % n); time.sleep(45)
         ins = Path('kg_in%d' % n); shutil.rmtree(ins, ignore_errors=True); ins.mkdir()
         lst = []
         for j in part:

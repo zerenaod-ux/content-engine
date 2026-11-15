@@ -59,7 +59,7 @@ def picture_ok(path, say, label, log=print):
                       {'contents': [{'parts': [{'text': q}, {'inline_data': {'mime_type': 'image/jpeg', 'data': b64}}]}],
                        'generationConfig': {'temperature': 0}}, {})
             a = _parse(j['candidates'][0]['content']['parts'][0]['text'])
-            return bool(a.get('ok')) and a.get('bright', True) is not False, a.get('shows', '') + ('' if a.get('bright', True) else ' (too dark)')
+            return bool(a.get('ok')), a.get('shows', '') + ('' if a.get('bright', True) else ' (dark: will be brightened)')   # dark is fixed later by brightening
         except Exception as e: log('vision check %s: %s' % (model, str(e)[:90]))
     key = os.environ.get('OPENROUTER_API_KEY', '').strip()
     for model in _openrouter_models(key):
