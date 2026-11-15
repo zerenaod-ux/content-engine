@@ -11,6 +11,7 @@ import llm
 import scene_lib.writer as W
 from scene_lib.writer import _call
 W.SYS = 'You write narration for viral, accurate explainer Shorts made from real stock footage. Return only valid JSON.'
+HOOK = ['']
 FONT = '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'
 WPS = 2.7
 UA = {'User-Agent': 'content-engine/1.0'}
@@ -24,7 +25,8 @@ Rules:
 - "label": 1-3 words naming the part shown (e.g. "Spark plug").
 - "image": one English sentence describing a photorealistic, extremely detailed close-up picture that SHOWS exactly this sentence, like a high-end engineering cut-away or macro photo: name the exact part, what it is doing, the view (cut-away, macro, inside view), lighting. Example: "photorealistic cut-away of a car engine cylinder, piston at the top, spark plug firing a bright blue spark into fuel mist, dramatic studio lighting". No text or letters in the picture.
 - title: starts with How or Why, 4-8 words, ends with ONE emoji.
-Return only JSON: {{"title": "...", "principle": "one sentence why it works", "steps": [{{"say": "...", "query": "...", "label": "...", "image": "..."}}]}}"""
+- hook: 3-7 words shown small at the top of the whole video, a curiosity hook (e.g. "What really happens when you turn the key"). No emoji.
+Return only JSON: {{"title": "...", "hook": "...", "principle": "one sentence why it works", "steps": [{{"say": "...", "query": "...", "label": "...", "image": "..."}}]}}"""
 
 
 def problems(c):
@@ -124,21 +126,13 @@ def esc(path): return path.replace(':', '\\:')
 
 def shot(i, src, d, say, label, first_title=None):
     """one sentence = one clip: cover-crop to 1080x1920, hard push-in (1.0 -> 1.5), white flash in, caption on top, label + arrow."""
-    lines = textwrap.wrap(say, 22)
-    for k, ln in enumerate(lines): Path('cap%d_%d.txt' % (i, k)).write_text(ln)
-    lab = Path('lab%d.txt' % i); lab.write_text(label.upper()[:22])
+    # CLEAN_SCREEN (owner 2026-11-14): no subtitles, no label or title in the middle; only one small hook line at the top for the whole video
+    Path('hook.txt').write_text(HOOK[0])
     z = '(1+0.6*t/%.2f)' % d   # hard push-in toward the centre
     vf = [f"scale=w='trunc(1080*{z}/2)*2':h='trunc(1920*{z}/2)*2':force_original_aspect_ratio=increase:eval=frame",
           "crop=1080:1920", "setsar=1", "fps=30", "eq=saturation=1.25:contrast=1.08",
           "fade=in:st=0:d=0.18:color=white",
-          *[f"drawtext=fontfile={FONT}:textfile=cap{i}_{k}.txt:fontsize=64:fontcolor=white:borderw=7:bordercolor=black@0.85:x=(w-tw)/2:y={170 + k * 82}" for k in range(len(lines))],
-          f"drawtext=fontfile={FONT}:text='▼':fontsize=110:fontcolor=#FFD60A:borderw=6:bordercolor=black:x=(w-tw)/2:y=1080+18*sin(t*8)",
-          f"drawtext=fontfile={FONT}:textfile={lab}:fontsize=58:fontcolor=black:box=1:boxcolor=#FFD60A:boxborderw=22:x=(w-tw)/2:y=960"]
-    if first_title:
-        plain = ''.join(ch for ch in first_title if ord(ch) < 0x2000).strip()
-        for k, ln in enumerate(textwrap.wrap(plain, 16)):
-            Path('title%d.txt' % k).write_text(ln)
-            vf.append(f"drawtext=fontfile={FONT}:textfile=title{k}.txt:fontsize=84:fontcolor=#FFD60A:borderw=9:bordercolor=black:x=(w-tw)/2:y={1450 + k * 100}:enable='lt(t,{d:.2f})'")
+          f"drawtext=fontfile={FONT}:textfile=hook.txt:fontsize=40:fontcolor=white:box=1:boxcolor=black@0.45:boxborderw=16:x=(w-tw)/2:y=120"]
     still = src.endswith('.jpg')
     sh('ffmpeg', '-v', 'error', '-y', *(['-loop', '1', '-framerate', '30'] if still else ['-stream_loop', '-1']), '-i', src, '-t', '%.2f' % d, '-an', '-vf', ','.join(vf),
        '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '21', '-pix_fmt', 'yuv420p', 'shot%02d.mp4' % i)
@@ -153,6 +147,7 @@ def main():
         idea = ideas.pick(log); topic = idea['topic']; Path('idea.json').write_text(json.dumps(idea, ensure_ascii=False))
     log('real-footage writer: ' + topic)
     c = write(topic, log)
+    HOOK[0] = ''.join(ch for ch in (c.get('hook') or c['title']) if ord(ch) < 0x2000).strip()[:48]
     used, t, steps = set(), 0.3, []
     for i, s in enumerate(c['steps']):
         f, u = ai_image(s['image'], i, log)
