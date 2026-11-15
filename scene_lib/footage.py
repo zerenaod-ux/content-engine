@@ -176,13 +176,27 @@ def main():
     steps[-1]['end'] = round(T, 2)
     from scene_lib.parallax import make_clip
     styles = ['push', 'orbit', 'rise']
+    # REAL_MOTION on every shot (owner 2026-11-14: everything must really move). GPU 1: Hugging Face (free ZeroGPU), shot by shot until its
+    # daily time runs out; GPU 2: Kaggle (free ~30 h/week), all remaining shots in one batch; last resort: gentle 3D glide.
+    from scene_lib.hf_motion import animate
+    moved, hf_down = {}, 0
+    for i, s in enumerate(steps):
+        if s['file'].endswith('.jpg') and c['steps'][i].get('move') and hf_down < 2:
+            mv = animate(s['file'], c['steps'][i]['move'], 'real%02d.mp4' % i, log)
+            if mv: moved[i] = mv; hf_down = 0
+            else: hf_down += 1   # two refusals in a row = its free time is used up for today
+    rest = [{'img': s['file'], 'move': c['steps'][i]['move'], 'out': 'real%02d.mp4' % i} for i, s in enumerate(steps)
+            if i not in moved and s['file'].endswith('.jpg') and c['steps'][i].get('move')]
+    if rest:
+        from scene_lib.kaggle_motion import animate_batch
+        got = animate_batch(rest, log)
+        for i, s in enumerate(steps):
+            if ('real%02d.mp4' % i) in got: moved[i] = got['real%02d.mp4' % i]
+    log('real motion on %d of %d shots' % (len(moved), len(steps)))
     for i, s in enumerate(steps):
         d = (s['end'] - s['start']) + (0.3 if i == 0 else 0); src, push = s['file'], 0.6
-        if src.endswith('.jpg') and c['steps'][i].get('move'):   # REAL_MOTION on every shot (owner 2026-11-14: everything must really move); free GPU sources in turn, 3D glide only if all are busy
-            from scene_lib.hf_motion import animate
-            mv = animate(src, c['steps'][i]['move'], 'real%02d.mp4' % i, log)
-            if mv: src, push = mv, 0.05
-        if src.endswith('.jpg'):   # MOTION_3D: the still becomes a moving 3D clip (depth + camera fly-in)
+        if i in moved: src, push = moved[i], 0.05
+        elif src.endswith('.jpg'):   # MOTION_3D fallback: gentle 3D glide
             try: src = make_clip(src, 'm3d%02d.mp4' % i, d + 0.1, styles[i % 3]); push = 0.08
             except Exception as e: log('3D motion failed for picture %d (%s); zoom only' % (i + 1, str(e)[:80]))
         shot(i, src, d, s['say'], s['label'], c['title'] if i == 0 else None, push)

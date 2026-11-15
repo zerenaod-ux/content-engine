@@ -26,7 +26,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 150   # the Kaggle GPU batch can take about an hour
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -35,7 +35,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - run: pip install --quiet numpy pillow imageio-ffmpeg edge-tts requests opencv-python-headless transformers gradio_client
+      - run: pip install --quiet numpy pillow imageio-ffmpeg edge-tts requests opencv-python-headless transformers gradio_client kaggle
       - run: pip install --quiet torch --index-url https://download.pytorch.org/whl/cpu   # MOTION_3D depth model (free, CPU)
       - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg fonts-dejavu-core > /dev/null   # REAL_FOOTAGE needs ffmpeg with text drawing
       - name: Restore accepted stages and narration
@@ -60,6 +60,8 @@ jobs:
           PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
           POLLINATIONS_TOKEN: ${{ secrets.POLLINATIONS_TOKEN }}
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+          KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
         run: |
           if [ "${{ github.event_name }}" = "schedule" ]; then echo auto > topic.txt
           elif [ -n "$TOPIC_IN" ]; then printf '%s\n' "$TOPIC_IN" > topic.txt; else head -n 1 publish/run.trigger > topic.txt; fi
