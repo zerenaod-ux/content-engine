@@ -14,6 +14,9 @@ class ComponentTests(unittest.TestCase):
         s=plan_fixture();s['mechanism']='solar';self.assertTrue(validate(s))
     def test_safety_action_order_cannot_change(self):
         s=plan_fixture();s['beats'][1]['action']='pass';self.assertTrue(validate(s))
+    def test_narration_cannot_announce_motion_during_static_pivot(self):
+        s=plan_fixture();s['beats'][2]['say']='The span begins to pivot while the camera shows the fixed trunnion in close detail.'
+        errors=validate(s);self.assertTrue(any('static close-up' in e for e in errors));self.assertTrue(any('production or camera' in e for e in errors))
     def test_bridge_only_closes_after_ship_clears(self):
         tl=timeline();self.assertTrue(all(abs(pose(t,tl)['angle']-math.radians(72))<1e-6 for t in np.linspace(30,35.99,40)))
         self.assertGreater(pose(36,tl)['shipy']-1.6,1.0)

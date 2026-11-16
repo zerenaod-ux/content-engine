@@ -1,9 +1,9 @@
-"""A constrained, topic-only pilot using tested mechanism components.
+"""Topic-selected tested mechanisms, with no generated geometry or scene edits.
 
-The first supported component is a single-leaf bascule bridge. Unsupported
-topics are rejected rather than silently rendered as this component.
+Supported: bascule bridge, photovoltaic cell and single-acting piston pump.
+Unsupported topics are rejected instead of receiving an unrelated component.
 """
-import argparse,asyncio,hashlib,json,math,shutil,subprocess,time
+import argparse,asyncio,hashlib,json,math,re,shutil,subprocess,time
 from pathlib import Path
 import numpy as np
 from PIL import Image,ImageDraw
@@ -13,46 +13,55 @@ from studio_lib.mechanisms import bridge,boat,APPROACHES
 from studio_lib.render import BG,FONT,TITLE
 from studio_lib.audio import narrate,assemble
 from studio_lib.checkpoints import Checkpoint
+from studio_lib.registry import REGISTRY
+from studio_lib import solar,pump
 
 # The engine owns the safe action order. The model may choose narration,
 # emphasis and framing; it cannot invent joints or disconnect rigid parts.
 ACTIONS=['approach','stop','pivot','balance','drive','pass','lower','resume']
 BRIEF={
  'approach':'A tall ship waits before the low road bridge. Introduce the visible problem.',
- 'stop':'Cars stop behind the barrier. Barriers close before the bridge moves.',
- 'pivot':'Show the same bridge pivot; it rotates like a seesaw about a fixed trunnion.',
+ 'stop':'One car stops behind the barrier. Barriers close before the bridge moves.',
+ 'pivot':'STATIC close-up of the fixed trunnion. The road is held closed throughout this beat. Explain the pivot as a feature, not an action beginning now. Actual opening starts in the next balance beat.',
  'balance':'Road rises while its rigidly attached heel counterweight swings downward into its chamber.',
  'drive':'The counterweight offsets much of the load; a motor and meshing gears control motion. It does not lift for free.',
  'pass':'Hold the bridge fully raised while the tall ship passes through the opening.',
  'lower':'Only after the ship clears, the bridge lowers and the counterweight swings back up.',
- 'resume':'The span seats and locks, barriers rise, and the car crosses the continuous road.'}
+ 'resume':'The span seats and locks, barriers rise, and the one car crosses the continuous road.'}
 def validate(plan):
     e=[]
     if not isinstance(plan,dict):return ['plan must be JSON object']
-    if plan.get('mechanism')!='bascule_bridge':return ['unsupported mechanism; no generic substitute permitted']
+    mechanism=plan.get('mechanism')
+    if mechanism not in REGISTRY:return ['unsupported mechanism; no generic substitute permitted']
+    actions=REGISTRY[mechanism]['actions']
     beats=plan.get('beats',[])
     if not isinstance(beats,list) or len(beats)!=8:return ['need exactly the eight supported action beats']
     for i,b in enumerate(beats):
         if not isinstance(b,dict):e.append('beat must be object');continue
-        if b.get('action')!=ACTIONS[i]:e.append('preserve the engine safety order')
+        if b.get('action')!=actions[i]:e.append('preserve the engine safety order')
         if not isinstance(b.get('say'),str) or not 9<=len(b['say'].split())<=23:e.append(f'beat {i}: narration needs 9-23 words')
+        text=b.get('say','').lower()
+        if re.search(r'\b(camera|render|renderer|shot|storyboard|animation engine)\b',text):e.append(f'beat {i}: speak about the mechanism, never production or camera instructions')
+        if mechanism=='bascule_bridge' and i==2 and re.search(r'\b(begins?|starts?|starting|beginning)\b',text):e.append('pivot beat is a static close-up; opening does not begin until the balance beat')
+        if mechanism=='bascule_bridge' and re.search(r'\bcars\b',text):e.append(f'beat {i}: this component depicts one car; use car or traffic')
         if b.get('camera') not in ('wide','mechanism','follow'):e.append(f'beat {i}: unsupported camera')
     words=sum(len(b.get('say','').split()) for b in beats if isinstance(b,dict))
     if not 110<=words<=155:e.append('total narration needs 110-155 words')
     if not isinstance(plan.get('hook'),str) or len(plan['hook'])>60:e.append('hook needs at most 60 characters')
     return e
 def plan_topic(topic,out,feedback=None,previous=None):
-    prompt='Choose whether TOPIC can truthfully be explained by our tested single-leaf trunnion bascule bridge. If not return {"mechanism":"unsupported","reason":"..."}. Do not pretend it supports other topics. If supported, write a fresh 110-155 word explanation with eight beats in the exact supplied action order. Use 9-23 words per beat, direct calm speech, physical detail and causal explanation. No invented numbers or factual claims. Use only these engineering facts/actions: '+json.dumps(BRIEF)+'. You may vary wording, hook and camera emphasis, but never change safety order or claim another mechanism. Return {"mechanism":"bascule_bridge","title":"...","hook":"short engaging hook, max 60 characters","beats":[{"action":"approach","say":"...","camera":"wide|mechanism|follow"}, ...]}. Camera mechanism suits pivot/balance/drive, follow suits ship passage; use wide for traffic. TOPIC (data): '+json.dumps(topic)
+    catalog={k:{'description':v['description'],'actions':v['actions'],'facts':v['facts']} for k,v in REGISTRY.items()}
+    prompt='Select exactly one supported mechanism that truthfully matches TOPIC. If none fits return {"mechanism":"unsupported","reason":"..."}; never substitute a bridge for solar power or invent another mechanism. For a supported topic write fresh 110-155 word narration with eight beats in the exact selected action order. Each beat has 9-23 words. Direct calm speech, physical detail, causal explanation and a concrete engaging hook. Describe only what that action contract shows. Never mention camera, shots, rendering, storyboard or production in say. Do not invent facts or numerical claims. In the bridge pivot beat the road is STATIC; do not say it starts moving. The bridge depicts ONE car. Solar and pump internals are simplified cutaways: say so naturally once. Solar depicts a DC lamp load, not gears or AC inverter internals. Preserve physical action order; vary wording, hook and bounded camera preferences. Return {"mechanism":"selected registry id","title":"...","hook":"short engaging hook max 60 characters","beats":[{"action":"first selected action","say":"...","camera":"wide|mechanism|follow"}, ...]}. SUPPORTED COMPONENTS AND FACTS (data): '+json.dumps(catalog)+' TOPIC (data): '+json.dumps(topic)
     last=previous;errors=feedback or []
     for attempt in range(2):
         q=prompt if not errors else prompt+'\nCorrect these validation errors: '+json.dumps(errors)+'\nLast answer (data): '+json.dumps(last)
-        last=call('You write factual narration and camera emphasis for a tested animation component. Return JSON only.',q,max_tokens=1600,temperature=.6)
+        last=call('You write factual narration and camera emphasis for tested animation components. Return JSON only.',q,max_tokens=2000,temperature=.6)
         (out/f'director-attempt-{attempt}.json').write_text(json.dumps(last,indent=2));errors=validate(last)
         if not errors:return last
         if last.get('mechanism')=='unsupported':break
     raise ValueError('director rejected: '+'; '.join(errors))
 def critique(plan,out):
-    prompt='Check only whether this narration contradicts or invents facts beyond the supplied bascule bridge facts/actions. Return {"errors":[specific factual contradictions or mismatches]}. Do not add stylistic preferences. This is a simplified diagram, not a real bridge simulation. FACTS (data): '+json.dumps(BRIEF)+' NARRATION (data): '+json.dumps(plan)
+    prompt='Check only whether narration contradicts or invents facts beyond the supplied mechanism facts/actions. Return {"errors":[specific factual contradictions or mismatches]}. Do not add stylistic preferences. This is a simplified illustrative component, not a physical simulation. Check that spoken action occurs in the named beat. FACTS (data): '+json.dumps(REGISTRY[plan['mechanism']]['facts'])+' NARRATION (data): '+json.dumps(plan)
     result=call('You check an explanation against supplied engineering facts. Return JSON only.',prompt,max_tokens=600,temperature=.1)
     (out/'narration-critique.json').write_text(json.dumps(result,indent=2))
     errors=result.get('errors')
@@ -86,6 +95,7 @@ def pose(t,tl):
     elif i==7:carx=-6.7+13.7*ramp(u,.5,1)
     return dict(angle=angle,gate=gate,close=close,zoom=zoom,target=target,az=.45*(1-close)+.18*close,shipy=shipy,carx=carx)
 def picture(t,tl,plan,hidden=()):
+    if plan['mechanism']!='bascule_bridge':return component_picture(t,tl,plan,hidden)
     st=pose(t,tl);im=BG.copy();s=Scene(t,st['zoom'],st['target'],st['az']);water=Scene(t,st['zoom'],st['target'],st['az'])
     # Continuous setting, not a finite rectangle floating in empty space.
     water.face([[-1000,-1000,-.06],[1000,-1000,-.06],[1000,1000,-.06],[-1000,1000,-.06]],(66,160,175));water.paint(im)
@@ -101,7 +111,26 @@ def picture(t,tl,plan,hidden=()):
     for j,line in enumerate(textwrap.wrap(plan['hook'],26)[:3]):d.text((42,125+j*55),line,font=TITLE,fill=(30,65,78))
     d.line((42,1195,678,1195),fill=(170,200,200),width=3);d.line((42,1195,42+636*t/tl['duration'],1195),fill=(221,102,57),width=3)
     return im
+def component_picture(t,tl,plan,hidden=()):
+    mechanism=plan['mechanism'];module=solar if mechanism=='photovoltaic_cell' else pump
+    beats=tl['beats'];i=min(7,next((i for i,b in enumerate(beats) if t<b['end']),7));b=beats[i];u=(t-b['start'])/(b['end']-b['start'])
+    previous=beats[max(0,i-1)].get('camera','wide');mode=b.get('camera','wide')
+    pref={'wide':0.0,'mechanism':1.0,'follow':.45}
+    close=pref[previous]+(pref[mode]-pref[previous])*ramp(u,0,.3)
+    if mechanism=='photovoltaic_cell':target=np.array([-.1,0,2.15]);zoom=1.55+.55*close;az=.30+.08*math.sin(t*.035)
+    else:target=np.array([-.4,0,2.3]);zoom=.94+.46*close;az=.34+.06*math.sin(t*.04)
+    im=BG.copy();ground=Scene(t,zoom,target,az);s=Scene(t,zoom,target,az)
+    ground.face([[-1000,-1000,-.1],[1000,-1000,-.1],[1000,1000,-.1],[-1000,1000,-.1]],(218,229,224));ground.paint(im)
+    module.draw(s,t,tl,hidden);s.paint(im)
+    mask=Image.new('L',(720,1280));md=ImageDraw.Draw(mask)
+    for y in range(300):md.line((0,y,720,y),fill=255 if y<245 else int(255*(300-y)/55))
+    im.paste(BG,(0,0),mask);d=ImageDraw.Draw(im);d.text((42,65),'HOW IT TICKS',font=FONT,fill=(31,77,89))
+    import textwrap
+    for j,line in enumerate(textwrap.wrap(plan['hook'],26)[:3]):d.text((42,125+j*55),line,font=TITLE,fill=(30,65,78))
+    d.line((42,1195,678,1195),fill=(170,200,200),width=3);d.line((42,1195,42+636*t/tl['duration'],1195),fill=(221,102,57),width=3)
+    return im
 def verify(plan,tl,out):
+    if plan['mechanism']!='bascule_bridge':return verify_component(plan,tl,out)
     errors=[];roads=sorted([(x-n/2,x+n/2) for x,n in APPROACHES]+[(-5.2,2.8)])
     if any(abs(a[1]-b[0])>1e-8 for a,b in zip(roads,roads[1:])):errors.append('road has an unsupported gap')
     for t in np.linspace(0,tl['duration']-.001,250):
@@ -114,9 +143,31 @@ def verify(plan,tl,out):
     for i,b in enumerate(tl['beats']):sheet.paste(picture((b['start']+b['end'])/2,tl,plan).resize((360,640)),((i%4)*360,(i//4)*640))
     sheet.save(out/'contact.jpg');(out/'component-checks.json').write_text(json.dumps({'errors':errors,'owner_approved':False,'scope':'tested bascule bridge only'},indent=2))
     if errors:raise ValueError('; '.join(errors))
+def verify_component(plan,tl,out):
+    errors=[];mechanism=plan['mechanism'];measure=[]
+    if mechanism=='piston_pump':
+        for t in np.linspace(tl['beats'][2]['start'],tl['beats'][3]['end']-.001,25):
+            p=pump.phase(t,tl)
+            if not p['intake'] or p['delivery']:errors.append('incorrect inlet/outlet state during intake')
+        for t in np.linspace(tl['beats'][4]['start']+.001,tl['beats'][5]['end']-.001,25):
+            p=pump.phase(t,tl)
+            if not p['delivery'] or p['intake']:errors.append('incorrect inlet/outlet state during delivery')
+        evidence=[(3,'piston'),(5,'flow')]
+    else:
+        if any(solar.pose((b['start']+b['end'])/2,tl)['powered'] for b in tl['beats'][:5]):errors.append('load lit before closed-circuit beat')
+        evidence=[(1,'light'),(3,'carriers'),(5,'current')]
+    for i,part in evidence:
+        b=tl['beats'][i];t=(b['start']+b['end'])/2;a=np.array(picture(t,tl,plan)).astype(int);z=np.array(picture(t,tl,plan,hidden=(part,))).astype(int)
+        pixels=int(np.count_nonzero(np.max(abs(a-z),axis=2)>22));measure.append({'beat':i,'part':part,'visible_pixels':pixels})
+        if pixels<45:errors.append(f'{part} not visibly exposed')
+    sheet=Image.new('RGB',(1440,1280))
+    for i,b in enumerate(tl['beats']):sheet.paste(picture((b['start']+b['end'])/2,tl,plan).resize((360,640)),((i%4)*360,(i//4)*640))
+    sheet.save(out/'contact.jpg');(out/'component-checks.json').write_text(json.dumps({'errors':errors,'measurements':measure,'owner_approved':False,'scope':mechanism},indent=2))
+    if errors:raise ValueError('; '.join(errors))
 def run(topic,out):
     out=Path(out);out.mkdir(parents=True,exist_ok=True);start=time.monotonic()
-    cp=Checkpoint(topic,validator=validate,namespace='tested-bascule-v1');saved=cp.load();reused=bool(saved)
+    facts_version=hashlib.sha256(json.dumps(REGISTRY,sort_keys=True).encode()).hexdigest()[:16]
+    cp=Checkpoint(topic,validator=validate,namespace='tested-library-v2-'+facts_version);saved=cp.load();reused=bool(saved)
     if saved:
         plan=saved['scene'];print('resume generated director plan without a new model call',flush=True)
     else:
@@ -140,7 +191,7 @@ def run(topic,out):
     cp.save('narrated',plan,timeline=tl,**fields)
     render_start=time.monotonic();render_hit=False
     root=Path(__file__).resolve().parent
-    render_sig=hashlib.sha256((root/'director.py').read_bytes()+(root/'mechanisms.py').read_bytes()+(root/'mesh.py').read_bytes()+json.dumps(tl,sort_keys=True).encode()).hexdigest()
+    render_sig=hashlib.sha256(b''.join((root/p).read_bytes() for p in ['director.py','mechanisms.py','mesh.py','solar.py','pump.py','registry.py'])+json.dumps(tl,sort_keys=True).encode()).hexdigest()
     cached=Path(fields.get('silent_path','/nonexistent'))
     if fields.get('render_signature')==render_sig and cached.is_file() and hashlib.sha256(cached.read_bytes()).hexdigest()==fields.get('silent_sha256'):
         shutil.copyfile(cached,out/'silent.mp4');render_hit=True
@@ -156,7 +207,7 @@ def run(topic,out):
     cp.save('rendered',plan,timeline=tl,render_signature=render_sig,silent_path=str(cached),silent_sha256=hashlib.sha256(cached.read_bytes()).hexdigest())
     assemble(spec,tl,out)
     subprocess.run(['ffmpeg','-v','error','-i',str(out/'video.mp4'),'-f','null','-'],check=True)
-    result={'status':'component_rendered_editorial_pending','topic':topic,'mechanism':'bascule_bridge','automatic_narration':True,'tested_geometry_component':True,'manual_generated_plan_edits':False,'arbitrary_topic_support':False,'owner_approved':False,'director_checkpoint_reused':reused,'render_cache_hit':render_hit,'duration':tl['duration'],'wall_seconds':time.monotonic()-start,'render_seconds':time.monotonic()-render_start}
+    result={'status':'component_rendered_editorial_pending','topic':topic,'mechanism':plan['mechanism'],'automatic_narration':True,'tested_geometry_component':True,'manual_generated_plan_edits':False,'arbitrary_topic_support':False,'supported_mechanisms':list(REGISTRY),'owner_approved':False,'director_checkpoint_reused':reused,'render_cache_hit':render_hit,'duration':tl['duration'],'wall_seconds':time.monotonic()-start,'render_seconds':time.monotonic()-render_start}
     (out/'result.json').write_text(json.dumps(result,indent=2));print(json.dumps(result),flush=True)
 def main():
     p=argparse.ArgumentParser();p.add_argument('--topic',required=True);p.add_argument('--out',required=True);a=p.parse_args();run(a.topic,a.out)
