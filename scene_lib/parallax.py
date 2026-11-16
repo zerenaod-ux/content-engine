@@ -29,10 +29,10 @@ def depth_map(img_bgr):
 
 
 def cover(img):
-    h, w = img.shape[:2]; s = max(W / w, H / h) * 1.12   # a little extra so edges never show
+    h, w = img.shape[:2]; s = max(W / w, H / h) * 1.06   # a little extra so edges never show
     img = cv2.resize(img, (int(w * s + 0.5), int(h * s + 0.5)), interpolation=cv2.INTER_CUBIC)
-    y0, x0 = (img.shape[0] - int(H * 1.12)) // 2, (img.shape[1] - int(W * 1.12)) // 2
-    return img[max(0, y0):max(0, y0) + int(H * 1.12), max(0, x0):max(0, x0) + int(W * 1.12)]
+    y0, x0 = (img.shape[0] - int(H * 1.06)) // 2, (img.shape[1] - int(W * 1.06)) // 2
+    return img[max(0, y0):max(0, y0) + int(H * 1.06), max(0, x0):max(0, x0) + int(W * 1.06)]
 
 
 def make_clip(src, out, seconds, style='push'):
@@ -48,7 +48,7 @@ def make_clip(src, out, seconds, style='push'):
     for k in range(n):
         t = k / (n - 1); e = t * t * (3 - 2 * t)        # smooth start and stop
         # CAMERA_WORK (owner 2026-11-15: permanent, never melts): six moves on SHARP pictures with real depth parallax
-        zoom = (1.30 - 0.22 * e) if style.startswith('pull') else (1 + 0.30 * e)   # push-in, or pull-out
+        zoom = (1.14 - 0.12 * e) if style.startswith('pull') else (1 + 0.14 * e)   # NO_STRETCH (2026-11-16): small zoom so a 1152x2048 picture is never blown up past its real detail   # push-in, or pull-out
         near = 0.09 * (1 - e if style.startswith('pull') else e)                     # near parts move more than far parts (the 3D feel)
         sx = {'push': 0.0, 'orbit': 26.0, 'orbit_l': -26.0, 'rise': 0.0, 'fall': 0.0, 'pull': 0.0, 'pull_r': 20.0}.get(style, 0.0) * (e - 0.5)
         sy = {'push': 0.0, 'orbit': 0.0, 'orbit_l': 0.0, 'rise': -20.0, 'fall': 20.0, 'pull': 0.0, 'pull_r': 0.0}.get(style, 0.0) * (e - 0.5)

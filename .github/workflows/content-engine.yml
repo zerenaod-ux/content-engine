@@ -35,7 +35,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - run: pip install --quiet numpy pillow imageio-ffmpeg edge-tts requests opencv-python-headless transformers gradio_client kaggle six python-slugify python-dateutil tqdm bleach protobuf text-unidecode
+      - run: pip install --quiet numpy pillow imageio-ffmpeg edge-tts requests opencv-python-headless spandrel transformers gradio_client kaggle six python-slugify python-dateutil tqdm bleach protobuf text-unidecode
       - run: pip install --quiet torch --index-url https://download.pytorch.org/whl/cpu   # MOTION_3D depth model (free, CPU)
       - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg fonts-dejavu-core > /dev/null   # REAL_FOOTAGE needs ffmpeg with text drawing
       - name: Restore accepted stages and narration

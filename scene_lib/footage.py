@@ -118,6 +118,49 @@ def ai_image(desc, i, log, seeds=None):
     return None, None
 
 
+def _pexels_all(q):
+    key = os.environ.get('PEXELS_API_KEY', '').strip(); out = []
+    if not key: return out
+    vids = []
+    for o in ('&orientation=portrait', ''):   # upright clips first: they fill the phone screen without being blown up
+        try: vids += json.loads(_get('https://api.pexels.com/videos/search?per_page=6&query=' + urllib.parse.quote(q) + o, {'Authorization': key})).get('videos', [])
+        except Exception: pass
+    for v in vids:
+        if not 3 <= v.get('duration', 0) <= 60: continue
+        files = [f for f in v.get('video_files', []) if f.get('link') and min(f.get('height') or 0, f.get('width') or 0) >= 720 and max(f.get('height') or 0, f.get('width') or 0) <= 2160]
+        if files: out.append(('pexels%s' % v.get('id'), min(files, key=lambda f: abs(max(f.get('height') or 0, f.get('width') or 0) - 1920))['link']))
+    return out
+def _pixabay_all(q):
+    key = os.environ.get('PIXABAY_API_KEY', '').strip(); out = []
+    if not key: return out
+    try: hits = json.loads(_get('https://pixabay.com/api/videos/?per_page=8&safesearch=true&key=' + key + '&q=' + urllib.parse.quote(q))).get('hits', [])
+    except Exception: hits = []
+    for h in hits:
+        if not 3 <= h.get('duration', 0) <= 60: continue
+        v = h.get('videos', {}); f = v.get('large') if (v.get('large') or {}).get('url') else v.get('medium')
+        if f and f.get('url'): out.append(('px%s' % h.get('id'), f['url']))
+    return out
+def stock_clip(i, s, used, log, tries=3):
+    """REAL_CLIPS (owner yes 2026-11-16): a real stock video for this sentence, used ONLY when the vision check confirms it shows the right thing and it is sharp.
+    Unrelated clips (the reason stock was dropped on 2026-11-14) can no longer get in: no confirmation = no clip."""
+    n = 0
+    for q in (s['query'], s['label']):
+        for cid, link in _pexels_all(q) + _pixabay_all(q):
+            if cid in used or n >= tries: continue
+            n += 1; used.add(cid)
+            try:
+                f = 'stock%02d.mp4' % i; Path(f).write_bytes(_get(link))
+                fr = 'stock%02d.jpg' % i
+                sh('ffmpeg', '-v', 'error', '-y', '-ss', '1.5', '-i', f, '-frames:v', '1', '-q:v', '3', fr)
+                b, sp = Q.looks(fr)
+                if sp < 60 or b < 50: log('stock clip %s for shot %d: too soft or dark (sharpness %.0f, brightness %.0f)' % (cid, i + 1, sp, b)); continue
+                ok, note = Q.picture_ok(fr, s['say'], s['label'], log)
+                log('stock clip %s for shot %d ("%s"): %s (%s)' % (cid, i + 1, q, {True: 'OK', False: 'WRONG', None: 'not checked'}[ok], note))
+                if ok is True: return f, fr, link
+            except Exception as e: log('stock clip %s failed (%s)' % (cid, str(e)[:80]))
+        if n >= tries: break
+    return None, None, None
+
 def find_clip(q, label, used, log):
     for qq in (q, label, ' '.join(q.split()[-2:]), q.split()[-1]):
         for src in (pexels, pixabay):
@@ -141,6 +184,7 @@ XF = 0.3   # crossfade seconds between shots
 # MOTION_MODE (owner 2026-11-15, permanent): the DEFAULT builds every shot from a sharp picture with real depth-parallax camera work (CPU only, minutes, never melts,
 # no GPU quota, so 3+ videos a day are possible). AI-invented motion is only a bonus: set CE_AI_MOTION=1 (it still goes through the quality gate).
 AI_MOTION = os.environ.get('CE_AI_MOTION') == '1'
+STOCK = os.environ.get('CE_STOCK', '1') == '1'   # real stock clips, only when vision-confirmed
 
 def shot(i, src, d, say, label, first_title=None, push=0.6):
     """one sentence = one clip: cover-crop to 1080x1920, hard push-in (1.0 -> 1.5), white flash in, caption on top, label + arrow."""
@@ -180,8 +224,15 @@ def main():
     c = write(topic, log)
     HOOK[0] = '\n'.join(textwrap.wrap(''.join(ch for ch in (c.get('hook') or c['title']) if ord(ch) < 0x2000).strip(), 34)[:2])   # whole hook, at most 2 short lines
     used, t, steps = set(), 0.3, []
-    PIC_PASS, SHARP = [], {}   # CHECKS_FILE: what the autopilot may trust
+    PIC_PASS, SHARP, STOCKED = [], {}, {}
+    from scene_lib import sharp   # CHECKS_FILE: what the autopilot may trust
     for i, s in enumerate(c['steps']):
+        sf, sfr, su = stock_clip(i, s, used, log) if STOCK else (None, None, None)
+        if sf:
+            STOCKED[i] = sf; PIC_PASS.append(True)
+            d = round(max(3.0, len(s['say'].split()) / WPS + 0.7), 2)
+            steps.append({'start': round(t, 2), 'end': round(t + d, 2), 'say': s['say'], 'label': s['label'], 'query': s['query'], 'clip': su, 'file': sfr}); t += d
+            continue
         f, u = ai_image(s['image'], i, log); ok = None
         for tryn in range(3):   # PICTURE_CHECK (owner 2026-11-15): a vision AI confirms the picture shows the named part, else draw again
             if not f: break
@@ -191,6 +242,11 @@ def main():
             f2, u2 = ai_image(s['image'] + ', clearly showing the ' + s['label'], i, log, seeds=(901 + 37 * tryn + i, 1301 + i))
             if f2: f, u = f2, u2
         PIC_PASS.append(ok is True)
+        if ok is False and steps and not steps[-1]['file'].startswith('stock'):   # WRONG_PICTURE_OUT (owner 2026-11-16): a picture that failed the check 3 times is never shown
+            f, u = steps[-1]['file'], steps[-1]['clip']; log('picture %d failed the check 3 times: dropped, the previous correct picture stays on screen' % (i + 1))
+        elif f:
+            try: sharp.upscale(f, log)
+            except Exception as e: log('upscale skipped (%s)' % str(e)[:80])
         if not f and steps:   # NO_RANDOM_CLIPS (owner 2026-11-14: unrelated stock clips like the sea looked wrong): reuse the last matching picture
             f, u = steps[-1]['file'], steps[-1]['clip']; log('picture %d: reusing the previous picture' % (i + 1))
         if not f:
@@ -206,12 +262,12 @@ def main():
     from scene_lib.hf_motion import animate
     moved, hf_down = {}, 0
     for i, s in enumerate(steps):
-        if AI_MOTION and s['file'].endswith('.jpg') and c['steps'][i].get('move') and hf_down < 2:
+        if AI_MOTION and i not in STOCKED and s['file'].endswith('.jpg') and c['steps'][i].get('move') and hf_down < 2:
             mv = animate(s['file'], c['steps'][i]['move'], 'real%02d.mp4' % i, log)
             if mv: moved[i] = mv; hf_down = 0
             else: hf_down += 1   # two refusals in a row = its free time is used up for today
     rest = [{'img': s['file'], 'move': c['steps'][i]['move'], 'out': 'real%02d.mp4' % i} for i, s in enumerate(steps)
-            if i not in moved and s['file'].endswith('.jpg') and c['steps'][i].get('move')]
+            if i not in moved and i not in STOCKED and s['file'].endswith('.jpg') and c['steps'][i].get('move')]
     if rest and AI_MOTION:
         from scene_lib.kaggle_motion import animate_batch
         got = animate_batch(rest, log)
@@ -226,7 +282,7 @@ def main():
             elif m > 6.0 or b < max(55, 0.6 * pb) or sh_ < 0.45 * ps:
                 log('shot %d clip is chaotic/dark/blurry (motion %.1f, brightness %.0f vs %.0f, sharpness %.0f vs %.0f): using the sharp 3D glide instead' % (i + 1, m, b, pb, sh_, ps)); del moved[i]
         except Exception as e: log('motion check failed for shot %d (%s)' % (i + 1, str(e)[:80]))
-    log('real motion on %d of %d shots' % (len(moved), len(steps)))
+    log('real motion on %d of %d shots (%d real stock clips)' % (len(moved) + len(STOCKED), len(steps), len(STOCKED)))
     # CHECKS_FILE (owner 2026-11-15): machine-readable verdict for the How It Ticks autopilot. 'ok' only when every picture passed the vision check
     # AND at least half the shots really move AND no moving clip is dark/blurry. Anything else is 'warn' (waits for the owner).
     reasons = []
@@ -245,7 +301,8 @@ def main():
     durs = []
     for i, s in enumerate(steps):
         d = (s['end'] - s['start']) + (0.3 if i == 0 else 0); src, push = s['file'], 0.6
-        if i in moved: src, push = moved[i], 0.05
+        if i in STOCKED: src, push = STOCKED[i], 0.04
+        elif i in moved: src, push = moved[i], 0.05
         elif src.endswith('.jpg'):   # MOTION_3D fallback: gentle 3D glide
             try: src = make_clip(src, 'm3d%02d.mp4' % i, d + 0.1, styles[i % len(styles)]); push = 0.08
             except Exception as e: log('3D motion failed for picture %d (%s); zoom only' % (i + 1, str(e)[:80]))
