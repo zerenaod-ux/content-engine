@@ -21,8 +21,13 @@ def inspect(spec,timeline,out):
             if count<120:errors.append(f'beat {i}: evidence object {oid} only contributes {count} visible pixels; expose/enlarge/frame the actual part')
         # Check changes at a FIXED camera; camera panning cannot pass this gate.
         a=np.asarray(frame(spec,b['start']+.15,timeline,camera_override=cam)).astype(int)
-        z=np.asarray(frame(spec,b['end']-.15,timeline,camera_override=cam)).astype(int)
-        motion=int(np.count_nonzero(np.max(abs(a-z),axis=2)[310:1160]>25))
+        # A working pump or gear can return to its starting state. Sample the
+        # action inside the beat rather than mistaking equal endpoints for stills.
+        motion=0
+        for fraction in (.25,.5,.75,.98):
+            tt=b['start']+(b['end']-b['start'])*fraction
+            z=np.asarray(frame(spec,tt,timeline,camera_override=cam)).astype(int)
+            motion=max(motion,int(np.count_nonzero(np.max(abs(a-z),axis=2)[310:1160]>25)))
         rows.append({'beat':i,'fixed_camera_changed_pixels':motion})
         if i not in (0,len(timeline['beats'])-1) and motion<100:errors.append(f'beat {i}: no visible object motion at fixed camera; animate the mechanism, not the camera')
     from PIL import Image

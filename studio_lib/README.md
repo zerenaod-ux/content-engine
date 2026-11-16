@@ -11,3 +11,5 @@ Current status: eight local behavioral tests pass. Fresh cloud generation and ed
 ## Updated evidence
 
 Two complete batches rejected all six topic trials. Ten local tests pass. The newest quota/critique improvements have not yet completed cloud proof. See STATUS.md for exact evidence, blockers, and the absence of Studio review/progress integration. Production remains unchanged.
+
+Eleven local tests now pass after adding a regression for moving mechanisms that return to their starting state. Third trial is running at its original source; this subsequent check change remains unverified in cloud.

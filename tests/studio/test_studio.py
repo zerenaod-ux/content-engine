@@ -32,6 +32,12 @@ class StudioTests(unittest.TestCase):
         s=fixture();s['objects'][1]['motion']={}
         with tempfile.TemporaryDirectory() as folder:
             errors=inspect(s,provisional(s),Path(folder));self.assertTrue(any('no visible object motion' in x for x in errors))
+    def test_returning_mechanism_is_not_mistaken_for_still(self):
+        s=fixture();keys=[]
+        for i in range(5):keys.extend([[i,0],[i+.35,90],[i+.65,0]])
+        keys.append([5,0]);s['objects'][1]['motion']['angle']=keys
+        with tempfile.TemporaryDirectory() as folder:
+            errors=inspect(s,provisional(s),Path(folder));self.assertFalse(any('no visible object motion' in x for x in errors))
     def test_occluded_or_invisible_evidence_rejected(self):
         s=fixture();s['objects'][1]['motion']['visible']=[[0,0],[5,0]]
         with tempfile.TemporaryDirectory() as folder:
