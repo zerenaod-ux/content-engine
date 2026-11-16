@@ -3,7 +3,7 @@ BRIDGE_ACTIONS=['approach','stop','pivot','balance','drive','pass','lower','resu
 BRIDGE_FACTS={
  'approach':'One tall vessel waits before the low road bridge. One car approaches. Introduce the clearance problem.',
  'stop':'One car stops behind the barrier. Barriers close before the bridge moves.',
- 'pivot':'STATIC close-up of the fixed trunnion. Road stays closed throughout this beat; explain the pivot feature without saying motion begins now.',
+ 'pivot':'The fixed steel trunnion supports the span at its hinge. The road remains closed during this explanation; actual opening starts in the next balance beat.',
  'balance':'Road rises while its rigidly attached heel counterweight swings down into its chamber.',
  'drive':'The counterweight offsets much of the load; a motor and meshing gears control motion. It does not lift for free.',
  'pass':'Bridge stays fully raised while the tall vessel passes through the channel.',
@@ -13,7 +13,7 @@ REGISTRY={
  'bascule_bridge':{'description':'Single-leaf trunnion bascule drawbridge, not other bridge types','actions':BRIDGE_ACTIONS,'facts':BRIDGE_FACTS,'source':'https://www.ncdot.gov/initiatives-policies/Transportation/bridges/historic-bridges/bridge-types/Pages/bascule.aspx'},
  'photovoltaic_cell':{'description':'Solar photovoltaic panel, cell cutaway and direct-current load; not solar thermal or inverter internals','actions':['panel','light','absorb','separate','contacts','circuit','load','payoff'],'facts':{
   'panel':'A recognizable framed solar panel receives sunlight. This explanation concerns photovoltaics, not heating water.',
-  'light':'Yellow moving markers depict incoming light, not wires or electrical current from the Sun.',
+  'light':'Yellow moving markers depict incoming sunlight, not electrical current from the Sun. The external wires remain visible throughout; never claim wiring is absent or not shown.',
   'absorb':'Reveal a simplified enlarged semiconductor cutaway. Absorbed light transfers energy to charge carriers. State that this is a simplified view.',
   'separate':'The built-in electric field separates mobile electrons and holes. Colored markers are illustrative charge carriers, not literal giant particles or gears.',
   'contacts':'Metal contacts collect charge carriers; external wires connect the cell to a closed circuit.',

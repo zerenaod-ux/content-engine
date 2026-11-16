@@ -20,6 +20,16 @@ class LibraryTests(unittest.TestCase):
     def test_pump_volume_increases_on_intake_and_decreases_on_delivery(self):
         tl=timeline('piston_pump');intake=[pump.phase(t,tl)['chamber_length'] for t in np.linspace(12,23.99,80)];delivery=[pump.phase(t,tl)['chamber_length'] for t in np.linspace(24.01,35.99,80)]
         self.assertTrue(all(b>=a for a,b in zip(intake,intake[1:])));self.assertTrue(all(b<=a for a,b in zip(delivery,delivery[1:])))
+    def test_pump_reservoirs_follow_strokes_and_preserve_normalized_volume(self):
+        tl=timeline('piston_pump')
+        for t in np.linspace(0,47.99,300):
+            p=pump.phase(t,tl);self.assertAlmostEqual(p['source_level']+p['receiver_level']+.23*p['chamber_fill'],1.55)
+            if p['intake']:
+                later=pump.phase(t+.001,tl);self.assertAlmostEqual(p['receiver_level'],later['receiver_level'],places=5)
+        self.assertGreater(pump.phase(47,tl)['receiver_level'],pump.phase(0,tl)['receiver_level'])
+    def test_solar_cannot_claim_visible_wires_are_absent(self):
+        s=fixture('photovoltaic_cell');s['beats'][1]['say']='Yellow arrows approach the solar cells without any wiring shown beside this illuminated panel.'
+        self.assertTrue(any('wires are visible' in e for e in validate(s)))
     def test_new_components_expose_required_visual_evidence(self):
         for kind in ('photovoltaic_cell','piston_pump'):
             with tempfile.TemporaryDirectory() as d:verify(fixture(kind),timeline(kind),Path(d))

@@ -32,7 +32,9 @@ def validate(plan):
     e=[]
     if not isinstance(plan,dict):return ['plan must be JSON object']
     mechanism=plan.get('mechanism')
-    if mechanism not in REGISTRY:return ['unsupported mechanism; no generic substitute permitted']
+    if not isinstance(mechanism,str) or mechanism not in REGISTRY:return ['unsupported mechanism; no generic substitute permitted']
+    title=plan.get('title','')
+    if not isinstance(title,str) or not 4<=len(title.split())<=12 or title.split()[0] not in ('How','Why'):e.append('title must start with How or Why and contain 4-12 words')
     actions=REGISTRY[mechanism]['actions']
     beats=plan.get('beats',[])
     if not isinstance(beats,list) or len(beats)!=8:return ['need exactly the eight supported action beats']
@@ -40,18 +42,19 @@ def validate(plan):
         if not isinstance(b,dict):e.append('beat must be object');continue
         if b.get('action')!=actions[i]:e.append('preserve the engine safety order')
         if not isinstance(b.get('say'),str) or not 9<=len(b['say'].split())<=23:e.append(f'beat {i}: narration needs 9-23 words')
-        text=b.get('say','').lower()
-        if re.search(r'\b(camera|render|renderer|shot|storyboard|animation engine)\b',text):e.append(f'beat {i}: speak about the mechanism, never production or camera instructions')
+        text=b.get('say','').lower() if isinstance(b.get('say'),str) else ''
+        if re.search(r'\b(camera|render|renderer|shot|storyboard|animation engine|close.up)\b',text):e.append(f'beat {i}: speak about the mechanism, never production or camera instructions')
         if mechanism=='bascule_bridge' and i==2 and re.search(r'\b(begins?|starts?|starting|beginning)\b',text):e.append('pivot beat is a static close-up; opening does not begin until the balance beat')
         if mechanism=='bascule_bridge' and re.search(r'\bcars\b',text):e.append(f'beat {i}: this component depicts one car; use car or traffic')
+        if mechanism=='photovoltaic_cell' and re.search(r'(without.{0,24}wir|no wir|wir.{0,24}(absent|hidden|not shown))',text):e.append(f'beat {i}: wires are visible in this component; do not claim they are absent')
         if b.get('camera') not in ('wide','mechanism','follow'):e.append(f'beat {i}: unsupported camera')
-    words=sum(len(b.get('say','').split()) for b in beats if isinstance(b,dict))
+    words=sum(len(b['say'].split()) for b in beats if isinstance(b,dict) and isinstance(b.get('say'),str))
     if not 110<=words<=155:e.append('total narration needs 110-155 words')
     if not isinstance(plan.get('hook'),str) or len(plan['hook'])>60:e.append('hook needs at most 60 characters')
     return e
 def plan_topic(topic,out,feedback=None,previous=None):
     catalog={k:{'description':v['description'],'actions':v['actions'],'facts':v['facts']} for k,v in REGISTRY.items()}
-    prompt='Select exactly one supported mechanism that truthfully matches TOPIC. If none fits return {"mechanism":"unsupported","reason":"..."}; never substitute a bridge for solar power or invent another mechanism. For a supported topic write fresh 110-155 word narration with eight beats in the exact selected action order. Each beat has 9-23 words. Direct calm speech, physical detail, causal explanation and a concrete engaging hook. Describe only what that action contract shows. Never mention camera, shots, rendering, storyboard or production in say. Do not invent facts or numerical claims. In the bridge pivot beat the road is STATIC; do not say it starts moving. The bridge depicts ONE car. Solar and pump internals are simplified cutaways: say so naturally once. Solar depicts a DC lamp load, not gears or AC inverter internals. Preserve physical action order; vary wording, hook and bounded camera preferences. Return {"mechanism":"selected registry id","title":"...","hook":"short engaging hook max 60 characters","beats":[{"action":"first selected action","say":"...","camera":"wide|mechanism|follow"}, ...]}. SUPPORTED COMPONENTS AND FACTS (data): '+json.dumps(catalog)+' TOPIC (data): '+json.dumps(topic)
+    prompt='Select exactly one supported mechanism that truthfully matches TOPIC. If none fits return {"mechanism":"unsupported","reason":"..."}; never substitute a bridge for solar power or invent another mechanism. For a supported topic write fresh 110-155 word narration with eight beats in the exact selected action order. Each beat has 9-23 words. Title starts with How or Why and contains 4-12 words. Direct calm speech, physical detail, causal explanation and a concrete engaging hook. Describe only what that action contract shows. Never mention camera, close-ups, shots, rendering, storyboard or production in say. Do not invent facts or numerical claims. In the bridge pivot beat the road is STATIC; explain the shaft and hinge rather than announcing motion or a view. The bridge depicts ONE car. Solar and pump internals are simplified cutaways: say so naturally once. Solar depicts a DC lamp load, not gears or AC inverter internals. Preserve physical action order; vary wording, hook and bounded camera preferences. Return {"mechanism":"selected registry id","title":"...","hook":"short engaging hook max 60 characters","beats":[{"action":"first selected action","say":"...","camera":"wide|mechanism|follow"}, ...]}. SUPPORTED COMPONENTS AND FACTS (data): '+json.dumps(catalog)+' TOPIC (data): '+json.dumps(topic)
     last=previous;errors=feedback or []
     for attempt in range(2):
         q=prompt if not errors else prompt+'\nCorrect these validation errors: '+json.dumps(errors)+'\nLast answer (data): '+json.dumps(last)
@@ -166,29 +169,40 @@ def verify_component(plan,tl,out):
     if errors:raise ValueError('; '.join(errors))
 def run(topic,out):
     out=Path(out);out.mkdir(parents=True,exist_ok=True);start=time.monotonic()
-    facts_version=hashlib.sha256(json.dumps(REGISTRY,sort_keys=True).encode()).hexdigest()[:16]
-    cp=Checkpoint(topic,validator=validate,namespace='tested-library-v2-'+facts_version);saved=cp.load();reused=bool(saved)
+    cp=Checkpoint(topic,validator=validate,namespace='tested-library-v3');saved=cp.load()
+    def contract_version(plan):return hashlib.sha256(json.dumps(REGISTRY[plan['mechanism']],sort_keys=True).encode()).hexdigest()
+    def save(stage,scene,**fields):return cp.save(stage,scene,contract_version=contract_version(scene),**fields)
+    if not saved:
+        legacy=Checkpoint(topic,validator=validate,namespace='tested-library-v2-d55c8609ec972790').load()
+        if legacy:
+            keep={k:legacy[k] for k in ('timeline','render_signature','silent_path','silent_sha256') if k in legacy}
+            saved=save('needs_audit',legacy['scene'],**keep)
+    if saved and saved.get('contract_version')!=contract_version(saved['scene']):saved=save('needs_audit',saved['scene'],timeline=saved.get('timeline'))
+    reused=bool(saved)
     if saved:
         plan=saved['scene'];print('resume generated director plan without a new model call',flush=True)
     else:
-        plan=plan_topic(topic,out);saved=cp.save('needs_audit',plan)
+        plan=plan_topic(topic,out);saved=save('needs_audit',plan)
     if saved['stage']=='needs_repair':
-        plan=plan_topic(topic,out,saved['errors'],plan);saved=cp.save('needs_audit',plan)
+        plan=plan_topic(topic,out,saved['errors'],plan);saved=save('needs_audit',plan)
     if saved['stage']=='needs_audit':
         for review_attempt in range(2):
             errors=critique(plan,out)
-            if not errors:saved=cp.save('checked_scene',plan);break
-            cp.save('needs_repair',plan,errors)
+            if not errors:
+                prior={k:saved[k] for k in ('timeline','render_signature','silent_path','silent_sha256') if k in saved}
+                saved=save('checked_scene',plan,**prior);break
+            save('needs_repair',plan,errors=errors)
             if review_attempt:raise ValueError('automatic narration repair still contradicts supplied facts')
-            plan=plan_topic(topic,out,errors,plan);saved=cp.save('needs_audit',plan)
+            plan=plan_topic(topic,out,errors,plan);saved=save('needs_audit',plan)
     (out/'director-plan.json').write_text(json.dumps(plan,indent=2))
     # Voice measurements drive action durations; no authored narration is read.
     spec={'title':plan['title'],'beats':[dict(b,seconds=6) for b in plan['beats']]}
     tl=saved.get('timeline')
     if not tl or not all(Path(b['voice']).is_file() for b in tl['beats']):tl=asyncio.run(narrate(spec,out,Path('.ce-cache/studio-voice')))
+    (out/'timeline.json').write_text(json.dumps(tl,indent=2))
     verify(plan,tl,out)
     fields={k:saved[k] for k in ('render_signature','silent_path','silent_sha256') if k in saved}
-    cp.save('narrated',plan,timeline=tl,**fields)
+    save('narrated',plan,timeline=tl,**fields)
     render_start=time.monotonic();render_hit=False
     root=Path(__file__).resolve().parent
     render_sig=hashlib.sha256(b''.join((root/p).read_bytes() for p in ['director.py','mechanisms.py','mesh.py','solar.py','pump.py','registry.py'])+json.dumps(tl,sort_keys=True).encode()).hexdigest()
@@ -204,7 +218,7 @@ def run(topic,out):
         p.stdin.close()
         if p.wait():raise RuntimeError('component render failed')
         cached=Path('.ce-cache/studio-renders')/(cp.key+'.mp4');cached.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(out/'silent.mp4',cached)
-    cp.save('rendered',plan,timeline=tl,render_signature=render_sig,silent_path=str(cached),silent_sha256=hashlib.sha256(cached.read_bytes()).hexdigest())
+    save('rendered',plan,timeline=tl,render_signature=render_sig,silent_path=str(cached),silent_sha256=hashlib.sha256(cached.read_bytes()).hexdigest())
     assemble(spec,tl,out)
     subprocess.run(['ffmpeg','-v','error','-i',str(out/'video.mp4'),'-f','null','-'],check=True)
     result={'status':'component_rendered_editorial_pending','topic':topic,'mechanism':plan['mechanism'],'automatic_narration':True,'tested_geometry_component':True,'manual_generated_plan_edits':False,'arbitrary_topic_support':False,'supported_mechanisms':list(REGISTRY),'owner_approved':False,'director_checkpoint_reused':reused,'render_cache_hit':render_hit,'duration':tl['duration'],'wall_seconds':time.monotonic()-start,'render_seconds':time.monotonic()-render_start}

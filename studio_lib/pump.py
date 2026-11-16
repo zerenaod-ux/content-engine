@@ -8,21 +8,29 @@ def cylinder_x(s,x,y,z,r,length,color):
     for i in range(20):s.face([rings[0][i],rings[0][(i+1)%20],rings[1][(i+1)%20],rings[1][i]],tuple(int(c*(.8+.15*math.sin(i/20*2*math.pi))) for c in color))
 def phase(t,tl):
     beats=tl['beats'];i=min(7,next((i for i,b in enumerate(beats) if t<b['end']),7));b=beats[i];u=max(0,min(1,(t-b['start'])/(b['end']-b['start'])))
-    if i<2:q=0.0
-    elif i in (2,3):q=.5*ease((t-beats[2]['start'])/(beats[3]['end']-beats[2]['start']))
-    elif i in (4,5):q=.5+.5*ease((t-beats[4]['start'])/(beats[5]['end']-beats[4]['start']))
-    else:q=(1+(t-beats[6]['start'])/4)%1
+    if i<2:total=0.0
+    elif i in (2,3):total=.5*ease((t-beats[2]['start'])/(beats[3]['end']-beats[2]['start']))
+    elif i in (4,5):total=.5+.5*ease((t-beats[4]['start'])/(beats[5]['end']-beats[4]['start']))
+    else:total=1+(t-beats[6]['start'])/4
+    q=total%1;cycles=math.floor(total)
     # q 0..0.5: withdrawal; q .5..1: compression.
     withdrawal=q<.5
     fraction=(1-math.cos(2*math.pi*q))/2
     pistonx=.1-2.0*fraction
-    return {'beat':i,'q':q,'piston_x':pistonx,'intake':withdrawal and i>=2,'delivery':not withdrawal and i>=2,'chamber_length':1.6-pistonx}
+    intake_cycles=cycles+(fraction if withdrawal else 1)
+    delivery_cycles=cycles+(0 if withdrawal else 1-fraction)
+    # A normalized illustrative volume balance, not calibrated physical units.
+    source_level=1.3-.23*intake_cycles;receiver_level=.25+.23*delivery_cycles
+    return {'beat':i,'q':q,'piston_x':pistonx,'intake':withdrawal and i>=2,'delivery':not withdrawal and i>=2,'chamber_length':1.6-pistonx,'source_level':source_level,'receiver_level':receiver_level,'chamber_fill':intake_cycles-delivery_cycles}
 def draw(s,t,tl,hidden=()):
     p=phase(t,tl);px=p['piston_x'];cut=ramp(t,tl['beats'][1]['start']-.5,tl['beats'][1]['start']+1)
     # Source and receiver reservoirs, open at the top.
-    for x,waterlevel in [(-4.7,.7),(4.1,1.3)]:
+    for x,waterlevel in [(-4.7,p['source_level']),(4.1,p['receiver_level'])]:
         s.box((x,0,.1),(1.45,1.5,.2),(181,199,201))
-        for y in [-.72,.72]:s.box((x,y,.9),(1.45,.10,1.6),(172,193,197))
+        s.box((x,.72,.9),(1.45,.10,1.6),(172,193,197))
+        # Open-front tank cutaway makes the changing level visible.
+        for zz in [.2,1.7]:s.beam((x-.7,-.72,zz),(x+.7,-.72,zz),.035,(161,184,189))
+        for xx in [x-.7,x+.7]:s.beam((xx,-.72,.2),(xx,-.72,1.7),.035,(161,184,189))
         for xx in [x-.68,x+.68]:s.box((xx,0,.9),(.10,1.45,1.6),(185,204,205))
         s.box((x,0,waterlevel/2+.2),(1.25,1.25,waterlevel),(64,157,179))
     # Cylinder shows back, floor and end head. Front cover lifts out of sight.

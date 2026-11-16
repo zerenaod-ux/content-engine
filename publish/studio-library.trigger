@@ -1,2 +1,2 @@
-Explicit three-mechanism topic-selection and zero-model-credential reuse proof.
-2026-11-16 library trial 1
+Explicit final three-mechanism proof after narration contracts, reservoir dynamics and review-adapter changes.
+2026-11-16 library trial 2
