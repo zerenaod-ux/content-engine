@@ -1,0 +1,8 @@
+{
+ "enabled": true,
+ "note": "How It Ticks: approved videos go to the next free slot on YouTube, TikTok and Instagram via Buffer. Times 24h in the timezone below.",
+ "timezone": "America/Chicago",
+ "min_lead_minutes": 10,
+ "buffer_queue_limit": 6,
+ "slots": {"youtube": ["12:30"], "tiktok": ["18:00"], "instagram": ["19:00"]}
+}
