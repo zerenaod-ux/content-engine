@@ -49,7 +49,13 @@ def free_slots(platform, taken, now):
                 out.append(s.astimezone(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.000Z'))
     return [s for s in sorted(out) if s not in taken]
 
-def video_url(tag):   # public, direct mp4 (Buffer must fetch it): jsDelivr copy on gh-pages (made at build time)
+def video_url(tag):
+    try:
+        for v in json.loads((B / 'data/scenes/videos.json').read_text()):
+            if v.get('tag') == tag and 'jsdelivr' in v.get('video', ''): return v['video']
+    except (OSError, ValueError): pass
+    return video_url_default(tag)
+def video_url_default(tag):   # public, direct mp4 (Buffer must fetch it): jsDelivr copy on gh-pages (made at build time)
     return 'https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@gh-pages/videos/%s.mp4' % tag
 
 def main():

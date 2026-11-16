@@ -28,7 +28,7 @@ def tag_from_url(url):
         match=re.fullmatch(r'/zerenaod-ux/(?:content-engine|shelfmade-dashboard)/releases/download/(ce-\d{8}-\d{4}(?:-\d+)?)/(ce-[\w-]+)\.mp4',u.path)
         if match and match[1]==match[2]: return match[1]
     if u.hostname in ('cdn.jsdelivr.net','fastly.jsdelivr.net'):
-        match=re.fullmatch(r'/gh/zerenaod-ux/content-engine@gh-pages/videos/(ce-\d{8}-\d{4}(?:-\d+)?)\.mp4',u.path)
+        match=re.fullmatch(r'/gh/zerenaod-ux/content-engine@(?:gh-pages|[0-9a-f]{40})/videos/(ce-\d{8}-\d{4}(?:-\d+)?)\.mp4',u.path)
         if match:return match[1]
     return None
 
