@@ -108,3 +108,8 @@ Owner authorized deployment. The Content Engine folder handler and matching phon
 - **Left:** (1) sharper, brighter moving clips (blur in motion), (2) owner approves the look, (3) separate GPU source (second Kaggle account waits on phone verification; Colab or Hugging Face are alternatives), (4) free Buffer account + BUFFER_TOKEN secret, (5) YouTube one-time sign-in, (6) turn the schedule back on, then auto-publish.
 - **Blocked on owner:** Kaggle second-account phone code; Buffer sign-up; approval of the look.
 - Schedule stays PAUSED until the owner approves the look.
+
+
+## 2026-11-16 — automatic animation studio proof branch (append-only)
+
+Owner accepted the authored drawbridge as a quality reference and requested automatic topic-to-video production without manual scene repair. A separate studio-automatic-proof branch adds a general data-only scene planner/renderer, persistent rigid object hierarchies, actual-geometry camera framing, rendered evidence and fixed-camera motion checks, measured cached narration, bounded automatic repairs and retained provenance. Eight local engineering tests pass. A branch-only cloud proof workflow will generate bridge, solar and pump topics from fresh model responses; no authored topic fixture is used. Fresh generated-video quality remains unproven until its actual outputs are inspected. Existing production workflow, paused schedule, publishing and other systems are unchanged. The authored demonstration does not count as an automatic success. Preserve this README history.
