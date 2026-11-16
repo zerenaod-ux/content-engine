@@ -582,5 +582,22 @@
   "subject": "",
   "keywords": [],
   "category": ""
+ },
+ {
+  "techniques": [],
+  "failure_cause": "ck: WRONG (control panel with glowing buttons)\nAI picture 9 failed (HTTP Error 402: Payment Required)\nAI picture 9: photorealistic close-up of a control panel with LEDs pulsing, bright lighting, clearly sho\nAI picture 10 failed (HTTP Error 503: Service Unavailable)\nAI picture 10 failed (HTTP Error 402: Payment Required)\nAI picture 10: photorealistic interior of a skyscraper elevator, smooth ride, bright lighting\nvision check gemini-2.5-flash: HTTP Error 404: Not Found\nvision check gemini-3.5-flash: HTTP Error 429: Too Many Requests\nvision check gemini-3.6-flash: HTTP Error 429: Too Many Requests\nvision check gemini-3.7-flash: HTTP Error 429: Too Many Requests\npicture 10 check: OK (elevator interior with metallic walls and ceiling light)\nAI picture 11: photorealistic wide-angle view of a calm city skyline at sunset, bright lighting\nvision check gemini-2.5-flash: HTTP Error 404: Not Found\nvision check gemini-3.5-flash: HTTP Error 429: Too Many Requests\nvision check gemini-3.6-flash: HTTP Error 429: Too Many Requests\nvision check gemini-3.7-flash: HTTP Error 429: Too Many Requests\npicture 11 check: OK (calm city skyline at sunset)\nreal motion: zerogpu-aoti/wan2-2-fp8da-aoti-faster /generate_video with ['duration_seconds', 'input_image', 'negative_prompt', 'prompt']\nreal motion from zerogpu-aoti/wan2-2-fp8da-aoti-faster in 38 s: the glass panel trembles slightly in the wind\nreal motion: zerogpu-aoti/wan2-2-fp8da-aoti-faster /generate_video with ['duration_seconds', 'input_image', 'negative_prompt', 'prompt']\nreal motion from zerogpu-aoti/wan2-2-fp8da-aoti-faster in 37 s: the steel cables sway gently\nreal motion: zerogpu-aoti/wan2-2-fp8da-aoti-faster /generate_video with ['duration_seconds', 'input_image', 'negative_prompt', 'prompt']\nreal motion from zerogpu-aoti/wan2-2-fp8da-aoti-faster in 37 s: the springs compress and expand subtly\nreal motion: zerogpu-aoti/wan2-2-fp8da-aoti-faster /generate_video with ['duration_seconds', 'input_image', 'negative_prompt', 'prompt']\n",
+  "date": "2026-11-16",
+  "topic": "Why does a tuned mass damper sway to calm skyscraper motion?",
+  "title": "",
+  "subject": "mass damper",
+  "keywords": [
+   "pendulum",
+   "steel",
+   "sway",
+   "sensor",
+   "counterbalance"
+  ],
+  "category": "buildings, bridges and cities",
+  "failed": true
  }
 ]
