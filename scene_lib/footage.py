@@ -4,7 +4,7 @@
 3. ffmpeg: portrait 1080x1920, strong push-in zoom on each clip, white flash cut, big caption, yellow label with an arrow
 4. energetic edge-tts voice + generated music + whoosh on every cut (scene_lib/audio.py)
 Usage: python3 scene_lib/footage.py --topic-file topic.txt out.mp4   (writes auto-scene.json too)"""
-import json, os, random, subprocess, sys, textwrap, time, urllib.parse, urllib.request
+import re, json, os, random, subprocess, sys, textwrap, time, urllib.parse, urllib.request
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import llm
@@ -168,6 +168,7 @@ def main():
     topic_file, out = sys.argv[sys.argv.index('--topic-file') + 1], sys.argv[-1]
     topic = Path(topic_file).read_text().strip()
     log = lambda m: (print(m, flush=True), open('writer-log.txt', 'a').write(m + '\n'))
+    topic = re.sub(r'\s+20\d\d-\d\d-\d\dT[\d:]+$', '', topic).strip()   # run.trigger carries a timestamp after the topic; 'auto 2026-..' must still mean auto
     if topic.lower() in ('auto', ''):
         from scene_lib import ideas
         idea = ideas.pick(log); topic = idea['topic']; Path('idea.json').write_text(json.dumps(idea, ensure_ascii=False))
@@ -216,7 +217,10 @@ def main():
         try:
             m = Q.motion_score(moved[i]); b, sh_ = Q.looks(moved[i])
             log('shot %d motion %.2f brightness %.0f sharpness %.0f' % (i + 1, m, b, sh_)); SHARP[i] = (round(m, 2), round(b), round(sh_))
+            pb, ps = Q.looks(steps[i]['file'])   # QUALITY_GATE (owner 2026-11-15 22:20: clips came out dark, smeared, chaotic): the clip must stay as bright and sharp as its own picture
             if m < 0.6: log('shot %d barely moves: using the 3D glide instead' % (i + 1)); del moved[i]
+            elif m > 6.0 or b < max(55, 0.6 * pb) or sh_ < 0.45 * ps:
+                log('shot %d clip is chaotic/dark/blurry (motion %.1f, brightness %.0f vs %.0f, sharpness %.0f vs %.0f): using the sharp 3D glide instead' % (i + 1, m, b, pb, sh_, ps)); del moved[i]
         except Exception as e: log('motion check failed for shot %d (%s)' % (i + 1, str(e)[:80]))
     log('real motion on %d of %d shots' % (len(moved), len(steps)))
     # CHECKS_FILE (owner 2026-11-15): machine-readable verdict for the How It Ticks autopilot. 'ok' only when every picture passed the vision check
