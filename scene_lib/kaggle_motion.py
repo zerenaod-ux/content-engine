@@ -21,7 +21,7 @@ def animate_batch(jobs, log=print, max_wait=120 * 60):
     if not (os.environ.get('KAGGLE_API_TOKEN') and user): log('Kaggle GPU skipped: KAGGLE_API_TOKEN / KAGGLE_USERNAME not set'); return {}
     # TWO_GPUS (owner 2026-11-15: use as much free GPU as possible): split the shots over two Kaggle runs at the same time
     parts = [jobs[0::2], jobs[1::2]] if len(jobs) > 3 else [jobs]
-    names = []
+    names, pending = [], []   # pending: runs Kaggle refused for now (GPU session limit); retried while the others work
     for n, part in enumerate(parts):
         kern = KERNEL if n == 0 else KERNEL + '-b'
         for _ in range(20):   # BUSY_CHECK: Kaggle allows 2 GPU runs at once; wait (max 15 min) if an older run is still busy
@@ -49,9 +49,13 @@ def animate_batch(jobs, log=print, max_wait=120 * 60):
             'competition_sources': [], 'kernel_sources': [], 'model_sources': []}))
         r = _kg('kernels', 'push', '-p', str(kd)); log('Kaggle GPU %d started:' % n, r[-160:])
         if 'error' not in r.lower(): names.append(kern)
+        else: pending.append((n, kd, kern))
     t0 = time.time(); left = set(names)
-    while left and time.time() - t0 < max_wait:
+    while (left or pending) and time.time() - t0 < max_wait:
         time.sleep(45)
+        for item in list(pending):   # RETRY_PUSH: another job of this account (e.g. a Doodles video) may hold a GPU session; try again every 45 s
+            r = _kg('kernels', 'push', '-p', str(item[1]))
+            if 'error' not in r.lower(): log('Kaggle GPU %d started later:' % item[0], r[-100:]); names.append(item[2]); left.add(item[2]); pending.remove(item)
         for kern in list(left):
             s = _kg('kernels', 'status', f'{user}/{kern}').lower()
             if 'complete' in s: left.discard(kern)
