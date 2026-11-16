@@ -6,10 +6,19 @@ from zoneinfo import ZoneInfo
 B = Path(__file__).resolve().parent
 CFG = json.loads((B / 'posting-slots.json').read_text())
 CHANNELS = {'youtube': '6afa575fece6dfde5fdc5616', 'instagram': '6afa5728ece6dfde5fdc52a3', 'tiktok': '6afa56beece6dfde5fdc4be8'}   # Buffer channel ids (no secrets)
-LIVE = os.environ.get('PUBLISH_LIVE') == '1'
+def _switch():   # the ONE-TAP switch: publish/live.json {"on": true} (workflow 'how-it-ticks-posting'); repo variable PUBLISH_LIVE=1 also works
+    try: on = bool(json.loads((B / 'publish' / 'live.json').read_text()).get('on'))
+    except (OSError, ValueError): on = False
+    return on or os.environ.get('PUBLISH_LIVE') == '1'
+LIVE = _switch()
 TOKEN = os.environ.get('BUFFER_TOKEN', '').strip()
 STATE = B / 'publish' / 'state.json'
 MAX_CREATES = int(os.environ.get('PUBLISH_MAX', '6'))
+import re
+EMOJI = re.compile('[\U0001F300-\U0001FAFF\u2600-\u27BF\u2B50\u2B55\u231A-\u23FF]')
+def title_ok(t):   # TITLE_RULE: How/Why, 4-8 words, plain, ONE emoji at the end, no question mark/hashtag/link
+    t = re.sub(r'\s+', ' ', str(t or '')).strip(); w = EMOJI.sub('', t).split()
+    return bool(re.match(r'^(How|Why)\b', t)) and 4 <= len(w) <= 8 and len(EMOJI.findall(t)) == 1 and bool(EMOJI.search(t[-2:])) and '?' not in t and not re.search(r'#|https?:|@', t) and len(t) <= 70
 TAGS = '#howitticks #explained #science #howthingswork'
 
 def api(doc, variables=None):
@@ -77,6 +86,8 @@ def main():
     creates = 0
     for plat, item, due in plan:
         title = item.get('title') or ''
+        if not title_ok(title):
+            print('    SKIPPED (title breaks the title rule):', title); continue
         print('  ', plat, due, title[:50])
         if not LIVE or creates >= MAX_CREATES: continue
         meta = {'youtube': {'title': title[:100], 'privacy': 'public', 'madeForKids': False, 'notifySubscribers': True, 'categoryId': '27'},

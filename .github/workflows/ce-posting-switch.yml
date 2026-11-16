@@ -1,0 +1,31 @@
+name: how-it-ticks-posting
+run-name: How It Ticks posting ${{ github.event.inputs.state }}
+on:
+  workflow_dispatch:
+    inputs:
+      state:
+        description: 'on = start posting approved videos, off = stop'
+        required: true
+        default: 'on'
+        type: choice
+        options: ['on', 'off']
+permissions:
+  contents: write
+jobs:
+  switch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Set the switch and run the publisher once
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p publish
+          if [ "${{ github.event.inputs.state }}" = "on" ]; then echo '{"on": true}' > publish/live.json; else echo '{"on": false}' > publish/live.json; fi
+          git config user.name "publisher-bot"; git config user.email "bot@users.noreply.github.com"
+          git add -f publish/live.json
+          git diff --cached --quiet || { git commit -qm "posting switch: ${{ github.event.inputs.state }}"; for i in 1 2 3 4; do git pull --rebase -q && git push -q && break; sleep 5; done; }
+          gh workflow run how-it-ticks-publisher.yml --ref main || true
