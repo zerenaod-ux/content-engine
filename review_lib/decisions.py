@@ -1,4 +1,4 @@
-"""Content Engine review folders. Originals stay in their existing releases.
+"""How It Ticks review folders. Originals stay in their existing releases.
 Only owner review labels move references between Saved and Delete holding folders.
 No social-publishing or asset-deletion code lives here.
 """
@@ -35,7 +35,7 @@ def tag_from_url(url):
 
 def video_for(issue,catalog):
     tags={t for url in re.findall(r'https://[^\s<>]+',issue.get('body','')) if (t:=tag_from_url(url.rstrip(').,')))}
-    if len(tags)!=1: raise ValueError('The review card must identify exactly one Content Engine video.')
+    if len(tags)!=1: raise ValueError('The review card must identify exactly one How It Ticks video.')
     tag=tags.pop()
     matches=[v for v in catalog if v.get('tag')==tag]
     if len(matches)!=1: raise ValueError('Video is not yet in the generated-video list; retry after generation finishes.')
@@ -51,7 +51,7 @@ def file_decision(index,issue,video,folder,run_id,now=None):
     old=next((x for x in items if x['tag']==video['tag']),None)
     if old and old['folder']==folder and old['issue_number']==issue['number']: return out,None
     stamp=now or datetime.datetime.now(datetime.timezone.utc).isoformat()
-    event={'tag':video['tag'],'title':video.get('title') or issue['title'].removeprefix('Content Engine: '),
+    event={'tag':video['tag'],'title':video.get('title') or issue['title'].removeprefix('How It Ticks: ').removeprefix('Content Engine: '),
            'video':video['video'],'folder':folder,'issue_number':issue['number'],
            'issue_url':issue.get('html_url',''),'reviewed_at':stamp,'publishing_enabled':False,'ready_for_future_publish':folder=='saved'}
     history=copy.deepcopy(old.get('history',[])) if old else []

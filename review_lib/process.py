@@ -50,7 +50,7 @@ def main():
     if completed:
         subprocess.run(['git','add','data/scenes/review'],check=True)
         if subprocess.run(['git','diff','--cached','--quiet']).returncode:
-            subprocess.run(['git','commit','-m','File Content Engine review decisions'],check=True)
+            subprocess.run(['git','commit','-m','File How It Ticks review decisions'],check=True)
             for attempt in range(3):
                 subprocess.run(['git','pull','--rebase'],check=True)
                 if subprocess.run(['git','push']).returncode==0:break

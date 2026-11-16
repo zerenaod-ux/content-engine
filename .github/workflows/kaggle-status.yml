@@ -1,5 +1,5 @@
 name: kaggle-status
-# Shows whether the Content Engine motion runs on Kaggle are still busy (they use the free weekly GPU hours).
+# Shows whether the How It Ticks motion runs on Kaggle are still busy (they use the free weekly GPU hours).
 on: workflow_dispatch
 jobs:
   status:

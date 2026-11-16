@@ -1,4 +1,4 @@
-# Content Engine: picture rules (owner feedback 2026-11-13)
+# How It Ticks: picture rules (owner feedback 2026-11-13)
 
 ## What the owner said
 - Voice speed, music, background sound: GOOD, keep as they are.

@@ -81,14 +81,14 @@ jobs:
           npx playwright install chromium
           set -o pipefail
           if [ -f scene-factory.mp4 ]; then echo 'real-footage video already made' | tee render-log.txt; else python3 scene_lib/build.py auto-scene.json scene-factory.mp4 2>&1 | tee render-log.txt; fi
-      - name: Save the video in the Content Engine folder and show it in the Review tab
+      - name: Save the video in the How It Ticks folder and show it in the Review tab
         env:
           GH_TOKEN: ${{ github.token }}
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
         run: |
-          TAG="ce-$(date -u +%Y%m%d-%H%M)"; TITLE=$(python3 -c "import json;print(json.load(open('auto-scene.json')).get('title','Content Engine video'))")
+          TAG="ce-$(date -u +%Y%m%d-%H%M)"; TITLE=$(python3 -c "import json;print(json.load(open('auto-scene.json')).get('title','How It Ticks video'))")
           cp scene-factory.mp4 "$TAG.mp4"
-          gh release create "$TAG" "$TAG.mp4" auto-scene.json evidence-report.json metrics.json --title "Content Engine: $TITLE" --notes "Content Engine video (not posted). Automatic structural and sampled visibility checks passed. Scientific accuracy and narration/visual meaning still require human review; not approved to publish." --prerelease
+          gh release create "$TAG" "$TAG.mp4" auto-scene.json evidence-report.json metrics.json --title "How It Ticks: $TITLE" --notes "How It Ticks video (not posted). Automatic structural and sampled visibility checks passed. Scientific accuracy and narration/visual meaning still require human review; not approved to publish." --prerelease
           # PLAYABLE_ON_PHONE: iPhone cannot play GitHub release downloads inline, so a copy goes to the gh-pages branch and the card links it through jsDelivr (free CDN, real video type).
           git clone -q --depth 1 -b gh-pages "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git" pages && mkdir -p pages/videos && cp "$TAG.mp4" pages/videos/ && (cd pages && git add videos && git -c user.email=41898282+github-actions[bot]@users.noreply.github.com -c user.name=github-actions commit -qm "video $TAG" && git push -q) || echo "pages copy skipped"
           URL="https://cdn.jsdelivr.net/gh/${{ github.repository }}@gh-pages/videos/$TAG.mp4"
@@ -101,10 +101,10 @@ jobs:
           v.append({'date': datetime.date.today().isoformat(), 'tag': sys.argv[1], 'title': sys.argv[2], 'video': sys.argv[3]})
           p.write_text(json.dumps(v, indent=1, ensure_ascii=False) + '\n')
           PY
-          gh label create scene-review --color 6a55c9 --description "Content Engine video to watch (not posted)" 2>/dev/null || true
-          printf 'Content Engine video (4th system, NOT posted).\n\nWatch: %s\n\nSaved in the Content Engine folder: release %s. Approve in the app to file it under Saved, or Skip to hold it under Delete. Nothing is posted or deleted.\n' "$URL" "$TAG" > body.txt
-          gh issue create --title "Content Engine: $TITLE" --label scene-review --body-file body.txt
-          [ -n "$NTFY_TOPIC" ] && curl -s -H "Title: Content Engine: new video" -H "Click: https://zerenaod-ux.github.io/shelfmade-dashboard/app/#review" -d "$TITLE (not posted) is ready to watch in the app." "https://ntfy.sh/$NTFY_TOPIC" > /dev/null || true
+          gh label create scene-review --color 6a55c9 --description "How It Ticks video to watch (not posted)" 2>/dev/null || true
+          printf 'How It Ticks video (4th system, NOT posted).\n\nWatch: %s\n\nSaved in the How It Ticks folder: release %s. Approve in the app to file it under Saved, or Skip to hold it under Delete. Nothing is posted or deleted.\n' "$URL" "$TAG" > body.txt
+          gh issue create --title "How It Ticks: $TITLE" --label scene-review --body-file body.txt
+          [ -n "$NTFY_TOPIC" ] && curl -s -H "Title: How It Ticks: new video" -H "Click: https://zerenaod-ux.github.io/shelfmade-dashboard/app/#review" -d "$TITLE (not posted) is ready to watch in the app." "https://ntfy.sh/$NTFY_TOPIC" > /dev/null || true
       - name: Remember this angle and retain failed-attempt diagnostics
         if: always()
         run: |
