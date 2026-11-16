@@ -2,7 +2,9 @@ name: Automatic animation studio proof (not posted)
 on:
   push:
     branches: [studio-automatic-proof]
-    paths: [studio_lib/**, .github/workflows/studio-automatic-proof.yml]
+    # Explicit trial trigger: documentation and ordinary code saves must not
+    # consume more free-model quota by starting another batch automatically.
+    paths: [publish/studio-proof.trigger]
   workflow_dispatch:
 permissions:
   contents: read
@@ -42,6 +44,7 @@ jobs:
           CE_MAX_REQUESTS: '14'
           CE_MAX_SECONDS: '660'
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}

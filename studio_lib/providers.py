@@ -6,6 +6,8 @@ def call(system,prompt,max_tokens=10000,temperature=.5):
     # GitHub Models produced empty responses in the first proof run; do not
     # burn repeated fallback attempts on it. Other channels' router is untouched.
     providers=[p for p in llm.PROVIDERS if p[0]!='GITHUB_MODELS_TOKEN' and os.environ.get(p[0])]
+    if os.environ.get('GEMINI_API_KEY'):
+        providers.insert(min(1,len(providers)),('GEMINI_API_KEY','https://generativelanguage.googleapis.com/v1beta/openai',('flash',)))
     last='no configured free provider'
     for env,base,prefs in providers:
         key=os.environ[env].strip()
@@ -36,6 +38,13 @@ def call(system,prompt,max_tokens=10000,temperature=.5):
             except llm.BudgetExceeded:raise
             except urllib.error.HTTPError as e:
                 last=f'{env.split("_")[0]} HTTP {e.code}'
+                try:
+                    message=json.loads(e.read()).get('error',{}).get('message','')
+                    # Avoid echoing any credential even if a provider includes it.
+                    for credential in [os.environ.get(p[0],'') for p in providers]:
+                        if credential:message=message.replace(credential,'[private]')
+                    if message:last+=' '+message[:350]
+                except (ValueError,AttributeError):pass
                 if e.code==429 and turn==0:continue
                 break
             except Exception as e:last=type(e).__name__+': '+str(e)[:180];break

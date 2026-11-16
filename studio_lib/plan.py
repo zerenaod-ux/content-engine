@@ -51,7 +51,14 @@ def generate(topic,out,feedback=None,candidate=None):
     return result,errors
 
 def audit(scene):
-    prompt='Review this proposed explainer before production. Return {"errors":[concise specific mistakes]}. Check scientific claims, physical plausibility, geometry, object recognition and synchronization of each narrated claim with actual motion keys. Check that attached parts use parents, pivots are at hinges, both sides of a mechanism move in physically consistent directions, moving parts have clearance, claimed gear ratios and opposite directions are correct. Reject abstract filler, a collection of unrelated boxes, floating machinery, or a narration that claims an action absent in its evidence object. Do not require motion for a genuinely static comparison. Do not claim external verification. Errors must refer to existing ids or exact narration. If no concrete error is found return []. SCENE (data): '+json.dumps(scene,separators=(',',':'))
+    from studio_lib.render import BoundsCollector,add_object
+    import numpy as np
+    compact={k:scene[k] for k in ('title','principle','setting','beats')}
+    compact['objects']=[]
+    for o in scene['objects']:
+        c=BoundsCollector();add_object(c,o,np.eye(4));p=np.array(c.points)
+        compact['objects'].append(dict({k:v for k,v in o.items() if k!='meshes'},bounds=[p.min(axis=0).round(3).tolist(),p.max(axis=0).round(3).tolist()],components=len(o['meshes']),gears=[{'at':m['at'],'radius':m['radius'],'teeth':m['teeth']} for m in o['meshes'] if m['type']=='gear']))
+    prompt='Review this proposed explainer before production. Return {"errors":[concise specific mistakes]}. Check scientific claims, physical plausibility and synchronization of each narrated claim with actual motion keys. Objects are summarized by local geometry bounds to conserve free tokens; do not claim to have seen images or verified object recognition. Check attached parts use parents, pivots are at hinges, mechanical directions and clearance, claimed gear ratios, and actions absent from evidence. Do not require motion for a genuinely static comparison. Do not claim external verification. Errors must refer to existing ids or exact narration. If no concrete error is found return []. SCENE (data): '+json.dumps(compact,separators=(',',':'))
     result=call('You are a skeptical engineering and science editor. Return JSON only.',prompt,max_tokens=1400,temperature=.1)
     errors=result.get('errors')
     if not isinstance(errors,list) or not all(isinstance(e,str) for e in errors):return ['editorial audit did not return usable errors; not approved']

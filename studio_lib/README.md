@@ -7,3 +7,7 @@ The pipeline generates a fresh data-only scene from a topic using configured fre
 The proof matrix covers bridge, solar and piston pump independently, with a fourteen-request/eleven-minute model budget per job and one job at a time to respect free quotas. Outputs, rejected candidates, frames, service ledger, provenance and video hashes are retained as artifacts. Tests use explicitly authored fixtures only for engineering checks. They do not count as automatic-video results. Technical passes never set owner_approved or semantic_verification true.
 
 Current status: eight local behavioral tests pass. Fresh cloud generation and editorial inspection are pending. Do not describe this branch as a proven replacement or re-enable publishing based on tests alone.
+
+## Updated evidence
+
+Two complete batches rejected all six topic trials. Ten local tests pass. The newest quota/critique improvements have not yet completed cloud proof. See STATUS.md for exact evidence, blockers, and the absence of Studio review/progress integration. Production remains unchanged.
