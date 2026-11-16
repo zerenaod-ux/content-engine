@@ -2,6 +2,9 @@
 import json,os,time,urllib.error
 from pathlib import Path
 import llm
+_UNAVAILABLE=set()
+class ServiceUnavailable(ValueError):
+    """No usable free service answered; retain valid work for a later run."""
 def call(system,prompt,max_tokens=10000,temperature=.5):
     # GitHub Models produced empty responses in the first proof run; do not
     # burn repeated fallback attempts on it. Other channels' router is untouched.
@@ -9,9 +12,11 @@ def call(system,prompt,max_tokens=10000,temperature=.5):
     if os.environ.get('GEMINI_API_KEY'):
         providers.insert(min(1,len(providers)),('GEMINI_API_KEY','https://generativelanguage.googleapis.com/v1beta/openai',('flash',)))
     last='no configured free provider'
+    failures=[]
     for env,base,prefs in providers:
         key=os.environ[env].strip()
-        for turn in range(2):
+        rate_retries=0;json_mode=True;model=None
+        for turn in range(4):
             path=Path(os.environ.get('CE_METRICS_PATH','metrics.json'))
             try:ledger=json.loads(path.read_text())
             except (OSError,ValueError):ledger={}
@@ -26,14 +31,17 @@ def call(system,prompt,max_tokens=10000,temperature=.5):
                     print('free provider cooling down; preserving repair calls',flush=True)
                     time.sleep(wait+.5)
             try:
-                models=llm._models(env,base,prefs,key)
+                models=[m for m in llm._models(env,base,prefs,key) if (base,m) not in _UNAVAILABLE]
                 if not models:break
+                model=models[0]
+                model_name=model.removeprefix('models/') if env=='GEMINI_API_KEY' else model
                 messages=[{'role':'system','content':system},{'role':'user','content':prompt}]
-                body={'model':models[0],'messages':messages,'temperature':temperature,'max_tokens':max_tokens,'response_format':{'type':'json_object'}}
+                body={'model':model_name,'messages':messages,'temperature':temperature,'max_tokens':max_tokens}
+                if json_mode:body['response_format']={'type':'json_object'}
                 r=llm._req(base+'/chat/completions',key,body)
                 answer=r['choices'][0]['message'].get('content','')
                 if not answer:raise ValueError('provider returned an empty answer')
-                print('studio answered by',env.split('_')[0],models[0],flush=True)
+                print('studio answered by',env.split('_')[0],model_name,flush=True)
                 return llm.parse(answer)
             except llm.BudgetExceeded:raise
             except urllib.error.HTTPError as e:
@@ -45,7 +53,11 @@ def call(system,prompt,max_tokens=10000,temperature=.5):
                         if credential:message=message.replace(credential,'[private]')
                     if message:last+=' '+message[:350]
                 except (ValueError,AttributeError):pass
-                if e.code==429 and turn==0:continue
+                failures.append(last);print('studio provider refusal:',last,flush=True)
+                if e.code==404 and model:
+                    _UNAVAILABLE.add((base,model));continue
+                if e.code==400 and json_mode and ('response_format' in last or 'json_object' in last):json_mode=False;continue
+                if e.code==429 and rate_retries==0:rate_retries+=1;continue
                 break
             except Exception as e:last=type(e).__name__+': '+str(e)[:180];break
-    raise ValueError(last)
+    raise ServiceUnavailable(' | '.join(failures[-3:]) if failures else last)
