@@ -47,10 +47,11 @@ def make_clip(src, out, seconds, style='push'):
     dsmall = cv2.resize(dep, (W, H))
     for k in range(n):
         t = k / (n - 1); e = t * t * (3 - 2 * t)        # smooth start and stop
-        zoom = 1 + 0.30 * e                              # overall push-in
-        near = 0.06 * e                                  # extra push for near parts (the 3D feel)
-        sx = {'push': 0.0, 'orbit': 18.0, 'rise': 0.0}[style] * (e - 0.5)
-        sy = {'push': 0.0, 'orbit': 0.0, 'rise': -14.0}[style] * (e - 0.5)
+        # CAMERA_WORK (owner 2026-11-15: permanent, never melts): six moves on SHARP pictures with real depth parallax
+        zoom = (1.30 - 0.22 * e) if style.startswith('pull') else (1 + 0.30 * e)   # push-in, or pull-out
+        near = 0.09 * (1 - e if style.startswith('pull') else e)                     # near parts move more than far parts (the 3D feel)
+        sx = {'push': 0.0, 'orbit': 26.0, 'orbit_l': -26.0, 'rise': 0.0, 'fall': 0.0, 'pull': 0.0, 'pull_r': 20.0}.get(style, 0.0) * (e - 0.5)
+        sy = {'push': 0.0, 'orbit': 0.0, 'orbit_l': 0.0, 'rise': -20.0, 'fall': 20.0, 'pull': 0.0, 'pull_r': 0.0}.get(style, 0.0) * (e - 0.5)
         z = zoom * (1 + near * dsmall)
         mx = cx + (xx - W / 2) / z - sx * dsmall
         my = cy + (yy - H / 2) / z - sy * dsmall
