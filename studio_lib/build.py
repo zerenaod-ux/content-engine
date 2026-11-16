@@ -4,7 +4,7 @@ No manually edited generated scenes or topic scripts are read by this path.
 """
 import argparse,asyncio,hashlib,json,os,subprocess,time
 from pathlib import Path
-from studio_lib.plan import generate
+from studio_lib.plan import generate,audit
 from studio_lib.check import provisional,inspect
 from studio_lib.render import render
 from studio_lib.audio import narrate,assemble
@@ -16,6 +16,9 @@ def run(topic,out):
         folder=out/f'attempt-{attempt}';folder.mkdir(exist_ok=True)
         try:
             candidate,errors=generate(topic,folder,errors,candidate)
+            if not errors:
+                errors=audit(candidate)
+                (folder/'editorial-audit.json').write_text(json.dumps({'errors':errors,'external_fact_verification':False},indent=2))
             if not errors:errors=inspect(candidate,provisional(candidate),folder)
         except Exception as e:
             errors=[type(e).__name__+': '+str(e)[:400]]

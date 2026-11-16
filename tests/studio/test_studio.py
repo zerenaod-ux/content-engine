@@ -1,10 +1,12 @@
 """Offline behavior tests, not automatic-generation or editorial evidence."""
-import copy,tempfile,unittest
+import copy,tempfile,unittest,json,os,time,urllib.error
+from unittest.mock import patch
 from pathlib import Path
 import numpy as np
 from studio_lib.schema import check
 from studio_lib.render import transforms,frame
 from studio_lib.check import provisional,inspect
+from studio_lib.providers import call
 def fixture():
     # Authored engineering fixture only. Never read by the topic generation path.
     words='You can follow this moving component as it carries the load across the mechanism and returns to its starting position.'
@@ -34,4 +36,12 @@ class StudioTests(unittest.TestCase):
         s=fixture();s['objects'][1]['motion']['visible']=[[0,0],[5,0]]
         with tempfile.TemporaryDirectory() as folder:
             errors=inspect(s,provisional(s),Path(folder));self.assertTrue(any('visible pixels' in x for x in errors))
+    def test_provider_waits_for_known_reset_before_repair(self):
+        with tempfile.TemporaryDirectory() as folder:
+            ledger=Path(folder)/'metrics.json';ledger.write_text(json.dumps({'rate_limits':{'api.groq.com':{'retry_at':time.time()+10}}}))
+            with patch.dict(os.environ,{'GROQ_API_KEY':'test-not-a-real-key','CE_METRICS_PATH':str(ledger)},clear=True),patch('studio_lib.providers.llm._models',return_value=['example']),patch('studio_lib.providers.llm._req',return_value={'choices':[{'message':{'content':'{"ok":true}'}}]}) as request,patch('studio_lib.providers.time.sleep') as sleep:
+                self.assertEqual(call('system','prompt'),{'ok':True});self.assertEqual(request.call_count,1);self.assertGreater(sleep.call_args[0][0],9)
+    def test_empty_provider_answer_is_not_success(self):
+        with patch.dict(os.environ,{'GROQ_API_KEY':'test-not-a-real-key','CE_METRICS_PATH':'/nonexistent/test'},clear=True),patch('studio_lib.providers.llm._models',return_value=['example']),patch('studio_lib.providers.llm._req',return_value={'choices':[{'message':{'content':''}}]}):
+            with self.assertRaisesRegex(ValueError,'empty answer'):call('system','prompt')
 if __name__=='__main__':unittest.main()

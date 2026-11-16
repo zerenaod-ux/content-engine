@@ -10,7 +10,7 @@ def check(s):
     if s.get('setting') not in ('ocean','studio','workshop','space'):e.append('setting must be ocean, studio, workshop or space')
     beats=s.get('beats',[]);objects=s.get('objects',[])
     if not isinstance(beats,list) or not 5<=len(beats)<=9:return e+['need 5-9 story beats']
-    if not isinstance(objects,list) or not 3<=len(objects)<=35:return e+['need 3-35 persistent objects']
+    if not isinstance(objects,list) or not 3<=len(objects)<=80:return e+['need 3-80 persistent objects']
     ids=[o.get('id') for o in objects if isinstance(o,dict)]
     if len(ids)!=len(objects) or any(not isinstance(x,str) or not x for x in ids) or len(set(ids))!=len(ids):return e+['object ids must be unique strings']
     by={o['id']:o for o in objects};total=0
@@ -24,7 +24,7 @@ def check(s):
         if not vector(o.get('position')) or max(abs(x) for x in o['position'])>20:e.append(oid+': position must be 3 finite world coordinates within +/-20')
         if o.get('axis','y') not in ('x','y','z'):e.append(oid+': rotation axis x/y/z only')
         meshes=o.get('meshes',[])
-        if not isinstance(meshes,list) or not 1<=len(meshes)<=60:e.append(oid+': need 1-60 mesh components');continue
+        if not isinstance(meshes,list) or not 1<=len(meshes)<=220:e.append(oid+': need 1-220 mesh components');continue
         total+=len(meshes)
         for m in meshes:
             if not isinstance(m,dict):e.append(oid+': mesh must be object');continue
