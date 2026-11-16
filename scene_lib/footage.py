@@ -175,8 +175,9 @@ def main():
     c = write(topic, log)
     HOOK[0] = '\n'.join(textwrap.wrap(''.join(ch for ch in (c.get('hook') or c['title']) if ord(ch) < 0x2000).strip(), 34)[:2])   # whole hook, at most 2 short lines
     used, t, steps = set(), 0.3, []
+    PIC_PASS, SHARP = [], {}   # CHECKS_FILE: what the autopilot may trust
     for i, s in enumerate(c['steps']):
-        f, u = ai_image(s['image'], i, log)
+        f, u = ai_image(s['image'], i, log); ok = None
         for tryn in range(3):   # PICTURE_CHECK (owner 2026-11-15): a vision AI confirms the picture shows the named part, else draw again
             if not f: break
             ok, note = Q.picture_ok(f, s['say'], s['label'] + ' (' + s['image'][:160] + ')', log)
@@ -184,6 +185,7 @@ def main():
             if ok is not False: break
             f2, u2 = ai_image(s['image'] + ', clearly showing the ' + s['label'], i, log, seeds=(901 + 37 * tryn + i, 1301 + i))
             if f2: f, u = f2, u2
+        PIC_PASS.append(ok is True)
         if not f and steps:   # NO_RANDOM_CLIPS (owner 2026-11-14: unrelated stock clips like the sea looked wrong): reuse the last matching picture
             f, u = steps[-1]['file'], steps[-1]['clip']; log('picture %d: reusing the previous picture' % (i + 1))
         if not f:
@@ -213,10 +215,19 @@ def main():
     for i in list(moved):   # MOTION_CHECK (owner 2026-11-15: many shots did not really move): reject clips that look like a still photo
         try:
             m = Q.motion_score(moved[i]); b, sh_ = Q.looks(moved[i])
-            log('shot %d motion %.2f brightness %.0f sharpness %.0f' % (i + 1, m, b, sh_))
+            log('shot %d motion %.2f brightness %.0f sharpness %.0f' % (i + 1, m, b, sh_)); SHARP[i] = (round(m, 2), round(b), round(sh_))
             if m < 0.6: log('shot %d barely moves: using the 3D glide instead' % (i + 1)); del moved[i]
         except Exception as e: log('motion check failed for shot %d (%s)' % (i + 1, str(e)[:80]))
     log('real motion on %d of %d shots' % (len(moved), len(steps)))
+    # CHECKS_FILE (owner 2026-11-15): machine-readable verdict for the How It Ticks autopilot. 'ok' only when every picture passed the vision check
+    # AND at least half the shots really move AND no moving clip is dark/blurry. Anything else is 'warn' (waits for the owner).
+    reasons = []
+    if not all(PIC_PASS): reasons.append('%d of %d pictures not confirmed by the vision check' % (PIC_PASS.count(False), len(PIC_PASS)))
+    if len(moved) * 2 < len(steps): reasons.append('real motion on only %d of %d shots' % (len(moved), len(steps)))
+    dark = [i + 1 for i in moved if i in SHARP and SHARP[i][1] < 60]; blur = [i + 1 for i in moved if i in SHARP and SHARP[i][2] < 8]
+    if dark: reasons.append('dark clips: %s' % dark)
+    if blur: reasons.append('blurry clips: %s' % blur)
+    Path('ce-checks.json').write_text(json.dumps({'verdict': 'warn' if reasons else 'ok', 'reasons': reasons, 'pictures_ok': PIC_PASS, 'moving': len(moved), 'shots': len(steps)}))
     durs = []
     for i, s in enumerate(steps):
         d = (s['end'] - s['start']) + (0.3 if i == 0 else 0); src, push = s['file'], 0.6

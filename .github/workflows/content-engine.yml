@@ -88,7 +88,7 @@ jobs:
         run: |
           TAG="ce-$(date -u +%Y%m%d-%H%M)"; TITLE=$(python3 -c "import json;print(json.load(open('auto-scene.json')).get('title','How It Ticks video'))")
           cp scene-factory.mp4 "$TAG.mp4"
-          gh release create "$TAG" "$TAG.mp4" auto-scene.json evidence-report.json metrics.json --title "How It Ticks: $TITLE" --notes "How It Ticks video (not posted). Automatic structural and sampled visibility checks passed. Scientific accuracy and narration/visual meaning still require human review; not approved to publish." --prerelease
+          gh release create "$TAG" "$TAG.mp4" auto-scene.json evidence-report.json ce-checks.json --title "How It Ticks: $TITLE" --notes "How It Ticks video (not posted). Automatic structural and sampled visibility checks passed. Scientific accuracy and narration/visual meaning still require human review; not approved to publish." --prerelease
           # PLAYABLE_ON_PHONE: iPhone cannot play GitHub release downloads inline, so a copy goes to the gh-pages branch and the card links it through jsDelivr (free CDN, real video type).
           git clone -q --depth 1 -b gh-pages "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git" pages && mkdir -p pages/videos && cp "$TAG.mp4" pages/videos/ && (cd pages && git add videos && git -c user.email=41898282+github-actions[bot]@users.noreply.github.com -c user.name=github-actions commit -qm "video $TAG" && git push -q) || echo "pages copy skipped"
           URL="https://cdn.jsdelivr.net/gh/${{ github.repository }}@gh-pages/videos/$TAG.mp4"
@@ -103,7 +103,11 @@ jobs:
           PY
           gh label create scene-review --color 6a55c9 --description "How It Ticks video to watch (not posted)" 2>/dev/null || true
           printf 'How It Ticks video (4th system, NOT posted).\n\nWatch: %s\n\nSaved in the How It Ticks folder: release %s. Approve in the app to file it under Saved, or Skip to hold it under Delete. Nothing is posted or deleted.\n' "$URL" "$TAG" > body.txt
-          gh issue create --title "How It Ticks: $TITLE" --label scene-review --body-file body.txt
+          V=$(python3 -c "import json;print(json.load(open('ce-checks.json')).get('verdict','warn'))" 2>/dev/null || echo warn)
+          R=$(python3 -c "import json;print('; '.join(json.load(open('ce-checks.json')).get('reasons',[])))" 2>/dev/null || true)
+          printf '\nChecks: %s %s\n' "$V" "$R" >> body.txt
+          gh label create "checks-$V" --color $([ "$V" = ok ] && echo 22863a || echo d29922) 2>/dev/null || true
+          gh issue create --title "How It Ticks: $TITLE" --label scene-review --label "checks-$V" --body-file body.txt
           [ -n "$NTFY_TOPIC" ] && curl -s -H "Title: How It Ticks: new video" -H "Click: https://zerenaod-ux.github.io/shelfmade-dashboard/app/#review" -d "$TITLE (not posted) is ready to watch in the app." "https://ntfy.sh/$NTFY_TOPIC" > /dev/null || true
       - name: Remember this angle and retain failed-attempt diagnostics
         if: always()
