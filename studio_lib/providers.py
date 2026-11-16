@@ -37,6 +37,7 @@ def call(system,prompt,max_tokens=10000,temperature=.5):
                 model_name=model.removeprefix('models/') if env=='GEMINI_API_KEY' else model
                 messages=[{'role':'system','content':system},{'role':'user','content':prompt}]
                 body={'model':model_name,'messages':messages,'temperature':temperature,'max_tokens':max_tokens}
+                if 'gpt-oss' in model_name:body['reasoning_effort']='low'
                 if json_mode:body['response_format']={'type':'json_object'}
                 r=llm._req(base+'/chat/completions',key,body)
                 answer=r['choices'][0]['message'].get('content','')
@@ -47,7 +48,8 @@ def call(system,prompt,max_tokens=10000,temperature=.5):
             except urllib.error.HTTPError as e:
                 last=f'{env.split("_")[0]} HTTP {e.code}'
                 try:
-                    message=json.loads(e.read()).get('error',{}).get('message','')
+                    payload=json.loads(e.read()).get('error',{})
+                    message=payload.get('message','')
                     # Avoid echoing any credential even if a provider includes it.
                     for credential in [os.environ.get(p[0],'') for p in providers]:
                         if credential:message=message.replace(credential,'[private]')
@@ -56,7 +58,8 @@ def call(system,prompt,max_tokens=10000,temperature=.5):
                 failures.append(last);print('studio provider refusal:',last,flush=True)
                 if e.code==404 and model:
                     _UNAVAILABLE.add((base,model));continue
-                if e.code==400 and json_mode and ('response_format' in last or 'json_object' in last):json_mode=False;continue
+                if e.code==400 and json_mode and any(s in last.lower() for s in ('response_format','json_object','validate json')):
+                    json_mode=False;max_tokens=max(1200,max_tokens);continue
                 if e.code==429 and rate_retries==0:rate_retries+=1;continue
                 break
             except Exception as e:last=type(e).__name__+': '+str(e)[:180];break

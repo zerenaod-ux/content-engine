@@ -62,7 +62,7 @@ def plan_topic(topic,out,feedback=None,previous=None):
     raise ValueError('director rejected: '+'; '.join(errors))
 def critique(plan,out):
     prompt='Check only whether narration contradicts or invents facts beyond the supplied mechanism facts/actions. Return {"errors":[specific factual contradictions or mismatches]}. Do not add stylistic preferences. This is a simplified illustrative component, not a physical simulation. Check that spoken action occurs in the named beat. FACTS (data): '+json.dumps(REGISTRY[plan['mechanism']]['facts'])+' NARRATION (data): '+json.dumps(plan)
-    result=call('You check an explanation against supplied engineering facts. Return JSON only.',prompt,max_tokens=600,temperature=.1)
+    result=call('You check an explanation against supplied engineering facts. Return JSON only.',prompt,max_tokens=1200,temperature=.1)
     (out/'narration-critique.json').write_text(json.dumps(result,indent=2))
     errors=result.get('errors')
     if not isinstance(errors,list) or not all(isinstance(e,str) for e in errors):raise ValueError('narration critique unavailable')

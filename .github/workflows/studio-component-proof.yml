@@ -28,7 +28,9 @@ jobs:
             .ce-cache/studio-stages
             .ce-cache/studio-renders
           key: mechanism-pilot-${{ runner.os }}-${{ github.run_id }}-${{ github.run_attempt }}
-          restore-keys: mechanism-pilot-${{ runner.os }}-
+          restore-keys: |
+            library-proof-${{ runner.os }}-
+            mechanism-pilot-${{ runner.os }}-
       - name: Generate explanation and render tested mechanism
         env:
           CE_MAX_REQUESTS: '10'
