@@ -1,0 +1,30 @@
+name: picture-probe
+on:
+  workflow_dispatch:
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip -q install opencv-python-headless numpy
+      - name: Measure what the free picture service really returns
+        env:
+          POLLINATIONS_TOKEN: ${{ secrets.POLLINATIONS_TOKEN }}
+        run: |
+          python3 - <<'PY'
+          import urllib.request, urllib.parse, cv2, numpy as np, time, os
+          tok = os.environ.get('POLLINATIONS_TOKEN', '').strip()
+          tests = [('macro', 'photorealistic macro close-up of a steel gear rack on a drawbridge, teeth interlocking', 'flux', 1080, 1920),
+                   ('wide', 'photorealistic wide shot of a drawbridge opening over a river, a ship passing, everything in sharp focus, deep depth of field, daylight', 'flux', 1080, 1920),
+                   ('wide-small', 'photorealistic wide shot of a drawbridge opening over a river, a ship passing, everything in sharp focus, deep depth of field, daylight', 'flux', 768, 1344),
+                   ('wide-turbo', 'photorealistic wide shot of a drawbridge opening over a river, a ship passing, everything in sharp focus, deep depth of field, daylight', 'turbo', 1080, 1920)]
+          for name, p, model, w, h in tests:
+              u = 'https://image.pollinations.ai/prompt/' + urllib.parse.quote(p + ', tack sharp, no text') + '?width=%d&height=%d&nologo=true&model=%s&seed=11' % (w, h, model)
+              try:
+                  t = time.time(); r = urllib.request.Request(u, headers=dict({'User-Agent': 'Mozilla/5.0'}, **({'Authorization': 'Bearer ' + tok} if tok else {})))
+                  b = urllib.request.urlopen(r, timeout=180).read(); im = cv2.imdecode(np.frombuffer(b, np.uint8), 1); g = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
+                  print('PROBE', name, model, 'asked %dx%d' % (w, h), 'got %dx%d' % (im.shape[1], im.shape[0]), 'bytes', len(b), 'sharpness %.0f' % cv2.Laplacian(g, cv2.CV_64F).var(), 'secs %.0f' % (time.time() - t), flush=True)
+              except Exception as e: print('PROBE', name, 'failed', str(e)[:120], flush=True)
+              time.sleep(16)
+          PY
