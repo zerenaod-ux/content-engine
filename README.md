@@ -1,6 +1,6 @@
-# Content Engine
+# How It Ticks (formerly "Content Engine")
 
-The 4th system: any topic in, a one-shot animated "living scene" explainer video out (energetic voice, sounds, music). Free tools only, runs on GitHub Actions, no laptop. Nothing is posted.
+The 4th system (brand name How It Ticks; repo and job names keep `content-engine` so running jobs do not break): any topic in, a one-shot animated "living scene" explainer video out (energetic voice, sounds, music). Free tools only, runs on GitHub Actions, no laptop. Nothing is posted.
 
 - Runs by itself twice a day (`.github/workflows/content-engine.yml`, 04:05 and 09:05 UTC). Start by hand: push `publish/run.trigger` (first line `auto` or a topic).
 - Each video is saved in its own release (tag `ce-YYYYMMDD-HHMM`); the list is `data/scenes/videos.json`. A `scene-review` issue is opened and shown in the owner's phone app Review tab, plus one ntfy ping.
@@ -100,3 +100,11 @@ Implementation is on the review-folders branch pending review/deployment. Six lo
 ## 2026-11-13 — Approve/Skip folders deployed (append-only)
 
 Owner authorized deployment. The Content Engine folder handler and matching phone controls are merged and live. Backend setup completed successfully; the shared app Pages deployment completed successfully. Live read-only verification confirmed Content Engine Approve/Skip cards and working Saved/Delete views. Approve retains the video under Saved for future publishing; Skip retains it under Delete for possible later deletion. Neither action publishes or deletes media. No existing video was approved/skipped during verification. The 27 backend tests and mocked phone-browser flow passed in GitHub before deployment. Existing channel decision code is unchanged. Reopen or refresh the phone app to load the updated shell.
+
+
+## STATUS 2026-11-15 (How It Ticks)
+- **Accounts created:** Gmail (howitticks.channel), YouTube channel "How It Ticks", TikTok howitticks.official, Instagram howitticks.co. No passwords or keys are stored here.
+- **Done:** topic picked by the system, script, AI pictures checked by vision AI, real motion on a free Kaggle GPU (LTX-Video), smooth crossfade cuts, quiet sounds, review cards in the phone app (4th channel tile).
+- **Left:** (1) sharper, brighter moving clips (blur in motion), (2) owner approves the look, (3) separate GPU source (second Kaggle account waits on phone verification; Colab or Hugging Face are alternatives), (4) free Buffer account + BUFFER_TOKEN secret, (5) YouTube one-time sign-in, (6) turn the schedule back on, then auto-publish.
+- **Blocked on owner:** Kaggle second-account phone code; Buffer sign-up; approval of the look.
+- Schedule stays PAUSED until the owner approves the look.
