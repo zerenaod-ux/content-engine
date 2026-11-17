@@ -10,6 +10,17 @@
       "source_branch": "main",
       "owner_approved": false,
       "state": "rendered"
+    },
+    "full": {
+      "run_id": "44197813891",
+      "attempt": 1,
+      "kind": "full",
+      "stage": "selection",
+      "label": "Selecting a new topic",
+      "updated_at": "2026-11-17T23:16:23.345366+00:00",
+      "source_branch": "studio-cinematic-proof",
+      "owner_approved": false,
+      "state": "running"
     }
   }
 }
