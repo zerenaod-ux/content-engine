@@ -1,3 +1,4 @@
+from studio_lib.cinema.topic_memory import prompt_history
 """System-selected original single-topic long video, generated entirely on GitHub."""
 import argparse,asyncio,base64,json,math,os,subprocess,time
 from pathlib import Path
@@ -18,7 +19,7 @@ def select(out):
  rejected=[]
  for i in range(4):
   candidate=call('Choose a genuinely new original full-video topic. Return JSON only.',
-   'The system chooses the subject. Return {"topic":"specific How/Why question","mechanism":"rack_pinion or lead_screw"}. Use only these actual supported scopes, never claim an entire factory or vehicle. No reworded repeat. SCOPES: '+json.dumps(SOURCES)+' FULL HISTORY: '+json.dumps(rows)+' REJECTED: '+json.dumps(rejected),max_tokens=700,temperature=.5)
+   'The system chooses the subject. Return {"topic":"specific How/Why question","mechanism":"rack_pinion or lead_screw"}. Use only these actual supported scopes, never claim an entire factory or vehicle. No reworded repeat. SCOPES: '+json.dumps(SOURCES)+' FULL HISTORY: '+json.dumps(prompt_history(rows))+' REJECTED: '+json.dumps(rejected),max_tokens=700,temperature=.5)
   (out/f'topic-selection-{i}.json').write_text(json.dumps(candidate,indent=2))
   topic=candidate.get('topic','');mechanism=candidate.get('mechanism')
   reason=duplicate(topic,rows)
@@ -44,7 +45,7 @@ def plan(out):
  selected=select(out);rejected=[]
  for attempt in range(4):
   result=call('Write one original factual continuous explainer. Return JSON only.',
-   'One subject only. Native long format, not assembled shorts. Return {"topic":exact topic,"mechanism":exact id,"title":"How/Why 4-8 words","hook":"2-7 simple words max 40 characters","beats":[{"action":"exact action","say":"30-44 spoken words","camera":"wide|engagement|output"}]}. Exactly sixteen actions in order: '+json.dumps(ACTIONS)+'. Total 480-650 words. First spoken beat ends with ?. Energetic natural delivery, short clauses, concrete cause and effect. No spoken camera directions, padding, horror framing, invented parts or numerical performance. Do not describe an unshown force sensor or invisible force as a literal object. Facts/source and visible action contract: '+json.dumps({'selected':selected,'source':SOURCES[selected['mechanism']],'actions':FACTS})+' PREVIOUS ERRORS: '+json.dumps(rejected),max_tokens=6500,temperature=.35)
+   'One subject only. Native long format, not assembled shorts. Return {"topic":exact topic,"mechanism":exact id,"title":"How/Why 4-8 words","hook":"2-7 simple words max 40 characters","beats":[{"action":"exact action","say":"30-44 spoken words","camera":"wide|engagement|output"}]}. Exactly sixteen actions in order: '+json.dumps(ACTIONS)+'. Total 480-650 words. First spoken beat ends with ?. Energetic natural delivery, short clauses, concrete cause and effect. No spoken camera directions, padding, horror framing, invented parts or numerical performance. Do not describe an unshown force sensor or invisible force as a literal object. Facts/source and visible action contract: '+json.dumps({'selected':selected,'source':SOURCES[selected['mechanism']],'actions':FACTS})+' PREVIOUS ERRORS: '+json.dumps(rejected),max_tokens=3600,temperature=.35)
   (out/f'raw-plan-{attempt}.json').write_text(json.dumps(result,indent=2));rejected=errors(result)
   if result.get('topic')!=selected['topic'] or result.get('mechanism')!=selected['mechanism']:rejected.append('Preserve selected topic and mechanism')
   if rejected:continue

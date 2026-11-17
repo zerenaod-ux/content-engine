@@ -1,3 +1,4 @@
+from studio_lib.cinema.topic_memory import prompt_history
 """Select and reserve a supported new topic on GitHub before media generation."""
 import base64,json,os,time,urllib.request,urllib.error
 from pathlib import Path
@@ -47,7 +48,7 @@ def main():
     for attempt in range(4):
         candidate=call('Choose an original supported explainer subject. Return JSON only.',
             'The system must select a genuinely new topic, never a paraphrase of a past video. Pick an uncovered implemented component. Return {"topic":"How/Why topic","mechanism":"exact supported id"}. '
-            'Explain only the precise supported scope, not a whole process absent from the diagram. Prefer visible causal changes. SUPPORTED: '+json.dumps({k:v[0] for k,v in SPECS.items()})+' FULL HISTORY: '+json.dumps(rows)+' REJECTIONS: '+json.dumps(rejected),max_tokens=700,temperature=.6)
+            'Explain only the precise supported scope, not a whole process absent from the diagram. Prefer visible causal changes. SUPPORTED: '+json.dumps({k:v[0] for k,v in SPECS.items()})+' FULL HISTORY: '+json.dumps(prompt_history(rows))+' REJECTIONS: '+json.dumps(rejected),max_tokens=700,temperature=.6)
         (out/f'topic-candidate-{attempt}.json').write_text(json.dumps(candidate,indent=2))
         error=candidate_valid(candidate,rows)
         if error:rejected.append(error);continue
