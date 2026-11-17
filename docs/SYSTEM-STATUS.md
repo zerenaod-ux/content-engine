@@ -40,3 +40,7 @@ The comparison workflow has read-only repository permissions and cannot publish,
 2. Correct any observed defects in the system, rerun boundedly, and preserve rejected outputs.
 3. Show the finished comparison before applying the renderer broadly.
 4. Separately repair the known long-video index/save failure. This remains outstanding.
+
+
+## November 17 — Studio review delivery added during the comparison run
+The owner clarified that every completed comparison must appear in Studio Review. A separate delivery workflow is now deployed on main: it listens for successful cinematic-comparison runs, validates their source/provenance, preserves the mobile MP4 in gh-pages and a release, merges the current video index with collision retries, and opens an idempotent checks-warn review card only after those saves succeed. It does not approve or publish. Automatic approval remains off. This is delivery integration, not deployment of the new renderer as the daily production default. Five local tests now pass: the three caption tests plus preserving concurrent index entries on retry and rejecting failed/untrusted source runs before writes. Delivery is not yet verified end to end because the first render is still running. No independent wake-up/failure-notification monitor is configured; status is being checked during the active task.
