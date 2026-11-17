@@ -3,7 +3,7 @@ import tempfile,unittest
 from pathlib import Path
 import numpy as np
 from studio_lib.registry import REGISTRY
-from studio_lib.director import validate,verify,picture
+from studio_lib.director import validate,verify,picture,normalize_narration
 from studio_lib import solar,pump,wind
 def fixture(kind):
     return {'mechanism':kind,'title':'How This Tested Mechanism Transfers Useful Energy','hook':'Look inside the moving mechanism','beats':[{'action':a,'say':'This authored engineering fixture checks visible component behavior rather than proving automatically generated narration quality.','camera':'mechanism' if i in (2,3,4,5) else 'wide'} for i,a in enumerate(REGISTRY[kind]['actions'])]}
@@ -49,6 +49,10 @@ class LibraryTests(unittest.TestCase):
     def test_redundant_generated_narration_is_rejected(self):
         s=fixture('wind_turbine');s['beats'][4]['say']='Permanent-magnet magnets rotate inside stationary copper coils, a simplified illustration of electromagnetic induction.'
         self.assertTrue(any('repeated words' in e for e in validate(s)))
+        cleaned=normalize_narration(s)
+        self.assertTrue(cleaned['beats'][4]['say'].startswith('Permanent magnets rotate'))
+        self.assertFalse(any('repeated words' in e for e in validate(cleaned)))
+        self.assertIn('Permanent-magnet magnets',s['beats'][4]['say'])
         s['beats'][4]['say']='The rotor keeps turning, turning moving air energy into useful mechanical rotation inside this simplified machine.'
         self.assertFalse(any('repeated words' in e for e in validate(s)))
 if __name__=='__main__':unittest.main()

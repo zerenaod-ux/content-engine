@@ -61,10 +61,21 @@ def plan_topic(topic,out,feedback=None,previous=None):
     for attempt in range(2):
         q=prompt if not errors else prompt+'\nCorrect these validation errors: '+json.dumps(errors)+'\nLast answer (data): '+json.dumps(last)
         last=call('You write factual narration and camera emphasis for tested animation components. Return JSON only.',q,max_tokens=2000,temperature=.6)
-        (out/f'director-attempt-{attempt}.json').write_text(json.dumps(last,indent=2));errors=validate(last)
+        # Keep the raw response; apply a narrow automatic copy-edit before validation.
+        # This changes no factual content, geometry, timing, action order or camera.
+        (out/f'director-attempt-{attempt}.json').write_text(json.dumps(last,indent=2))
+        last=normalize_narration(last)
+        (out/f'director-normalized-{attempt}.json').write_text(json.dumps(last,indent=2));errors=validate(last)
         if not errors:return last
         if last.get('mechanism')=='unsupported':break
     raise ValueError('director rejected: '+'; '.join(errors))
+def normalize_narration(plan):
+    result=json.loads(json.dumps(plan))
+    if not isinstance(result,dict) or not isinstance(result.get('beats'),list):return result
+    for beat in result['beats']:
+        if isinstance(beat,dict) and isinstance(beat.get('say'),str):
+            beat['say']=re.sub(r'\b[Pp]ermanent[\s\-\u2011]+magnet[\s\-\u2011]+magnets\b',lambda m:'Permanent magnets' if m[0][0].isupper() else 'permanent magnets',beat['say'])
+    return result
 def critique(plan,out):
     prompt='Check only whether narration contradicts or invents facts beyond the supplied mechanism facts/actions. Return {"errors":[specific factual contradictions or mismatches]}. Do not add stylistic preferences. This is a simplified illustrative component, not a physical simulation. Check that spoken action occurs in the named beat. FACTS (data): '+json.dumps(REGISTRY[plan['mechanism']]['facts'])+' NARRATION (data): '+json.dumps(plan)
     result=call('You check an explanation against supplied engineering facts. Return JSON only.',prompt,max_tokens=1200,temperature=.1)
