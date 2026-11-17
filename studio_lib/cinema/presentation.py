@@ -25,7 +25,8 @@ def camera_pose(shots, beats, seconds, mechanism):
     mix=ease((seconds-beats[i]['start'])/duration) if i else 1.0
     return tuple(tuple(a+(b-a)*mix for a,b in zip(poses[previous][k],poses[i][k])) for k in (0,1))
 
-def illustration_labels(beats):
+def illustration_labels(beats,mechanism=None):
+    if mechanism is not None and mechanism not in ('hand_generator','wind_turbine'):return []
     labels=[]
     for b in beats:
         if b['action'] in ('generator','induction'):

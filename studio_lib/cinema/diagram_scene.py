@@ -17,12 +17,12 @@ bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=Fals
 scene=bpy.context.scene;scene.render.engine='BLENDER_WORKBENCH'
 scene.render.resolution_x=540;scene.render.resolution_y=960;scene.render.resolution_percentage=100
 scene.render.fps=24;scene.render.image_settings.file_format='PNG'
-scene.display.shading.light='STUDIO';scene.display.shading.color_type='MATERIAL'
+scene.display.shading.light='FLAT';scene.display.shading.color_type='MATERIAL'
 scene.display.shading.show_shadows=True;scene.display.shading.show_cavity=True
 scene.world.color=(.16,.22,.28);scene.display.shading.background_type='WORLD'
 scene.view_settings.view_transform='Standard'
 camdata=bpy.data.cameras.new('diagram camera');cam=bpy.data.objects.new('diagram camera',camdata);scene.collection.objects.link(cam);scene.camera=cam
-camdata.type='ORTHO';camdata.ortho_scale=11.5
+camdata.type='ORTHO';camdata.ortho_scale=9.5
 cam.location=(1.5,-16,6);target=Vector((0,0,2.5));cam.rotation_euler=(target-cam.location).to_track_quat('-Z','Y').to_euler()
 objects={};texts=[]
 def material(name,color):
@@ -45,7 +45,7 @@ def add(item):
 first=diagram(mechanism,0)
 for item in first['objects']:add(item)
 for i,label in enumerate(first['labels']):
- curve=bpy.data.curves.new('label '+str(i),'FONT');curve.size=.20;curve.align_x='CENTER'
+ curve=bpy.data.curves.new('label '+str(i),'FONT');curve.size=.24;curve.align_x='CENTER'
  obj=bpy.data.objects.new('label '+str(i),curve);scene.collection.objects.link(obj);obj.data.materials.append(material('text '+str(i),(.95,.96,1)));texts.append(obj)
 
 def progress(t):
@@ -65,7 +65,7 @@ def update(sc):
  for o,label in zip(texts,data['labels']):
   o.data.body=label['text'];o.location=label['at'];o.rotation_euler=(cam.location-o.location).to_track_quat('Z','Y').to_euler()
  # Gentle whole-diagram framing, continuous with zero velocity at endpoints.
- camdata.ortho_scale=11.5-.35*ease(t/TL['duration'])
+ camdata.ortho_scale=9.5-.35*ease(t/TL['duration'])
 
 bpy.app.handlers.frame_change_pre.append(update)
 scene.frame_start=1;scene.frame_end=math.ceil(TL['duration']*24)

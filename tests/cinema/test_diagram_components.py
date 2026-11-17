@@ -27,8 +27,9 @@ class DiagramTests(unittest.TestCase):
 
     def test_encoded_caption_recipe_discloses_simplification(self):
         with tempfile.TemporaryDirectory() as d:
-            text=captions({'mechanism':'dna_pairing','duration':40,'beats':[],'words':[]},Path(d)).read_text()
+            text=captions({'mechanism':'dna_pairing','duration':40,'beats':[{'action':'payoff','start':30,'end':40}],'words':[]},Path(d)).read_text()
             self.assertIn(r'Simplified schematic\NScale and progress illustrative',text)
+            self.assertNotIn('Circuit markers',text)
 
     def test_no_full_process_substitution(self):
         for topic in ('How DNA replication works','How a nuclear reactor works','How a heat exchanger works','How a hydraulic brake works','How the water cycle works'):

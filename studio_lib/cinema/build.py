@@ -202,7 +202,7 @@ def captions(tl,out):
         lines.append(f"Dialogue: 0,{ass_time(start)},{ass_time(end)},Default,,0,0,0,,{text}")
     if any(a['end']>=b['start'] for a,b in zip(intervals,intervals[1:])):raise ValueError('Caption overlap')
     (out/'caption-checks.json').write_text(json.dumps({'errors':[],'intervals':intervals},indent=2))
-    for start,end,text in illustration_labels(tl.get('beats',[])):
+    for start,end,text in illustration_labels(tl.get('beats',[]),tl.get('mechanism')):
         lines.append(f'Dialogue: 1,{ass_time(start)},{ass_time(end)},Default,,0,0,0,,{{\\an8\\fs27\\pos(360,85)}}{text}')
     if tl.get('mechanism') in SPECS:
         lines.append(f'Dialogue: 1,{ass_time(0)},{ass_time(tl["duration"])},Default,,0,0,0,,{{\\an8\\fs25\\pos(360,75)}}Simplified schematic\\NScale and progress illustrative')
