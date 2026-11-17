@@ -1,5 +1,5 @@
 """Read-only Buffer verification; never creates, schedules, edits or deletes posts."""
-import datetime,json,sys,unicodedata,re
+import datetime,json,sys,unicodedata,re,math,urllib.error
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parent.parent))
 import ce_publisher as publisher
@@ -41,8 +41,35 @@ def main():
             matches=[p for p in posts if p.get('channelId')==channel and (p.get('id')==tracked.get('remote') or canonical((p.get('text') or '').split('\n')[0])==canonical(item.get('title','')))]
             entry['platforms'][platform]=[{'status':p.get('status'),'due':p.get('dueAt')} for p in matches] or [{'status':'not_found_in_buffer','prior_owner_skip':str(tracked.get('remote','')).startswith('SKIPPED')}]
         report['saved'].append(entry)
+    # Metrics are optional: lack of analytics access must not break queue status.
+    report['metrics']={'available':False,'platforms':{},'scope':'recent 20 published posts','note':'Views are supplied separately by the platform and may lag by about a day.'}
+    try:
+        metric_posts=[]
+        query_metrics='query($i:PostsInput!){posts(first:20,input:$i){edges{node{id channelId metrics{type value unit} metricsUpdatedAt}}}}'
+        for org in orgs:
+            response=publisher.api(query_metrics,{'i':{'organizationId':org['id'],'filter':{'channelIds':list(publisher.CHANNELS.values()),'status':['sent']}}})
+            if response.get('errors'):raise ValueError('Metrics not supplied by this connection')
+            connection=(response.get('data') or {}).get('posts')
+            if not isinstance(connection,dict):raise ValueError('No metric data')
+            metric_posts.extend(x['node'] for x in connection.get('edges',[]))
+        for platform,channel in publisher.CHANNELS.items():
+            own=[x for x in metric_posts if x.get('channelId')==channel]
+            values={'views':[],'reactions':[]};stamps=[]
+            for post in own:
+                if post.get('metricsUpdatedAt'):stamps.append(post['metricsUpdatedAt'])
+                for metric in post.get('metrics') or []:
+                    kind=metric.get('type')
+                    if kind not in values:continue
+                    try:value=float(metric.get('value'))
+                    except (TypeError,ValueError):continue
+                    if math.isfinite(value) and value>=0:values[kind].append(value)
+            report['metrics']['platforms'][platform]={'views':sum(values['views']) if values['views'] else None,'reactions':sum(values['reactions']) if values['reactions'] else None,'reported_posts':len(own),'source_updated_at':min(stamps) if stamps else None}
+        report['metrics']['available']=True
+    except (ValueError,KeyError,TypeError,AttributeError,urllib.error.URLError,TimeoutError):
+        report['metrics']['note']='View counts are not available from the connected source yet.'
     report['complete']=complete
     Path('publish-status-report.json').write_text(json.dumps(report,indent=2))
     print(json.dumps(report,indent=2))
 if __name__=='__main__':main()
+
 
