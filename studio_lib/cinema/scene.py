@@ -140,6 +140,18 @@ def update(sc):
     cam.location=pos;cam.rotation_euler=(target-pos).to_track_quat('-Z','Y').to_euler()
 bpy.app.handlers.frame_change_pre.append(update)
 scene.frame_start=1;scene.frame_end=math.ceil(TL['duration']*FPS)
+if '--check-only' in sys.argv:
+    # Validate scene geometry/visibility without generating any image or video.
+    for beat in TL['beats']:
+        t=(beat['start']+beat['end'])/2
+        scene.frame_set(round(t*FPS)+1)
+        visible=beat['action'] in ('generator','induction')
+        if any(o.hide_render == visible or o.parent != rotor for o in field_lines):
+            raise ValueError('Schematic field geometry/visibility is inconsistent')
+        if any(o.parent == rotor for o in scene.objects if o.name.startswith('stationary')):
+            raise ValueError('Stationary generator parts must not rotate')
+    print(json.dumps({'geometry_check':'passed','rendered_images':0,'generated_video':False}),flush=True)
+    sys.exit(0)
 frames=ROOT/'frames';frames.mkdir(exist_ok=True)
 # First preserve eight diagnostic renders, before spending time on the complete animation.
 times=[(b['start']+b['end'])/2 for b in TL['beats']]
