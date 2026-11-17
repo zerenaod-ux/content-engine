@@ -4,6 +4,7 @@ from pathlib import Path
 from mathutils import Vector
 from bpy.app.handlers import persistent
 ROOT=Path(sys.argv[sys.argv.index('--')+1]);TL=json.loads((ROOT/'timeline.json').read_text())
+PLAN=json.loads((ROOT/'plan.json').read_text());HAND=PLAN['mechanism']=='hand_generator'
 FPS=24
 def smooth(x):x=max(0,min(1,x));return x*x*(3-2*x)
 def ramp(t,a,b):return smooth((t-a)/(b-a))
@@ -81,12 +82,21 @@ for k in range(12):
     for yy in (.35,.43,.51,.59,.67):
         bpy.ops.mesh.primitive_torus_add(major_radius=.115,minor_radius=.027,major_segments=16,minor_segments=6,location=(x,yy,z),rotation=(math.pi/2,0,0))
         finish(bpy.context.object,'stationary copper winding','copper')
+# The new family reuses generator physics, with a visible crank instead of blades.
+if HAND:
+    for o in list(scene.objects):
+        if o.name.startswith(('tapered blade','orange blade marker','pitch bearing','tower','service hatch','ladder rung')):o.hide_render=True
+    box('bench support',(0,.45,2.45),(.6,.8,4.6),'dark',.08)
+    box('workbench',(1,.4,4.6),(7,4,.18),'concrete')
+    crank=line('crank arm',[(0,-1.95,5.2),(1.1,-1.95,5.2)],.11,'gold');parent(crank,rotor)
+    grip=cyl('offset crank grip',(1.1,-2.2,5.2),.16,.55,'red');parent(grip,rotor)
 line('outgoing cable',[(.85,.5,5.2),(1.4,.5,5.2),(1.4,-.4,.3),(3.5,-.4,.3),(3.5,-.4,1.3)],.035,'dark')
 line('return cable',[(.55,.75,5.2),(1.1,.75,5.2),(1.1,-.4,.15),(4.3,-.4,.15),(4.3,-.4,1.3)],.035,'copper')
 box('lamp base',(4.3,-.4,.5),(.7,.65,.2),'dark')
 lamp=ball('lamp diffuser',(4.3,-.4,1.15),.35,'ceramic')
 switch=line('switch blade',[(0,0,0),(.24,0,.255)],.045,'gold');switch.location=(3.5,-.4,1.3)
 for k in range(2):ball('switch contact',(3.5+k*.35,-.4,1.3),.055,'metal')
+line('switch-to-load connector',[(3.85,-.4,1.3),(4.3,-.4,1.3)],.035,'dark')
 wind=[line('moving air trail',[(0,0,0),(0,.6,0)],.018,'cyan') for k in range(10)]
 current=[ball('circuit marker',(0,0,0),.055,'cyan') for k in range(15)]
 camdata=bpy.data.cameras.new('story camera');cam=bpy.data.objects.new('story camera',camdata);scene.collection.objects.link(cam);scene.camera=cam
@@ -98,11 +108,12 @@ def state(t):
     return i,b,u
 @persistent
 def update(sc):
-    t=(sc.frame_current-1)/FPS;i,b,u=state(t);rotor.rotation_euler[1]=t*.85
+    t=(sc.frame_current-1)/FPS;i,b,u=state(t);rotor.rotation_euler[1]=t*.98
     cut=ramp(t,TL['beats'][3]['start']-.5,TL['beats'][3]['start']+.8)*(1-ramp(t,TL['beats'][7]['start'],TL['beats'][7]['start']+1))
     shell.location.z=5.7+3.5*cut
     for k,o in enumerate(wind):
-        o.location=(-1.9+(k%4)*1.2,-6+(t*1.2+k*.63)%4.2,3.8+(k%3)*1.1)
+        o.hide_render=HAND
+        o.location=(-1.9+(k%4)*1.2,-6+(t*1.38+k*.63)%4.2,3.8+(k%3)*1.1)
     closed=i>=6
     angle=0 if closed else math.atan2(.255,.24)
     switch.data.splines[0].points[1].co=(.35*math.cos(angle),0,.35*math.sin(angle),1)
@@ -110,7 +121,7 @@ def update(sc):
     pts=[(1.4,-.4,5.2),(1.4,-.4,.3),(3.5,-.4,.3),(3.5,-.4,1.3),(4.3,-.4,1.3),(4.3,-.4,.15),(1.1,-.4,.15),(1.1,-.4,5.2)]
     for k,o in enumerate(current):
         o.hide_render=not closed;q=((t*.09+k/15)%1)*(len(pts)-1);j=int(q);o.location=Vector(pts[j]).lerp(Vector(pts[j+1]),q-j)
-    j=max(0,i-1);blend=smooth((t-b['start'])/.75) if i else 1
+    j=max(0,i-1);blend=smooth((t-b['start'])/.60) if i else 1
     target=Vector(SHOTS[j][0]).lerp(Vector(SHOTS[i][0]),blend)
     pos=Vector(SHOTS[j][1]).lerp(Vector(SHOTS[i][1]),blend)
     pos=target+(pos-target)*(1-.035*u)
