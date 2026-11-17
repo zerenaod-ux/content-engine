@@ -1,6 +1,7 @@
 """File a successful generated comparison in existing Studio review, never approve."""
 import base64,datetime,hashlib,json,os,time,urllib.request,urllib.error
 from pathlib import Path
+from studio_lib.duration import require_duration
 REPO=os.environ['GITHUB_REPOSITORY'];TOKEN=os.environ['GH_TOKEN'];RUN=os.environ['SOURCE_RUN']
 def api(method,path,data=None):
     req=urllib.request.Request('https://api.github.com/repos/'+REPO+'/'+path,data=json.dumps(data).encode() if data is not None else None,method=method,headers={'Authorization':'Bearer '+TOKEN,'Accept':'application/vnd.github+json','Content-Type':'application/json'})
@@ -28,6 +29,7 @@ def main():
     result=json.loads((root/'result.json').read_text());plan=json.loads((root/'plan.json').read_text())
     if result.get('manual_script_or_video_edits') is not False or result.get('owner_approved') is not False:raise ValueError('invalid automatic provenance')
     if plan.get('mechanism') not in ('wind_turbine','hand_generator','lever_balance','resistive_circuit','hydraulic_lift','thermal_contact','dna_pairing','water_transfer'):raise ValueError('unregistered cinematic subject')
+    require_duration(result.get('duration',0))
     video=root/'video.mp4'
     if not video.is_file() or video.stat().st_size<100000:raise ValueError('finished video missing')
     run=api('GET','actions/runs/'+RUN)
