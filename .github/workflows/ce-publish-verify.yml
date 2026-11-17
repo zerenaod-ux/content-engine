@@ -29,20 +29,9 @@ jobs:
           BUFFER_TOKEN: ${{ secrets.BUFFER_TOKEN }}
         run: python publish/verify_status.py
       - name: Share the verified snapshot with Studio on all devices
-        run: |
-          mkdir -p data/scenes
-          cp publish-status-report.json data/scenes/publishing-status.json
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/scenes/publishing-status.json
-          git diff --cached --quiet && exit 0
-          git commit -qm "Refresh verified How It Ticks publishing status"
-          for i in 1 2 3 4; do
-            if git pull --rebase --autostash -q && git push -q; then exit 0; fi
-            sleep 5
-          done
-          echo "Publishing-status snapshot was not saved"
-          exit 1
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python publish/save_status_snapshot.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:
