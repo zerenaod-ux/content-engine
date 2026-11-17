@@ -201,5 +201,11 @@
   "title": "How a wind turbine creates electricity from spinning magnets 🌬️",
   "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@3960729eef5b8f8ccf083d81227a928b8ec6cdf8/videos/ce-20261117-0247-p1.mp4",
   "source": "tested-components test"
+ },
+ {
+  "date": "2026-11-17",
+  "tag": "ce-20261117-0306",
+  "title": "How a Solar Cell Turns Sunlight Into Electricity",
+  "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@585efe22b2b458a6c80428e839db6344b11fbe3d/videos/ce-20261117-0306.mp4"
  }
 ]

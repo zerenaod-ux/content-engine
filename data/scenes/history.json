@@ -615,5 +615,15 @@
    "grid"
   ],
   "category": "electricity and energy"
+ },
+ {
+  "techniques": [],
+  "failure_cause": "",
+  "date": "2026-11-17",
+  "topic": "How a photovoltaic cell converts sunlight into electricity",
+  "title": "How a Solar Cell Turns Sunlight Into Electricity",
+  "subject": "photovoltaic_cell",
+  "keywords": [],
+  "category": "tested mechanism"
  }
 ]
