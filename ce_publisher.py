@@ -1,6 +1,6 @@
 """How It Ticks publisher. DRY-RUN unless PUBLISH_LIVE=1 (repo variable). Only videos the owner APPROVED (folder 'saved' in data/scenes/review/index.json) are posted.
 Gives each approved video the next free slot per platform in Buffer (posting-slots.json), never double-posts (publish/state.json remembers every video handed to Buffer)."""
-import json, os, sys, datetime, urllib.request, urllib.error
+import json, os, sys, datetime, time, urllib.request, urllib.error
 from pathlib import Path
 from zoneinfo import ZoneInfo
 B = Path(__file__).resolve().parent
@@ -58,6 +58,20 @@ def video_url(tag):
 def video_url_default(tag):   # public, direct mp4 (Buffer must fetch it): jsDelivr copy on gh-pages (made at build time)
     return 'https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@gh-pages/videos/%s.mp4' % tag
 
+def create_approved_post(inp):
+    # Retry only an explicit media-fetch rejection, which confirms no post exists.
+    # Never retry an ambiguous transport failure or a successful creation.
+    query='mutation($input:CreatePostInput!){createPost(input:$input){... on PostActionSuccess{post{id status dueAt}} ... on MutationError{message}}}'
+    for attempt in range(3):
+        response=api(query,{'input':inp})
+        result=((response.get('data') or {}).get('createPost') or {})
+        if result.get('post'):return response
+        message=str(result.get('message','')).lower()
+        if 'video could not be read from its url' not in message or attempt==2:return response
+        print('Media fetch refused; retrying the same approved post without rescheduling other platforms.')
+        time.sleep(8*(attempt+1))
+    return response
+
 def main():
     if not CFG.get('enabled', True):
         print('posting disabled in posting-slots.json'); return
@@ -89,7 +103,7 @@ def main():
             if not slots: break
             taken.add(slots[0]); plan.append((plat, item, slots[0]))
     print('%s: approved %d | Buffer holds %s | would schedule %d' % ('LIVE' if LIVE else 'DRY-RUN', len(approved), {k: len(v) for k, v in held.items()}, len(plan)))
-    creates = 0
+    creates = 0; failed = []
     for plat, item, due in plan:
         title = item.get('title') or ''
         if not title_ok(title):
@@ -100,14 +114,15 @@ def main():
                 'instagram': {'type': 'reel', 'shouldShareToFeed': True}, 'tiktok': {'title': title[:90]}}[plat]
         inp = {'channelId': CHANNELS[plat], 'text': title + '\n\n' + TAGS, 'schedulingType': 'automatic', 'mode': 'customScheduled', 'needsApproval': False,
                'saveToDraft': False, 'assets': [{'video': {'url': video_url(item['tag']), 'metadata': {'thumbnailOffset': 1000}}}], 'metadata': {plat: meta}, 'dueAt': due}
-        r = api('mutation($input:CreatePostInput!){createPost(input:$input){... on PostActionSuccess{post{id status dueAt}} ... on MutationError{message}}}', {'input': inp})
+        r = create_approved_post(inp)
         cp = ((r.get('data') or {}).get('createPost') or {}); creates += 1
         if cp.get('post'):
             state['done']['%s/%s' % (item['tag'], plat)] = {'remote': cp['post']['id'], 'due': due, 'at': now.isoformat(timespec='seconds')}
             STATE.parent.mkdir(exist_ok=True); STATE.write_text(json.dumps(state, indent=1)); print('    sent', cp['post']['id'])
         else:
-            print('    NOT sent:', json.dumps(r)[:200])
+            print('    NOT sent:', json.dumps(r)[:200]); failed.append(plat)
             if 'limit' in json.dumps(r).lower() or 'allowance' in json.dumps(r).lower(): break
 
 if __name__ == '__main__':
     main()
+
