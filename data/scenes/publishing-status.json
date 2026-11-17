@@ -1,0 +1,139 @@
+{
+  "checked_at": "2026-11-17T20:40:19.856770+00:00",
+  "read_only": true,
+  "complete": true,
+  "platforms": {
+    "youtube": {
+      "returned_posts": 3,
+      "statuses": {
+        "scheduled": 2,
+        "sent": 1
+      }
+    },
+    "instagram": {
+      "returned_posts": 3,
+      "statuses": {
+        "scheduled": 3
+      }
+    },
+    "tiktok": {
+      "returned_posts": 3,
+      "statuses": {
+        "scheduled": 3
+      }
+    }
+  },
+  "saved": [
+    {
+      "tag": "ce-20261113-2050",
+      "title": "How Wind Powers Home \u26a1",
+      "platforms": {
+        "youtube": [
+          {
+            "status": "not_found_in_buffer",
+            "prior_owner_skip": true
+          }
+        ],
+        "instagram": [
+          {
+            "status": "not_found_in_buffer",
+            "prior_owner_skip": true
+          }
+        ],
+        "tiktok": [
+          {
+            "status": "not_found_in_buffer",
+            "prior_owner_skip": true
+          }
+        ]
+      }
+    },
+    {
+      "tag": "ce-20261117-0857-cinema-44051234755",
+      "title": "Why Direct\u2011Drive Needs No Gearbox \ud83d\udca8",
+      "platforms": {
+        "youtube": [
+          {
+            "status": "sent",
+            "due": "2026-11-17T18:30:00.000Z"
+          }
+        ],
+        "instagram": [
+          {
+            "status": "scheduled",
+            "due": "2026-11-18T01:00:00.000Z"
+          }
+        ],
+        "tiktok": [
+          {
+            "status": "scheduled",
+            "due": "2026-11-18T00:00:00.000Z"
+          }
+        ]
+      }
+    },
+    {
+      "tag": "ce-20261117-1726-cinema-44136986640",
+      "title": "Why Hydraulic Lifts Trade Travel \ud83c\udfd7\ufe0f",
+      "platforms": {
+        "youtube": [
+          {
+            "status": "scheduled",
+            "due": "2026-11-18T18:30:00.000Z"
+          }
+        ],
+        "instagram": [
+          {
+            "status": "scheduled",
+            "due": "2026-11-19T01:00:00.000Z"
+          }
+        ],
+        "tiktok": [
+          {
+            "status": "scheduled",
+            "due": "2026-11-19T00:00:00.000Z"
+          }
+        ]
+      }
+    },
+    {
+      "tag": "ce-20261117-1053-cinema-44068968307",
+      "title": "How Turning a Handle Lights a Lamp \ud83d\udca1",
+      "platforms": {
+        "youtube": [
+          {
+            "status": "scheduled",
+            "due": "2026-11-17T22:30:00.000Z"
+          }
+        ],
+        "instagram": [
+          {
+            "status": "scheduled",
+            "due": "2026-11-18T03:00:00.000Z"
+          }
+        ],
+        "tiktok": [
+          {
+            "status": "scheduled",
+            "due": "2026-11-18T02:30:00.000Z"
+          }
+        ]
+      }
+    }
+  ],
+  "timezone": "America/Chicago",
+  "posting_slots": {
+    "youtube": [
+      "12:30",
+      "16:30"
+    ],
+    "tiktok": [
+      "18:00",
+      "20:30"
+    ],
+    "instagram": [
+      "19:00",
+      "21:00"
+    ]
+  }
+}
