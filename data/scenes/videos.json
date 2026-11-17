@@ -166,5 +166,33 @@
   "tag": "ce-20261116-1727",
   "title": "How Solar Panels Turn Sunlight Into Power ⚡",
   "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@2eb6242d584f94cb28ffed87d2883e583611da4c/videos/ce-20261116-1727.mp4"
+ },
+ {
+  "date": "2026-11-17",
+  "tag": "ce-20261117-0233-p1",
+  "title": "How a direct‑drive wind turbine turns moving air into electricity",
+  "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@aee6ac36fa86bfb2df60aa065250f9bd4f58fbf4/videos/ce-20261117-0233-p1.mp4",
+  "source": "tested-components test"
+ },
+ {
+  "date": "2026-11-17",
+  "tag": "ce-20261117-0233-p2",
+  "title": "How a Reciprocating Piston Pump Moves Water",
+  "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@737ff28511e0d8d18d842503311b6e1c1f9e1628/videos/ce-20261117-0233-p2.mp4",
+  "source": "tested-components test"
+ },
+ {
+  "date": "2026-11-17",
+  "tag": "ce-20261117-0234-p3",
+  "title": "How Sunlight Becomes Electrical Power in Panels",
+  "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@6858a92a78cf62a7af95f5bc2cfe06c6397d79f8/videos/ce-20261117-0234-p3.mp4",
+  "source": "tested-components test"
+ },
+ {
+  "date": "2026-11-17",
+  "tag": "ce-20261117-0234-p4",
+  "title": "Why a Bascule Drawbridge Lifts for Ships",
+  "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@94a67585aace5db974b9e2be1471e0f3dac6c808/videos/ce-20261117-0234-p4.mp4",
+  "source": "tested-components test"
  }
 ]
