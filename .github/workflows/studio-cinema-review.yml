@@ -1,0 +1,35 @@
+name: Deliver cinematic comparison to Studio Review
+on:
+  workflow_run:
+    workflows: ['Cinematic system comparison (not posted)']
+    types: [completed]
+    branches: [studio-cinematic-proof]
+  workflow_dispatch:
+    inputs:
+      source_run:
+        description: Successful cinematic comparison run to deliver
+        required: true
+permissions:
+  contents: write
+  issues: write
+  actions: read
+concurrency:
+  group: cinematic-review-delivery
+  cancel-in-progress: false
+jobs:
+  deliver:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: main}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - name: Retrieve finished output and file it for owner review
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN: ${{ github.event.workflow_run.id || inputs.source_run }}
+        run: |
+          gh run download "$SOURCE_RUN" --repo "$GITHUB_REPOSITORY" --name cinematic-comparison --dir incoming
+          python -m studio_lib.cinema.deliver
