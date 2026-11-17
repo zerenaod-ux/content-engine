@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-11-17T21:04:44.967994+00:00",
+  "checked_at": "2026-11-17T22:27:37.367125+00:00",
   "read_only": true,
   "complete": true,
   "platforms": {
@@ -116,6 +116,30 @@
           {
             "status": "scheduled",
             "due": "2026-11-18T02:30:00.000Z"
+          }
+        ]
+      }
+    },
+    {
+      "tag": "ce-20261117-0234-p4",
+      "title": "Why a Bascule Drawbridge Lifts for Ships",
+      "platforms": {
+        "youtube": [
+          {
+            "status": "not_found_in_buffer",
+            "prior_owner_skip": false
+          }
+        ],
+        "instagram": [
+          {
+            "status": "not_found_in_buffer",
+            "prior_owner_skip": false
+          }
+        ],
+        "tiktok": [
+          {
+            "status": "not_found_in_buffer",
+            "prior_owner_skip": false
           }
         ]
       }
