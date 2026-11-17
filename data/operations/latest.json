@@ -4,12 +4,15 @@
       "run_id": "44197524528",
       "attempt": 1,
       "kind": "self-test",
-      "stage": "selection",
-      "label": "Selecting a new topic",
-      "updated_at": "2026-11-17T23:14:06.166535+00:00",
+      "stage": "Stopped",
+      "label": "Stopped",
+      "updated_at": "2026-11-17T23:14:09.091766+00:00",
       "source_branch": "main",
       "owner_approved": false,
-      "state": "running"
+      "retryable": true,
+      "next_retry_at": 1794957249.0917556,
+      "reason": "Temporary service or capacity failure",
+      "state": "waiting_to_resume"
     }
   }
 }
