@@ -3,6 +3,9 @@ on:
   schedule:
     - cron: '20 */3 * * *'
   workflow_dispatch:
+  workflow_run:
+    workflows: [content-engine-review-folders]
+    types: [completed]
 permissions:
   contents: write
 concurrency:
@@ -10,6 +13,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   publish:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.head_branch == 'main'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -31,4 +35,9 @@ jobs:
           git add -f publish/state.json publish/live.json 2>/dev/null || true
           git diff --cached --quiet && { echo "no state change"; exit 0; }
           git commit -qm "publisher: state"
-          for i in 1 2 3 4; do git pull --rebase -q && git push -q && break; sleep 5; done
+          SAVED=0
+          for i in 1 2 3 4; do
+            if git pull --rebase -q && git push -q; then SAVED=1; break; fi
+            sleep 5
+          done
+          [ "$SAVED" = 1 ] || { echo "Publishing state was not saved; review the existing remote bookings before retrying."; exit 1; }
