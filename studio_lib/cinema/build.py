@@ -239,6 +239,11 @@ def repair_resumed_plan(plan,topic,out):
     for attempt in range(2):
         raw=call('Repair only the identified narration contradictions in this data. Return JSON only.',
             'Return the full plan object. Preserve the title, hook, valid sentences and action order. '
+            'Keep mechanism unchanged and exactly eight beats in the contract order. '
+            'Each beat must include action, say containing 9-23 spoken words, and camera=wide|mechanism|follow. '
+            'Total narration MUST contain 110-145 words. Count words before returning. '
+            'Title starts How/Why and has 4-8 words; hook is at most 7 words and 40 characters. '
+            'The first spoken beat remains a direct question ending with ?. '
             'The lever lift happens ONLY in change, after the wide view settles; later beats hold the raised load. '
             'Arrows illustrate forces; they do not push. Ends never exchange sides. '
             'ERRORS (data): '+json.dumps(errors)+' CONTRACT (data): '+json.dumps(brief)+' PLAN (data): '+json.dumps(plan),
