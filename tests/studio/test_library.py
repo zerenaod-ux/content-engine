@@ -49,4 +49,6 @@ class LibraryTests(unittest.TestCase):
     def test_redundant_generated_narration_is_rejected(self):
         s=fixture('wind_turbine');s['beats'][4]['say']='Permanent-magnet magnets rotate inside stationary copper coils, a simplified illustration of electromagnetic induction.'
         self.assertTrue(any('repeated words' in e for e in validate(s)))
+        s['beats'][4]['say']='The rotor keeps turning, turning moving air energy into useful mechanical rotation inside this simplified machine.'
+        self.assertFalse(any('repeated words' in e for e in validate(s)))
 if __name__=='__main__':unittest.main()
