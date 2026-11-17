@@ -11,6 +11,7 @@ from studio_lib.cinema.speech import VOICE,WRITING_RULES,delivery,cache_key
 from studio_lib.cinema.overlays import events as overlay_events,hook_errors
 from studio_lib.cinema.coverage import require_component,topic_brief
 from studio_lib.science.components import SPECS,contract as science_contract
+from studio_lib.science.checks import lever_narration_errors
 
 def groups(words):
     """Never cross narration beats, pauses or punctuation with a caption."""
@@ -79,6 +80,7 @@ def script_errors(plan,topic):
             if not isinstance(text,str) or not 9<=len(text.split())<=23:errors.append('Each beat needs 9-23 spoken words.')
             elif re.search(r'\b(camera|render|renderer|shot|storyboard)\b',text,re.I):errors.append('Speak about the topic, not production instructions.')
         if not beats[0].get('say','').rstrip().endswith('?'):errors.append('Open with a concrete question.')
+        if component=='lever_balance':errors+=lever_narration_errors(plan)
         if component=='hydraulic_lift' and any(re.search(r'\b(instantly|instantaneous|powerful work|multiplies energy)\b',b.get('say',''),re.I) for b in beats):errors.append('Do not claim instantaneous pressure propagation or increased energy/work; explain force traded against travel.')
         if not 110<=sum(len(b.get('say','').split()) for b in beats)<=145:errors.append('Total narration needs 110-145 words.')
         return errors
@@ -229,21 +231,42 @@ def soundtrack(tl,out):
         f.setnchannels(1);f.setsampwidth(2);f.setframerate(sr);f.writeframes((np.clip(mix,-.98,.98)*32700).astype(np.int16).tobytes())
     (out/'sound-events.json').write_text(json.dumps(events,indent=2))
 
+def repair_resumed_plan(plan,topic,out):
+    """Repair detected contradictions through the model, preserving raw evidence."""
+    brief=contract(topic);errors=script_errors(plan,topic)+hook_errors(plan.get('hook'));requests=0
+    if not errors:return plan,{'errors':[]},requests
+    (out/'resumed-original-plan.json').write_text(json.dumps(plan,indent=2))
+    for attempt in range(2):
+        raw=call('Repair only the identified narration contradictions in this data. Return JSON only.',
+            'Return the full plan object. Preserve the title, hook, valid sentences and action order. '
+            'The lever lift happens ONLY in change, after the wide view settles; later beats hold the raised load. '
+            'Arrows illustrate forces; they do not push. Ends never exchange sides. '
+            'ERRORS (data): '+json.dumps(errors)+' CONTRACT (data): '+json.dumps(brief)+' PLAN (data): '+json.dumps(plan),
+            max_tokens=2100,temperature=.2);requests+=1
+        (out/f'resumed-plan-repair-{attempt}.json').write_text(json.dumps(raw,indent=2))
+        plan=normalize_narration(raw);errors=script_errors(plan,topic)+hook_errors(plan.get('hook'))
+        if errors:continue
+        critique=call('Check narration against this actual component action contract. Return JSON only.',
+            'Return {"errors":[specific contradictions]}. Check static versus moving phases and force illustrations. CONTRACT (data): '+json.dumps(brief)+' PLAN (data): '+json.dumps(plan),max_tokens=1100,temperature=.1);requests+=1
+        errors=critique.get('errors')
+        if not isinstance(errors,list) or not all(isinstance(x,str) for x in errors):raise ValueError('Repair critique unavailable')
+        if not errors:return plan,critique,requests
+    raise ValueError('Saved-plan repair rejected: '+str(errors))
+
 def load_or_generate(topic,out):
-    """Resume only an accepted plan from the same topic, rechecking current rules."""
+    """Resume the same topic; repair new contradictions before reusing a stage."""
     resume=os.environ.get('CE_CINEMA_RESUME_DIR')
     if resume:
         root=Path(resume)
         if (root/'plan.json').exists():
-            plan=json.loads((root/'plan.json').read_text())
-            brief=json.loads((root/'topic-brief.json').read_text())
+            plan=json.loads((root/'plan.json').read_text());brief=json.loads((root/'topic-brief.json').read_text())
             critique=json.loads((root/'narration-critique.json').read_text())
-            if brief.get('topic')!=topic or critique.get('errors')!=[] or script_errors(plan,topic):
-                raise ValueError('Saved narration cannot be reused under current topic/rules')
+            if brief.get('topic')!=topic or critique.get('errors')!=[]:raise ValueError('Saved narration cannot be reused under current topic/rules')
             require_component(topic,out)
+            plan,critique,requests=repair_resumed_plan(plan,topic,out)
             (out/'narration-critique.json').write_text(json.dumps(critique,indent=2))
-            (out/'resume-evidence.json').write_text(json.dumps({'resumed_accepted_plan':True,'topic':topic,'new_script_model_requests':0},indent=2))
-            print('Resumed accepted narration; no new script model requests.',flush=True)
+            (out/'resume-evidence.json').write_text(json.dumps({'resumed_accepted_plan':True,'topic':topic,'new_script_model_requests':requests},indent=2))
+            print('Resumed narration with model repair requests: '+str(requests),flush=True)
             return plan
     return generate(topic,out)
 

@@ -6,10 +6,10 @@ SPECS={
  'lever_balance':('Ideal first-class lever', 'https://openstax.org/books/physics/pages/9-3-simple-machines',[
   'A rigid lever rests on a fixed fulcrum; ask how a longer arm helps lift a load.',
   'The input arm is twice the output arm. The fulcrum stays fixed and both ends belong to the same bar.',
-  'A downward input arrow acts on the long left arm; the right load is initially lower.',
-  'The long end moves down while the short end rises. Do not describe gears, motors or a person.',
+  'A small red input weight approaches the long left arm. The downward arrow illustrates the applied force; it does not physically push. The right load remains supported on the short arm.',
+  'After the wide view settles, the long end moves down and the short end rises during this change beat only. The ends stay on their original sides; they never swap places. No gears, motors or person is shown.',
   'The diagram represents torque balance: ideal force gain trades increased input travel.',
-  'The right-hand load has risen; no additional energy has been created.',
+  'The right-hand load HAS RISEN and is now held still. Do not describe an ongoing lift in result or later beats. No additional energy has been created.',
   'This ideal lever ignores friction and bar weight. Arrows illustrate forces, not visible objects.',
   'The longer input arm reduces required input force while requiring greater travel.']),
  'resistive_circuit':('DC resistor circuit','https://openstax.org/books/physics/pages/19-1-ohms-law',[
@@ -103,7 +103,7 @@ def diagram(mechanism,p,stage=None,phase=0):
         # Travel marks explain the force/travel trade rather than arbitrary decoration.
         path('input_travel',[(-2.6,-.2,2),(-2.6,-.2,left[2]-.01)],blue,.025)
         path('output_travel',[(1.8,-.2,2),(1.8,-.2,right[2]+.01)],blue,.025)
-        label('Push',(-2.05,0,3.75));label('Load',(1.25,0,3.75));label('Fixed pivot',(0,0,.55))
+        label('Push',(-2.05,0,3.75));label('Load',(1.25,0,3.75));label('Fixed pivot',(0,-.8,.55))
         values=lever(10,2,1)
     elif mechanism=='resistive_circuit':
         closed=p>=.25

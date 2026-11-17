@@ -7,6 +7,7 @@ from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[2]))
 import bpy
 from mathutils import Vector
+from bpy_extras.object_utils import world_to_camera_view
 from bpy.app.handlers import persistent
 from studio_lib.science.components import diagram,SPECS
 from studio_lib.cinema.presentation import ease
@@ -50,7 +51,7 @@ for i,label in enumerate(first['labels']):
 
 def progress(t):
  # Motion follows its narration beat, not an arbitrary physical time scale.
- start=TL['beats'][3]['start'];end=(start+.65*(TL['beats'][3]['end']-start)) if mechanism=='lever_balance' else TL['beats'][5]['end']
+ start=TL['beats'][3]['start']+(1.2 if mechanism=='lever_balance' else 0);end=TL['beats'][3]['end'] if mechanism=='lever_balance' else TL['beats'][5]['end']
  return ease((t-start)/(end-start))
 
 @persistent
@@ -79,6 +80,12 @@ def update(sc):
   cam.rotation_euler=(focus-cam.location).to_track_quat('-Z','Y').to_euler()
   camdata.ortho_scale=scales[previous]+(scales[index]-scales[previous])*blend
  else:camdata.ortho_scale=9.5-.35*ease(t/TL['duration'])
+ bpy.context.view_layer.update()
+ for o in texts:
+  o.rotation_euler=(cam.location-o.location).to_track_quat('Z','Y').to_euler()
+  bpy.context.view_layer.update()
+  projected=[world_to_camera_view(sc,cam,o.matrix_world @ Vector(corner)) for corner in o.bound_box]
+  o.hide_render=any(p.x<.035 or p.x>.965 or p.y<.08 or p.y>.9 or p.z<0 for p in projected)
 
 bpy.app.handlers.frame_change_pre.append(update)
 scene.frame_start=1;scene.frame_end=math.ceil(TL['duration']*24)
