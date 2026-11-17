@@ -71,3 +71,14 @@ def draw(s,t,tl,hidden=()):
     if p['intake'] and 'flow' not in hidden:droplets(inlet,9)
     if p['delivery'] and 'flow' not in hidden:droplets(outlet,8)
     return p
+
+# CLOSE_SHOTS (owner 2026-11-16): camera pushes in on the part each line talks about.
+SHOTS=[((-.3,0,2.1),1.15,.34),      # pump: whole system
+       ((-.6,0,2.35),1.7,.40),      # cutaway: cylinder opens
+       ((-.9,0,2.35),2.4,.45),      # suction: piston pulls back, chamber fills
+       ((.3,-.25,1.9),2.7,.35),     # inlet: inlet flap valve opens
+       ((-.4,0,2.35),2.4,.30),      # compression: piston pushes in
+       ((.3,-.25,2.8),2.7,.35),     # outlet: outlet flap valve opens
+       ((1.6,0,2.2),1.4,.30),       # repeat: water reaching the receiving tank
+       ((-.3,0,2.1),1.15,.30)]       # payoff: whole system
+def shot(i):return SHOTS[min(i,7)]

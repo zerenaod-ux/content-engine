@@ -63,3 +63,14 @@ def draw(s,t,tl,hidden=()):
     if p['current'] and 'current' not in hidden:
         for k in range(13):dot(s,circuit_point(t*.075+k/13),.07,(80,216,222))
     return p
+
+# CLOSE_SHOTS (owner 2026-11-16): camera pushes in on the part each line talks about.
+SHOTS=[((-.1,0,2.15),1.5,.30),      # panel
+       ((-.2,0,2.8),1.9,.35),       # light arriving
+       ((-.6,-.9,2.2),4.0,.25),     # absorb: enlarged cell layers
+       ((-.2,-.94,2.15),5.5,.20),   # separate: electrons and holes split
+       ((-2.0,-.6,2.3),3.5,.45),   # contacts: metal contact + wire
+       ((-3.0,-1.2,1.8),3.8,.35), # circuit: switch closes
+       ((3.0,-1.3,1.9),3.4,.30),  # load: lamp lights
+       ((-.1,0,2.1),1.5,.30)]       # payoff
+def shot(i):return SHOTS[min(i,7)]
