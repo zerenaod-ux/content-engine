@@ -48,6 +48,8 @@ def validate(plan):
         if mechanism=='bascule_bridge' and re.search(r'\bcars\b',text):e.append(f'beat {i}: this component depicts one car; use car or traffic')
         if mechanism=='photovoltaic_cell' and re.search(r'(without.{0,24}wir|no wir|wir.{0,24}(absent|hidden|not shown))',text):e.append(f'beat {i}: wires are visible in this component; do not claim they are absent')
         if mechanism=='piston_pump' and re.search(r'(each|every|both) stroke.{0,30}(deliver|push|discharg)',text):e.append(f'beat {i}: only the delivery stroke discharges water; intake does not deliver to the receiver')
+        words=re.findall(r'[a-z]+',text)
+        if any(a==b for a,b in zip(words,words[1:])) or re.search(r'permanent[\s\-\u2011]+magnet[\s\-\u2011]+magnets',text):e.append(f'beat {i}: remove accidentally repeated words or redundant magnet wording')
         if b.get('camera') not in ('wide','mechanism','follow'):e.append(f'beat {i}: unsupported camera')
     words=sum(len(b['say'].split()) for b in beats if isinstance(b,dict) and isinstance(b.get('say'),str))
     if not 110<=words<=155:e.append('total narration needs 110-155 words')

@@ -46,4 +46,7 @@ class LibraryTests(unittest.TestCase):
     def test_single_acting_pump_does_not_deliver_on_both_strokes(self):
         s=fixture('piston_pump');s['beats'][6]['say']='The cycle repeats, each stroke delivering a distinct pulsating flow toward the destination.'
         self.assertTrue(any('only the delivery stroke' in e for e in validate(s)))
+    def test_redundant_generated_narration_is_rejected(self):
+        s=fixture('wind_turbine');s['beats'][4]['say']='Permanent-magnet magnets rotate inside stationary copper coils, a simplified illustration of electromagnetic induction.'
+        self.assertTrue(any('repeated words' in e for e in validate(s)))
 if __name__=='__main__':unittest.main()
