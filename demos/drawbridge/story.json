@@ -1,0 +1,16 @@
+{
+  "title": "Why Drawbridges Lift for Ships",
+  "kind": "authored prototype, not automatic-generation proof",
+  "voice": {"name": "en-US-AndrewNeural", "rate": "+30%", "pitch": "+8Hz"},
+  "source": "https://www.ncdot.gov/initiatives-policies/Transportation/bridges/historic-bridges/bridge-types/Pages/bascule.aspx",
+  "beats": [
+    {"id":"hook", "text":"How do you lift a road out of a ship's way? The secret is hiding behind the hinge.", "minimum":7},
+    {"id":"stop", "text":"First, traffic stops and the barriers close. The moving section must be clear before it opens.", "minimum":6},
+    {"id":"pivot", "text":"This bascule bridge turns around a fixed steel pivot, just like a giant seesaw.", "minimum":6},
+    {"id":"balance", "text":"A heavy counterweight sits behind that pivot. As the road rises, the weight swings down into its chamber.", "minimum":7},
+    {"id":"drive", "text":"The counterweight balances much of the road's weight. A motor and gears control the movement instead of lifting everything alone.", "minimum":8},
+    {"id":"pass", "text":"With the road raised, the tall ship can pass through the open channel.", "minimum":6},
+    {"id":"return", "text":"Once the ship is clear, the drive lowers the road. The counterweight swings back up.", "minimum":6},
+    {"id":"payoff", "text":"The span seats and locks, then traffic resumes. One balanced mechanism makes room for two kinds of journey.", "minimum":7}
+  ]
+}

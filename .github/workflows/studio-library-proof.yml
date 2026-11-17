@@ -1,0 +1,78 @@
+name: Three mechanism topic-to-video proof (not posted)
+on:
+  push:
+    branches: [studio-automatic-proof]
+    paths: [publish/studio-library.trigger]
+  workflow_dispatch:
+permissions:
+  contents: read
+  models: read
+concurrency:
+  group: tested-library-proof
+  cancel-in-progress: false
+jobs:
+  prove:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        sample:
+          - {id: bridge, topic: 'Why a bascule drawbridge lifts for ships', expected: bascule_bridge}
+          - {id: solar, topic: 'How solar panels turn sunlight into power', expected: photovoltaic_cell}
+          - {id: pump, topic: 'How a reciprocating piston water pump moves water', expected: piston_pump}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: pip install --quiet numpy pillow edge-tts
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg fonts-dejavu-core > /dev/null
+      - run: python -m unittest discover -s tests/studio -v
+      - uses: actions/cache/restore@v4
+        with:
+          path: |
+            .ce-cache/studio-voice
+            .ce-cache/studio-stages
+            .ce-cache/studio-renders
+          key: library-proof-${{ runner.os }}-${{ github.run_id }}-${{ matrix.sample.id }}
+          restore-keys: library-proof-${{ runner.os }}-
+      - name: Select mechanism, generate explanation and render from topic
+        env:
+          TOPIC: ${{ matrix.sample.topic }}
+          SAMPLE: ${{ matrix.sample.id }}
+          EXPECTED: ${{ matrix.sample.expected }}
+          CE_MAX_REQUESTS: '12'
+          CE_MAX_SECONDS: '480'
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          CE_METRICS_PATH: service-metrics.json
+        run: |
+          python -m studio_lib.director --topic "$TOPIC" --out "library-output/$SAMPLE"
+          python -c 'import json,os;from pathlib import Path;r=json.loads((Path("library-output")/os.environ["SAMPLE"]/"result.json").read_text());assert r["mechanism"]==os.environ["EXPECTED"],"topic selected an incorrect component"'
+      - name: Reuse saved stages without model credentials
+        env:
+          TOPIC: ${{ matrix.sample.topic }}
+          SAMPLE: ${{ matrix.sample.id }}
+          CE_MAX_REQUESTS: '0'
+          CE_METRICS_PATH: reuse-metrics.json
+        run: python -m studio_lib.director --topic "$TOPIC" --out "library-output/$SAMPLE-reuse"
+      - uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: |
+            .ce-cache/studio-voice
+            .ce-cache/studio-stages
+            .ce-cache/studio-renders
+          key: library-proof-${{ runner.os }}-${{ github.run_id }}-${{ matrix.sample.id }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: library-${{ matrix.sample.id }}-${{ github.run_attempt }}
+          path: |
+            library-output/
+            service-metrics.json
+          retention-days: 14

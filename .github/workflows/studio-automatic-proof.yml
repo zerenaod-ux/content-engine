@@ -1,0 +1,66 @@
+name: Automatic animation studio proof (not posted)
+on:
+  push:
+    branches: [studio-automatic-proof]
+    # Explicit trial trigger: documentation and ordinary code saves must not
+    # consume more free-model quota by starting another batch automatically.
+    paths: [publish/studio-proof.trigger]
+  workflow_dispatch:
+permissions:
+  contents: read
+  models: read
+concurrency:
+  group: studio-automatic-proof-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  prove:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        sample:
+          - {id: bridge, topic: 'Why a bascule drawbridge lifts for ships'}
+          - {id: solar, topic: 'How solar panels turn sunlight into power'}
+          - {id: pump, topic: 'How a reciprocating piston water pump moves water'}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: pip install --quiet numpy pillow edge-tts
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg fonts-dejavu-core > /dev/null
+      - name: Check hierarchy, visibility and motion behavior offline
+        run: python -m unittest discover -s tests/studio -v
+      - uses: actions/cache/restore@v4
+        with:
+          path: .ce-cache/studio-voice
+          key: studio-voice-${{ runner.os }}-${{ github.run_id }}-${{ matrix.sample.id }}
+          restore-keys: studio-voice-${{ runner.os }}-
+      - name: Generate from topic without hand-edited scenes
+        env:
+          TOPIC: ${{ matrix.sample.topic }}
+          SAMPLE: ${{ matrix.sample.id }}
+          CE_MAX_REQUESTS: '14'
+          CE_MAX_SECONDS: '660'
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GITHUB_MODELS_TOKEN: ${{ github.token }}
+          CE_METRICS_PATH: service-metrics.json
+        run: python -m studio_lib.build --topic "$TOPIC" --out "studio-output/$SAMPLE"
+      - uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: .ce-cache/studio-voice
+          key: studio-voice-${{ runner.os }}-${{ github.run_id }}-${{ matrix.sample.id }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: automatic-${{ matrix.sample.id }}-${{ github.run_attempt }}
+          path: |
+            studio-output/
+            service-metrics.json
+          retention-days: 14

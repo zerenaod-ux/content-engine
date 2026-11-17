@@ -1,0 +1,84 @@
+name: Tested mechanism automatic pilot (not posted)
+on:
+  push:
+    branches: [studio-automatic-proof]
+    paths: [publish/studio-component.trigger]
+  workflow_dispatch:
+    inputs:
+      topic:
+        description: Supported topic to create or resume
+        default: Why a bascule drawbridge lifts for ships
+permissions:
+  contents: read
+  models: read
+concurrency:
+  group: tested-mechanism-pilot
+  cancel-in-progress: false
+jobs:
+  bridge:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: pip install --quiet numpy pillow edge-tts
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg fonts-dejavu-core > /dev/null
+      - run: python -m unittest discover -s tests/studio -v
+      - uses: actions/cache/restore@v4
+        with:
+          path: |
+            .ce-cache/studio-voice
+            .ce-cache/studio-stages
+            .ce-cache/studio-renders
+          key: mechanism-pilot-${{ runner.os }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            library-proof-${{ runner.os }}-
+            mechanism-pilot-${{ runner.os }}-
+      - name: Generate explanation and render tested mechanism
+        env:
+          CE_MAX_REQUESTS: '10'
+          CE_MAX_SECONDS: '420'
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          CE_METRICS_PATH: service-metrics.json
+          TOPIC: ${{ github.event.inputs.topic }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          from studio_lib.director import run
+          topic = os.environ.get('TOPIC') or json.loads(Path('publish/studio-component.trigger').read_text())['topic']
+          Path('component-output').mkdir(exist_ok=True)
+          Path('component-output/topic.txt').write_text(topic)
+          run(topic, 'component-output/generated')
+          PY
+      - name: Prove reuse without any model credentials or requests
+        env:
+          CE_MAX_REQUESTS: '0'
+          CE_METRICS_PATH: reuse-metrics.json
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from studio_lib.director import run
+          run(Path('component-output/topic.txt').read_text(), 'component-output/reuse')
+          PY
+      - uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: |
+            .ce-cache/studio-voice
+            .ce-cache/studio-stages
+            .ce-cache/studio-renders
+          key: mechanism-pilot-${{ runner.os }}-${{ github.run_id }}-${{ github.run_attempt }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: tested-mechanism-${{ github.run_attempt }}
+          path: |
+            component-output/
+            service-metrics.json
+          retention-days: 14
