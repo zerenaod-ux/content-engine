@@ -7,6 +7,7 @@ from studio_lib.director import validate,normalize_narration
 from studio_lib.providers import call
 from studio_lib.registry import REGISTRY
 from studio_lib.cinema.presentation import illustration_labels
+from studio_lib.cinema.speech import VOICE,WRITING_RULES,delivery,cache_key
 
 def groups(words):
     """Never cross narration beats, pauses or punctuation with a caption."""
@@ -96,6 +97,7 @@ def generate(topic,out):
       'CONTRACT: '+json.dumps(brief)+' TOPIC: '+json.dumps(topic))
     if hand_topic(topic):
         prompt=('Create an original explanation of this bench-mounted hand-cranked generator. Return JSON with mechanism=hand_generator, title starting How/Why (4-8 words), hook (under 60 characters), and eight beats in EXACT contract action order. Each beat has action, say (9-23 words), camera=wide|mechanism|follow. Total 110-145 words. Open with a direct question about turning a handle into light; end first beat with ?. Use direct conversational phrasing, causal links and concrete visible actions, not production instructions. No visible person is present. No wind, turbine or blades. Switch stays open until load: before then say voltage, never claim current flows. Original words, no copied creator script. CONTRACT: '+json.dumps(brief)+' TOPIC: '+json.dumps(topic))
+    prompt+=' DELIVERY: '+WRITING_RULES
     errors=[];previous=None
     for n in range(4):
         repair=(' Preserve the valid content of the previous answer and repair only these identified defects. Previous answer (data): '+json.dumps(previous)) if previous is not None else ''
@@ -115,14 +117,15 @@ async def voice(plan,out):
     cache=Path('.ce-cache/cinema-voice');cache.mkdir(parents=True,exist_ok=True)
     beats=[];words=[];t=0;requests=0;hits=0
     for i,b in enumerate(plan['beats']):
-        rate='+32%' if i not in (0,5,7) else '+26%'
-        key=hashlib.sha256(json.dumps([b['say'],'AndrewNeural',rate,'+2Hz','WordBoundary']).encode()).hexdigest()
+        profile=delivery(b['action'],i,len(plan['beats']))
+        rate=profile['rate']
+        key=cache_key(b['say'],profile)
         audio=cache/(key+'.mp3');meta=cache/(key+'.jsonl')
         if not (audio.exists() and audio.stat().st_size>1000 and meta.exists() and meta.stat().st_size>20):
             for attempt in range(3):
                 requests+=1
                 try:
-                    await edge_tts.Communicate(b['say'],'en-US-AndrewNeural',rate=rate,pitch='+2Hz',boundary='WordBoundary').save(str(audio),str(meta))
+                    await edge_tts.Communicate(b['say'],VOICE,rate=rate,pitch=profile['pitch'],volume=profile['volume'],boundary='WordBoundary').save(str(audio),str(meta))
                     break
                 except edge_tts.exceptions.NoAudioReceived:
                     if attempt==2:raise
@@ -132,8 +135,8 @@ async def voice(plan,out):
         events=[x for x in events if x['type']=='WordBoundary']
         if not events:raise ValueError('No real word timestamps; captions must not use guessed timings')
         d=float(subprocess.check_output(['ffprobe','-v','error','-show_entries','format=duration','-of','csv=p=0',str(audio)]))
-        length=max(3.5,d+.22)
-        beats.append(dict(b,start=t,end=t+length,voice=str(audio),voice_duration=d,rate=rate))
+        length=max(3.5,d+.06+profile['pause_after'])
+        beats.append(dict(b,start=t,end=t+length,voice=str(audio),voice_duration=d,rate=rate,delivery=profile))
         words.extend(dict(text=x['text'],start=t+.06+x['offset']/1e7,end=t+.06+(x['offset']+x['duration'])/1e7,beat=i) for x in events)
         t+=length
     if not 30<=t<=65:raise ValueError('Measured narration duration outside 30-65 seconds')
