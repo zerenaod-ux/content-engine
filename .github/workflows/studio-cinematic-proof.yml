@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 permissions:
   actions: read
-  contents: read
+  contents: write
   models: read
 concurrency:
   group: cinematic-comparison
@@ -29,6 +29,18 @@ jobs:
           path: .ce-cache/cinema-voice
           key: cinema-voice-${{ runner.os }}-${{ github.run_id }}
           restore-keys: cinema-voice-${{ runner.os }}-
+      - name: System selects and reserves an uncovered topic from full history
+        if: hashFiles('publish/cinema.auto') != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          CE_MAX_REQUESTS: '8'
+          CE_MAX_SECONDS: '240'
+        run: python -m studio_lib.cinema.auto_topic
       - name: Select matching accepted-stage recovery
         id: resume
         run: |
