@@ -30,7 +30,7 @@ def material(name,color):
 
 def add(item):
  kind=item['kind'];name=item['id']
- if kind=='box':
+ if kind in ('box','beam'):
   bpy.ops.mesh.primitive_cube_add(size=1);o=bpy.context.object
   bevel=o.modifiers.new('soft edges','BEVEL');bevel.width=.04;bevel.segments=2
  elif kind=='ball':
@@ -50,22 +50,35 @@ for i,label in enumerate(first['labels']):
 
 def progress(t):
  # Motion follows its narration beat, not an arbitrary physical time scale.
- start=TL['beats'][3]['start'];end=TL['beats'][5]['end']
+ start=TL['beats'][3]['start'];end=(start+.65*(TL['beats'][3]['end']-start)) if mechanism=='lever_balance' else TL['beats'][5]['end']
  return ease((t-start)/(end-start))
 
 @persistent
 def update(sc):
- t=(sc.frame_current-1)/24;p=progress(t);data=diagram(mechanism,p)
+ t=(sc.frame_current-1)/24;p=progress(t)
+ index=min(7,next((i for i,b in enumerate(TL['beats']) if t<b['end']),7));beat=TL['beats'][index];phase=ease((t-beat['start'])/(beat['end']-beat['start']))
+ data=diagram(mechanism,p,index,phase)
  for item in data['objects']:
   o=objects[item['id']];o.data.materials[0].diffuse_color=(*item['color'],1)
-  if item['kind']=='line':
+  if item['kind']=='beam':
+   a,b=(Vector(v) for v in item['points']);o.location=(a+b)/2;o.scale=((b-a).length,*item['size']);o.rotation_euler=(b-a).to_track_quat('X','Z').to_euler()
+  elif item['kind']=='line':
    for point,co in zip(o.data.splines[0].points,item['points']):point.co=(*co,1)
   else:
-   o.location=item['at'];o.scale=item['size'] if item['kind']=='box' else (item['radius'],)*3
+   o.location=item['at'];o.scale=item['size'] if item['kind']=='box' else (item['radius'],)*3;o.rotation_euler.y=item.get('rotation_y',0)
  for o,label in zip(texts,data['labels']):
   o.data.body=label['text'];o.location=label['at'];o.rotation_euler=(cam.location-o.location).to_track_quat('Z','Y').to_euler()
  # Gentle whole-diagram framing, continuous with zero velocity at endpoints.
- camdata.ortho_scale=9.5-.35*ease(t/TL['duration'])
+ if mechanism=='lever_balance':
+  targets=[(-.4,0,2),(0,0,1.9),(-1.7,0,2.1),(-.4,0,2),(-.4,0,2),(-.4,0,2),(-.4,0,2),(-.4,0,2)]
+  positions=[(3,-14,6),(2,-10,4),(.5,-11,4),(3,-14,6),(2.5,-14,6),(2,-14,5.5),(3,-14,6),(3.5,-14,6)]
+  scales=[8.8,6.5,5.8,8.8,8.8,8.8,8.8,8.6]
+  previous=max(0,index-1);blend=ease((t-beat['start'])/1.2) if index else 1
+  focus=Vector(targets[previous]).lerp(Vector(targets[index]),blend)
+  cam.location=Vector(positions[previous]).lerp(Vector(positions[index]),blend)
+  cam.rotation_euler=(focus-cam.location).to_track_quat('-Z','Y').to_euler()
+  camdata.ortho_scale=scales[previous]+(scales[index]-scales[previous])*blend
+ else:camdata.ortho_scale=9.5-.35*ease(t/TL['duration'])
 
 bpy.app.handlers.frame_change_pre.append(update)
 scene.frame_start=1;scene.frame_end=math.ceil(TL['duration']*24)

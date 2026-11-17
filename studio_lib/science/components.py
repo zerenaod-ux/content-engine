@@ -3,7 +3,7 @@ import math
 from studio_lib.science.models import lever,resistor,hydraulics,heat_contact,complementary_dna,transfer_water
 ACTIONS=['overview','parts','input','change','transfer','result','limits','payoff']
 SPECS={
- 'lever_balance':('Ideal lever', 'https://www.grc.nasa.gov/www/k-12/WindTunnel/Activities/Pascals_principle.html',[
+ 'lever_balance':('Ideal first-class lever', 'https://openstax.org/books/physics/pages/9-3-simple-machines',[
   'A rigid lever rests on a fixed fulcrum; ask how a longer arm helps lift a load.',
   'The input arm is twice the output arm. The fulcrum stays fixed and both ends belong to the same bar.',
   'A downward input arrow acts on the long left arm; the right load is initially lower.',
@@ -66,7 +66,7 @@ def contract(mechanism):
       'presentation_rules':{'style':'Silent smooth camera; all overlays and time/scale simplifications labeled. No invented visible actions.',
       'scope':'Explain only this component; never claim a whole device/process is demonstrated when it is not.'}}
 
-def diagram(mechanism,p):
+def diagram(mechanism,p,stage=None,phase=0):
     if mechanism not in SPECS:raise ValueError('Unsupported diagram')
     if not isinstance(p,(int,float)) or isinstance(p,bool) or not math.isfinite(p) or not 0<=p<=1:raise ValueError('Progress 0..1 required')
     objects=[];labels=[]
@@ -76,12 +76,34 @@ def diagram(mechanism,p):
     def label(text,at):labels.append(dict(text=text,at=at))
     blue=(.08,.45,.8);red=(.85,.18,.10);gold=(.9,.65,.12);gray=(.45,.55,.6)
     if mechanism=='lever_balance':
-        a=.25*p
-        left=(-2*math.cos(a),0,2-2*math.sin(a));right=(math.cos(a),0,2+math.sin(a))
-        path('rigid_bar',[left,right],gold,.09);box('fulcrum',(0,0,1),(.5,.6,2),gray)
-        box('load',(right[0],0,right[2]+.25),(.45,.5,.5),blue)
-        path('input_arrow',[(left[0],0,left[2]+1),left],red)
-        label('Input: longer travel',(-2.2,0,3.5));label('Load: shorter travel',(.6,0,3.5))
+        # A rigid beam, bearing pin, mounting feet and strapped load form one
+        # persistent mechanism. The input weight approaches before the lift.
+        a=.45*p
+        def point(x,y,z):return (x*math.cos(a)-z*math.sin(a),y,2+x*math.sin(a)+z*math.cos(a))
+        left=point(-2,0,0);right=point(1,0,0)
+        objects.append(dict(id='rigid_bar',kind='beam',points=[left,right],size=(.42,.18),color=gold))
+        box('foundation',(-.2,0,.15),(4.9,1.8,.25),(.16,.22,.28))
+        box('fulcrum',(0,0,1.08),(.5,.65,1.82),gray)
+        box('bearing_mount',(0,0,1.94),(.7,.8,.24),gray)
+        path('fixed_pivot_pin',[(0,-.57,2),(0,.57,2)],(.2,.3,.4),.15)
+        for x in (-.2,.2):
+            for y in (-.5,.5):ball('mount_bolt_'+str(x)+'_'+str(y),(x,y,.33),.065,gray)
+        # Local positions and rotation keep the load and bands attached to the beam.
+        for name,local,size,color in [
+            ('load_platform',(1,0,.16),(.75,.85,.12),gray),
+            ('load_crate',(1,0,.57),(.65,.7,.7),(.5,.22,.08)),
+            ('crate_band_left',(.80,0,.57),(.055,.74,.73),gray),
+            ('crate_band_right',(1.20,0,.57),(.055,.74,.73),gray)]:
+            box(name,point(*local),size,color);objects[-1]['rotation_y']=-a
+        approach=1 if stage is None or stage>=3 else (max(0,min(1,phase)) if stage==2 else 0)
+        weight_z=left[2]+1.0-.70*approach
+        ball('input_weight',(left[0],0,weight_z),.20,red)
+        path('input_force',[(left[0],-.5,left[2]+.9),(left[0],-.5,left[2]+.15)],red,.025)
+        path('input_force_head',[(left[0]-.12,-.5,left[2]+.35),(left[0],-.5,left[2]+.15),(left[0]+.12,-.5,left[2]+.35)],red,.025)
+        # Travel marks explain the force/travel trade rather than arbitrary decoration.
+        path('input_travel',[(-2.6,-.2,2),(-2.6,-.2,left[2]-.01)],blue,.025)
+        path('output_travel',[(1.8,-.2,2),(1.8,-.2,right[2]+.01)],blue,.025)
+        label('Push',(-2.05,0,3.75));label('Load',(1.25,0,3.75));label('Fixed pivot',(0,0,.55))
         values=lever(10,2,1)
     elif mechanism=='resistive_circuit':
         closed=p>=.25

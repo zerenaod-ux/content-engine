@@ -1,1 +1,1 @@
-Correct unrelated generator labels on hydraulic diagrams, improve readability; reuse accepted narration and cached voices; 2026-11-17T17:26:17.566Z
+Owner-authorized new topic: short curiosity hook, speech captions off, richer physical mechanism and purposeful camera; 2026-11-17T20:28:28.681Z

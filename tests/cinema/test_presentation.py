@@ -38,7 +38,7 @@ class PresentationTests(unittest.TestCase):
         self.assertEqual([x[0] for x in labels],[1,2,3])
         with tempfile.TemporaryDirectory() as d:
             text=captions({'beats':beats,'words':[]},Path(d)).read_text()
-        self.assertIn('Magnetic field: schematic illustration',text)
-        self.assertIn(r'\an8\fs27\pos(360,85)',text)
-        self.assertIn('not to scale',text)
+        self.assertIn('Magnetic field · illustration',text)
+        self.assertIn(r'\an8\fs24\pos(360,90)',text)
+        self.assertIn('Current path · illustration',text)
         self.assertIn('schematic',contract('hand-cranked generator')['facts']['induction'])

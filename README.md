@@ -52,3 +52,20 @@ Recovered the owner's existing approval for “Why Direct-Drive Needs No Gearbox
 Owner clarified the ongoing target: three new generation attempts daily and two approved videos published daily per platform. Configuration has three creation slots and two per-platform publishing slots. Actual sustained daily output is not yet proven and requires sufficient approved videos/provider capacity. Newest unscheduled approvals now fill future slots first; already scheduled or published records are kept and not duplicated. Automatic approval remains off. The new six diagram prototypes remain in the cinematic test branch; daily production still uses its existing supported-component renderer. There is no guarantee of every possible topic or perfect semantic duplicate detection.
 
 Known separate issues: two legacy review cards have no valid indexed video, so review reconciliation can still report those failures even though the approved wind card was filed correctly. The older long-video indexing defect remains outside this change. No assets or owner decisions were deleted or reset.
+
+
+## November 17 — owner feedback on the hydraulic sample applied before a new topic
+
+Owner reviewed the hydraulic video and requested an attractive simple opening hook in place of the long schematic/scale banner, fewer subtitles, and richer physical detail/action. Owner explicitly authorized a NEW automatic video, automatic Studio delivery, and updated notes.
+
+Implemented in the cinematic system:
+- Generated hooks must use at most seven simple words and 40 characters. The hook is shown prominently for the opening only; long disclosure jargon is rejected as a hook.
+- Spoken subtitles are now off by default in the system build. Real word timing/caption metadata is retained; captions can still be enabled in the renderer. A small “Illustration” corner badge replaces the full-time explanatory banner on schematic components; invisible-effect labels stay compact and mechanism-specific.
+- Lever component now has a rigid beam, fixed bearing pin, mounting bolts/foundation, attached load platform, strapped crate, approaching input weight, force arrow and travel marks. Input contact occurs before the lever lift, and attached load parts share the beam rotation. Purposeful eased wide/detail/input/lift/result camera views replace a nearly fixed diagram view for this component.
+- Updated the seesaw/lever topic classification and primary factual reference to OpenStax Simple Machines. No previous lever/seesaw topic was found in full repository history or the generated-video index.
+
+Validation before run: 39 local tests pass, including no speech-caption burn-in under the new policy, short-hook validation, no competing opening disclosure, rigid load attachment and input-before-lift motion. All six geometry-only checks pass, including the richer 18-object lever, with no local images/video generated. These checks do not prove final visual/audio appeal.
+
+A fresh cloud topic-only sample is authorized: “How a seesaw trades distance for lifting force.” No manual final narration/video edits will be used; its actual generated result and Studio delivery must be inspected. The prior hydraulic video remains owner-approved and scheduled; it is not replaced or deleted. Automatic approval remains off. The daily 3-slot factory is separate and remains the existing tested component renderer until a deliberate verified rollout of the cinematic path.
+
+Publishing update: live Buffer read-back confirms wind sent on YouTube (scheduled 12:30 PM Chicago today), wind scheduled TikTok 6 PM/Instagram 7 PM; approved hand-generator scheduled today YouTube 4:30 PM/TikTok 8:30 PM/Instagram 9 PM; approved hydraulic scheduled tomorrow YouTube 12:30 PM/TikTok 6 PM/Instagram 7 PM. These future slots are scheduled, not confirmed live. The owner's report of about 300 views/eight likes on the wind video has not been independently checked in analytics.

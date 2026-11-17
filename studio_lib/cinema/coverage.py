@@ -11,7 +11,7 @@ FAMILIES={
  'mechanisms': {'examples':['zipper','bicycle gears','door lock','hydraulic lift'],
   'parts':['joints','gears','levers','connected rigid bodies'],
   'checks':['connection continuity','gear ratios','clearance','energy input'],
-  'sources':['https://www.grc.nasa.gov/www/k-12/WindTunnel/Activities/Pascals_principle.html']},
+  'sources':['https://openstax.org/books/physics/pages/9-3-simple-machines']},
  'electricity': {'examples':['hand-cranked generator','transformer','battery','electric motor'],
   'parts':['circuit','switch','coil','magnet','load'],
   'checks':['closed circuit before load current','voltage versus current','stationary versus rotating parts'],
@@ -36,7 +36,7 @@ FAMILIES={
 CAUSAL_MODELS={'mechanisms':'lever','electricity':'resistor','fluids':'hydraulics','heat_materials':'heat_contact','biology':'complementary_dna','earth_nature':'transfer_water'}
 
 PATTERNS={
- 'mechanisms':r'\b(gear|gears|zipper|lock|lever|bridge|bicycle|pulley|crank|hydraulic lift)\b',
+ 'mechanisms':r'\b(gear|gears|zipper|lock|lever|seesaw|bridge|bicycle|pulley|crank|hydraulic lift)\b',
  'electricity':r'\b(electric|electricity|electrical|generator|battery|motor|circuit|solar|transformer|lamp)\b',
  'fluids':r'\b(pump|siphon|hydraulic|hydraulics|valve|plumbing|tap|fluid)\b',
  'heat_materials':r'\b(heat|thermal|thermos|melting|freezing|metal|material|materials|insulation)\b',
@@ -67,6 +67,8 @@ def topic_brief(topic):
     mechanism=matches[0] if len(matches)==1 and not excludes else None
     prototype=prototypes[0] if len(prototypes)==1 and not matches and not re.search(r'\b(compare|versus|vs|replication|engine|charger|grid|weather)\b',text) else None
     mechanism=mechanism or prototype
+    family_for={'lever_balance':'mechanisms','resistive_circuit':'electricity','hydraulic_lift':'fluids','thermal_contact':'heat_materials','dna_pairing':'biology','water_transfer':'earth_nature'}
+    if prototype and family_for[prototype] not in families:families.append(family_for[prototype])
     requirements=sorted({x for k in families for x in FAMILIES[k]['checks']})
     return {'topic':topic.strip(),'families':families or ['unclassified'],
       'render_status':('implemented_diagram_unverified' if prototype else 'supported_cinematic_component') if mechanism else 'research_and_component_work_required',
