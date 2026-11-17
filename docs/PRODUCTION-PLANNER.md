@@ -38,3 +38,8 @@ Detailed direct YouTube analytics for How It Ticks, reliable periodic snapshot f
 
 ## Documentation and UI rule
 Every change records date, source branch, tests, observed output, deployment state, failures and next step. README links this planner and SYSTEM-STATUS. UI must label legacy compilation, experimental render, generated, delivered, approved, scheduled and confirmed published distinctly. Unknown/stale data must stay visible. Do not duplicate dashboards or imply a new long pipeline is live.
+
+
+## Current implementation and continuation
+
+Original full-format code now exists on studio-cinematic-proof; the earlier 'not built yet' section above describes the pre-implementation state. It is not the live scheduled default and has no completed inspected full-video proof. Current evidence, corrections and continuation steps: [Recovery and quality handover](RECOVERY-AND-QUALITY-HANDOVER.md). Production recovery and the shared Studio stage display are deployed; the live no-media retry proof passed. The repeated hydraulic short is rejected as a novelty proof. Continue the new automatic proofs after targeted narration and plural coverage corrections, inspect results, then consider replacing the legacy combiner. Preserve owner decisions.

@@ -2,10 +2,13 @@
   "run_id": "44197813889",
   "attempt": 1,
   "kind": "short",
-  "stage": "ready",
-  "label": "Rendered; Studio delivery pending",
-  "updated_at": "2026-11-17T23:25:10.814319+00:00",
+  "stage": "inspection_failed",
+  "label": "Repeat-topic proof rejected",
+  "updated_at": "2026-11-17T23:30:51.446Z",
   "source_branch": "studio-cinematic-proof",
   "owner_approved": false,
-  "state": "rendered"
+  "state": "needs_attention",
+  "reason": "Hydraulic lift was already covered; plural matching correction is applied to the next proof",
+  "retryable": false,
+  "next_retry_at": null
 }

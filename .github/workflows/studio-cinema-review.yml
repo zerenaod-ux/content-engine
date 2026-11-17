@@ -30,6 +30,10 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           SOURCE_RUN: ${{ github.event.workflow_run.id || inputs.source_run }}
+          CE_OPERATION_RUN: ${{ github.event.workflow_run.id || inputs.source_run }}
+          CE_OPERATION_BRANCH: studio-cinematic-proof
+          CE_OPERATION_ATTEMPT: ${{ github.event.workflow_run.run_attempt || 1 }}
         run: |
           gh run download "$SOURCE_RUN" --repo "$GITHUB_REPOSITORY" --name cinematic-comparison --dir incoming
           python -m studio_lib.cinema.deliver
+          python -m studio_lib.recovery stage --kind short --stage delivered

@@ -2,7 +2,7 @@
 import json,os,time,urllib.error
 from pathlib import Path
 import llm
-from studio_lib.service_queue import lease
+from studio_lib.service_queue import lease,cooling_down,remember_cooldown
 _UNAVAILABLE=set()
 class ServiceUnavailable(ValueError):
     """No usable free service answered; retain valid work for a later run."""
@@ -15,6 +15,10 @@ def call(system,prompt,max_tokens=10000,temperature=.5):
     last='no configured free provider'
     failures=[]
     for env,base,prefs in providers:
+        import urllib.parse
+        host=urllib.parse.urlparse(base).hostname
+        if cooling_down(host):
+            failures.append('Shared provider cooldown active');continue
         key=os.environ[env].strip()
         rate_retries=0;json_mode=True;model=None
         for turn in range(4):
@@ -41,7 +45,18 @@ def call(system,prompt,max_tokens=10000,temperature=.5):
                 if 'gpt-oss' in model_name:body['reasoning_effort']='low'
                 if json_mode:body['response_format']={'type':'json_object'}
                 with lease('ai'):
-                    r=llm._req(base+'/chat/completions',key,body)
+                    if cooling_down(host):raise llm.ProviderCoolingDown('Shared provider cooldown active')
+                    try:r=llm._req(base+'/chat/completions',key,body)
+                    except urllib.error.HTTPError as quota_error:
+                        if quota_error.code==429:
+                            import email.utils
+                            raw=quota_error.headers.get('Retry-After') if quota_error.headers else None
+                            try:retry_at=time.time()+max(0,float(raw))
+                            except (ValueError,TypeError):
+                                try:retry_at=email.utils.parsedate_to_datetime(raw).timestamp()
+                                except (ValueError,TypeError,AttributeError):retry_at=time.time()+900
+                            remember_cooldown(host,retry_at)
+                        raise
                 answer=r['choices'][0]['message'].get('content','')
                 if not answer:raise ValueError('provider returned an empty answer')
                 print('studio answered by',env.split('_')[0],model_name,flush=True)
@@ -60,7 +75,7 @@ def call(system,prompt,max_tokens=10000,temperature=.5):
                 failures.append(last);print('studio provider refusal:',last,flush=True)
                 if e.code==404 and model:
                     _UNAVAILABLE.add((base,model));continue
-                if e.code==400 and json_mode and any(s in last.lower() for s in ('response_format','json_object','validate json')):
+                if e.code==400 and json_mode and any(s in last.lower() for s in ('response_format','json_object','validate json','failed to generate json')):
                     json_mode=False;max_tokens=max(1200,max_tokens);continue
                 if e.code==429 and rate_retries==0:rate_retries+=1;continue
                 break
