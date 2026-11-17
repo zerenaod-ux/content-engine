@@ -1,11 +1,12 @@
 {
- "on": false,
+ "on": true,
  "cap": 1,
- "hold_hours": 3,
+ "hold_hours": 12,
  "skip_after_hours": 72,
  "day": "",
  "count": 0,
- "changed": "2026-11-16T02:31:24+00:00",
+ "changed": "2026-11-17T03:04:29+00:00",
  "last_run": "2026-11-16T22:34:41+00:00",
- "log": []
+ "log": [],
+ "warn_since": "2026-11-17T03:04:29Z"
 }

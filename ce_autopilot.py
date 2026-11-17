@@ -47,8 +47,9 @@ def main():
         act, why = None, ''
         if dup and age >= 1: act, why = 'ce-skip', 'duplicate title'
         elif age < c['hold_hours']: continue
-        elif 'checks-ok' in names and title_ok(title):
-            if c['count'] < c['cap']: act, why = 'ce-approve', 'checks ok'
+        elif ('checks-ok' in names or ('checks-warn' in names and c.get('warn_since') and i['createdAt'] >= c['warn_since'])) and title_ok(title):
+            # WARN_OK (owner 2026-11-16): new tested-component videos are always 'warn' (owner review); after hold_hours with no Skip they are approved.
+            if c['count'] < c['cap']: act, why = 'ce-approve', 'checks ok' if 'checks-ok' in names else 'owner did not skip within %sh' % c['hold_hours']
             elif age >= c['skip_after_hours']: act, why = 'ce-skip', 'waited too long (daily cap)'
         if not act and age >= c['skip_after_hours']: act, why = 'ce-skip', 'unreviewed too long'   # warn cards wait for the owner until then
         if not act: continue
