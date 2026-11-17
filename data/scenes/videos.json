@@ -258,5 +258,12 @@
   "source": "automatic cinematic comparison",
   "source_run": "44136986640",
   "owner_approved": false
+ },
+ {
+  "date": "2026-11-17",
+  "tag": "ce-long-20261117-1921",
+  "title": "How Machines Work From the Inside 🔧",
+  "video": "https://zerenaod-ux.github.io/content-engine/videos/ce-long-20261117-1921.mp4",
+  "kind": "long"
  }
 ]
