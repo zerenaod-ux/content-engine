@@ -93,3 +93,12 @@ Publisher will also check Saved after the review-folder workflow completes on ma
 ## Owner duration rule — November 17
 
 New short videos must measure 40–70 seconds. Generation now targets 140–176 spoken words with meaningful explanation, not silence or loops. Both measured narration and final encoded daily MP4 are checked, and cinematic delivery also requires a compliant duration. Older approved/scheduled videos are not changed. Cinematic branch applies the same measured checks before rendering and after encoding. Local duration boundary/probe tests and the cinematic suite pass; no new successful output is claimed by these tests. Richer internal motion remains separate work.
+
+
+## November 17 — recovery verification, 4:28 PM Chicago
+
+Review-folder recovery run completed successfully after restoring two missing original-release index entries and adding strict legacy `-pN` and long-video identifiers. Existing owner decisions on the microwave, old drawbridge, solar prototype, bridge prototype and wind prototype cards were preserved; all five cards now close only after folder persistence. No fresh approval was manufactured.
+
+Read-only publishing verification saved a fresh snapshot at 22:27 UTC: one YouTube post confirmed sent, two YouTube scheduled, and three each scheduled on TikTok/Instagram. Buffer views remain an older report and must not be read as current native YouTube analytics.
+
+The previous lever retry accepted a 142-word model-written repair but failed at the free voice service with NoAudioReceived. Updated narration uses bounded request timeouts, discards incomplete cache entries and spaces retries 10/20/40 seconds, retaining completed lines and the accepted script. Forty-five local cinematic checks pass, including empty-response recovery and no new calls on a complete cache. Recovery run is in progress; no new finished output or richer visual quality pass is claimed. A service outage can still exhaust these bounded retries. Direct YouTube analytics and deeper internal mechanism animation remain unfinished. Doodles' existing GPU budget warning currently measures entire workflow elapsed time rather than actual GPU billing; that difference requires correction before claiming measured quota exhaustion.
