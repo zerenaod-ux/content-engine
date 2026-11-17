@@ -23,7 +23,9 @@ def emit_review_files(work):
     if tl is None:raise ValueError('measured timeline missing; no review card may be created')
     checks=json.loads((work/'component-checks.json').read_text())
     if checks.get('errors'):raise ValueError('component evidence failed; no review card may be created')
-    spec={'mode':'tested-component','title':plan['title'],'mechanism':plan['mechanism'],'duration':tl['duration'],'steps':[{'start':b['start'],'end':b['end'],'say':b['say'],'label':b['action']} for b in tl['beats']],'source':REGISTRY[plan['mechanism']]['source'],'owner_approved':False}
+    emoji={'wind_turbine':' 🌬️','photovoltaic_cell':' ☀️','piston_pump':' 💧','bascule_bridge':' 🚢'}.get(plan['mechanism'],' ⚙️')
+    title=plan['title'] if any(ord(c)>0x2500 for c in plan['title']) else plan['title'].rstrip('.')+emoji
+    spec={'mode':'tested-component','title':title,'mechanism':plan['mechanism'],'duration':tl['duration'],'steps':[{'start':b['start'],'end':b['end'],'say':b['say'],'label':b['action']} for b in tl['beats']],'source':REGISTRY[plan['mechanism']]['source'],'owner_approved':False}
     Path('auto-scene.json').write_text(json.dumps(spec,indent=2));Path('evidence-report.json').write_text(json.dumps({'errors':[],'mode':'tested-component','semantic_verification':False,'owner_approved':False,'component_checks':checks},indent=2))
     Path('ce-checks.json').write_text(json.dumps({'verdict':'warn','reasons':['Tested component output requires owner visual and narration review; not automatically approved.'],'mechanism':plan['mechanism'],'owner_approved':False},indent=2))
     Path('voice-log.txt').write_text('Measured cached Andrew narration; no manual generated-plan edits.\n')

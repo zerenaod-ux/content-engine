@@ -36,10 +36,10 @@ REGISTRY['wind_turbine']={
  'facts':{
   'turbine':'One three-bladed turbine is already turning in steady wind. Introduce conversion of moving air energy to electricity; do not claim it is stopped.',
   'wind':'Moving blue trails illustrate incoming air. Aerodynamic lift on shaped blades produces torque; the turbine does not make wind.',
-  'rotor':'Three blades and their hub turn together continuously. Blade tips are marked orange to make motion visible.',
-  'shaft':'A simplified nacelle cutaway opens. The rotor shaft directly drives the generator at the same rotational speed, without a gearbox.',
-  'generator':'Colored rotating magnets move inside stationary copper coils. This is a simplified permanent-magnet direct-drive generator illustration.',
-  'induction':'Relative motion changes magnetic flux through stationary coils and induces voltage. Generation already occurs while the rotor turns; no switch creates the energy. Do not describe a literal stream of electrons from the wind.',
+  'rotor':'Three blades and their hub turn together continuously. Each blade root sits in a pitch bearing on the hub, which lets the blade twist to catch more or less wind. Blade tips are marked orange to make motion visible.',
+  'shaft':'A simplified nacelle cutaway opens. A main bearing carries the heavy rotor shaft, and a red brake caliper sits over a disc on the shaft to hold the rotor still for maintenance. The shaft directly drives the generator at the same rotational speed, without a gearbox.',
+  'generator':'Red and blue magnets (alternating north and south poles) spin on the rotor inside a ring of stationary coils: copper wire wound around grey iron cores. This is a simplified permanent-magnet direct-drive generator illustration.',
+  'induction':'Relative motion changes magnetic flux through stationary coils and induces voltage. In the illustration a coil glows at the moment a magnet sweeps past it, and pale lines mark the magnetic field reaching that coil. Generation already occurs while the rotor turns; no switch creates the energy. Do not describe a literal stream of electrons from the wind.',
   'load':'The demonstration switch closes and a small illustrative lamp lights. Moving markers indicate an electrical path, not literal giant particles. This is not a grid-connection diagram; no rectifier or inverter internals are depicted.',
   'payoff':'The same turbine keeps turning as the nacelle cover returns. Wind kinetic energy becomes mechanical rotation and then electrical energy, with losses; no claim of perfect conversion.'},
  'source':'https://www.energy.gov/cmei/systems/how-do-wind-turbines-work'}

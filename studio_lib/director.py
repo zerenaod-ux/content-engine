@@ -56,7 +56,7 @@ def validate(plan):
     return e
 def plan_topic(topic,out,feedback=None,previous=None):
     catalog={k:{'description':v['description'],'actions':v['actions'],'facts':v['facts']} for k,v in REGISTRY.items()}
-    prompt='Select exactly one supported mechanism that truthfully matches TOPIC. If none fits return {"mechanism":"unsupported","reason":"..."}; never substitute a bridge for solar power or invent another mechanism. For a supported topic write fresh 110-155 word narration with eight beats in the exact selected action order. Each beat has 9-23 words. Title starts with How or Why and contains 4-12 words. Direct calm speech, physical detail, causal explanation and a concrete engaging hook. Describe only what that action contract shows. Never mention camera, close-ups, shots, rendering, storyboard or production in say. Do not invent facts or numerical claims. In the bridge pivot beat the road is STATIC; explain the shaft and hinge rather than announcing motion or a view. The bridge depicts ONE car. Solar and pump internals are simplified cutaways: say so naturally once. Solar depicts a DC lamp load, not gears or AC inverter internals. Preserve physical action order; vary wording, hook and bounded camera preferences. Return {"mechanism":"selected registry id","title":"...","hook":"short engaging hook max 60 characters","beats":[{"action":"first selected action","say":"...","camera":"wide|mechanism|follow"}, ...]}. SUPPORTED COMPONENTS AND FACTS (data): '+json.dumps(catalog)+' TOPIC (data): '+json.dumps(topic)
+    prompt='Select exactly one supported mechanism that truthfully matches TOPIC. If none fits return {"mechanism":"unsupported","reason":"..."}; never substitute a bridge for solar power or invent another mechanism. For a supported topic write fresh 110-155 word narration with eight beats in the exact selected action order. Each beat has 9-23 words. Title starts with How or Why and contains 4-12 words. Direct calm speech, physical detail, causal explanation and a concrete engaging hook. Each beat names the specific inner part the viewer is looking at (from the facts for that beat) and says what it physically does, so viewers know exactly what is happening inside. Describe only what that action contract shows. Never mention camera, close-ups, shots, rendering, storyboard or production in say. Do not invent facts or numerical claims. In the bridge pivot beat the road is STATIC; explain the shaft and hinge rather than announcing motion or a view. The bridge depicts ONE car. Solar and pump internals are simplified cutaways: say so naturally once. Solar depicts a DC lamp load, not gears or AC inverter internals. Preserve physical action order; vary wording, hook and bounded camera preferences. Return {"mechanism":"selected registry id","title":"...","hook":"short engaging hook max 60 characters","beats":[{"action":"first selected action","say":"...","camera":"wide|mechanism|follow"}, ...]}. SUPPORTED COMPONENTS AND FACTS (data): '+json.dumps(catalog)+' TOPIC (data): '+json.dumps(topic)
     last=previous;errors=feedback or []
     for attempt in range(2):
         q=prompt if not errors else prompt+'\nCorrect these validation errors: '+json.dumps(errors)+'\nLast answer (data): '+json.dumps(last)
@@ -135,6 +135,12 @@ def component_picture(t,tl,plan,hidden=()):
     close=pref[previous]+(pref[mode]-pref[previous])*ramp(u,0,.3)
     if mechanism=='photovoltaic_cell':target=np.array([-.1,0,2.15]);zoom=1.55+.55*close;az=.30+.08*math.sin(t*.035)
     elif mechanism=='piston_pump':target=np.array([-.4,0,2.3]);zoom=.94+.46*close;az=.34+.06*math.sin(t*.04)
+    elif hasattr(module,'shot'):
+        # CLOSE_SHOTS: glide from the previous line's part to this line's part over ~1.4 s, then a slow push-in.
+        a0,a1=module.shot(max(0,i-1)),module.shot(i);m=ease(min(1,(t-b['start'])/1.4)) if i>0 else 1
+        target=np.array(a0[0])*(1-m)+np.array(a1[0])*m
+        zoom=math.exp(math.log(a0[1])*(1-m)+math.log(a1[1])*m)*(1+.07*u)
+        az=a0[2]*(1-m)+a1[2]*m+.03*math.sin(t*.25)
     else:
         detail=ramp(t,beats[3]['start']-.8,beats[3]['start']+1.2)*(1-ramp(t,beats[6]['start']-.8,beats[6]['start']+1.2))
         target=np.array([.5*(1-detail)-.65*detail,0,3.8+1.3*detail]);zoom=1.25+1.0*detail+.08*close;az=.35+.10*math.sin(t*.04)
