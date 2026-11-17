@@ -1,10 +1,5 @@
 {
-  "leases": {
-    "voice": {
-      "owner": "44197813889-1-voice",
-      "until": 1794957653.2708666
-    }
-  },
+  "leases": {},
   "waiters": [
     {
       "owner": "44197813891-1-ai",
