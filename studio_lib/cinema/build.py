@@ -171,11 +171,14 @@ async def voice(plan,out):
             for attempt in range(4):
                 requests+=1
                 try:
-                    await edge_tts.Communicate(b['say'],VOICE,rate=rate,pitch=profile['pitch'],volume=profile['volume'],boundary='WordBoundary').save(str(audio),str(meta))
+                    await asyncio.wait_for(edge_tts.Communicate(b['say'],VOICE,rate=rate,pitch=profile['pitch'],volume=profile['volume'],boundary='WordBoundary').save(str(audio),str(meta)),timeout=75)
+                    if audio.stat().st_size<=1000 or meta.stat().st_size<=20:
+                        raise edge_tts.exceptions.NoAudioReceived('Incomplete narration response')
                     break
-                except edge_tts.exceptions.NoAudioReceived:
+                except (edge_tts.exceptions.NoAudioReceived,asyncio.TimeoutError):
+                    audio.unlink(missing_ok=True);meta.unlink(missing_ok=True)
                     if attempt==3:raise
-                    await asyncio.sleep(2**(attempt+1))
+                    await asyncio.sleep(10*2**attempt)
         else:hits+=1
         events=[json.loads(x) for x in meta.read_text().splitlines() if x.strip()]
         events=[x for x in events if x['type']=='WordBoundary']
@@ -185,7 +188,7 @@ async def voice(plan,out):
         beats.append(dict(b,start=t,end=t+length,voice=str(audio),voice_duration=d,rate=rate,delivery=profile))
         words.extend(dict(text=x['text'],start=t+.06+x['offset']/1e7,end=t+.06+(x['offset']+x['duration'])/1e7,beat=i) for x in events)
         t+=length
-    if not 30<=t<=65:raise ValueError('Measured narration duration outside 30-65 seconds')
+    require_duration(t)
     tl={'mechanism':plan['mechanism'],'hook':plan.get('hook',''),'diagram':plan['mechanism'] in SPECS,'beats':beats,'duration':t,'words':words,'requests':requests,'cached_lines':hits}
     (out/'timeline.json').write_text(json.dumps(tl,indent=2));return tl
 
