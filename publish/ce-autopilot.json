@@ -1,12 +1,13 @@
 {
- "on": true,
+ "on": false,
  "cap": 2,
  "hold_hours": 12,
  "skip_after_hours": 72,
  "day": "2026-11-17",
  "count": 0,
- "changed": "2026-11-17T03:04:29+00:00",
+ "changed": "2026-11-17T08:44:38.586Z",
  "last_run": "2026-11-17T08:34:02+00:00",
  "log": [],
- "warn_since": "2026-11-17T03:04:29Z"
+ "warn_since": "2026-11-17T03:04:29Z",
+ "changed_by": "Owner request: turn off automatic approval; manual review required"
 }
