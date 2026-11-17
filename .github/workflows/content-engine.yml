@@ -1,14 +1,14 @@
 name: scene-factory
 # Tested components own geometry/motion; AI chooses supported topics and writes narration.
-# Unsupported topics fail explicitly. The generation schedule remains paused.
-# CONTENT ENGINE (4th system, own repo since 2026-11-13, not posted): the full factory, with no person and no laptop. Runs twice a day at quiet hours (owner OK 2026-11-13).
+# Unsupported topics fail explicitly; three automatic generation slots per day.
+# HOW IT TICKS: independent cloud generation, with three daily slots authorized November 17.
 # Each finished video is saved in its own GitHub release (tag ce-YYYYMMDD-HHMM = the system's video folder, list in data/scenes/videos.json) and shown in the app's Review tab.
 # Idea maker thinks of a NEW topic (or a topic is given) -> the writer plans and writes the scene -> checker
 # -> scene engine draws it -> narrator, sounds, music -> video on a prerelease. Nothing is posted.
 # Start it by pushing publish/run.trigger: first line "auto" (the system picks a new idea) or a topic.
 on:
   schedule:
-    - cron: '5 9 * * *'     # DAILY_SHORT (owner 2026-11-16): one new short every day, 3:05 AM Chicago; held 12 h for owner review
+    - cron: '5 1,9,17 * * *' # Three daily UTC slots; 3:05 AM, 11:05 AM, 7:05 PM Chicago standard time.
   workflow_dispatch:
     inputs:
       topic:
@@ -41,7 +41,7 @@ jobs:
           key: ce-v1-${{ runner.os }}-${{ github.ref_name }}-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: |
             ce-v1-${{ runner.os }}-${{ github.ref_name }}-
-      - name: Select a supported topic and build the tested component
+      - name: Select and reserve a new supported topic before media generation
         env:
           CE_MAX_SECONDS: '480'
           CE_MAX_REQUESTS: '12'
@@ -54,7 +54,18 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" = "schedule" ]; then echo auto > topic.txt
           elif [ -n "$TOPIC_IN" ]; then printf '%s\n' "$TOPIC_IN" > topic.txt; else head -n 1 publish/run.trigger > topic.txt; fi
-          python3 -c "import llm; llm.key_check()" || true
+          python3 -m unittest discover -s tests/topic_guard -v
+          python3 -m studio_lib.production --prepare-only --topic-file topic.txt --out scene-factory.mp4
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/scenes/topic-ledger.json
+          git diff --cached --quiet || git commit -qm "Reserve unique How It Ticks topic before generation"
+          SAVED=0
+          for i in 1 2 3 4 5; do
+            if git pull --rebase --autostash -q && git push -q; then SAVED=1; break; fi
+            sleep 5
+          done
+          [ "$SAVED" = 1 ] || { echo "Topic reservation was not saved; refusing to render"; exit 1; }
           python3 -m studio_lib.production --topic-file topic.txt --out scene-factory.mp4
       - name: Verify the tested-component review contract
         run: |
@@ -79,7 +90,8 @@ jobs:
           p = Path('data/scenes/videos.json')
           try: v = json.loads(p.read_text())
           except Exception: v = []
-          v.append({'date': datetime.date.today().isoformat(), 'tag': sys.argv[1], 'title': sys.argv[2], 'video': sys.argv[3]})
+          spec = json.loads(Path('auto-scene.json').read_text())
+          v.append({'date': datetime.date.today().isoformat(), 'tag': sys.argv[1], 'title': sys.argv[2], 'video': sys.argv[3], 'topic': spec.get('topic'), 'topic_key': spec.get('topic_key')})
           p.write_text(json.dumps(v, indent=1, ensure_ascii=False) + '\n')
           PY
           gh label create scene-review --color 6a55c9 --description "How It Ticks video to watch (not posted)" 2>/dev/null || true
@@ -96,7 +108,15 @@ jobs:
           if [ -f scene-factory.mp4 ]; then python3 scene_lib/ideas.py record auto-scene.json; elif [ -f idea.json ] || [ -f writer-log.txt ]; then python3 scene_lib/ideas.py record auto-scene.json failed; else exit 0; fi
           git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/scenes/history.json data/scenes/videos.json data/scenes/inside-history.json data/icons 2>/dev/null || git add data/scenes/history.json
-          git diff --cached --quiet || { git commit -qm "scene factory: remember idea"; for i in 1 2 3 4 5; do git pull --rebase -q && git push -q && break; sleep 5; done; }
+          if ! git diff --cached --quiet; then
+            git commit -qm "scene factory: remember idea"
+            SAVED=0
+            for i in 1 2 3 4 5; do
+              if git pull --rebase --autostash -q && git push -q; then SAVED=1; break; fi
+              sleep 5
+            done
+            [ "$SAVED" = 1 ] || { echo "Video history/index was not saved"; exit 1; }
+          fi
       - name: Attach to release
         if: always()
         env:

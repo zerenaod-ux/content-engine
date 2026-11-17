@@ -27,13 +27,13 @@ def main():
     root=Path('incoming/cinema-output') if Path('incoming/cinema-output').exists() else Path('incoming')
     result=json.loads((root/'result.json').read_text());plan=json.loads((root/'plan.json').read_text())
     if result.get('manual_script_or_video_edits') is not False or result.get('owner_approved') is not False:raise ValueError('invalid automatic provenance')
-    if plan.get('mechanism') not in ('wind_turbine','hand_generator'):raise ValueError('unregistered cinematic subject')
+    if plan.get('mechanism') not in ('wind_turbine','hand_generator','lever_balance','resistive_circuit','hydraulic_lift','thermal_contact','dna_pairing','water_transfer'):raise ValueError('unregistered cinematic subject')
     video=root/'video.mp4'
     if not video.is_file() or video.stat().st_size<100000:raise ValueError('finished video missing')
     run=api('GET','actions/runs/'+RUN)
     if run['conclusion']!='success' or run['head_branch']!='studio-cinematic-proof' or run['head_repository']['full_name']!=REPO:raise ValueError('source run is not the authorized successful comparison')
     stamp=run['created_at'].replace('-','').replace(':','');tag='ce-'+stamp[:8]+'-'+stamp[9:13]+'-cinema-'+RUN
-    title=plan['title'].replace('\n',' ').strip()+(' 💡' if plan['mechanism']=='hand_generator' else ' 💨')
+    title=plan['title'].replace('\n',' ').strip()+({'hand_generator':' 💡','wind_turbine':' 💨','lever_balance':' ⚖️','resistive_circuit':' ⚡','hydraulic_lift':' 🏗️','thermal_contact':' 🌡️','dna_pairing':' 🧬','water_transfer':' 💧'}[plan['mechanism']])
     uploaded=put_file('videos/'+tag+'.mp4',video.read_bytes(),'gh-pages')
     sha=uploaded['commit']['sha']
     if video.stat().st_size>=19_000_000:raise ValueError('comparison exceeds mobile CDN size budget; retain artifact and fail delivery visibly')
@@ -60,3 +60,4 @@ def main():
         issue=api('POST','issues',{'title':'How It Ticks: '+title,'labels':labels,'body':'Automatically generated cinematic comparison. NOT approved or published.\n\nWatch: '+url+'\n\nApprove or Skip in Studio. Automatic approval is off.\n\nChecks: warn — visual, narration and sound review pending.\n\n'+marker+'\nSource: '+run['html_url']})
     print(json.dumps({'review_card':issue['html_url'],'video':url,'index_saved':True,'approved':False,'media_commit':sha}))
 if __name__=='__main__':main()
+

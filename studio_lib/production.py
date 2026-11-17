@@ -3,19 +3,33 @@
 Adding this adapter on the draft branch does not deploy it. Completed component
 videos require owner review and never receive an autopilot checks-ok verdict.
 """
-import argparse,json,re,shutil,time
+import argparse,json,os,re,shutil,time
 from pathlib import Path
 from studio_lib.director import run
 from studio_lib.registry import REGISTRY
 from studio_lib.providers import call
+from studio_lib.topic_guard import history,duplicate,require_new,reserve,signature
 def choose_topic(history_path=Path('data/scenes/history.json')):
-    try:history=json.loads(Path(history_path).read_text())
-    except (OSError,ValueError):history=[]
-    prior=[x.get('topic') or x.get('title','') for x in history[-30:] if isinstance(x,dict)]
-    answer=call('Choose a factual explainer topic within a supported animation component. Return JSON only.',
-        'Choose a new explanatory angle that fits exactly one supported component. Do not invent a new mechanism. Return {"topic":"short topic","mechanism":"supported id"}. Supported scopes: '+json.dumps({k:v['description'] for k,v in REGISTRY.items()})+' Recent topics (data): '+json.dumps(prior),max_tokens=600,temperature=.6)
-    if answer.get('mechanism') not in REGISTRY or not isinstance(answer.get('topic'),str) or not 4<=len(answer['topic'].split())<=18:raise ValueError('no valid supported automatic topic was selected')
-    Path('idea.json').write_text(json.dumps({'topic':answer['topic'],'category':'tested mechanism','subject':answer['mechanism'],'keywords':[]},indent=2));return answer['topic']
+    rows=history(Path(history_path).parent,os.environ.get('GITHUB_RUN_ID'))
+    prior=[x.get('topic') or x.get('title','') for x in rows if x.get('topic') or x.get('title')]
+    errors=[]
+    for attempt in range(4):
+        answer=call('Choose a factual explainer topic within a supported animation component. Return JSON only.',
+            'Choose a genuinely new explanatory question, not a rewording of an earlier video. Do not invent a new mechanism. Return {"topic":"short topic","mechanism":"supported id"}. Supported scopes: '+json.dumps({k:v['description'] for k,v in REGISTRY.items()})+' Recent examples (data): '+json.dumps(prior[-60:])+' Rejected candidates (data): '+json.dumps(errors),max_tokens=600,temperature=.6)
+        if answer.get('mechanism') not in REGISTRY or not isinstance(answer.get('topic'),str) or not 4<=len(answer['topic'].split())<=18:raise ValueError('no valid supported automatic topic was selected')
+        reason=duplicate(answer['topic'],rows)
+        if reason:
+            errors.append({'topic':answer['topic'],'reason':reason});continue
+        Path('idea.json').write_text(json.dumps({'topic':answer['topic'],'topic_key':signature(answer['topic']),'category':'tested mechanism','subject':answer['mechanism'],'keywords':[]},indent=2));return answer['topic']
+    raise ValueError('No non-repeating supported topic survived the full-history checks')
+
+def prepare(topic_file):
+    topic_file=Path(topic_file);lines=topic_file.read_text().splitlines();topic=(lines[0] if lines else 'auto').strip();topic=re.sub(r'\s+20\d\d-\d\d-\d\dT[\d:]+$','',topic).strip()
+    if topic.lower() in ('','auto'):topic=choose_topic()
+    reserve(topic,owner=os.environ.get('GITHUB_RUN_ID'))
+    topic_file.write_text(topic+'\n')
+    return topic
+
 def emit_review_files(work):
     work=Path(work);plan=json.loads((work/'director-plan.json').read_text());tl=json.loads((work/'timeline.json').read_text()) if (work/'timeline.json').exists() else None
     # Cached runs retain the measured timeline in the checkpoint, so the adapter
@@ -25,7 +39,7 @@ def emit_review_files(work):
     if checks.get('errors'):raise ValueError('component evidence failed; no review card may be created')
     emoji={'wind_turbine':' 💨','photovoltaic_cell':' 🌞','piston_pump':' 💧','bascule_bridge':' 🚢'}.get(plan['mechanism'],' ⚙️')
     title=plan['title'] if any(ord(c)>0x2500 for c in plan['title']) else plan['title'].rstrip('.')+emoji
-    spec={'mode':'tested-component','title':title,'mechanism':plan['mechanism'],'duration':tl['duration'],'steps':[{'start':b['start'],'end':b['end'],'say':b['say'],'label':b['action']} for b in tl['beats']],'source':REGISTRY[plan['mechanism']]['source'],'owner_approved':False}
+    spec={'topic':Path('topic.txt').read_text().strip() if Path('topic.txt').exists() else plan['title'],'topic_key':signature(Path('topic.txt').read_text().strip() if Path('topic.txt').exists() else plan['title']),'mode':'tested-component','title':title,'mechanism':plan['mechanism'],'duration':tl['duration'],'steps':[{'start':b['start'],'end':b['end'],'say':b['say'],'label':b['action']} for b in tl['beats']],'source':REGISTRY[plan['mechanism']]['source'],'owner_approved':False}
     Path('auto-scene.json').write_text(json.dumps(spec,indent=2));Path('evidence-report.json').write_text(json.dumps({'errors':[],'mode':'tested-component','semantic_verification':False,'owner_approved':False,'component_checks':checks},indent=2))
     Path('ce-checks.json').write_text(json.dumps({'verdict':'warn','reasons':['Tested component output requires owner visual and narration review; not automatically approved.'],'mechanism':plan['mechanism'],'owner_approved':False},indent=2))
     Path('voice-log.txt').write_text('Measured cached Andrew narration; no manual generated-plan edits.\n')
@@ -35,6 +49,7 @@ def build(topic_file,out,work=Path('component-output/production')):
     if out.exists():raise FileExistsError('preserve the existing output; use a fresh build path')
     lines=Path(topic_file).read_text().splitlines();topic=(lines[0] if lines else 'auto').strip();topic=re.sub(r'\s+20\d\d-\d\d-\d\dT[\d:]+$','',topic).strip()
     if topic.lower() in ('','auto'):topic=choose_topic()
+    require_new(topic,owner=os.environ.get('GITHUB_RUN_ID'))
     try:
         run(topic,work);spec=emit_review_files(work);shutil.copyfile(work/'video.mp4',out)
         with Path('writer-log.txt').open('a') as f:f.write('tested component completed: '+spec['title']+'; owner review pending\n')
@@ -47,5 +62,6 @@ def build(topic_file,out,work=Path('component-output/production')):
         if work.exists():
             for f in work.glob('*.json'):shutil.copyfile(f,diagnostic/f.name)
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--topic-file',required=True);p.add_argument('--out',required=True);a=p.parse_args();build(a.topic_file,a.out)
+    p=argparse.ArgumentParser();p.add_argument('--topic-file',required=True);p.add_argument('--out',required=True);p.add_argument('--prepare-only',action='store_true');a=p.parse_args();prepare(a.topic_file) if a.prepare_only else build(a.topic_file,a.out)
 if __name__=='__main__':main()
+

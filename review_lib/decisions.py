@@ -10,7 +10,8 @@ import re
 import urllib.parse
 
 LABELS={'ce-approve':'saved','ce-skip':'delete'}
-TAG=re.compile(r'^ce-\d{8}-\d{4}(?:-\d+)?$')
+TAG_TEXT=r'ce-\d{8}-\d{4}(?:-cinema-\d+|-\d+)?'
+TAG=re.compile('^'+TAG_TEXT+'$')
 
 
 def decision_for(issue):
@@ -25,10 +26,10 @@ def tag_from_url(url):
     u=urllib.parse.urlparse(url)
     if u.scheme!='https': return None
     if u.hostname=='github.com':
-        match=re.fullmatch(r'/zerenaod-ux/(?:content-engine|shelfmade-dashboard)/releases/download/(ce-\d{8}-\d{4}(?:-\d+)?)/(ce-[\w-]+)\.mp4',u.path)
+        match=re.fullmatch(r'/zerenaod-ux/(?:content-engine|shelfmade-dashboard)/releases/download/('+TAG_TEXT+r')/('+TAG_TEXT+r')\.mp4',u.path)
         if match and match[1]==match[2]: return match[1]
     if u.hostname in ('cdn.jsdelivr.net','fastly.jsdelivr.net'):
-        match=re.fullmatch(r'/gh/zerenaod-ux/content-engine@(?:gh-pages|[0-9a-f]{40})/videos/(ce-\d{8}-\d{4}(?:-\d+)?)\.mp4',u.path)
+        match=re.fullmatch(r'/gh/zerenaod-ux/content-engine@(?:gh-pages|[0-9a-f]{40})/videos/('+TAG_TEXT+r')\.mp4',u.path)
         if match:return match[1]
     return None
 
@@ -73,3 +74,4 @@ def save(root,index,event):
         if target.exists() and json.loads(target.read_text())!=event: raise ValueError('A previous decision record must not be overwritten.')
         target.write_text(json.dumps(event,indent=1,ensure_ascii=False)+'\n')
     (root/'index.json').write_text(json.dumps(index,indent=1,ensure_ascii=False)+'\n')
+
