@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-11-17T20:40:19.856770+00:00",
+  "checked_at": "2026-11-17T21:04:44.967994+00:00",
   "read_only": true,
   "complete": true,
   "platforms": {
@@ -135,5 +135,30 @@
       "19:00",
       "21:00"
     ]
+  },
+  "metrics": {
+    "available": true,
+    "platforms": {
+      "youtube": {
+        "views": 0.0,
+        "reactions": 0.0,
+        "reported_posts": 1,
+        "source_updated_at": "2026-11-17T18:33:30.890Z"
+      },
+      "instagram": {
+        "views": null,
+        "reactions": null,
+        "reported_posts": 0,
+        "source_updated_at": null
+      },
+      "tiktok": {
+        "views": null,
+        "reactions": null,
+        "reported_posts": 0,
+        "source_updated_at": null
+      }
+    },
+    "scope": "recent 20 published posts",
+    "note": "Views are supplied separately by the platform and may lag by about a day."
   }
 }
