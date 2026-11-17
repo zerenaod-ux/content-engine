@@ -1,1 +1,1 @@
-New hand-cranked generator topic: open-circuit narration gating, non-overlapping phrase captions, slightly faster speech and coupled motion, encoded-audio review before Studio delivery.
+Regenerate hand-generator comparison: forbid stationary-core torque, offset-axle, cover-direction and lamp-closes-circuit errors; keep full crank visible. Original failed result retained.

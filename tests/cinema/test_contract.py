@@ -1,7 +1,7 @@
 """Captions retain measured boundaries; punctuation and timing remain inspectable."""
 import tempfile,unittest
 from pathlib import Path
-from studio_lib.cinema.build import captions,groups,ass_time,scene_errors,contract
+from studio_lib.cinema.build import captions,groups,ass_time,scene_errors,contract,script_errors,HAND_ACTIONS
 from studio_lib.cinema.review import word_error
 class CaptionTests(unittest.TestCase):
     def test_groups_keep_real_word_offsets(self):
@@ -34,4 +34,11 @@ class CaptionTests(unittest.TestCase):
     def test_new_family_contract_has_no_turbine_actions(self):
         c=contract('How a hand-cranked generator powers a lamp')
         self.assertEqual(c['actions'][0],'machine');self.assertIn('OPEN',c['facts']['induction'])
+    def test_hand_script_rejects_stationary_core_and_cover_claims(self):
+        p={'mechanism':'hand_generator','title':'How Turning This Handle Powers a Lamp','beats':[{'action':a,'say':'The mechanism transfers energy through its moving parts into this illustrative electrical load.'} for a in HAND_ACTIONS]}
+        p['beats'][3]['say']='A solid shaft transmits this rotation directly into the generator stationary core assembly.'
+        p['beats'][7]['say']='The crank keeps turning, the cover lifts back, and mechanical effort continuously powers the light here.'
+        errors=script_errors(p,'How a hand-cranked generator makes light')
+        self.assertTrue(any('stationary core' in x for x in errors))
+        self.assertTrue(any('presentation movements' in x for x in errors))
 if __name__=='__main__':unittest.main()

@@ -124,6 +124,10 @@ def update(sc):
     j=max(0,i-1);blend=smooth((t-b['start'])/.60) if i else 1
     target=Vector(SHOTS[j][0]).lerp(Vector(SHOTS[i][0]),blend)
     pos=Vector(SHOTS[j][1]).lerp(Vector(SHOTS[i][1]),blend)
+    if HAND:
+        # Keep the full moving crank in frame throughout both input beats.
+        wide=(1.25 if i in (1,2) else 1.0)
+        pos=target+(pos-target)*wide
     pos=target+(pos-target)*(1-.035*u)
     cam.location=pos;cam.rotation_euler=(target-pos).to_track_quat('-Z','Y').to_euler()
 bpy.app.handlers.frame_change_pre.append(update)

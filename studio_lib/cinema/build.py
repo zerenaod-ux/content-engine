@@ -35,12 +35,12 @@ def contract(topic=''):
           'actions':HAND_ACTIONS,'facts':{
           'machine':'A bench-mounted crank generator is already rotating and a lamp is initially off because its circuit switch is open. Ask why turning a handle can power a lamp.',
           'input':'The colored crank handle moves in a circle. Mechanical work is supplied at this handle; no person or hand is depicted. Do not claim a visible person is turning it.',
-          'crank':'The crank arm, axle and magnet disk rotate together. The grip is offset from the shaft to make a lever; no gears, wind or turbine blades are shown.',
-          'shaft':'The shaft carries rotation directly into the generator. A stationary main bearing supports it; an illustrative cover lifts away to reveal the internals.',
+          'crank':'The crank arm, central axle and magnet disk rotate together. ONLY the handle/grip is offset from the central shaft to make a lever. The axle is NOT offset. No gears, wind or blades are shown.',
+          'shaft':'The rotating shaft carries torque directly to the rotating magnet disk. A stationary bearing supports the shaft. The stator/core/coils do NOT receive rotation. Do not describe rotation entering a stationary assembly. Do not narrate the cover movement.',
           'generator':'Red and blue permanent magnets rotate on the shaft while the copper coils stay fixed. The switch is OPEN and the lamp stays off. Induced voltage exists, but no current flows through the external circuit yet.',
           'induction':'Changing magnetic flux through stationary coils induces alternating voltage. The external switch is OPEN; no current flows through the lamp. No coil glow, sparks or voltage spike is depicted.',
-          'load':'The demonstration switch closes, completing the circuit. Only now does current flow through the load and the lamp lights steadily. The moving markers are illustrative, not literal particles.',
-          'payoff':'The same crank continues turning and the cover returns. Mechanical input becomes electrical energy with losses. This is a simplified generator, not a free-energy machine.'},
+          'load':'The SWITCH completes the circuit when it closes. The lamp is a load, not the device that closes the circuit. Only now current flows and the lamp lights steadily. Moving markers are illustrative.',
+          'payoff':'The same crank continues turning and mechanical input becomes electrical energy with losses. Do not speak about the cover, reveal, cutaway or any other presentation movement. This is a simplified generator, not a free-energy machine.'},
           'source':'https://www.eia.gov/energyexplained/electricity/how-electricity-is-generated.php'}
     return brief
 
@@ -69,6 +69,10 @@ def script_errors(plan,topic):
         text=b.get('say','')
         if not 9<=len(text.split())<=23:errors.append('Each spoken beat needs 9-23 words.')
         if re.search(r'\b(wind|turbine|blades|camera|render|shot)\b',text,re.I):errors.append('Only describe the actual hand-generator scene, no wind, blades or production language.')
+        if re.search(r'\boffset\s+(axle|shaft)\b',text,re.I):errors.append('Only the crank grip is offset; the central shaft/axle is coaxial.')
+        if re.search(r'\b(cover|roof|cutaway)\b',text,re.I):errors.append('Explain the mechanism, not the cover or presentation movements.')
+        if b.get('action')=='shaft' and re.search(r'\b(core|stator|stationary)\b',text,re.I):errors.append('Shaft beat must describe torque carried to the rotating magnet disk; do not describe rotation entering a stationary core.')
+        if re.search(r'\blamp\b.{0,20}\b(completes|closes)\b',text,re.I):errors.append('The switch completes the circuit; the lamp consumes power.')
     if not 110<=sum(len(b.get('say','').split()) for b in beats)<=145:errors.append('Total speech needs 110-145 words.')
     return errors
 
