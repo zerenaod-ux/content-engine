@@ -4,12 +4,12 @@
       "run_id": "44197524528",
       "attempt": 2,
       "kind": "self-test",
-      "stage": "selection",
-      "label": "Selecting a new topic",
-      "updated_at": "2026-11-17T23:14:32.467036+00:00",
+      "stage": "ready",
+      "label": "Rendered; Studio delivery pending",
+      "updated_at": "2026-11-17T23:14:35.021134+00:00",
       "source_branch": "main",
       "owner_approved": false,
-      "state": "running"
+      "state": "rendered"
     }
   }
 }
