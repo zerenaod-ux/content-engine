@@ -10,7 +10,7 @@ import re
 import urllib.parse
 
 LABELS={'ce-approve':'saved','ce-skip':'delete'}
-TAG_TEXT=r'ce-\d{8}-\d{4}(?:-cinema-\d+|-\d+)?'
+TAG_TEXT=r'ce-(?:\d{8}-\d{4}(?:-cinema-\d+|-p[1-9]\d*|-\d+)?|long-\d{8}-\d{4})'
 TAG=re.compile('^'+TAG_TEXT+'$')
 
 
@@ -30,6 +30,9 @@ def tag_from_url(url):
         if match and match[1]==match[2]: return match[1]
     if u.hostname in ('cdn.jsdelivr.net','fastly.jsdelivr.net'):
         match=re.fullmatch(r'/gh/zerenaod-ux/content-engine@(?:gh-pages|[0-9a-f]{40})/videos/('+TAG_TEXT+r')\.mp4',u.path)
+        if match:return match[1]
+    if u.hostname=='zerenaod-ux.github.io':
+        match=re.fullmatch(r'/content-engine/videos/('+TAG_TEXT+r')\.mp4',u.path)
         if match:return match[1]
     return None
 

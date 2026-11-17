@@ -15,3 +15,9 @@ class CinematicTags(unittest.TestCase):
             self.assertIsNone(tag_from_url(url))
     def test_ordinary_video_names_remain_supported(self):
         self.assertEqual(tag_from_url('https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@gh-pages/videos/ce-20261113-2105.mp4'),'ce-20261113-2105')
+    def test_legacy_component_and_long_video_names_are_supported_strictly(self):
+        for tag in ('ce-20261117-0234-p4','ce-long-20261117-1921'):
+            url='https://zerenaod-ux.github.io/content-engine/videos/'+tag+'.mp4'
+            self.assertEqual(tag_from_url(url),tag)
+        for tag in ('ce-20261117-0234-p0','ce-20261117-0234-px','ce-long-bad'):
+            self.assertIsNone(tag_from_url('https://zerenaod-ux.github.io/content-engine/videos/'+tag+'.mp4'))
