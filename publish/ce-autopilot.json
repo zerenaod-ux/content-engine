@@ -1,6 +1,6 @@
 {
  "on": true,
- "cap": 1,
+ "cap": 2,
  "hold_hours": 12,
  "skip_after_hours": 72,
  "day": "",

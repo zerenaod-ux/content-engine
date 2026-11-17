@@ -4,5 +4,18 @@
  "timezone": "America/Chicago",
  "min_lead_minutes": 10,
  "buffer_queue_limit": 6,
- "slots": {"youtube": ["12:30"], "tiktok": ["18:00"], "instagram": ["19:00"]}
+ "slots": {
+  "youtube": [
+   "12:30",
+   "16:30"
+  ],
+  "tiktok": [
+   "18:00",
+   "20:30"
+  ],
+  "instagram": [
+   "19:00",
+   "21:00"
+  ]
+ }
 }

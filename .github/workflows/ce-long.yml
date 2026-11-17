@@ -1,0 +1,54 @@
+name: how-it-ticks-long
+# LONG_VIDEO (owner 2026-11-16): every 2 days, join the newest new-style shorts into one 16:9 explainer (ce_long.py),
+# save it like any video (release + phone copy + Review card, checks-warn). Autopilot approves it after 12 h unless skipped.
+on:
+  schedule:
+    - cron: '35 10 */2 * *'   # 4:35 AM Chicago, every 2 days
+  workflow_dispatch:
+permissions:
+  contents: write
+  issues: write
+concurrency:
+  group: ce-long
+  cancel-in-progress: false
+jobs:
+  long:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: pip install --quiet pillow
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg fonts-dejavu-core > /dev/null
+      - name: Build the long video
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 ce_long.py long.mp4
+      - name: Save it and show it in the Review tab
+        if: hashFiles('long.mp4') != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="ce-long-$(date -u +%Y%m%d-%H%M)"; TITLE=$(python3 -c "import json;print(json.load(open('long.json'))['title'])")
+          cp long.mp4 "$TAG.mp4"
+          gh release create "$TAG" "$TAG.mp4" long.json --title "How It Ticks LONG: $TITLE" --notes "Long How It Ticks video (joined shorts). Not posted until approved." --prerelease
+          git clone -q --depth 1 -b gh-pages "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git" pages && mkdir -p pages/videos
+          ffmpeg -v error -y -i "$TAG.mp4" -c:v libx264 -preset veryfast -b:v 1500k -maxrate 1800k -bufsize 3M -c:a aac -b:a 128k -movflags +faststart "pages/videos/$TAG.mp4"
+          (cd pages && git add videos && git -c user.email=41898282+github-actions[bot]@users.noreply.github.com -c user.name=github-actions commit -qm "video $TAG" && git push -q)
+          URL="https://zerenaod-ux.github.io/content-engine/videos/$TAG.mp4"   # long files are too big for the free CDN; Pages serves them
+          python3 - "$TAG" "$TITLE" "$URL" <<'PY'
+          import json, sys, datetime
+          from pathlib import Path
+          p = Path('data/scenes/videos.json'); v = json.loads(p.read_text())
+          v.append({'date': datetime.date.today().isoformat(), 'tag': sys.argv[1], 'title': sys.argv[2], 'video': sys.argv[3], 'kind': 'long'})
+          p.write_text(json.dumps(v, indent=1, ensure_ascii=False) + '\n')
+          PY
+          gh label create scene-review --color 6a55c9 2>/dev/null || true
+          gh label create checks-warn --color d29922 2>/dev/null || true
+          gh label create long-video --color 1f6feb --description "How It Ticks long video" 2>/dev/null || true
+          printf 'How It Ticks LONG video (16:9, NOT posted yet).\n\nWatch: %s\n\nMade from: %s\n\nApprove or Skip in the app. Autopilot approves it after 12 h if you do not skip.\n\nChecks: warn (owner review)\n' "$URL" "$(python3 -c "import json;print('; '.join(json.load(open('long.json'))['titles']))")" > body.txt
+          gh issue create --title "How It Ticks: $TITLE" --label scene-review --label checks-warn --label long-video --body-file body.txt
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/scenes/videos.json data/scenes/long-used.json
+          git diff --cached --quiet || { git commit -qm "long video $TAG"; for i in 1 2 3 4 5; do git pull --rebase -q && git push -q && break; sleep 5; done; }
