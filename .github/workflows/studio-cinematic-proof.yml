@@ -38,7 +38,7 @@ jobs:
           CE_MAX_REQUESTS: '12'
           CE_MAX_SECONDS: '480'
           CE_METRICS_PATH: cinema-metrics.json
-        run: python -m studio_lib.cinema.build --topic "How a hand-cranked generator turns effort into light" --out cinema-output
+        run: python -m studio_lib.cinema.build --topic-file publish/cinema.topic --out cinema-output
       - uses: actions/cache/save@v4
         if: always()
         with:

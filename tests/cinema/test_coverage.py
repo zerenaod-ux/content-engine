@@ -12,7 +12,7 @@ class CoverageTests(unittest.TestCase):
                 self.assertIn(family,brief['families'],topic)
                 self.assertFalse(brief['sources_verified_for_this_topic'])
                 self.assertFalse(brief['automatic_quality_approved'])
-                if topic!='hand-cranked generator':
+                if topic not in ('hand-cranked generator','hydraulic lift'):
                     self.assertEqual(brief['render_status'],'research_and_component_work_required')
 
     def test_known_components_only_and_cross_topic_ambiguity_rejected(self):

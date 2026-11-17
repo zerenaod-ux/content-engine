@@ -23,7 +23,7 @@ class SpeechTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             # All service/media calls are mocked: no audio or video is generated.
             with patch('studio_lib.cinema.build.Path',side_effect=lambda x:Path(d)/x if x=='.ce-cache/cinema-voice' else Path(x)),patch('studio_lib.cinema.build.edge_tts.Communicate',FakeTTS),patch('studio_lib.cinema.build.subprocess.check_output',return_value=b'4.0'):
-                plan={'beats':[{'action':a,'say':f'Why does {a} move?'} for a in ('machine','input','crank','shaft','generator','induction','load','payoff')]}
+                plan={'mechanism':'hand_generator','beats':[{'action':a,'say':f'Why does {a} move?'} for a in ('machine','input','crank','shaft','generator','induction','load','payoff')]}
                 tl=asyncio.run(voice(plan,Path(d)))
                 again=asyncio.run(voice(plan,Path(d)))
         self.assertEqual(len(calls),8)

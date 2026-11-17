@@ -26,3 +26,16 @@ Implemented and tested:
 Validation: 28 local tests pass, including all 24 example subjects, supported-versus-unsupported routing, zero model calls for unsupported topics, conservation/connection assumptions and previous presentation/speech checks. Research-only DNA and hydraulic briefs were produced locally; no audio/image/video was generated.
 
 Remaining: source-backed topic-specific explanations, visual geometry, composition/motion contracts, scale/time labels and cloud visual/audio proof for each new family. Current daily supported components remain unchanged. Cinematic support remains wind turbine and hand generator. All expansion code is saved in the existing cinematic test system, not deployed as the daily renderer. Automatic approval remains off; no workflow was dispatched.
+
+
+## November 17, 2026 — six new diagram components connected and geometry checked
+
+Implemented reusable visual components for ideal lever balance, an ideal DC resistor circuit, hydraulic lift, thermal contact between two bodies, complementary DNA base pairing, and conservative water transfer between reservoirs. These are labeled explanatory schematic components, not arbitrary real-world device models.
+
+The cinematic pipeline now routes matching supported topics to an eight-action contract and the shared automatic script/critique, expressive voice, measured captions, silent camera, audio checks, MP4 and existing Studio delivery path. No manually authored final narration is inserted. New subjects outside the exact supported diagram scopes remain research-only; for example DNA base pairing does not claim to animate complete DNA replication, and reservoir transfer is not a weather simulation.
+
+Checks completed: all 32 local tests passed. All six Blender geometry-only checks passed with permitted graphics access; the checks sampled component action phases, constructed persistent geometry and exited with zero rendered images or videos. Tests also check exact topic routing, bounded finite geometry, persistent object identities, simplification labels, conservation assumptions and rejection of unsupported whole-process substitutions.
+
+No final-video visual, voice or editorial quality pass is claimed for these six prototypes. The six components are connected in the cinematic test system, not merged into the daily production default. Existing daily support, publishing settings and owner review decisions were not changed. No media generation occurred during this implementation/check phase.
+
+Owner next authorized one fully automatic hydraulic-lift sample and inspection. This supersedes the no-video restriction only for that sample; no blanket video batch or publishing is authorized. Source, narration, animation and review delivery must come from the system, with no hand-editing of its generated plan/video. Automatic approval stays off.

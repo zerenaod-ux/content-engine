@@ -5,6 +5,7 @@ claim or a new renderer has already been verified.
 """
 import argparse,json,re
 from pathlib import Path
+from studio_lib.science.components import SPECS
 
 FAMILIES={
  'mechanisms': {'examples':['zipper','bicycle gears','door lock','hydraulic lift'],
@@ -52,15 +53,28 @@ def topic_brief(topic):
     matches=[]
     if re.search(r'\bwind[ -]+turbine\b',text):matches.append('wind_turbine')
     if re.search(r'\bhand[ -]?(crank|cranked|cranking)\b',text) and re.search(r'\bgenerator\b',text):matches.append('hand_generator')
+    prototypes=[]
+    for name,pattern in {
+      'lever_balance':r'\b(lever|seesaw)\b',
+      'resistive_circuit':r'\b(resistor|ohmic|resistive circuit)\b',
+      'hydraulic_lift':r'\bhydraulic (lift|press|jack)\b',
+      'thermal_contact':r'\b(thermal contact|heat between|heat transfer between|contacting bodies)\b',
+      'dna_pairing':r'\b(dna base pair|dna base pairing|complementary dna|base pairs)\b',
+      'water_transfer':r'\b(water between reservoirs|water transfer between|two reservoirs)\b',
+    }.items():
+        if re.search(pattern,text):prototypes.append(name)
     excludes=re.search(r'\b(compare|versus|vs|not|without|solar|steam|diesel|nuclear|hydroelectric|pump|battery|transformer)\b',text)
     mechanism=matches[0] if len(matches)==1 and not excludes else None
+    prototype=prototypes[0] if len(prototypes)==1 and not matches and not re.search(r'\b(compare|versus|vs|replication|engine|charger|grid|weather)\b',text) else None
+    mechanism=mechanism or prototype
     requirements=sorted({x for k in families for x in FAMILIES[k]['checks']})
     return {'topic':topic.strip(),'families':families or ['unclassified'],
-      'render_status':'supported_cinematic_component' if mechanism else 'research_and_component_work_required',
+      'render_status':('implemented_diagram_unverified' if prototype else 'supported_cinematic_component') if mechanism else 'research_and_component_work_required',
       'mechanism':mechanism,'automatic_quality_approved':False,
       'foundation_models':[{'id':CAUSAL_MODELS[k],'status':'unit_tested_foundation_only','render_component_available':False} for k in families],
       'candidate_parts':sorted({x for k in families for x in FAMILIES[k]['parts']}),
       'seed_sources':sorted({x for k in families for x in FAMILIES[k]['sources']}),
+      'component_assumptions':SPECS[prototype][0]+'; simplified diagram, end-to-end quality unverified' if prototype else None,
       'sources_verified_for_this_topic':False,'required_checks':requirements,
       'research_requirements':['Find topic-specific authoritative references; seed links alone are insufficient.',
         'Map every causal narration claim to its supporting source and visible action.',

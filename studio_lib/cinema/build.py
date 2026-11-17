@@ -8,7 +8,8 @@ from studio_lib.providers import call
 from studio_lib.registry import REGISTRY
 from studio_lib.cinema.presentation import illustration_labels
 from studio_lib.cinema.speech import VOICE,WRITING_RULES,delivery,cache_key
-from studio_lib.cinema.coverage import require_component
+from studio_lib.cinema.coverage import require_component,topic_brief
+from studio_lib.science.components import SPECS,contract as science_contract
 
 def groups(words):
     """Never cross narration beats, pauses or punctuation with a caption."""
@@ -26,6 +27,8 @@ HAND_ACTIONS=['machine','input','crank','shaft','generator','induction','load','
 def hand_topic(topic):return bool(re.search(r'\b(hand.?crank|cranked|cranking)\b',topic.lower()))
 
 def contract(topic=''):
+    component=topic_brief(topic)['mechanism'] if topic else None
+    if component in SPECS:return science_contract(component)
     brief=json.loads(json.dumps(REGISTRY['wind_turbine']))
     brief['facts']['rotor']='The hub and all three blades rotate as one rigid assembly. Circular pitch bearings are visible but NO blade pitch adjustment is animated. Do not claim blades twist in these bearings.'
     brief['facts']['induction']='A close view shows rotating red/blue magnets beside stationary copper windings. Changing magnetic flux induces alternating voltage. There is NO coil glow, flash, spark, voltage-spike display; field lines are labeled schematic illustrations, not visible physical objects. The copper coils do not literally light up.'
@@ -63,6 +66,20 @@ def scene_errors(plan):
     return errors
 
 def script_errors(plan,topic):
+    component=topic_brief(topic)['mechanism']
+    if component in SPECS:
+        if not isinstance(plan,dict):return ['Script must be an object']
+        errors=[];beats=plan.get('beats',[])
+        if plan.get('mechanism')!=component:errors.append('Use the exact requested diagram component.')
+        if not isinstance(beats,list) or [b.get('action') for b in beats if isinstance(b,dict)]!=science_contract(component)['actions']:return errors+['Preserve all eight diagram actions in order.']
+        if not isinstance(plan.get('title'),str) or not 4<=len(plan['title'].split())<=8 or not plan['title'].startswith(('How ','Why ')):errors.append('Title must start How/Why, 4-8 words.')
+        for b in beats:
+            text=b.get('say','')
+            if not isinstance(text,str) or not 9<=len(text.split())<=23:errors.append('Each beat needs 9-23 spoken words.')
+            elif re.search(r'\b(camera|render|renderer|shot|storyboard)\b',text,re.I):errors.append('Speak about the topic, not production instructions.')
+        if not beats[0].get('say','').rstrip().endswith('?'):errors.append('Open with a concrete question.')
+        if not 110<=sum(len(b.get('say','').split()) for b in beats)<=145:errors.append('Total narration needs 110-145 words.')
+        return errors
     if not hand_topic(topic):return validate(plan)+scene_errors(plan)
     errors=scene_errors(plan)
     if not isinstance(plan,dict):return errors
@@ -84,7 +101,7 @@ def script_errors(plan,topic):
     return errors
 
 def generate(topic,out):
-    require_component(topic,out)
+    component=require_component(topic,out)
     brief=contract(topic)
     prompt=('Create an original explanation for TOPIC using ONLY this factual/action contract. '
       'Return JSON with mechanism=wind_turbine, title starting How/Why (4-8 words), hook (under 60 characters), '
@@ -99,6 +116,8 @@ def generate(topic,out):
       'CONTRACT: '+json.dumps(brief)+' TOPIC: '+json.dumps(topic))
     if hand_topic(topic):
         prompt=('Create an original explanation of this bench-mounted hand-cranked generator. Return JSON with mechanism=hand_generator, title starting How/Why (4-8 words), hook (under 60 characters), and eight beats in EXACT contract action order. Each beat has action, say (9-23 words), camera=wide|mechanism|follow. Total 110-145 words. Open with a direct question about turning a handle into light; end first beat with ?. Use direct conversational phrasing, causal links and concrete visible actions, not production instructions. No visible person is present. No wind, turbine or blades. Switch stays open until load: before then say voltage, never claim current flows. Original words, no copied creator script. CONTRACT: '+json.dumps(brief)+' TOPIC: '+json.dumps(topic))
+    if component in SPECS:
+        prompt=('Create an original factual explanation of TOPIC using only this exact simplified diagram. Return JSON with mechanism='+component+', title starting How/Why (4-8 words), hook under 60 characters, and eight beats in EXACT contract order. Each beat has action, say (9-23 words), camera=wide|mechanism|follow. Total 110-145 words. Open with a question. Explain the simplification naturally. Do not claim a complete real device, real-time simulation or unsupported process. CONTRACT: '+json.dumps(brief)+' TOPIC: '+json.dumps(topic))
     prompt+=' DELIVERY: '+WRITING_RULES
     errors=[];previous=None
     for n in range(4):
@@ -142,7 +161,7 @@ async def voice(plan,out):
         words.extend(dict(text=x['text'],start=t+.06+x['offset']/1e7,end=t+.06+(x['offset']+x['duration'])/1e7,beat=i) for x in events)
         t+=length
     if not 30<=t<=65:raise ValueError('Measured narration duration outside 30-65 seconds')
-    tl={'beats':beats,'duration':t,'words':words,'requests':requests,'cached_lines':hits}
+    tl={'mechanism':plan['mechanism'],'beats':beats,'duration':t,'words':words,'requests':requests,'cached_lines':hits}
     (out/'timeline.json').write_text(json.dumps(tl,indent=2));return tl
 
 def ass_time(t):
@@ -164,6 +183,8 @@ def captions(tl,out):
     (out/'caption-checks.json').write_text(json.dumps({'errors':[],'intervals':intervals},indent=2))
     for start,end,text in illustration_labels(tl.get('beats',[])):
         lines.append(f'Dialogue: 1,{ass_time(start)},{ass_time(end)},Default,,0,0,0,,{{\\an8\\fs27\\pos(360,85)}}{text}')
+    if tl.get('mechanism') in SPECS:
+        lines.append(f'Dialogue: 1,{ass_time(0)},{ass_time(tl["duration"])},Default,,0,0,0,,{{\\an8\\fs25\\pos(360,75)}}Simplified schematic\\NScale and progress illustrative')
     p=out/'captions.ass';p.write_text(header+'\n'.join(lines)+'\n');return p
 
 def soundtrack(tl,out):
@@ -190,7 +211,7 @@ def run(topic,out):
     # A fresh model-written plan is required for this comparison; no authored script input.
     plan=generate(topic,out);(out/'plan.json').write_text(json.dumps(plan,indent=2))
     tl=asyncio.run(voice(plan,out));captions(tl,out);soundtrack(tl,out)
-    script=Path(__file__).with_name('scene.py')
+    script=Path(__file__).with_name('diagram_scene.py' if plan['mechanism'] in SPECS else 'scene.py')
     subprocess.run(['xvfb-run','-a','blender','-b','-t','2','--python',str(script),'--',str(out)],check=True)
     subprocess.run(['ffmpeg','-v','error','-y','-framerate','24','-i',str(out/'frames/%05d.png'),'-i',str(out/'mix.wav'),'-vf',f"scale=720:1280:flags=lanczos,ass={out/'captions.ass'}",'-c:v','libx264','-preset','fast','-crf','19','-c:a','aac','-b:a','160k','-af','loudnorm=I=-16:TP=-1.5:LRA=9','-t',str(tl['duration']),'-movflags','+faststart',str(out/'video.mp4')],check=True)
     subprocess.run(['ffmpeg','-v','error','-i',str(out/'video.mp4'),'-f','null','-'],check=True)
@@ -199,5 +220,5 @@ def run(topic,out):
     result={'topic':topic,'duration':tl['duration'],'wall_seconds':time.monotonic()-started,'manual_script_or_video_edits':False,'render_engine':'Blender Workbench, software graphics on GitHub','scope':plan['mechanism']+'; cinematic comparison','owner_approved':False,'production_deployed':False,'caption_source':'synthesis WordBoundary metadata','reference_audio_measured':False}
     (out/'result.json').write_text(json.dumps(result,indent=2));print(json.dumps(result),flush=True)
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--topic',required=True);p.add_argument('--out',required=True);a=p.parse_args();run(a.topic,a.out)
+    p=argparse.ArgumentParser();g=p.add_mutually_exclusive_group(required=True);g.add_argument('--topic');g.add_argument('--topic-file',type=Path);p.add_argument('--out',required=True);a=p.parse_args();topic=a.topic if a.topic is not None else a.topic_file.read_text().strip();run(topic,a.out)
 if __name__=='__main__':main()
