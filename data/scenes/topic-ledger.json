@@ -13,5 +13,12 @@
     "owner": "44197813889",
     "state": "reserved",
     "mechanism": "hydraulic_lift"
+  },
+  {
+    "topic": "Why resistor circuit current changes with voltage",
+    "topic_key": "changes circuit current resistor voltage",
+    "owner": "44199928492",
+    "state": "reserved",
+    "mechanism": "resistive_circuit"
   }
 ]
