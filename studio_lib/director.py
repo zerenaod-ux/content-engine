@@ -14,7 +14,7 @@ from studio_lib.render import BG,FONT,TITLE
 from studio_lib.audio import narrate,assemble
 from studio_lib.checkpoints import Checkpoint
 from studio_lib.registry import REGISTRY
-from studio_lib import solar,pump
+from studio_lib import solar,pump,wind
 
 # The engine owns the safe action order. The model may choose narration,
 # emphasis and framing; it cannot invent joints or disconnect rigid parts.
@@ -115,13 +115,16 @@ def picture(t,tl,plan,hidden=()):
     d.line((42,1195,678,1195),fill=(170,200,200),width=3);d.line((42,1195,42+636*t/tl['duration'],1195),fill=(221,102,57),width=3)
     return im
 def component_picture(t,tl,plan,hidden=()):
-    mechanism=plan['mechanism'];module=solar if mechanism=='photovoltaic_cell' else pump
+    mechanism=plan['mechanism'];module={'photovoltaic_cell':solar,'piston_pump':pump,'wind_turbine':wind}[mechanism]
     beats=tl['beats'];i=min(7,next((i for i,b in enumerate(beats) if t<b['end']),7));b=beats[i];u=(t-b['start'])/(b['end']-b['start'])
     previous=beats[max(0,i-1)].get('camera','wide');mode=b.get('camera','wide')
     pref={'wide':0.0,'mechanism':1.0,'follow':.45}
     close=pref[previous]+(pref[mode]-pref[previous])*ramp(u,0,.3)
     if mechanism=='photovoltaic_cell':target=np.array([-.1,0,2.15]);zoom=1.55+.55*close;az=.30+.08*math.sin(t*.035)
-    else:target=np.array([-.4,0,2.3]);zoom=.94+.46*close;az=.34+.06*math.sin(t*.04)
+    elif mechanism=='piston_pump':target=np.array([-.4,0,2.3]);zoom=.94+.46*close;az=.34+.06*math.sin(t*.04)
+    else:
+        detail=ramp(t,beats[3]['start']-.8,beats[3]['start']+1.2)*(1-ramp(t,beats[6]['start']-.8,beats[6]['start']+1.2))
+        target=np.array([.5*(1-detail)-.65*detail,0,3.8+1.3*detail]);zoom=1.25+1.0*detail+.08*close;az=.35+.10*math.sin(t*.04)
     im=BG.copy();ground=Scene(t,zoom,target,az);s=Scene(t,zoom,target,az)
     ground.face([[-1000,-1000,-.1],[1000,-1000,-.1],[1000,1000,-.1],[-1000,1000,-.1]],(218,229,224));ground.paint(im)
     module.draw(s,t,tl,hidden);s.paint(im)
@@ -156,9 +159,14 @@ def verify_component(plan,tl,out):
             p=pump.phase(t,tl)
             if not p['delivery'] or p['intake']:errors.append('incorrect inlet/outlet state during delivery')
         evidence=[(3,'piston'),(5,'flow')]
-    else:
+    elif mechanism=='photovoltaic_cell':
         if any(solar.pose((b['start']+b['end'])/2,tl)['powered'] for b in tl['beats'][:5]):errors.append('load lit before closed-circuit beat')
         evidence=[(1,'light'),(3,'carriers'),(5,'current')]
+    else:
+        for t in np.linspace(0,tl['duration']-.001,100):
+            p=wind.pose(t,tl)
+            if p['angle']!=p['shaft_angle'] or p['angle']!=p['magnet_angle']:errors.append('direct-drive shaft and generator lost coupling')
+        evidence=[(2,'blades'),(4,'magnets'),(6,'current')]
     for i,part in evidence:
         b=tl['beats'][i];t=(b['start']+b['end'])/2;a=np.array(picture(t,tl,plan)).astype(int);z=np.array(picture(t,tl,plan,hidden=(part,))).astype(int)
         pixels=int(np.count_nonzero(np.max(abs(a-z),axis=2)>22));measure.append({'beat':i,'part':part,'visible_pixels':pixels})
@@ -205,7 +213,7 @@ def run(topic,out):
     save('narrated',plan,timeline=tl,**fields)
     render_start=time.monotonic();render_hit=False
     root=Path(__file__).resolve().parent
-    render_sig=hashlib.sha256(b''.join((root/p).read_bytes() for p in ['director.py','mechanisms.py','mesh.py','solar.py','pump.py','registry.py'])+json.dumps(tl,sort_keys=True).encode()).hexdigest()
+    render_sig=hashlib.sha256(b''.join((root/p).read_bytes() for p in ['director.py','mechanisms.py','mesh.py','solar.py','pump.py','wind.py','registry.py'])+json.dumps(tl,sort_keys=True).encode()).hexdigest()
     cached=Path(fields.get('silent_path','/nonexistent'))
     if fields.get('render_signature')==render_sig and cached.is_file() and hashlib.sha256(cached.read_bytes()).hexdigest()==fields.get('silent_sha256'):
         shutil.copyfile(cached,out/'silent.mp4');render_hit=True
