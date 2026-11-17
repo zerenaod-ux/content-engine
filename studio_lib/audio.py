@@ -3,6 +3,8 @@ import asyncio,hashlib,json,subprocess,time,wave
 from pathlib import Path
 import numpy as np
 import edge_tts
+from studio_lib.service_queue import lease
+from studio_lib.duration import require_duration
 SR=24000
 async def narrate(spec,out,cache):
     out=Path(out);cache=Path(cache);cache.mkdir(parents=True,exist_ok=True);t=0;beats=[];calls=0;hits=0
@@ -13,13 +15,17 @@ async def narrate(spec,out,cache):
             for attempt in range(3):
                 calls+=1
                 try:
-                    await edge_tts.Communicate(b['say'],'en-US-AndrewNeural',rate='+30%',pitch='+8Hz').save(str(f));break
-                except edge_tts.exceptions.NoAudioReceived:
+                    with lease('voice'):
+                        await asyncio.wait_for(edge_tts.Communicate(b['say'],'en-US-AndrewNeural',rate='+30%',pitch='+8Hz').save(str(f)),timeout=75)
+                    if f.stat().st_size<=1000:raise edge_tts.exceptions.NoAudioReceived('Incomplete audio')
+                    break
+                except (edge_tts.exceptions.NoAudioReceived,asyncio.TimeoutError):
+                    f.unlink(missing_ok=True)
                     if attempt==2:raise
-                    await asyncio.sleep(2)
+                    await asyncio.sleep(10*2**attempt)
         dur=float(subprocess.check_output(['ffprobe','-v','error','-show_entries','format=duration','-of','csv=p=0',str(f)]))
         d=max(b['seconds'],dur+.35);beats.append(dict(b,start=t,end=t+d,voice=str(f),voice_duration=dur));t+=d
-    if t>65.1:raise ValueError('measured narration exceeds 65 seconds; shorten sentences or simplify the story')
+    require_duration(t)
     tl={'beats':beats,'duration':t,'narration_requests':calls,'cached_lines':hits}
     (out/'timeline.json').write_text(json.dumps(tl,indent=2));return tl
 def assemble(spec,timeline,out):

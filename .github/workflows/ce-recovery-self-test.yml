@@ -1,0 +1,22 @@
+name: Recovery self-test
+on:
+  push:
+    branches: [main]
+    paths: [publish/recovery-test.trigger]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  simulate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: main, fetch-depth: 1}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - name: First attempt simulates capacity failure; automatic retry must succeed
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CE_RECOVERY_TEST: '1'
+        run: python -m studio_lib.recovery run --kind self-test -- python -c "import os,sys; first=os.environ.get('GITHUB_RUN_ATTEMPT','1')=='1'; print('ServiceBusy simulated temporary outage' if first else 'Recovery resumed successfully without any media or publishing'); sys.exit(1 if first else 0)"

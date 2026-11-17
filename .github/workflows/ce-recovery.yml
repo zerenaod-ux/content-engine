@@ -1,0 +1,30 @@
+name: How It Ticks automatic recovery
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+  workflow_run:
+    workflows: ['scene-factory', 'Cinematic system comparison (not posted)', 'Original How It Ticks full video', 'Recovery self-test']
+    types: [completed]
+  push:
+    branches: [main]
+    paths: [.github/workflows/ce-recovery.yml]
+permissions:
+  contents: read
+  actions: write
+concurrency:
+  group: how-it-ticks-recovery
+  cancel-in-progress: false
+jobs:
+  resume:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: main, fetch-depth: 1}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - name: Resume only eligible temporary failures, never approved publishing
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python -m studio_lib.recovery watch

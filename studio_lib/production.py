@@ -25,7 +25,10 @@ def choose_topic(history_path=Path('data/scenes/history.json')):
 
 def prepare(topic_file):
     topic_file=Path(topic_file);lines=topic_file.read_text().splitlines();topic=(lines[0] if lines else 'auto').strip();topic=re.sub(r'\s+20\d\d-\d\d-\d\dT[\d:]+$','',topic).strip()
-    if topic.lower() in ('','auto'):topic=choose_topic()
+    if topic.lower() in ('','auto'):
+        ledger=Path('data/scenes/topic-ledger.json')
+        owned=[r for r in json.loads(ledger.read_text()) if str(r.get('owner'))==str(os.environ.get('GITHUB_RUN_ID'))] if ledger.exists() else []
+        topic=owned[-1]['topic'] if owned else choose_topic()
     reserve(topic,owner=os.environ.get('GITHUB_RUN_ID'))
     topic_file.write_text(topic+'\n')
     return topic

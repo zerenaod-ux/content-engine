@@ -2,6 +2,7 @@
 import json,os,time,urllib.error
 from pathlib import Path
 import llm
+from studio_lib.service_queue import lease
 _UNAVAILABLE=set()
 class ServiceUnavailable(ValueError):
     """No usable free service answered; retain valid work for a later run."""
@@ -39,7 +40,8 @@ def call(system,prompt,max_tokens=10000,temperature=.5):
                 body={'model':model_name,'messages':messages,'temperature':temperature,'max_tokens':max_tokens}
                 if 'gpt-oss' in model_name:body['reasoning_effort']='low'
                 if json_mode:body['response_format']={'type':'json_object'}
-                r=llm._req(base+'/chat/completions',key,body)
+                with lease('ai'):
+                    r=llm._req(base+'/chat/completions',key,body)
                 answer=r['choices'][0]['message'].get('content','')
                 if not answer:raise ValueError('provider returned an empty answer')
                 print('studio answered by',env.split('_')[0],model_name,flush=True)

@@ -42,7 +42,11 @@ jobs:
           restore-keys: |
             ce-v1-${{ runner.os }}-${{ github.ref_name }}-
       - name: Select and reserve a new supported topic before media generation
+        id: production
         env:
+          GH_TOKEN: ${{ github.token }}
+          CE_SHARED_SERVICES: '1'
+          CE_JOB_KIND: short
           CE_MAX_SECONDS: '480'
           CE_MAX_REQUESTS: '12'
           TOPIC_IN: ${{ github.event.inputs.topic }}
@@ -55,7 +59,7 @@ jobs:
           if [ "${{ github.event_name }}" = "schedule" ]; then echo auto > topic.txt
           elif [ -n "$TOPIC_IN" ]; then printf '%s\n' "$TOPIC_IN" > topic.txt; else head -n 1 publish/run.trigger > topic.txt; fi
           python3 -m unittest discover -s tests/topic_guard -v
-          python3 -m studio_lib.production --prepare-only --topic-file topic.txt --out scene-factory.mp4
+          python3 -m studio_lib.recovery run --kind daily-short --success-stage planning -- python3 -m studio_lib.production --prepare-only --topic-file topic.txt --out scene-factory.mp4
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/scenes/topic-ledger.json
@@ -66,7 +70,7 @@ jobs:
             sleep 5
           done
           [ "$SAVED" = 1 ] || { echo "Topic reservation was not saved; refusing to render"; exit 1; }
-          python3 -m studio_lib.production --topic-file topic.txt --out scene-factory.mp4
+          python3 -m studio_lib.recovery run --kind daily-short -- python3 -m studio_lib.production --topic-file topic.txt --out scene-factory.mp4
       - name: Verify the tested-component review contract
         run: |
           python3 -c "import json;from pathlib import Path;assert Path('scene-factory.mp4').is_file();assert json.load(open('ce-checks.json'))['verdict']=='warn';assert json.load(open('auto-scene.json'))['mode']=='tested-component'"
@@ -145,3 +149,8 @@ jobs:
             evidence-report.json
             fr/evidence/
           retention-days: 14
+      - name: Confirm Studio delivery in the shared status feed
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python -m studio_lib.recovery stage --kind daily-short --stage delivered
