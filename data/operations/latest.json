@@ -29,12 +29,12 @@
       "run_id": "44197813889",
       "attempt": 1,
       "kind": "short",
-      "stage": "audio",
-      "label": "Checking finished audio",
-      "updated_at": "2026-11-17T23:25:05.946949+00:00",
+      "stage": "ready",
+      "label": "Rendered; Studio delivery pending",
+      "updated_at": "2026-11-17T23:25:10.814319+00:00",
       "source_branch": "studio-cinematic-proof",
       "owner_approved": false,
-      "state": "running"
+      "state": "rendered"
     }
   }
 }
