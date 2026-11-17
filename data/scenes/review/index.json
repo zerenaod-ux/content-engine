@@ -351,7 +351,20 @@
    "ready_for_future_publish": true,
    "record": "saved/ce-20261117-1053-cinema-44068968307/44167864298-1.json",
    "history": []
+  },
+  {
+   "tag": "ce-20261117-0306",
+   "title": "How a Solar Cell Turns Sunlight Into Electricity ☀️",
+   "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@585efe22b2b458a6c80428e839db6344b11fbe3d/videos/ce-20261117-0306.mp4",
+   "folder": "delete",
+   "issue_number": 38,
+   "issue_url": "https://github.com/zerenaod-ux/content-engine/issues/38",
+   "reviewed_at": "2026-11-17T20:19:15.965178+00:00",
+   "publishing_enabled": false,
+   "ready_for_future_publish": false,
+   "record": "delete/ce-20261117-0306/44167911308-1.json",
+   "history": []
   }
  ],
- "updated_at": "2026-11-17T20:18:34.186883+00:00"
+ "updated_at": "2026-11-17T20:19:15.965178+00:00"
 }
