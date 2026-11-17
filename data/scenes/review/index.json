@@ -299,7 +299,59 @@
    "ready_for_future_publish": true,
    "record": "saved/ce-20261117-1726-cinema-44136986640/44167750403-1.json",
    "history": []
+  },
+  {
+   "tag": "ce-20261117-0312",
+   "title": "Why Direct‑Drive Turbines Skip Gearboxes Efficiently 💨",
+   "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@d851729ae9919af0af18d716c33f15e3e415e41d/videos/ce-20261117-0312.mp4",
+   "folder": "delete",
+   "issue_number": 39,
+   "issue_url": "https://github.com/zerenaod-ux/content-engine/issues/39",
+   "reviewed_at": "2026-11-17T20:18:33.229880+00:00",
+   "publishing_enabled": false,
+   "ready_for_future_publish": false,
+   "record": "delete/ce-20261117-0312/44167864298-1.json",
+   "history": []
+  },
+  {
+   "tag": "ce-20261117-0926-cinema-44055594754",
+   "title": "Why Direct-Drive Needs No Gearbox 💨",
+   "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@7a002112f7216a8312f40b33b5ae7f5e16a66300/videos/ce-20261117-0926-cinema-44055594754.mp4",
+   "folder": "delete",
+   "issue_number": 43,
+   "issue_url": "https://github.com/zerenaod-ux/content-engine/issues/43",
+   "reviewed_at": "2026-11-17T20:18:33.706855+00:00",
+   "publishing_enabled": false,
+   "ready_for_future_publish": false,
+   "record": "delete/ce-20261117-0926-cinema-44055594754/44167864298-1.json",
+   "history": []
+  },
+  {
+   "tag": "ce-20261117-1034-cinema-44066025188",
+   "title": "Why Turning a Handle Lights a Lamp 💨",
+   "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@2a9a8a13713c7aac35d57aea66eef99f44896437/videos/ce-20261117-1034-cinema-44066025188.mp4",
+   "folder": "delete",
+   "issue_number": 44,
+   "issue_url": "https://github.com/zerenaod-ux/content-engine/issues/44",
+   "reviewed_at": "2026-11-17T20:18:33.975123+00:00",
+   "publishing_enabled": false,
+   "ready_for_future_publish": false,
+   "record": "delete/ce-20261117-1034-cinema-44066025188/44167864298-1.json",
+   "history": []
+  },
+  {
+   "tag": "ce-20261117-1053-cinema-44068968307",
+   "title": "How Turning a Handle Lights a Lamp 💡",
+   "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@03caad18648b7d25b0699052e510ba344f1a9830/videos/ce-20261117-1053-cinema-44068968307.mp4",
+   "folder": "saved",
+   "issue_number": 45,
+   "issue_url": "https://github.com/zerenaod-ux/content-engine/issues/45",
+   "reviewed_at": "2026-11-17T20:18:34.186883+00:00",
+   "publishing_enabled": false,
+   "ready_for_future_publish": true,
+   "record": "saved/ce-20261117-1053-cinema-44068968307/44167864298-1.json",
+   "history": []
   }
  ],
- "updated_at": "2026-11-17T20:17:56.400090+00:00"
+ "updated_at": "2026-11-17T20:18:34.186883+00:00"
 }
