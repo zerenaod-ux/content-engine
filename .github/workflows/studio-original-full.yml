@@ -1,0 +1,61 @@
+name: Original How It Ticks full video
+on:
+  workflow_dispatch:
+  push:
+    branches: [studio-cinematic-proof]
+    paths: [publish/long.trigger]
+permissions:
+  contents: write
+  issues: write
+  models: read
+concurrency:
+  group: how-it-ticks-original-full
+  cancel-in-progress: false
+jobs:
+  original-full:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 1}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: pip install --quiet numpy pillow edge-tts faster-whisper
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg fonts-dejavu-core > /dev/null
+      - run: python -m unittest discover -s tests/longform -v
+      - run: python -m unittest discover -s tests/cinema -v
+      - uses: actions/cache/restore@v4
+        with:
+          path: |
+            .ce-cache/cinema-voice
+            full-output/accepted-plan.json
+          key: full-proof-${{ runner.os }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: full-proof-${{ runner.os }}-${{ github.run_id }}-
+      - name: Select, write, narrate and render one original landscape topic
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          CE_MAX_REQUESTS: '14'
+          CE_MAX_SECONDS: '600'
+        run: python -m studio_lib.longform.build --out full-output
+      - name: Save original full video and deliver to Studio Review
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python -m studio_lib.longform.deliver
+      - uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: |
+            .ce-cache/cinema-voice
+            full-output/accepted-plan.json
+          key: full-proof-${{ runner.os }}-${{ github.run_id }}-${{ github.run_attempt }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: original-full-evidence
+          path: full-output/
+          retention-days: 14

@@ -159,7 +159,7 @@ def generate(topic,out):
             if not errors:return plan
     raise ValueError('Generated narration rejected: '+str(errors))
 
-async def voice(plan,out):
+async def voice(plan,out,duration_range=(40,70)):
     cache=Path('.ce-cache/cinema-voice');cache.mkdir(parents=True,exist_ok=True)
     beats=[];words=[];t=0;requests=0;hits=0
     for i,b in enumerate(plan['beats']):
@@ -188,7 +188,7 @@ async def voice(plan,out):
         beats.append(dict(b,start=t,end=t+length,voice=str(audio),voice_duration=d,rate=rate,delivery=profile))
         words.extend(dict(text=x['text'],start=t+.06+x['offset']/1e7,end=t+.06+(x['offset']+x['duration'])/1e7,beat=i) for x in events)
         t+=length
-    require_duration(t)
+    if not duration_range[0]<=t<=duration_range[1]:raise ValueError('Measured narration outside required duration range: '+str(t))
     tl={'mechanism':plan['mechanism'],'hook':plan.get('hook',''),'diagram':plan['mechanism'] in SPECS,'beats':beats,'duration':t,'words':words,'requests':requests,'cached_lines':hits}
     (out/'timeline.json').write_text(json.dumps(tl,indent=2));return tl
 

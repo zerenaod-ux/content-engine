@@ -1,0 +1,9 @@
+# Original full-video implementation — November 17
+
+Implemented on studio-cinematic-proof: system-selected topic within rack-and-pinion or rotating lead-screw scope, full-history duplicate checks and durable reservation before media, original model-written sixteen-part continuous explanation, bounded factual critique, cached expressive narration with measured timing, native 1280×720 procedural landscape frames, causal rotation/travel coupling, audio mix without camera sounds or default speech subtitles, measured 120–300 second final-media gate, full decode and independent automated audio review. The new path never loads existing short MP4s and cannot concatenate them.
+
+A dedicated Original How It Ticks full video workflow runs the proof. It preserves accepted narration and completed voice lines for a retry of the same run, archives diagnostics and only delivers after encoded-media/audio checks. Delivery archives the media, saves the mobile Pages copy and index, then creates an idempotent owner-review card. It does not approve or publish.
+
+Five local long-format tests pass for duration/aspect, physically linked bounded motion, chapter direction/continuity and native moving frames for both components. Forty-eight existing cinematic tests pass. Two renderer inspection frames were reviewed locally; no full production video was created on the laptop. Cloud end-to-end result and subjective/scientific inspection are still pending. These are illustrative supported mechanisms, not arbitrary-topic or photorealistic production claims.
+
+The legacy scheduled ce_long.py compilation path remains separate pending proof. Do not call it replaced or merge this implementation into the daily renderer before evidence. Same owner quality requirements as shorts apply, except widescreen and 2–5 minute duration. Further visual richness may be needed after inspecting the actual generated output.
