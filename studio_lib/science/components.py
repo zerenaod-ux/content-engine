@@ -27,8 +27,8 @@ SPECS={
   'An input force pushes the small piston down. No pump motor or control valve is depicted.',
   'The small piston descends while the larger piston rises through a shorter distance.',
   'The same additional pressure reaches the connected fluid; force equals pressure times piston area.',
-  'The larger piston supports greater force but moves less; the displaced fluid volumes match.',
-  'This idealized equal-height calculation ignores leakage, friction, compressibility and pipe losses.',
+  'The output piston has four times the area, four times the ideal force and one-quarter the travel; displaced fluid volumes match.',
+  'This idealized calculation ignores fluid weight, leakage, friction, compressibility and pipe losses; pressure changes do not propagate instantaneously.',
   'Hydraulics trades input travel for output force and still requires mechanical work.']),
  'thermal_contact':('Heat between contacting bodies','https://bsesc.energy.gov/energy-basics/heat-flow',[
   'A warmer body touches a cooler body; ask which way thermal energy moves.',

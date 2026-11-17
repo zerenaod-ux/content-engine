@@ -40,3 +40,7 @@ Checks completed: all 32 local tests passed. All six Blender geometry-only check
 No final-video visual, voice or editorial quality pass is claimed for these six prototypes. The six components are connected in the cinematic test system, not merged into the daily production default. Existing daily support, publishing settings and owner review decisions were not changed. No media generation occurred during this implementation/check phase.
 
 Owner next authorized one fully automatic hydraulic-lift sample and inspection. This supersedes the no-video restriction only for that sample; no blanket video batch or publishing is authorized. Source, narration, animation and review delivery must come from the system, with no hand-editing of its generated plan/video. Automatic approval stays off.
+
+
+### First hydraulic cloud attempt and system repair
+The first run stopped at script validation, before narration/render: all four model candidates ignored the opening-question requirement. No video or Studio card existed; earlier spoken claims that a hydraulic card was ready were incorrect. Saved raw scripts also exposed claims of instantaneous pressure transmission. Added a bounded model-written opening-question repair with raw evidence retention, plus rejection of instantaneous-pressure and increased-work claims. No generated script was manually rewritten. All 34 local tests pass. The owner requested fixing/retrying and opening the real output after delivery; retry is authorized, automatic approval remains off.

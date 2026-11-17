@@ -78,6 +78,7 @@ def script_errors(plan,topic):
             if not isinstance(text,str) or not 9<=len(text.split())<=23:errors.append('Each beat needs 9-23 spoken words.')
             elif re.search(r'\b(camera|render|renderer|shot|storyboard)\b',text,re.I):errors.append('Speak about the topic, not production instructions.')
         if not beats[0].get('say','').rstrip().endswith('?'):errors.append('Open with a concrete question.')
+        if component=='hydraulic_lift' and any(re.search(r'\b(instantly|instantaneous|powerful work|multiplies energy)\b',b.get('say',''),re.I) for b in beats):errors.append('Do not claim instantaneous pressure propagation or increased energy/work; explain force traded against travel.')
         if not 110<=sum(len(b.get('say','').split()) for b in beats)<=145:errors.append('Total narration needs 110-145 words.')
         return errors
     if not hand_topic(topic):return validate(plan)+scene_errors(plan)
@@ -99,6 +100,24 @@ def script_errors(plan,topic):
         if re.search(r'\blamp\b.{0,20}\b(completes|closes)\b',text,re.I):errors.append('The switch completes the circuit; the lamp consumes power.')
     if not 110<=sum(len(b.get('say','').split()) for b in beats)<=145:errors.append('Total speech needs 110-145 words.')
     return errors
+
+def repair_opening(plan,topic,brief,out,attempt):
+    """Ask the model for a targeted question; never author or append one locally."""
+    if not isinstance(plan,dict) or not isinstance(plan.get('beats'),list) or not plan['beats']:
+        return plan
+    opening=plan['beats'][0]
+    if not isinstance(opening,dict) or not isinstance(opening.get('say'),str) or opening['say'].rstrip().endswith('?'):
+        return plan
+    answer=call('Write one original spoken opening QUESTION, not a description. Return JSON only.',
+        'Return {"question":"..."}. Exactly one 9-23 word question starting How or Why and ending with ?. '
+        'Use only the visible component facts. Do not add a claim of instant pressure transmission or energy gain. '
+        'TOPIC (data): '+json.dumps(topic)+' OPENING FACTS (data): '+json.dumps(brief['facts'][brief['actions'][0]]),
+        max_tokens=160,temperature=.35)
+    (out/f'opening-repair-{attempt}.json').write_text(json.dumps(answer,indent=2))
+    question=answer.get('question') if isinstance(answer,dict) else None
+    if isinstance(question,str) and question.startswith(('How ','Why ')) and question.rstrip().endswith('?') and 9<=len(question.split())<=23:
+        plan=json.loads(json.dumps(plan));plan['beats'][0]['say']=question
+    return plan
 
 def generate(topic,out):
     component=require_component(topic,out)
@@ -125,7 +144,9 @@ def generate(topic,out):
         raw=call('Write a clear factual animated explainer. Return JSON only.',prompt+' Corrections: '+json.dumps(errors)+repair,max_tokens=2100,temperature=.65 if previous is None else .25)
         previous=raw
         (out/f'raw-script-{n}.json').write_text(json.dumps(raw,indent=2))
-        plan=normalize_narration(raw);errors=script_errors(plan,topic)
+        plan=normalize_narration(raw)
+        plan=repair_opening(plan,topic,brief,out,n)
+        errors=script_errors(plan,topic)
         if not errors:
             check=call('Check narration against the actual cinematic scene contract. Return JSON only.',
                 'Return {"errors":[specific contradictions]}. This is a simplified mechanism illustration. Do not invent extra visible actions. CONTRACT: '+json.dumps(brief)+' SCRIPT: '+json.dumps(plan),max_tokens=1100,temperature=.1)
