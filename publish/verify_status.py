@@ -8,7 +8,7 @@ def canonical(text):
     return re.sub(r'[^a-z0-9]+',' ',unicodedata.normalize('NFKD',text).lower()).strip()
 
 def main():
-    report={'checked_at':datetime.datetime.now(datetime.timezone.utc).isoformat(),'read_only':True,'complete':False,'platforms':{},'saved':[]}
+    report={'checked_at':datetime.datetime.now(datetime.timezone.utc).isoformat(),'read_only':True,'complete':False,'platforms':{},'saved':[],'timezone':publisher.CFG.get('timezone','America/Chicago'),'posting_slots':publisher.CFG.get('slots',{})}
     if not publisher.TOKEN:raise ValueError('Publishing credential is not configured')
     account=publisher.api('{account{organizations{id}}}')
     if account.get('errors'):raise ValueError('Buffer account read was refused')
@@ -35,7 +35,7 @@ def main():
         report['platforms'][platform]={'returned_posts':len(own),'statuses':{s:sum(p.get('status')==s for p in own) for s in sorted({str(p.get('status')) for p in own})}}
     for item in index.get('items',[]):
         if item.get('folder')!='saved':continue
-        entry={'title':item.get('title'),'platforms':{}}
+        entry={'tag':item['tag'],'title':item.get('title'),'platforms':{}}
         for platform,channel in publisher.CHANNELS.items():
             tracked=state.get(item['tag']+'/'+platform,{})
             matches=[p for p in posts if p.get('channelId')==channel and (p.get('id')==tracked.get('remote') or canonical((p.get('text') or '').split('\n')[0])==canonical(item.get('title','')))]
@@ -45,3 +45,4 @@ def main():
     Path('publish-status-report.json').write_text(json.dumps(report,indent=2))
     print(json.dumps(report,indent=2))
 if __name__=='__main__':main()
+
