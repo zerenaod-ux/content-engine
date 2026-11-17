@@ -7,6 +7,7 @@ from studio_lib.director import validate,normalize_narration
 from studio_lib.providers import call
 from studio_lib.registry import REGISTRY
 from studio_lib.cinema.presentation import illustration_labels
+from studio_lib.duration import require_duration,require_video_duration
 from studio_lib.cinema.speech import VOICE,WRITING_RULES,delivery,cache_key
 from studio_lib.cinema.overlays import events as overlay_events,hook_errors
 from studio_lib.cinema.coverage import require_component,topic_brief
@@ -82,7 +83,7 @@ def script_errors(plan,topic):
         if not beats[0].get('say','').rstrip().endswith('?'):errors.append('Open with a concrete question.')
         if component=='lever_balance':errors+=lever_narration_errors(plan)
         if component=='hydraulic_lift' and any(re.search(r'\b(instantly|instantaneous|powerful work|multiplies energy)\b',b.get('say',''),re.I) for b in beats):errors.append('Do not claim instantaneous pressure propagation or increased energy/work; explain force traded against travel.')
-        if not 110<=sum(len(b.get('say','').split()) for b in beats)<=145:errors.append('Total narration needs 110-145 words.')
+        if not 140<=sum(len(b.get('say','').split()) for b in beats)<=176:errors.append('Total narration needs 140-176 words.')
         return errors
     if not hand_topic(topic):return validate(plan)+scene_errors(plan)
     errors=scene_errors(plan)
@@ -101,7 +102,7 @@ def script_errors(plan,topic):
         if b.get('action')=='shaft' and re.search(r'\b(core|stator)\b',text,re.I):errors.append('Shaft beat must describe torque carried to the rotating magnet disk; do not describe rotation entering a stationary core. Stationary supporting bearings are allowed.')
         if b.get('action')=='machine' and re.search(r'\b(idle|stopped|motionless)\b',text,re.I):errors.append('The crank is already rotating in the opening; only the lamp is off.')
         if re.search(r'\blamp\b.{0,20}\b(completes|closes)\b',text,re.I):errors.append('The switch completes the circuit; the lamp consumes power.')
-    if not 110<=sum(len(b.get('say','').split()) for b in beats)<=145:errors.append('Total speech needs 110-145 words.')
+    if not 140<=sum(len(b.get('say','').split()) for b in beats)<=176:errors.append('Total speech needs 140-176 words.')
     return errors
 
 def repair_opening(plan,topic,brief,out,attempt):
@@ -128,7 +129,7 @@ def generate(topic,out):
     prompt=('Create an original explanation for TOPIC using ONLY this factual/action contract. '
       'Return JSON with mechanism=wind_turbine, title starting How/Why (4-8 words), hook (at most 7 simple words and 40 characters), '
       'and eight beats in the contract action order, each with action, say (9-23 words), camera=wide|mechanism|follow. '
-      'Total 110-145 words. First beat MUST ask a direct puzzle question about wind turning a generator without gears. End it with a question mark. Never start with Look or an introduction. '
+      'Total 140-176 words. First beat MUST ask a direct puzzle question about wind turning a generator without gears. End it with a question mark. Never start with Look or an introduction. '
       'Use conversational contractions, concrete actions and causal links: what moves, then why it matters. '
       'Build toward the lamp payoff. No production language, filler such as introducing/demonstrating, or invented facts. '
       'Do not copy any existing creator dialogue. The voice remains our own licensed TTS voice. '
@@ -137,9 +138,9 @@ def generate(topic,out):
       'and a switch/lamp illustrate the explanation. Never say rotor stops or switch produces energy. '
       'CONTRACT: '+json.dumps(brief)+' TOPIC: '+json.dumps(topic))
     if hand_topic(topic):
-        prompt=('Create an original explanation of this bench-mounted hand-cranked generator. Return JSON with mechanism=hand_generator, title starting How/Why (4-8 words), hook (at most 7 simple words and 40 characters), and eight beats in EXACT contract action order. Each beat has action, say (9-23 words), camera=wide|mechanism|follow. Total 110-145 words. Open with a direct question about turning a handle into light; end first beat with ?. Use direct conversational phrasing, causal links and concrete visible actions, not production instructions. No visible person is present. No wind, turbine or blades. Switch stays open until load: before then say voltage, never claim current flows. Original words, no copied creator script. CONTRACT: '+json.dumps(brief)+' TOPIC: '+json.dumps(topic))
+        prompt=('Create an original explanation of this bench-mounted hand-cranked generator. Return JSON with mechanism=hand_generator, title starting How/Why (4-8 words), hook (at most 7 simple words and 40 characters), and eight beats in EXACT contract action order. Each beat has action, say (9-23 words), camera=wide|mechanism|follow. Total 140-176 words. Open with a direct question about turning a handle into light; end first beat with ?. Use direct conversational phrasing, causal links and concrete visible actions, not production instructions. No visible person is present. No wind, turbine or blades. Switch stays open until load: before then say voltage, never claim current flows. Original words, no copied creator script. CONTRACT: '+json.dumps(brief)+' TOPIC: '+json.dumps(topic))
     if component in SPECS:
-        prompt=('Create an original factual explanation of TOPIC using only this exact simplified diagram. Return JSON with mechanism='+component+', title starting How/Why (4-8 words), hook at most 7 simple words and 40 characters, and eight beats in EXACT contract order. Each beat has action, say (9-23 words), camera=wide|mechanism|follow. Total 110-145 words. Open with a question. Explain the simplification naturally. Do not claim a complete real device, real-time simulation or unsupported process. CONTRACT: '+json.dumps(brief)+' TOPIC: '+json.dumps(topic))
+        prompt=('Create an original factual explanation of TOPIC using only this exact simplified diagram. Return JSON with mechanism='+component+', title starting How/Why (4-8 words), hook at most 7 simple words and 40 characters, and eight beats in EXACT contract order. Each beat has action, say (9-23 words), camera=wide|mechanism|follow. Total 140-176 words. Open with a question. Explain the simplification naturally. Do not claim a complete real device, real-time simulation or unsupported process. CONTRACT: '+json.dumps(brief)+' TOPIC: '+json.dumps(topic))
     prompt+=' DELIVERY: '+WRITING_RULES
     errors=[];previous=None
     for n in range(4):
@@ -241,7 +242,7 @@ def repair_resumed_plan(plan,topic,out):
             'Return the full plan object. Preserve the title, hook, valid sentences and action order. '
             'Keep mechanism unchanged and exactly eight beats in the contract order. '
             'Each beat must include action, say containing 9-23 spoken words, and camera=wide|mechanism|follow. '
-            'Total narration MUST contain 110-145 words. Count words before returning. '
+            'Total narration MUST contain 140-176 words. Count words before returning. '
             'Title starts How/Why and has 4-8 words; hook is at most 7 words and 40 characters. '
             'The first spoken beat remains a direct question ending with ?. '
             'The lever lift happens ONLY in change, after the wide view settles; later beats hold the raised load. '
@@ -279,11 +280,12 @@ def run(topic,out):
     out=Path(out);out.mkdir(parents=True,exist_ok=True);started=time.monotonic()
     # A fresh model-written plan is required for this comparison; no authored script input.
     plan=load_or_generate(topic,out);(out/'plan.json').write_text(json.dumps(plan,indent=2))
-    tl=asyncio.run(voice(plan,out));captions(tl,out,subtitles=False);soundtrack(tl,out)
+    tl=asyncio.run(voice(plan,out));require_duration(tl['duration']);captions(tl,out,subtitles=False);soundtrack(tl,out)
     script=Path(__file__).with_name('diagram_scene.py' if plan['mechanism'] in SPECS else 'scene.py')
     subprocess.run(['xvfb-run','-a','blender','-b','-t','2','--python',str(script),'--',str(out)],check=True)
     subprocess.run(['ffmpeg','-v','error','-y','-framerate','24','-i',str(out/'frames/%05d.png'),'-i',str(out/'mix.wav'),'-vf',f"scale=720:1280:flags=lanczos,ass={out/'captions.ass'}",'-c:v','libx264','-preset','fast','-crf','19','-c:a','aac','-b:a','160k','-af','loudnorm=I=-16:TP=-1.5:LRA=9','-t',str(tl['duration']),'-movflags','+faststart',str(out/'video.mp4')],check=True)
     subprocess.run(['ffmpeg','-v','error','-i',str(out/'video.mp4'),'-f','null','-'],check=True)
+    require_video_duration(out/'video.mp4')
     from studio_lib.cinema.review import review
     review(plan,tl,out)
     result={'topic':topic,'duration':tl['duration'],'wall_seconds':time.monotonic()-started,'manual_script_or_video_edits':False,'render_engine':'Blender Workbench, software graphics on GitHub','scope':plan['mechanism']+'; cinematic comparison','owner_approved':False,'production_deployed':False,'caption_source':'synthesis WordBoundary metadata','reference_audio_measured':False}

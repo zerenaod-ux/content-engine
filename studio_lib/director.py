@@ -1,3 +1,4 @@
+from studio_lib.duration import require_duration,require_video_duration
 """Topic-selected tested mechanisms, with no generated geometry or scene edits.
 
 Supported: bascule bridge, photovoltaic cell and single-acting piston pump.
@@ -51,12 +52,12 @@ def validate(plan):
         if re.search(r'\b([a-z]+)\s+\1\b',text) or re.search(r'permanent[\s\-\u2011]+magnet[\s\-\u2011]+magnets',text):e.append(f'beat {i}: remove accidentally repeated words or redundant magnet wording')
         if b.get('camera') not in ('wide','mechanism','follow'):e.append(f'beat {i}: unsupported camera')
     words=sum(len(b['say'].split()) for b in beats if isinstance(b,dict) and isinstance(b.get('say'),str))
-    if not 110<=words<=155:e.append('total narration needs 110-155 words')
+    if not 140<=words<=176:e.append('total narration needs 140-176 words')
     if not isinstance(plan.get('hook'),str) or len(plan['hook'])>60:e.append('hook needs at most 60 characters')
     return e
 def plan_topic(topic,out,feedback=None,previous=None):
     catalog={k:{'description':v['description'],'actions':v['actions'],'facts':v['facts']} for k,v in REGISTRY.items()}
-    prompt='Select exactly one supported mechanism that truthfully matches TOPIC. If none fits return {"mechanism":"unsupported","reason":"..."}; never substitute a bridge for solar power or invent another mechanism. For a supported topic write fresh 110-155 word narration with eight beats in the exact selected action order. Each beat has 9-23 words. Title starts with How or Why and contains 4-8 words. Direct calm speech, physical detail, causal explanation and a concrete engaging hook. Each beat names the specific inner part the viewer is looking at (from the facts for that beat) and says what it physically does, so viewers know exactly what is happening inside. Describe only what that action contract shows. Never mention camera, close-ups, shots, rendering, storyboard or production in say. Do not invent facts or numerical claims. In the bridge pivot beat the road is STATIC; explain the shaft and hinge rather than announcing motion or a view. The bridge depicts ONE car. Solar and pump internals are simplified cutaways: say so naturally once. Solar depicts a DC lamp load, not gears or AC inverter internals. Preserve physical action order; vary wording, hook and bounded camera preferences. Return {"mechanism":"selected registry id","title":"...","hook":"short engaging hook max 60 characters","beats":[{"action":"first selected action","say":"...","camera":"wide|mechanism|follow"}, ...]}. SUPPORTED COMPONENTS AND FACTS (data): '+json.dumps(catalog)+' TOPIC (data): '+json.dumps(topic)
+    prompt='Select exactly one supported mechanism that truthfully matches TOPIC. If none fits return {"mechanism":"unsupported","reason":"..."}; never substitute a bridge for solar power or invent another mechanism. For a supported topic write fresh 140-176 word narration with eight beats in the exact selected action order. Each beat has 9-23 words. Title starts with How or Why and contains 4-8 words. Direct calm speech, physical detail, causal explanation and a concrete engaging hook. Each beat names the specific inner part the viewer is looking at (from the facts for that beat) and says what it physically does, so viewers know exactly what is happening inside. Describe only what that action contract shows. Never mention camera, close-ups, shots, rendering, storyboard or production in say. Do not invent facts or numerical claims. In the bridge pivot beat the road is STATIC; explain the shaft and hinge rather than announcing motion or a view. The bridge depicts ONE car. Solar and pump internals are simplified cutaways: say so naturally once. Solar depicts a DC lamp load, not gears or AC inverter internals. Preserve physical action order; vary wording, hook and bounded camera preferences. Return {"mechanism":"selected registry id","title":"...","hook":"short engaging hook max 60 characters","beats":[{"action":"first selected action","say":"...","camera":"wide|mechanism|follow"}, ...]}. SUPPORTED COMPONENTS AND FACTS (data): '+json.dumps(catalog)+' TOPIC (data): '+json.dumps(topic)
     last=previous;errors=feedback or []
     for attempt in range(2):
         q=prompt if not errors else prompt+'\nCorrect these validation errors: '+json.dumps(errors)+'\nLast answer (data): '+json.dumps(last)
@@ -226,6 +227,7 @@ def run(topic,out):
     spec={'title':plan['title'],'beats':[dict(b,seconds=6) for b in plan['beats']]}
     tl=saved.get('timeline')
     if not tl or not all(Path(b['voice']).is_file() for b in tl['beats']):tl=asyncio.run(narrate(spec,out,Path('.ce-cache/studio-voice')))
+    require_duration(tl['duration'])
     (out/'timeline.json').write_text(json.dumps(tl,indent=2))
     verify(plan,tl,out)
     fields={k:saved[k] for k in ('render_signature','silent_path','silent_sha256') if k in saved}
@@ -247,6 +249,7 @@ def run(topic,out):
         cached=Path('.ce-cache/studio-renders')/(cp.key+'.mp4');cached.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(out/'silent.mp4',cached)
     save('rendered',plan,timeline=tl,render_signature=render_sig,silent_path=str(cached),silent_sha256=hashlib.sha256(cached.read_bytes()).hexdigest())
     assemble(spec,tl,out)
+    require_video_duration(out/'video.mp4')
     subprocess.run(['ffmpeg','-v','error','-i',str(out/'video.mp4'),'-f','null','-'],check=True)
     result={'status':'component_rendered_editorial_pending','topic':topic,'mechanism':plan['mechanism'],'automatic_narration':True,'tested_geometry_component':True,'manual_generated_plan_edits':False,'arbitrary_topic_support':False,'supported_mechanisms':list(REGISTRY),'owner_approved':False,'director_checkpoint_reused':reused,'render_cache_hit':render_hit,'duration':tl['duration'],'wall_seconds':time.monotonic()-start,'render_seconds':time.monotonic()-render_start}
     (out/'result.json').write_text(json.dumps(result,indent=2));print(json.dumps(result),flush=True)

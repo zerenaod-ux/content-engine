@@ -23,6 +23,6 @@ class RepairContractTests(unittest.TestCase):
             with patch('studio_lib.cinema.build.script_errors',side_effect=[['Contradiction'],[]]),patch('studio_lib.cinema.build.hook_errors',return_value=[]),patch('studio_lib.cinema.build.call',side_effect=[plan,{'errors':[]}]) as model:
                 result,critique,requests=repair_resumed_plan(plan,'How a seesaw trades distance for lifting force',Path(d))
             prompt=model.call_args_list[0].args[1]
-            self.assertIn('9-23 spoken words',prompt);self.assertIn('110-145 words',prompt)
+            self.assertIn('9-23 spoken words',prompt);self.assertIn('140-176 words',prompt)
             self.assertEqual(requests,2);self.assertEqual(critique,{'errors':[]})
             self.assertTrue((Path(d)/'resumed-original-plan.json').exists())
