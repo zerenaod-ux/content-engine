@@ -364,7 +364,72 @@
    "ready_for_future_publish": false,
    "record": "delete/ce-20261117-0306/44167911308-1.json",
    "history": []
+  },
+  {
+   "tag": "ce-20261113-1850",
+   "title": "Why Microwaves Heat Food Instantly 🍲",
+   "video": "https://github.com/zerenaod-ux/content-engine/releases/download/ce-20261113-1850/ce-20261113-1850.mp4",
+   "folder": "delete",
+   "issue_number": 2,
+   "issue_url": "https://github.com/zerenaod-ux/content-engine/issues/2",
+   "reviewed_at": "2026-11-17T22:26:17.712743+00:00",
+   "publishing_enabled": false,
+   "ready_for_future_publish": false,
+   "record": "delete/ce-20261113-1850/44190010925-1.json",
+   "history": []
+  },
+  {
+   "tag": "ce-20261116-0656",
+   "title": "Why Drawbridges Lift for Ships 🚢",
+   "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@14ad947370f92774103a3fe70889b4bf9148ac00/videos/ce-20261116-0656.mp4",
+   "folder": "delete",
+   "issue_number": 30,
+   "issue_url": "https://github.com/zerenaod-ux/content-engine/issues/30",
+   "reviewed_at": "2026-11-17T22:26:23.797448+00:00",
+   "publishing_enabled": false,
+   "ready_for_future_publish": false,
+   "record": "delete/ce-20261116-0656/44190010925-1.json",
+   "history": []
+  },
+  {
+   "tag": "ce-20261117-0234-p3",
+   "title": "How Sunlight Becomes Electrical Power in Panels",
+   "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@6858a92a78cf62a7af95f5bc2cfe06c6397d79f8/videos/ce-20261117-0234-p3.mp4",
+   "folder": "delete",
+   "issue_number": 35,
+   "issue_url": "https://github.com/zerenaod-ux/content-engine/issues/35",
+   "reviewed_at": "2026-11-17T22:26:24.088889+00:00",
+   "publishing_enabled": false,
+   "ready_for_future_publish": false,
+   "record": "delete/ce-20261117-0234-p3/44190010925-1.json",
+   "history": []
+  },
+  {
+   "tag": "ce-20261117-0234-p4",
+   "title": "Why a Bascule Drawbridge Lifts for Ships",
+   "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@94a67585aace5db974b9e2be1471e0f3dac6c808/videos/ce-20261117-0234-p4.mp4",
+   "folder": "saved",
+   "issue_number": 36,
+   "issue_url": "https://github.com/zerenaod-ux/content-engine/issues/36",
+   "reviewed_at": "2026-11-17T22:26:24.351952+00:00",
+   "publishing_enabled": false,
+   "ready_for_future_publish": true,
+   "record": "saved/ce-20261117-0234-p4/44190010925-1.json",
+   "history": []
+  },
+  {
+   "tag": "ce-20261117-0247-p1",
+   "title": "How a wind turbine creates electricity from spinning magnets 🌬️",
+   "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@3960729eef5b8f8ccf083d81227a928b8ec6cdf8/videos/ce-20261117-0247-p1.mp4",
+   "folder": "delete",
+   "issue_number": 37,
+   "issue_url": "https://github.com/zerenaod-ux/content-engine/issues/37",
+   "reviewed_at": "2026-11-17T22:26:24.595681+00:00",
+   "publishing_enabled": false,
+   "ready_for_future_publish": false,
+   "record": "delete/ce-20261117-0247-p1/44190010925-1.json",
+   "history": []
   }
  ],
- "updated_at": "2026-11-17T20:19:15.965178+00:00"
+ "updated_at": "2026-11-17T22:26:24.595681+00:00"
 }
