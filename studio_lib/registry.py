@@ -27,7 +27,7 @@ REGISTRY={
   'inlet':'During intake the inlet check valve opens and the outlet check valve stays closed, preventing reverse flow from the outlet.',
   'compression':'Piston advances, chamber volume decreases and pressure rises; inlet check valve closes.',
   'outlet':'During delivery the outlet check valve opens and the inlet stays closed. Water moves into the delivery pipe and receiving reservoir.',
-  'repeat':'Repeat the same coupled intake/delivery cycle. Flow is pulsating, not continuous during both strokes in this single-acting pump.',
+  'repeat':'Repeat the same coupled intake/delivery cycle. ONLY the delivery stroke sends water into the receiver; the intake stroke refills the chamber. Never say each stroke delivers water. Flow is pulsating.',
   'payoff':'Mechanical work drives the piston and transfers water. One-way valves keep the net flow toward the receiving reservoir.'},'source':'https://files.dep.state.pa.us/water/bsdw/operatorcertification/TrainingModules/WW-9%20Pumps%20and%20Hydraulics_WB_Final.pdf'}
 }
 REGISTRY['wind_turbine']={

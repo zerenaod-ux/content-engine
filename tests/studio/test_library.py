@@ -43,4 +43,7 @@ class LibraryTests(unittest.TestCase):
         plan=fixture('wind_turbine')
         a=np.asarray(picture(27,tl,plan)).astype(int);b=np.asarray(picture(27.7,tl,plan)).astype(int)
         self.assertGreater(np.count_nonzero(np.max(abs(a-b),axis=2)>22),100)
+    def test_single_acting_pump_does_not_deliver_on_both_strokes(self):
+        s=fixture('piston_pump');s['beats'][6]['say']='The cycle repeats, each stroke delivering a distinct pulsating flow toward the destination.'
+        self.assertTrue(any('only the delivery stroke' in e for e in validate(s)))
 if __name__=='__main__':unittest.main()
