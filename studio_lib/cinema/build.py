@@ -112,7 +112,7 @@ def repair_opening(plan,topic,brief,out,attempt):
         'Return {"question":"..."}. Exactly one 9-23 word question starting How or Why and ending with ?. '
         'Use only the visible component facts. Do not add a claim of instant pressure transmission or energy gain. '
         'TOPIC (data): '+json.dumps(topic)+' OPENING FACTS (data): '+json.dumps(brief['facts'][brief['actions'][0]]),
-        max_tokens=160,temperature=.35)
+        max_tokens=450,temperature=.35)
     (out/f'opening-repair-{attempt}.json').write_text(json.dumps(answer,indent=2))
     question=answer.get('question') if isinstance(answer,dict) else None
     if isinstance(question,str) and question.startswith(('How ','Why ')) and question.rstrip().endswith('?') and 9<=len(question.split())<=23:
