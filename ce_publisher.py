@@ -17,7 +17,7 @@ MAX_CREATES = int(os.environ.get('PUBLISH_MAX', '6'))
 import re
 EMOJI = re.compile('[\U0001F300-\U0001FAFF\u2600-\u27BF\u2B50\u2B55\u231A-\u23FF]')
 def title_ok(t):   # TITLE_RULE: How/Why, 4-8 words, plain, ONE emoji at the end, no question mark/hashtag/link
-    t = re.sub(r'\s+', ' ', str(t or '')).strip(); w = EMOJI.sub('', t).split()
+    t = re.sub(r'\s+', ' ', str(t or '').replace('\ufe0f', '')).strip(); w = EMOJI.sub('', t).split()
     return bool(re.match(r'^(How|Why)\b', t)) and 4 <= len(w) <= 8 and len(EMOJI.findall(t)) == 1 and bool(EMOJI.search(t[-2:])) and '?' not in t and not re.search(r'#|https?:|@', t) and len(t) <= 70
 TAGS = '#howitticks #explained #science #howthingswork'
 

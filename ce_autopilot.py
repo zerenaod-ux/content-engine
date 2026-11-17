@@ -19,7 +19,7 @@ def load():
     d = dict(DEF); d.update(c); return d
 def save(c): CFG.parent.mkdir(exist_ok=True); CFG.write_text(json.dumps(c, indent=1))
 def title_ok(t):
-    t = re.sub(r'\s+', ' ', str(t or '')).strip(); w = EMOJI.sub('', t).split()
+    t = re.sub(r'\s+', ' ', str(t or '').replace('\ufe0f', '')).strip(); w = EMOJI.sub('', t).split()
     return bool(re.match(r'^(How|Why)\b', t)) and 4 <= len(w) <= 8 and len(EMOJI.findall(t)) == 1 and bool(EMOJI.search(t[-2:])) and '?' not in t and not re.search(r'#|https?:|@', t) and len(t) <= 70
 
 def main():
