@@ -11,6 +11,7 @@ from bpy_extras.object_utils import world_to_camera_view
 from bpy.app.handlers import persistent
 from studio_lib.science.components import diagram,SPECS
 from studio_lib.cinema.presentation import ease
+from studio_lib.cinema.production_contract import ESSENTIAL_PARTS,framing_errors
 ROOT=Path(sys.argv[sys.argv.index('--')+1]);TL=json.loads((ROOT/'timeline.json').read_text());PLAN=json.loads((ROOT/'plan.json').read_text())
 mechanism=PLAN['mechanism']
 if mechanism not in SPECS:raise ValueError('No diagram component')
@@ -71,9 +72,9 @@ def update(sc):
   o.data.body=label['text'];o.location=label['at'];o.rotation_euler=(cam.location-o.location).to_track_quat('Z','Y').to_euler()
  # Gentle whole-diagram framing, continuous with zero velocity at endpoints.
  if mechanism=='lever_balance':
-  targets=[(-.4,0,2),(0,0,1.9),(-1.7,0,2.1),(-.4,0,2),(-.4,0,2),(-.4,0,2),(-.4,0,2),(-.4,0,2)]
+  targets=[(-.4,0,2),(-.4,0,1.9),(-.4,0,2.1),(-.4,0,2),(-.4,0,2),(-.4,0,2),(-.4,0,2),(-.4,0,2)]
   positions=[(3,-14,6),(2,-10,4),(.5,-11,4),(3,-14,6),(2.5,-14,6),(2,-14,5.5),(3,-14,6),(3.5,-14,6)]
-  scales=[8.8,6.5,5.8,8.8,8.8,8.8,8.8,8.6]
+  scales=[8.8,8.8,8.8,8.8,8.8,8.8,8.8,8.6]
   previous=max(0,index-1);blend=ease((t-beat['start'])/1.2) if index else 1
   focus=Vector(targets[previous]).lerp(Vector(targets[index]),blend)
   cam.location=Vector(positions[previous]).lerp(Vector(positions[index]),blend)
@@ -89,6 +90,16 @@ def update(sc):
 
 bpy.app.handlers.frame_change_pre.append(update)
 scene.frame_start=1;scene.frame_end=math.ceil(TL['duration']*24)
+framing=[]
+for beat in TL['beats']:
+ required=ESSENTIAL_PARTS.get(mechanism,{}).get(beat['action'],[])
+ for fraction in (.1,.5,.9):
+  scene.frame_set(round((beat['start']+(beat['end']-beat['start'])*fraction)*24)+1)
+  points={name:[tuple(world_to_camera_view(scene,cam,objects[name].matrix_world @ Vector(corner))) for corner in objects[name].bound_box] for name in required if name in objects}
+  errors=framing_errors(points,required)
+  framing.append({'action':beat['action'],'fraction':fraction,'errors':errors})
+(ROOT/'framing-checks.json').write_text(json.dumps({'samples':framing,'scope':'Essential part screen bounds only; not occlusion, scientific or aesthetic approval'},indent=2))
+if any(item['errors'] for item in framing):raise ValueError('Essential parts leave the frame; see framing-checks.json')
 if '--check-only' in sys.argv:
  for beat in TL['beats']:
   scene.frame_set(round((beat['start']+beat['end'])/2*24)+1)
