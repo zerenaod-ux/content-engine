@@ -2,10 +2,13 @@
   "run_id": "44197813891",
   "attempt": 1,
   "kind": "full",
-  "stage": "planning",
-  "label": "Writing and checking narration",
-  "updated_at": "2026-11-17T23:18:00.510636+00:00",
+  "stage": "Stopped",
+  "label": "Stopped",
+  "updated_at": "2026-11-17T23:18:11.850038+00:00",
   "source_branch": "studio-cinematic-proof",
   "owner_approved": false,
-  "state": "running"
+  "retryable": false,
+  "next_retry_at": null,
+  "reason": "Needs a code, content or configuration correction",
+  "state": "needs_attention"
 }
