@@ -286,7 +286,20 @@
    "ready_for_future_publish": true,
    "record": "saved/ce-20261117-0857-cinema-44051234755/44136077186-1.json",
    "history": []
+  },
+  {
+   "tag": "ce-20261117-1726-cinema-44136986640",
+   "title": "Why Hydraulic Lifts Trade Travel 🏗️",
+   "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@c22962cfd6c0322c83d4ca37833381447cce6652/videos/ce-20261117-1726-cinema-44136986640.mp4",
+   "folder": "saved",
+   "issue_number": 46,
+   "issue_url": "https://github.com/zerenaod-ux/content-engine/issues/46",
+   "reviewed_at": "2026-11-17T20:17:56.400090+00:00",
+   "publishing_enabled": false,
+   "ready_for_future_publish": true,
+   "record": "saved/ce-20261117-1726-cinema-44136986640/44167750403-1.json",
+   "history": []
   }
  ],
- "updated_at": "2026-11-17T17:21:51.299021+00:00"
+ "updated_at": "2026-11-17T20:17:56.400090+00:00"
 }
