@@ -27,7 +27,7 @@ def main():
     root=Path('incoming/cinema-output') if Path('incoming/cinema-output').exists() else Path('incoming')
     result=json.loads((root/'result.json').read_text());plan=json.loads((root/'plan.json').read_text())
     if result.get('manual_script_or_video_edits') is not False or result.get('owner_approved') is not False:raise ValueError('invalid automatic provenance')
-    if plan.get('mechanism')!='wind_turbine':raise ValueError('unregistered cinematic subject')
+    if plan.get('mechanism') not in ('wind_turbine','hand_generator'):raise ValueError('unregistered cinematic subject')
     video=root/'video.mp4'
     if not video.is_file() or video.stat().st_size<100000:raise ValueError('finished video missing')
     run=api('GET','actions/runs/'+RUN)
