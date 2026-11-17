@@ -2,8 +2,8 @@
 import math,re
 ACTIONS=['question','parts','input','contact','forward','guide','reverse','distance','detail','force','work','control','limits','application','recap','payoff']
 SOURCES={
- 'rack_pinion':{'source':'https://khkgears.us/media/wjon4hs3/gear-solutions_khk_converting-to-linear-motion-using-rack-and-pinion.pdf','scope':'A bench rack-and-pinion with a fixed bearing, marked rotating pinion, meshing straight rack and translating carriage; not a complete car steering system.','relation':'Rack displacement equals pitch radius times pinion angle, without slip in the ideal geometry. Reverse rotation reverses travel.'},
- 'lead_screw':{'source':'https://www.thomsonlinear.com/en/products/lead-screws/','scope':'A rotating lead screw in fixed supports, a nonrotating nut attached to a guided translating carriage; not a ball screw or complete motor.','relation':'Nut travel equals screw lead times turns. The guide prevents the nut from rotating; reversing rotation reverses travel.'}}
+ 'rack_pinion':{'source':'https://khkgears.us/media/wjon4hs3/gear-solutions_khk_converting-to-linear-motion-using-rack-and-pinion.pdf','scope':'A single fixed-diameter bench rack-and-pinion with a fixed bearing, marked rotating pinion, meshing straight rack and translating carriage; not a complete car steering system.','relation':'Rack displacement equals pitch radius times pinion angle, without slip in the ideal geometry. Reverse rotation reverses travel.'},
+ 'lead_screw':{'source':'https://www.thomsonlinear.com/en/products/lead-screws/','scope':'A single fixed-lead rotating lead screw in fixed supports, a nonrotating nut attached to a guided translating carriage; not a ball screw or complete motor.','relation':'Nut travel equals screw lead times turns. The guide prevents the nut from rotating; reversing rotation reverses travel.'}}
 FACTS={
  'question':'The assembled mechanism is moving slowly; ask a concrete question about rotation becoming straight travel.',
  'parts':'The same assembly remains visible. Identify fixed supports, rotating input and guided translating output.',

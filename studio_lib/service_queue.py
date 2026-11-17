@@ -63,3 +63,19 @@ def lease(service):
    except urllib.error.HTTPError as e:
     if e.code not in (409,422):raise
     time.sleep(1)
+
+def cooling_down(provider,now=None):
+ if os.environ.get('CE_SHARED_SERVICES')!='1':return False
+ state,_=read_document('data/operations/service-leases.json',{})
+ return state.get('cooldowns',{}).get(provider,0)>(time.time() if now is None else now)
+
+def remember_cooldown(provider,retry_at):
+ if os.environ.get('CE_SHARED_SERVICES')!='1':return
+ path='data/operations/service-leases.json'
+ for attempt in range(5):
+  state,sha=read_document(path,{'leases':{},'waiters':[]})
+  state.setdefault('cooldowns',{})[provider]=max(retry_at,state.get('cooldowns',{}).get(provider,0))
+  try:write_document(path,state,sha,'Remember shared provider cooldown');return
+  except urllib.error.HTTPError as e:
+   if e.code not in (409,422) or attempt==4:raise
+   time.sleep(1)

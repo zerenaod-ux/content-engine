@@ -8,6 +8,7 @@ from studio_lib.cinema.auto_topic import api,read
 from studio_lib.cinema.build import voice,soundtrack
 from studio_lib.cinema.review import review
 from studio_lib.longform.contract import ACTIONS,SOURCES,FACTS,errors,require_media
+from studio_lib.longform.repair import repair_sections,unsupported_comparison
 from studio_lib.longform.render import frame,WIDTH,HEIGHT
 
 def select(out):
@@ -25,6 +26,7 @@ def select(out):
   (out/f'topic-selection-{i}.json').write_text(json.dumps(candidate,indent=2))
   topic=candidate.get('topic','');mechanism=candidate.get('mechanism')
   reason=duplicate(topic,rows)
+  if mechanism in SOURCES and unsupported_comparison(topic,mechanism):reason='This topic requires geometry variants not shown by the fixed mechanism; choose a topic within the actual scope'
   if mechanism not in SOURCES or reason:rejected.append(reason or 'Unsupported scope');continue
   own=str(os.environ['GITHUB_RUN_ID'])
   for attempt in range(4):
@@ -45,9 +47,11 @@ def plan(out):
   result=json.loads(saved.read_text())
   if not errors(result):return result
  print('CE_STAGE=planning',flush=True)
- selected=select(out);rejected=[]
+ selected=select(out);rejected=[];result=None
  for attempt in range(4):
-  result=call('Write one original factual continuous explainer. Return JSON only.',
+  if result is not None and rejected and all('chapter needs' in e.lower() or 'narration must total' in e.lower() for e in rejected):
+   result=repair_sections(result,out,attempt)
+  else:result=call('Write one original factual continuous explainer. Return JSON only.',
    'One subject only. Native long format, not assembled shorts. Return {"topic":exact topic,"mechanism":exact id,"title":"How/Why 4-8 words","hook":"2-7 simple words max 40 characters","beats":[{"action":"exact action","say":"30-44 spoken words","camera":"wide|engagement|output"}]}. Exactly sixteen actions in order: '+json.dumps(ACTIONS)+'. Total 480-650 words. First spoken beat ends with ?. Energetic natural delivery, short clauses, concrete cause and effect. No spoken camera directions, padding, horror framing, invented parts or numerical performance. Do not describe an unshown force sensor or invisible force as a literal object. Facts/source and visible action contract: '+json.dumps({'selected':selected,'source':SOURCES[selected['mechanism']],'actions':FACTS})+' PREVIOUS ERRORS: '+json.dumps(rejected),max_tokens=3600,temperature=.35)
   (out/f'raw-plan-{attempt}.json').write_text(json.dumps(result,indent=2));rejected=errors(result)
   if result.get('topic')!=selected['topic'] or result.get('mechanism')!=selected['mechanism']:rejected.append('Preserve selected topic and mechanism')

@@ -57,7 +57,7 @@ def topic_brief(topic):
     for name,pattern in {
       'lever_balance':r'\b(lever|seesaw)\b',
       'resistive_circuit':r'\b(resistor|ohmic|resistive circuit)\b',
-      'hydraulic_lift':r'\bhydraulic (lift|press|jack)\b',
+      'hydraulic_lift':r'\bhydraulic (lifts?|press(?:es)?|jacks?)\b',
       'thermal_contact':r'\b(thermal contact|heat between|heat transfer between|contacting bodies)\b',
       'dna_pairing':r'\b(dna base pair|dna base pairing|complementary dna|base pairs)\b',
       'water_transfer':r'\b(water between reservoirs|water transfer between|two reservoirs)\b',
