@@ -26,18 +26,15 @@
       "state": "needs_attention"
     },
     "short": {
-      "run_id": "44197813889",
+      "run_id": "44199928492",
       "attempt": 1,
       "kind": "short",
-      "stage": "inspection_failed",
-      "label": "Repeat-topic proof rejected",
-      "updated_at": "2026-11-17T23:30:51.446Z",
+      "stage": "selection",
+      "label": "Selecting a new topic",
+      "updated_at": "2026-11-17T23:52:06.714032+00:00",
       "source_branch": "studio-cinematic-proof",
       "owner_approved": false,
-      "state": "needs_attention",
-      "reason": "Hydraulic lift was already covered; plural matching correction is applied to the next proof",
-      "retryable": false,
-      "next_retry_at": null
+      "state": "running"
     }
   }
 }
