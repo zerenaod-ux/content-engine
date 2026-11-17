@@ -265,5 +265,14 @@
   "title": "How Machines Work From the Inside 🔧",
   "video": "https://zerenaod-ux.github.io/content-engine/videos/ce-long-20261117-1921.mp4",
   "kind": "long"
+ },
+ {
+  "date": "2026-11-17",
+  "tag": "ce-20261117-2028-cinema-44169681052",
+  "title": "Why a Seesaw Lifts With Less Force ⚖️",
+  "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@ec9ae820991c7083469fce6d20432ef833da44de/videos/ce-20261117-2028-cinema-44169681052.mp4",
+  "source": "automatic cinematic comparison",
+  "source_run": "44169681052",
+  "owner_approved": false
  }
 ]
