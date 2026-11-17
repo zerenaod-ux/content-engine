@@ -15,9 +15,9 @@
       "run_id": "44197813891",
       "attempt": 1,
       "kind": "full",
-      "stage": "planning",
-      "label": "Writing and checking narration",
-      "updated_at": "2026-11-17T23:17:09.378648+00:00",
+      "stage": "queued",
+      "label": "Waiting for shared services",
+      "updated_at": "2026-11-17T23:17:24.050972+00:00",
       "source_branch": "studio-cinematic-proof",
       "owner_approved": false,
       "state": "running"
