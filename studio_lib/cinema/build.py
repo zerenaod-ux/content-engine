@@ -6,6 +6,7 @@ import edge_tts
 from studio_lib.director import validate,normalize_narration
 from studio_lib.providers import call
 from studio_lib.registry import REGISTRY
+from studio_lib.cinema.presentation import illustration_labels
 
 def groups(words):
     """Never cross narration beats, pauses or punctuation with a caption."""
@@ -25,7 +26,7 @@ def hand_topic(topic):return bool(re.search(r'\b(hand.?crank|cranked|cranking)\b
 def contract(topic=''):
     brief=json.loads(json.dumps(REGISTRY['wind_turbine']))
     brief['facts']['rotor']='The hub and all three blades rotate as one rigid assembly. Circular pitch bearings are visible but NO blade pitch adjustment is animated. Do not claim blades twist in these bearings.'
-    brief['facts']['induction']='A close view shows rotating red/blue magnets beside stationary copper windings. Changing magnetic flux induces alternating voltage. There is NO coil glow, flash, spark, voltage-spike display or field-line animation. The copper coils do not literally light up.'
+    brief['facts']['induction']='A close view shows rotating red/blue magnets beside stationary copper windings. Changing magnetic flux induces alternating voltage. There is NO coil glow, flash, spark, voltage-spike display; field lines are labeled schematic illustrations, not visible physical objects. The copper coils do not literally light up.'
     brief['facts']['load']='The demonstration switch closes and the lamp changes from off to a steady bright state. It does not flicker. The circuit markers are illustrative. No grid connection or power-electronics internals are shown.'
     brief['facts']['payoff']='The same turbine keeps turning as the cover returns. The rotor and generator share a shaft, so no speed-increasing gearbox is needed. Energy conversion has losses; do not claim universally higher efficiency or zero loss.'
     for action in ('generator','induction'):
@@ -42,6 +43,9 @@ def contract(topic=''):
           'load':'Closing the switch completes the circuit. Generated voltage then drives current through the connected lamp, which emits steady light. Moving markers illustrate this closed electrical path.',
           'payoff':'The same crank continues turning and mechanical input becomes electrical energy with losses. Do not speak about the cover, reveal, cutaway or any other presentation movement. This is a simplified generator, not a free-energy machine.'},
           'source':'https://www.eia.gov/energyexplained/electricity/how-electricity-is-generated.php'}
+    for action in ('generator','induction'):
+        brief['facts'][action]+=' Labeled animated magnetic-field lines illustrate the changing invisible field; they are schematic, not literal glowing objects or a measured field simulation.'
+    brief['presentation_rules']={'camera':'Smooth continuous silent camera moves; camera movement never triggers sound.', 'motion':'Representative real-time hand crank 45 rpm or direct-drive wind rotor 12 rpm. All rigid shaft parts share angular speed. Never claim one speed applies to every real machine.', 'invisible_effects':'Only supported labeled schematic overlays may depict invisible processes. Never invent extra effects or describe field lines as physically visible.'}
     return brief
 
 def scene_errors(plan):
@@ -153,6 +157,8 @@ def captions(tl,out):
         lines.append(f"Dialogue: 0,{ass_time(start)},{ass_time(end)},Default,,0,0,0,,{text}")
     if any(a['end']>=b['start'] for a,b in zip(intervals,intervals[1:])):raise ValueError('Caption overlap')
     (out/'caption-checks.json').write_text(json.dumps({'errors':[],'intervals':intervals},indent=2))
+    for start,end,text in illustration_labels(tl.get('beats',[])):
+        lines.append(f'Dialogue: 1,{ass_time(start)},{ass_time(end)},Default,,0,0,0,,{{\\an8\\fs27\\pos(360,85)}}{text}')
     p=out/'captions.ass';p.write_text(header+'\n'.join(lines)+'\n');return p
 
 def soundtrack(tl,out):
@@ -160,14 +166,11 @@ def soundtrack(tl,out):
     for b in tl['beats']:
         raw=subprocess.check_output(['ffmpeg','-v','error','-i',b['voice'],'-ar',str(sr),'-ac','1','-f','f32le','-'])
         x=np.frombuffer(raw,np.float32);start=int((b['start']+.06)*sr);x=x[:n-start];v[start:start+len(x)]+=x
-    # Quiet transition swishes and a mechanical switch click, ducked beneath speech.
-    rng=np.random.default_rng(19);events=[]
-    for i,b in enumerate(tl['beats'][1:],1):
-        start=int(b['start']*sr);length=min(int(.24*sr),n-start);z=np.arange(length)/sr
-        fx[start:start+length]+=.025*rng.normal(size=length)*np.sin(np.pi*z/.24)**2
-        events.append({'action':b['action'],'time':b['start'],'sound':'camera transition swish'})
+    # Only a physical switch action gets a click. Camera movement is silent.
+    events=[]
+    for b in tl['beats']:
         if b['action']=='load':
-            length=min(int(.07*sr),n-start);z=np.arange(length)/sr
+            start=int(b['start']*sr);length=min(int(.07*sr),n-start);z=np.arange(length)/sr
             fx[start:start+length]+=.07*np.sin(2*np.pi*1300*z)*np.exp(-z*75)
             events.append({'action':'load','time':b['start'],'sound':'switch click'})
     t=np.arange(n)/sr;bed=.009*(np.sin(2*np.pi*110*t)+.25*np.sin(2*np.pi*165*t))

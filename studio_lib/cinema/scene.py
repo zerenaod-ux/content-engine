@@ -5,6 +5,8 @@ from mathutils import Vector
 from bpy.app.handlers import persistent
 ROOT=Path(sys.argv[sys.argv.index('--')+1]);TL=json.loads((ROOT/'timeline.json').read_text())
 PLAN=json.loads((ROOT/'plan.json').read_text());HAND=PLAN['mechanism']=='hand_generator'
+sys.path.insert(0,str(Path(__file__).resolve().parents[2]))
+from studio_lib.cinema.presentation import camera_pose,rotor_angle
 FPS=24
 def smooth(x):x=max(0,min(1,x));return x*x*(3-2*x)
 def ramp(t,a,b):return smooth((t-a)/(b-a))
@@ -99,6 +101,18 @@ for k in range(2):ball('switch contact',(3.5+k*.35,-.4,1.3),.055,'metal')
 line('switch-to-load connector',[(3.85,-.4,1.3),(4.3,-.4,1.3)],.035,'dark')
 wind=[line('moving air trail',[(0,0,0),(0,.6,0)],.018,'cyan') for k in range(10)]
 current=[ball('circuit marker',(0,0,0),.055,'cyan') for k in range(15)]
+# Schematic field loops rotate with the magnets; coils remain stationary.
+# These are explanatory geometry, not a measured field solution or literal light.
+field_lines=[]
+for k in range(4):
+    a=(2*k+1)*math.pi/4
+    points=[]
+    for n in range(49):
+        q=n/48*2*math.pi
+        angle=a+(.5-.5*math.cos(q))*math.pi/4
+        radius=.50+.50*math.sin(q)**2
+        points.append((radius*math.sin(angle),.18+.16*math.sin(q),5.2+radius*math.cos(angle)))
+    o=line('schematic magnetic field loop',points,.014,'cyan');parent(o,rotor);field_lines.append(o)
 camdata=bpy.data.cameras.new('story camera');cam=bpy.data.objects.new('story camera',camdata);scene.collection.objects.link(cam);scene.camera=cam
 camdata.lens=48;camdata.clip_end=300;camdata.clip_start=.05
 # A director grammar supplies a safe framing range; generated narration supplies timing.
@@ -108,7 +122,8 @@ def state(t):
     return i,b,u
 @persistent
 def update(sc):
-    t=(sc.frame_current-1)/FPS;i,b,u=state(t);rotor.rotation_euler[1]=t*.98
+    t=(sc.frame_current-1)/FPS;i,b,u=state(t);rotor.rotation_euler[1]=rotor_angle(PLAN['mechanism'],t)
+    for o in field_lines:o.hide_render=b['action'] not in ('generator','induction')
     cut=ramp(t,TL['beats'][3]['start']-.5,TL['beats'][3]['start']+.8)*(1-ramp(t,TL['beats'][7]['start'],TL['beats'][7]['start']+1))
     shell.location.z=5.7+3.5*cut
     for k,o in enumerate(wind):
@@ -121,14 +136,7 @@ def update(sc):
     pts=[(1.4,-.4,5.2),(1.4,-.4,.3),(3.5,-.4,.3),(3.5,-.4,1.3),(4.3,-.4,1.3),(4.3,-.4,.15),(1.1,-.4,.15),(1.1,-.4,5.2)]
     for k,o in enumerate(current):
         o.hide_render=not closed;q=((t*.09+k/15)%1)*(len(pts)-1);j=int(q);o.location=Vector(pts[j]).lerp(Vector(pts[j+1]),q-j)
-    j=max(0,i-1);blend=smooth((t-b['start'])/.60) if i else 1
-    target=Vector(SHOTS[j][0]).lerp(Vector(SHOTS[i][0]),blend)
-    pos=Vector(SHOTS[j][1]).lerp(Vector(SHOTS[i][1]),blend)
-    if HAND:
-        # Keep the full moving crank in frame throughout both input beats.
-        wide=(1.25 if i in (1,2) else 1.0)
-        pos=target+(pos-target)*wide
-    pos=target+(pos-target)*(1-.035*u)
+    target,pos=(Vector(v) for v in camera_pose(SHOTS,TL['beats'],t,PLAN['mechanism']))
     cam.location=pos;cam.rotation_euler=(target-pos).to_track_quat('-Z','Y').to_euler()
 bpy.app.handlers.frame_change_pre.append(update)
 scene.frame_start=1;scene.frame_end=math.ceil(TL['duration']*FPS)
