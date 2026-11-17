@@ -1,0 +1,27 @@
+name: Verify How It Ticks publishing status (read only)
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [.github/workflows/ce-publish-verify.yml, publish/verify_status.py]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: main}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - name: Read publishing status without creating any post
+        env:
+          BUFFER_TOKEN: ${{ secrets.BUFFER_TOKEN }}
+        run: python publish/verify_status.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: publishing-status
+          path: publish-status-report.json
+          retention-days: 7
