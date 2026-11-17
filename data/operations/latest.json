@@ -1,0 +1,15 @@
+{
+  "jobs": {
+    "self-test": {
+      "run_id": "44197524528",
+      "attempt": 1,
+      "kind": "self-test",
+      "stage": "selection",
+      "label": "Selecting a new topic",
+      "updated_at": "2026-11-17T23:14:06.166535+00:00",
+      "source_branch": "main",
+      "owner_approved": false,
+      "state": "running"
+    }
+  }
+}
