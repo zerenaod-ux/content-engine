@@ -8,6 +8,7 @@ from studio_lib.providers import call
 from studio_lib.registry import REGISTRY
 from studio_lib.cinema.presentation import illustration_labels
 from studio_lib.cinema.speech import VOICE,WRITING_RULES,delivery,cache_key
+from studio_lib.cinema.coverage import require_component
 
 def groups(words):
     """Never cross narration beats, pauses or punctuation with a caption."""
@@ -83,6 +84,7 @@ def script_errors(plan,topic):
     return errors
 
 def generate(topic,out):
+    require_component(topic,out)
     brief=contract(topic)
     prompt=('Create an original explanation for TOPIC using ONLY this factual/action contract. '
       'Return JSON with mechanism=wind_turbine, title starting How/Why (4-8 words), hook (under 60 characters), '
