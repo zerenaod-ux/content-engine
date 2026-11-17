@@ -2,9 +2,9 @@
   "run_id": "44197813889",
   "attempt": 1,
   "kind": "short",
-  "stage": "selection",
-  "label": "Selecting a new topic",
-  "updated_at": "2026-11-17T23:17:05.889990+00:00",
+  "stage": "planning",
+  "label": "Writing and checking narration",
+  "updated_at": "2026-11-17T23:17:08.368383+00:00",
   "source_branch": "studio-cinematic-proof",
   "owner_approved": false,
   "state": "running"
