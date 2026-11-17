@@ -27,12 +27,22 @@ jobs:
       - uses: actions/cache/restore@v4
         with:
           path: .ce-cache/cinema-voice
-          key: cinema-voice-${{ runner.os }}-${{ github.run_id }}
+          key: cinema-voice-${{ runner.os }}-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: cinema-voice-${{ runner.os }}-
+      - uses: actions/cache/restore@v4
+        with:
+          path: |
+            cinema-output/plan.json
+            cinema-output/topic-brief.json
+            cinema-output/narration-critique.json
+          key: cinema-plan-${{ runner.os }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: cinema-plan-${{ runner.os }}-${{ github.run_id }}-
       - name: System selects and reserves an uncovered topic from full history
         if: hashFiles('publish/cinema.auto') != ''
         env:
           GH_TOKEN: ${{ github.token }}
+          CE_SHARED_SERVICES: '1'
+          CE_JOB_KIND: short
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
@@ -40,7 +50,7 @@ jobs:
           MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
           CE_MAX_REQUESTS: '8'
           CE_MAX_SECONDS: '240'
-        run: python -m studio_lib.cinema.auto_topic
+        run: python -m studio_lib.recovery run --kind short --success-stage planning -- python -m studio_lib.cinema.auto_topic
       - name: Select matching accepted-stage recovery
         id: resume
         run: |
@@ -63,6 +73,9 @@ jobs:
           github-token: ${{ github.token }}
       - name: Generate and render from topic without authored script
         env:
+          GH_TOKEN: ${{ github.token }}
+          CE_SHARED_SERVICES: '1'
+          CE_JOB_KIND: short
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
@@ -72,12 +85,20 @@ jobs:
           CE_MAX_SECONDS: '480'
           CE_METRICS_PATH: cinema-metrics.json
           CE_CINEMA_RESUME_DIR: cinema-resume/cinema-output
-        run: python -m studio_lib.cinema.build --topic-file publish/cinema.topic --out cinema-output
+        run: python -m studio_lib.recovery run --kind short -- python -m studio_lib.cinema.build --topic-file publish/cinema.topic --out cinema-output
       - uses: actions/cache/save@v4
         if: always()
         with:
           path: .ce-cache/cinema-voice
-          key: cinema-voice-${{ runner.os }}-${{ github.run_id }}
+          key: cinema-voice-${{ runner.os }}-${{ github.run_id }}-${{ github.run_attempt }}
+      - uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: |
+            cinema-output/plan.json
+            cinema-output/topic-brief.json
+            cinema-output/narration-critique.json
+          key: cinema-plan-${{ runner.os }}-${{ github.run_id }}-${{ github.run_attempt }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:

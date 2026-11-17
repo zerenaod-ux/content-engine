@@ -7,6 +7,7 @@ from studio_lib.director import validate,normalize_narration
 from studio_lib.providers import call
 from studio_lib.registry import REGISTRY
 from studio_lib.cinema.presentation import illustration_labels
+from studio_lib.service_queue import lease
 from studio_lib.duration import require_duration,require_video_duration
 from studio_lib.cinema.speech import VOICE,WRITING_RULES,delivery,cache_key
 from studio_lib.cinema.overlays import events as overlay_events,hook_errors
@@ -171,7 +172,8 @@ async def voice(plan,out,duration_range=(40,70)):
             for attempt in range(4):
                 requests+=1
                 try:
-                    await asyncio.wait_for(edge_tts.Communicate(b['say'],VOICE,rate=rate,pitch=profile['pitch'],volume=profile['volume'],boundary='WordBoundary').save(str(audio),str(meta)),timeout=75)
+                    with lease('voice'):
+                        await asyncio.wait_for(edge_tts.Communicate(b['say'],VOICE,rate=rate,pitch=profile['pitch'],volume=profile['volume'],boundary='WordBoundary').save(str(audio),str(meta)),timeout=75)
                     if audio.stat().st_size<=1000 or meta.stat().st_size<=20:
                         raise edge_tts.exceptions.NoAudioReceived('Incomplete narration response')
                     break
@@ -264,7 +266,7 @@ def repair_resumed_plan(plan,topic,out):
 
 def load_or_generate(topic,out):
     """Resume the same topic; repair new contradictions before reusing a stage."""
-    resume=os.environ.get('CE_CINEMA_RESUME_DIR')
+    resume=str(out) if all((out/name).exists() for name in ('plan.json','topic-brief.json','narration-critique.json')) else os.environ.get('CE_CINEMA_RESUME_DIR')
     if resume:
         root=Path(resume)
         if (root/'plan.json').exists():
@@ -282,13 +284,17 @@ def load_or_generate(topic,out):
 def run(topic,out):
     out=Path(out);out.mkdir(parents=True,exist_ok=True);started=time.monotonic()
     # A fresh model-written plan is required for this comparison; no authored script input.
+    print('CE_STAGE=planning',flush=True)
     plan=load_or_generate(topic,out);(out/'plan.json').write_text(json.dumps(plan,indent=2))
+    print('CE_STAGE=voice',flush=True)
     tl=asyncio.run(voice(plan,out));require_duration(tl['duration']);captions(tl,out,subtitles=False);soundtrack(tl,out)
     script=Path(__file__).with_name('diagram_scene.py' if plan['mechanism'] in SPECS else 'scene.py')
+    print('CE_STAGE=render',flush=True)
     subprocess.run(['xvfb-run','-a','blender','-b','-t','2','--python',str(script),'--',str(out)],check=True)
     subprocess.run(['ffmpeg','-v','error','-y','-framerate','24','-i',str(out/'frames/%05d.png'),'-i',str(out/'mix.wav'),'-vf',f"scale=720:1280:flags=lanczos,ass={out/'captions.ass'}",'-c:v','libx264','-preset','fast','-crf','19','-c:a','aac','-b:a','160k','-af','loudnorm=I=-16:TP=-1.5:LRA=9','-t',str(tl['duration']),'-movflags','+faststart',str(out/'video.mp4')],check=True)
     subprocess.run(['ffmpeg','-v','error','-i',str(out/'video.mp4'),'-f','null','-'],check=True)
     require_video_duration(out/'video.mp4')
+    print('CE_STAGE=audio',flush=True)
     from studio_lib.cinema.review import review
     review(plan,tl,out)
     result={'topic':topic,'duration':tl['duration'],'wall_seconds':time.monotonic()-started,'manual_script_or_video_edits':False,'render_engine':'Blender Workbench, software graphics on GitHub','scope':plan['mechanism']+'; cinematic comparison','owner_approved':False,'production_deployed':False,'caption_source':'synthesis WordBoundary metadata','reference_audio_measured':False}

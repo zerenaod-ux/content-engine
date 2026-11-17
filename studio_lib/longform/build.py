@@ -16,6 +16,8 @@ def select(out):
   data,_=read(path)
   if not isinstance(data,list):raise ValueError('Full topic history unavailable')
   rows+=data
+ owned=[r for r in rows if str(r.get('owner'))==str(os.environ['GITHUB_RUN_ID']) and r.get('format')=='original_full']
+ if owned:return {'topic':owned[-1]['topic'],'mechanism':owned[-1]['mechanism']}
  rejected=[]
  for i in range(4):
   candidate=call('Choose a genuinely new original full-video topic. Return JSON only.',
@@ -42,6 +44,7 @@ def plan(out):
  if saved.exists():
   result=json.loads(saved.read_text())
   if not errors(result):return result
+ print('CE_STAGE=planning',flush=True)
  selected=select(out);rejected=[]
  for attempt in range(4):
   result=call('Write one original factual continuous explainer. Return JSON only.',
@@ -60,9 +63,11 @@ def plan(out):
 def run(out):
  out=Path(out);out.mkdir(parents=True,exist_ok=True);started=time.monotonic();p=plan(out)
  # Same voice delivery and measured word timing as shorts; full format has its own duration range.
+ print('CE_STAGE=voice',flush=True)
  tl=asyncio.run(voice(p,out,duration_range=(120,300)));require_media(tl['duration'],WIDTH,HEIGHT)
  soundtrack(tl,out)
  for i,b in enumerate(tl['beats']):frame((b['start']+b['end'])/2,tl,p).save(out/f'check-{i:02}.png')
+ print('CE_STAGE=render',flush=True)
  fps=20
  proc=subprocess.Popen(['ffmpeg','-v','error','-y','-f','rawvideo','-pixel_format','rgb24','-video_size',f'{WIDTH}x{HEIGHT}','-framerate',str(fps),'-i','-','-an','-c:v','libx264','-preset','veryfast','-crf','21','-pix_fmt','yuv420p',str(out/'silent.mp4')],stdin=subprocess.PIPE)
  try:
@@ -74,7 +79,8 @@ def run(out):
  subprocess.run(['ffmpeg','-v','error','-y','-i',str(out/'silent.mp4'),'-i',str(out/'mix.wav'),'-c:v','copy','-c:a','aac','-b:a','128k','-af','loudnorm=I=-16:TP=-1.5:LRA=9','-t',str(tl['duration']),'-movflags','+faststart',str(out/'video.mp4')],check=True)
  measured=json.loads(subprocess.check_output(['ffprobe','-v','error','-show_streams','-show_format','-of','json',str(out/'video.mp4')]))
  stream=next(s for s in measured['streams'] if s['codec_type']=='video');require_media(float(measured['format']['duration']),stream['width'],stream['height'])
- subprocess.run(['ffmpeg','-v','error','-i',str(out/'video.mp4'),'-f','null','-'],check=True);review(p,tl,out)
+ subprocess.run(['ffmpeg','-v','error','-i',str(out/'video.mp4'),'-f','null','-'],check=True)
+ print('CE_STAGE=audio',flush=True);review(p,tl,out)
  result={'topic':p['topic'],'mechanism':p['mechanism'],'format':'original_full','duration':float(measured['format']['duration']),'width':stream['width'],'height':stream['height'],'manual_script_or_video_edits':False,'selected_by_system':True,'reused_short_assets':False,'owner_approved':False,'wall_seconds':time.monotonic()-started,'source':SOURCES[p['mechanism']]['source'],'quality_state':'technical_checks_passed_owner_visual_review_required'}
  (out/'result.json').write_text(json.dumps(result,indent=2));print(json.dumps(result),flush=True)
 if __name__=='__main__':

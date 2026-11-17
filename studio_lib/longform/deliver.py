@@ -7,6 +7,7 @@ os.environ.setdefault('SOURCE_RUN',os.environ['GITHUB_RUN_ID'])
 from studio_lib.cinema.deliver import api,get,put_file,REPO,RUN,TOKEN
 
 def main():
+ print('CE_STAGE=delivery',flush=True)
  root=Path('full-output');result=json.loads((root/'result.json').read_text());plan=json.loads((root/'accepted-plan.json').read_text())
  if result.get('format')!='original_full' or result.get('manual_script_or_video_edits') is not False or result.get('selected_by_system') is not True or result.get('reused_short_assets') is not False:raise ValueError('Original full-video provenance unavailable')
  require_media(result['duration'],result['width'],result['height'])
@@ -34,5 +35,6 @@ def main():
  cards=api('GET','issues?state=all&labels=long-video&per_page=100')
  if not any(marker in (i.get('body') or '') for i in cards):
   api('POST','issues',{'title':'How It Ticks: '+title,'labels':['scene-review','checks-warn','long-video'],'body':'Original full video, one system-selected topic, native 16:9. NOT a compilation. No manual generated-script/video edits.\n\nWatch: '+url+'\n\nDuration: '+str(round(result['duration']))+' seconds.\n\nChecks: automated encoding/audio passed; owner scientific and visual review required. No claim of human listening.\n\nApprove or Skip in Studio. Nothing is auto-approved or published.\n\n'+marker})
+ print('CE_STAGE=delivered',flush=True)
  print('Original full-video media and index saved; Studio review card available',flush=True)
 if __name__=='__main__':main()

@@ -44,11 +44,26 @@ def main():
         if not isinstance(data,list):raise ValueError('Invalid full-history data')
         rows.extend(data)
     ledger,sha=read('data/scenes/topic-ledger.json');rows+=ledger
+    owned=[r for r in ledger if str(r.get('owner'))==str(os.environ['GITHUB_RUN_ID']) and r.get('format')!='original_full']
+    if owned:
+        topic=owned[-1]['topic'];Path('publish/cinema.topic').write_text(topic+'\n')
+        (out/'automatic-topic-selection.json').write_text(json.dumps({'selected_by_system':True,'resumed_reservation':True,'topic':topic},indent=2))
+        return
+    covered=set()
+    for row in rows:
+        for key in ('topic','title'):
+            try:
+                found=topic_brief(row.get(key,''))['mechanism']
+                if found:covered.add(found)
+            except ValueError:pass
+    phrases={'lever_balance':'lever','resistive_circuit':'resistor circuit','hydraulic_lift':'hydraulic lift','thermal_contact':'thermal contact','dna_pairing':'DNA base pairing','water_transfer':'water between reservoirs'}
+    available={key:{'scope':value[0],'required_topic_phrase':phrases[key]} for key,value in SPECS.items() if key not in covered}
+    if not available:raise ValueError('No uncovered supported component remains; no repeat will be generated')
     rejected=[]
     for attempt in range(4):
         candidate=call('Choose an original supported explainer subject. Return JSON only.',
             'The system must select a genuinely new topic, never a paraphrase of a past video. Pick an uncovered implemented component. Return {"topic":"How/Why topic","mechanism":"exact supported id"}. '
-            'Explain only the precise supported scope, not a whole process absent from the diagram. Prefer visible causal changes. SUPPORTED: '+json.dumps({k:v[0] for k,v in SPECS.items()})+' FULL HISTORY: '+json.dumps(prompt_history(rows))+' REJECTIONS: '+json.dumps(rejected),max_tokens=700,temperature=.6)
+            'Choose only one of the UNCOVERED scopes below and include its required_topic_phrase literally inside the topic. Explain only that precise scope, not a whole process absent from the diagram. Prefer visible causal changes. UNCOVERED: '+json.dumps(available)+' FULL HISTORY: '+json.dumps(prompt_history(rows))+' REJECTIONS: '+json.dumps(rejected),max_tokens=700,temperature=.6)
         (out/f'topic-candidate-{attempt}.json').write_text(json.dumps(candidate,indent=2))
         error=candidate_valid(candidate,rows)
         if error:rejected.append(error);continue
