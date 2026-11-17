@@ -1,0 +1,71 @@
+name: import-proof-videos
+# IMPORT_PROOF (owner 2026-11-16): copy finished test videos from the studio-automatic-proof branch runs
+# into the normal How It Ticks folder + app Review tab, labeled checks-warn. Nothing is posted or approved.
+on:
+  workflow_dispatch:
+    inputs:
+      artifacts:
+        description: 'space-separated artifact ids'
+        required: true
+permissions:
+  contents: write
+  issues: write
+  actions: read
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg > /dev/null
+      - name: Import each artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+          IDS: ${{ github.event.inputs.artifacts }}
+        run: |
+          git clone -q --depth 1 -b gh-pages "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git" pages
+          mkdir -p pages/videos
+          gh label create scene-review --color 6a55c9 --description "How It Ticks video to watch (not posted)" 2>/dev/null || true
+          gh label create checks-warn --color d29922 2>/dev/null || true
+          n=0
+          for id in $IDS; do
+            n=$((n+1)); d="a$id"; mkdir -p "$d"
+            gh api "repos/${{ github.repository }}/actions/artifacts/$id/zip" > "$d.zip" && (cd "$d" && unzip -qo "../$d.zip") || { echo "skip $id"; continue; }
+            MP4=$(find "$d" -name '*.mp4' -printf '%s %p\n' | sort -rn | head -1 | cut -d' ' -f2-)
+            [ -n "$MP4" ] || { echo "no mp4 in $id"; continue; }
+            TITLE=$(python3 - "$d" <<'PY'
+          import json, sys, pathlib
+          t = ''
+          for p in sorted(pathlib.Path(sys.argv[1]).rglob('*.json'), key=lambda p: len(str(p))):
+              try: j = json.loads(p.read_text())
+              except Exception: continue
+              if isinstance(j, dict):
+                  for k in ('title', 'hook_title'):
+                      if isinstance(j.get(k), str) and j[k].strip(): t = j[k].strip(); break
+                  if not t and isinstance(j.get('plan'), dict): t = str(j['plan'].get('title') or '').strip()
+              if t: break
+          print(t or 'How It Ticks test video')
+          PY
+          )
+            TAG="ce-$(date -u +%Y%m%d-%H%M)-p$n"
+            cp "$MP4" "$TAG.mp4"
+            gh release create "$TAG" "$TAG.mp4" --title "How It Ticks: $TITLE" --notes "Test video from the tested-components branch (artifact $id). NOT posted, not approved." --prerelease
+            ffmpeg -v error -y -i "$TAG.mp4" -c:v libx264 -preset veryfast -b:v 1800k -maxrate 2200k -bufsize 4M -c:a aac -b:a 128k -movflags +faststart "pages/videos/$TAG.mp4"
+            (cd pages && git add videos && git -c user.email=41898282+github-actions[bot]@users.noreply.github.com -c user.name=github-actions commit -qm "video $TAG" && git push -q)
+            SHA=$(cd pages && git rev-parse HEAD)
+            URL="https://cdn.jsdelivr.net/gh/${{ github.repository }}@${SHA}/videos/$TAG.mp4"
+            python3 - "$TAG" "$TITLE" "$URL" <<'PY'
+          import json, sys, datetime
+          from pathlib import Path
+          p = Path('data/scenes/videos.json')
+          try: v = json.loads(p.read_text())
+          except Exception: v = []
+          v.append({'date': datetime.date.today().isoformat(), 'tag': sys.argv[1], 'title': sys.argv[2], 'video': sys.argv[3], 'source': 'tested-components test'})
+          p.write_text(json.dumps(v, indent=1, ensure_ascii=False) + '\n')
+          PY
+            printf 'How It Ticks TEST video from the new tested-components system (NOT posted).\n\nWatch: %s\n\nRelease %s. Approve or Skip in the app. Nothing is posted.\n\nChecks: warn (owner review needed)\n' "$URL" "$TAG" > body.txt
+            gh issue create --title "How It Ticks: $TITLE" --label scene-review --label checks-warn --body-file body.txt
+          done
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/scenes/videos.json
+          git diff --cached --quiet || { git commit -qm "import test videos for review"; for i in 1 2 3 4 5; do git pull --rebase -q && git push -q && break; sleep 5; done; }
