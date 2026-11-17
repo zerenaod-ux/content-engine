@@ -3,7 +3,7 @@ import argparse,asyncio,hashlib,json,math,re,subprocess,time,wave
 from pathlib import Path
 import numpy as np
 import edge_tts
-from studio_lib.director import validate,normalize_narration,critique
+from studio_lib.director import validate,normalize_narration
 from studio_lib.providers import call
 from studio_lib.registry import REGISTRY
 
@@ -11,12 +11,31 @@ def groups(words):
     """Keep actual synthesis word offsets; show at most three words at once."""
     return [words[i:i+3] for i in range(0,len(words),3)]
 
+def contract():
+    brief=json.loads(json.dumps(REGISTRY['wind_turbine']))
+    brief['facts']['rotor']='The hub and all three blades rotate as one rigid assembly. Circular pitch bearings are visible but NO blade pitch adjustment is animated. Do not claim blades twist in these bearings.'
+    brief['facts']['induction']='A close view shows rotating red/blue magnets beside stationary copper windings. Changing magnetic flux induces alternating voltage. There is NO coil glow, flash, spark, voltage-spike display or field-line animation. The copper coils do not literally light up.'
+    brief['facts']['load']='The demonstration switch closes and the lamp changes from off to a steady bright state. It does not flicker. The circuit markers are illustrative. No grid connection or power-electronics internals are shown.'
+    brief['facts']['payoff']='The same turbine keeps turning as the cover returns. The rotor and generator share a shaft, so no speed-increasing gearbox is needed. Energy conversion has losses; do not claim universally higher efficiency or zero loss.'
+    return brief
+
+def scene_errors(plan):
+    if not isinstance(plan,dict):return ['script must be an object']
+    errors=[]
+    for b in plan.get('beats',[]):
+        text=b.get('say','').lower()
+        if b.get('action')=='rotor' and re.search(r'\b(twist|twists|twisting|pitching)\b',text):errors.append('No blade pitch adjustment is animated; describe the rigid rotating rotor, not twisting blades.')
+        if re.search(r'\b(glow|glows|glowing|flash|flashes|spike|spikes|flicker|flickers)\b',text) and b.get('action')!='load':errors.append('No coil glow, flash or voltage spike is depicted; describe changing magnetic flux and induced voltage.')
+        if b.get('action')=='load' and 'flicker' in text:errors.append('Lamp lights steadily, not flickering.')
+    if plan.get('beats') and not plan['beats'][0].get('say','').rstrip().endswith('?'):errors.append('Open with a direct visible puzzle question about wind, slow rotation and electricity; not a generic introduction.')
+    return errors
+
 def generate(topic,out):
-    brief=REGISTRY['wind_turbine']
+    brief=contract()
     prompt=('Create an original wind-turbine explanation for TOPIC, using this factual/action contract. '
       'Return JSON with mechanism=wind_turbine, title starting How/Why (4-8 words), hook (under 60 characters), '
       'and eight beats in the contract action order, each with action, say (9-23 words), camera=wide|mechanism|follow. '
-      'Total 110-145 words. Start directly with a surprising visible problem or question, never an introduction. '
+      'Total 110-145 words. First beat MUST ask a direct puzzle question about wind turning a generator without gears. End it with a question mark. Never start with Look or an introduction. '
       'Use conversational contractions, concrete actions and causal links: what moves, then why it matters. '
       'Build toward the lamp payoff. No production language, filler such as introducing/demonstrating, or invented facts. '
       'Do not copy any existing creator dialogue. The voice remains our own licensed TTS voice. '
@@ -28,9 +47,12 @@ def generate(topic,out):
     for n in range(3):
         raw=call('Write a clear factual animated explainer. Return JSON only.',prompt+' Corrections: '+json.dumps(errors),max_tokens=2100,temperature=.65)
         (out/f'raw-script-{n}.json').write_text(json.dumps(raw,indent=2))
-        plan=normalize_narration(raw);errors=validate(plan)
+        plan=normalize_narration(raw);errors=validate(plan)+scene_errors(plan)
         if not errors:
-            errors=critique(plan,out)
+            check=call('Check narration against the actual cinematic scene contract. Return JSON only.',
+                'Return {"errors":[specific contradictions]}. This is a simplified mechanism illustration. Do not invent extra visible actions. CONTRACT: '+json.dumps(brief)+' SCRIPT: '+json.dumps(plan),max_tokens=1100,temperature=.1)
+            (out/'narration-critique.json').write_text(json.dumps(check,indent=2));errors=check.get('errors')
+            if not isinstance(errors,list) or not all(isinstance(x,str) for x in errors):raise ValueError('Cinematic narration critique unavailable')
             if not errors:return plan
     raise ValueError('Generated narration rejected: '+str(errors))
 

@@ -13,11 +13,12 @@ scene.render.resolution_x=540;scene.render.resolution_y=960;scene.render.resolut
 scene.render.fps=FPS;scene.render.image_settings.file_format='PNG'
 sh=scene.display.shading;sh.light='STUDIO';sh.studiolight_rotate_z=.5;sh.color_type='MATERIAL'
 sh.show_shadows=True;sh.show_cavity=True;sh.cavity_type='BOTH';sh.show_specular_highlight=True
-sh.background_type='WORLD';scene.world.color=(.12,.18,.23)
+sh.background_type='WORLD';scene.world.color=(.33,.46,.52)
+scene.view_settings.view_transform='Standard';scene.view_settings.exposure=.3
 if hasattr(scene.display,'render_aa'):scene.display.render_aa='8'
 M={}
 for name,color in {'ceramic':(.78,.87,.89),'metal':(.34,.43,.50),'dark':(.055,.085,.12),'copper':(.72,.32,.10),'gold':(.95,.61,.15),'red':(.82,.16,.11),'blue':(.07,.43,.65),'grass':(.17,.29,.25),'concrete':(.39,.46,.45),'cyan':(.09,.80,.83)}.items():
-    mat=bpy.data.materials.new(name);mat.diffuse_color=(*color,1);mat.metallic=.6 if name in ('metal','copper','gold') else .05;mat.roughness=.3;M[name]=mat
+    mat=bpy.data.materials.new(name);mat.diffuse_color=(*color,1);mat.metallic=.35 if name in ('metal','copper','gold') else .05;mat.roughness=.3;M[name]=mat
 def finish(o,name,mat):
     o.name=name;o.data.materials.append(M[mat])
     if o.type=='MESH':
@@ -91,7 +92,7 @@ current=[ball('circuit marker',(0,0,0),.055,'cyan') for k in range(15)]
 camdata=bpy.data.cameras.new('story camera');cam=bpy.data.objects.new('story camera',camdata);scene.collection.objects.link(cam);scene.camera=cam
 camdata.lens=48;camdata.clip_end=300;camdata.clip_start=.05
 # A director grammar supplies a safe framing range; generated narration supplies timing.
-SHOTS=[((1,0,3.8),(10,-17,10)),((0,-1.3,5.2),(4,-9,7)),((0,-1.5,5.2),(3,-6.5,6.6)),((0,-.45,5.2),(4,-5,7.4)),((0,.3,5.2),(3.7,-4.8,6.9)),((.55,.48,5.6),(2.3,-2.5,6.4)),((3.85,-.4,1.15),(6,-5,3)),((1,0,3.8),(9,-16,9))]
+SHOTS=[((1,0,3.9),(11.5,-19.5,11)),((0,-1.3,5.2),(4,-9,7)),((0,-1.5,5.2),(3,-6.5,6.6)),((0,-.45,5.2),(4,-5,7.4)),((0,.3,5.2),(3.7,-4.8,6.9)),((.55,.48,5.6),(2.3,-2.5,6.4)),((3.85,-.4,1.15),(6,-5,3)),((1,0,3.9),(11,-19,10.5))]
 def state(t):
     i=min(7,next((i for i,b in enumerate(TL['beats']) if t<b['end']),7));b=TL['beats'][i];u=max(0,min(1,(t-b['start'])/(b['end']-b['start'])))
     return i,b,u

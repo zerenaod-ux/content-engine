@@ -1,7 +1,7 @@
 """Captions retain measured boundaries; punctuation and timing remain inspectable."""
 import tempfile,unittest
 from pathlib import Path
-from studio_lib.cinema.build import captions,groups,ass_time
+from studio_lib.cinema.build import captions,groups,ass_time,scene_errors,contract
 class CaptionTests(unittest.TestCase):
     def test_groups_keep_real_word_offsets(self):
         w=[dict(text=str(i),start=i*.4,end=i*.4+.3) for i in range(7)]
@@ -12,4 +12,8 @@ class CaptionTests(unittest.TestCase):
             self.assertIn('0:00:01.25,0:00:01.62',s);self.assertNotIn('{Danger}',s)
     def test_caption_clock_rolls_minutes(self):
         self.assertEqual(ass_time(61.23),'0:01:01.23')
+    def test_actual_scene_contract_rejects_observed_narration_mismatches(self):
+        p={'beats':[{'action':'rotor','say':'Each blade twists in its pitch bearing.'},{'action':'induction','say':'The coil glows as voltage spikes.'}]}
+        self.assertGreaterEqual(len(scene_errors(p)),2)
+        self.assertIn('NO blade pitch',contract()['facts']['rotor'])
 if __name__=='__main__':unittest.main()
