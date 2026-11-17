@@ -72,6 +72,11 @@ def create_approved_post(inp):
         time.sleep(8*(attempt+1))
     return response
 
+def newest_waiting(approved,state,platform):
+    # Existing scheduled/published entries are never canceled or re-queued.
+    return sorted((item for item in approved if item['tag']+'/'+platform not in state.get('done',{})),
+        key=lambda item:(item.get('reviewed_at',''),item['tag']),reverse=True)
+
 def main():
     if not CFG.get('enabled', True):
         print('posting disabled in posting-slots.json'); return
@@ -97,7 +102,7 @@ def main():
     plan = []
     for plat in CHANNELS:
         taken = set(held[plat]); room = max(0, cap - len(held[plat]))
-        waiting = [i for i in approved if '%s/%s' % (i['tag'], plat) not in state['done']]
+        waiting = newest_waiting(approved,state,plat)
         for item in waiting[:room]:
             slots = free_slots(plat, taken, now)
             if not slots: break
