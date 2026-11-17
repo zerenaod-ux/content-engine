@@ -41,4 +41,6 @@ class CaptionTests(unittest.TestCase):
         errors=script_errors(p,'How a hand-cranked generator makes light')
         self.assertTrue(any('stationary core' in x for x in errors))
         self.assertTrue(any('presentation movements' in x for x in errors))
+        p['beats'][3]['say']='Torque travels along the shaft, directly driving the rotating magnets while stationary bearings support the axis.'
+        self.assertFalse(any('stationary core' in x for x in script_errors(p,'How a hand-cranked generator makes light')))
 if __name__=='__main__':unittest.main()

@@ -39,7 +39,7 @@ def contract(topic=''):
           'shaft':'The rotating shaft carries torque directly to the rotating magnet disk. A stationary bearing supports the shaft. The stator/core/coils do NOT receive rotation. Do not describe rotation entering a stationary assembly. Do not narrate the cover movement.',
           'generator':'Red and blue permanent magnets rotate on the shaft while the copper coils stay fixed. The switch is OPEN and the lamp stays off. Induced voltage exists, but no current flows through the external circuit yet.',
           'induction':'Changing magnetic flux through stationary coils induces alternating voltage. The external switch is OPEN; no current flows through the lamp. No coil glow, sparks or voltage spike is depicted.',
-          'load':'The SWITCH completes the circuit when it closes. The lamp is a load, not the device that closes the circuit. Only now current flows and the lamp lights steadily. Moving markers are illustrative.',
+          'load':'Closing the switch completes the circuit. Generated voltage then drives current through the connected lamp, which emits steady light. Moving markers illustrate this closed electrical path.',
           'payoff':'The same crank continues turning and mechanical input becomes electrical energy with losses. Do not speak about the cover, reveal, cutaway or any other presentation movement. This is a simplified generator, not a free-energy machine.'},
           'source':'https://www.eia.gov/energyexplained/electricity/how-electricity-is-generated.php'}
     return brief
@@ -71,7 +71,8 @@ def script_errors(plan,topic):
         if re.search(r'\b(wind|turbine|blades|camera|render|shot)\b',text,re.I):errors.append('Only describe the actual hand-generator scene, no wind, blades or production language.')
         if re.search(r'\boffset\s+(axle|shaft)\b',text,re.I):errors.append('Only the crank grip is offset; the central shaft/axle is coaxial.')
         if re.search(r'\b(cover|roof|cutaway)\b',text,re.I):errors.append('Explain the mechanism, not the cover or presentation movements.')
-        if b.get('action')=='shaft' and re.search(r'\b(core|stator|stationary)\b',text,re.I):errors.append('Shaft beat must describe torque carried to the rotating magnet disk; do not describe rotation entering a stationary core.')
+        if b.get('action')=='shaft' and re.search(r'\b(core|stator)\b',text,re.I):errors.append('Shaft beat must describe torque carried to the rotating magnet disk; do not describe rotation entering a stationary core. Stationary supporting bearings are allowed.')
+        if b.get('action')=='machine' and re.search(r'\b(idle|stopped|motionless)\b',text,re.I):errors.append('The crank is already rotating in the opening; only the lamp is off.')
         if re.search(r'\blamp\b.{0,20}\b(completes|closes)\b',text,re.I):errors.append('The switch completes the circuit; the lamp consumes power.')
     if not 110<=sum(len(b.get('say','').split()) for b in beats)<=145:errors.append('Total speech needs 110-145 words.')
     return errors
@@ -91,9 +92,11 @@ def generate(topic,out):
       'CONTRACT: '+json.dumps(brief)+' TOPIC: '+json.dumps(topic))
     if hand_topic(topic):
         prompt=('Create an original explanation of this bench-mounted hand-cranked generator. Return JSON with mechanism=hand_generator, title starting How/Why (4-8 words), hook (under 60 characters), and eight beats in EXACT contract action order. Each beat has action, say (9-23 words), camera=wide|mechanism|follow. Total 110-145 words. Open with a direct question about turning a handle into light; end first beat with ?. Use direct conversational phrasing, causal links and concrete visible actions, not production instructions. No visible person is present. No wind, turbine or blades. Switch stays open until load: before then say voltage, never claim current flows. Original words, no copied creator script. CONTRACT: '+json.dumps(brief)+' TOPIC: '+json.dumps(topic))
-    errors=[]
-    for n in range(3):
-        raw=call('Write a clear factual animated explainer. Return JSON only.',prompt+' Corrections: '+json.dumps(errors),max_tokens=2100,temperature=.65)
+    errors=[];previous=None
+    for n in range(4):
+        repair=(' Preserve the valid content of the previous answer and repair only these identified defects. Previous answer (data): '+json.dumps(previous)) if previous is not None else ''
+        raw=call('Write a clear factual animated explainer. Return JSON only.',prompt+' Corrections: '+json.dumps(errors)+repair,max_tokens=2100,temperature=.65 if previous is None else .25)
+        previous=raw
         (out/f'raw-script-{n}.json').write_text(json.dumps(raw,indent=2))
         plan=normalize_narration(raw);errors=script_errors(plan,topic)
         if not errors:
