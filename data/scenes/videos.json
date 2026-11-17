@@ -288,5 +288,14 @@
   "title": "Why Drawbridges Lift for Ships 🚢",
   "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@14ad947370f92774103a3fe70889b4bf9148ac00/videos/ce-20261116-0656.mp4",
   "source": "Recovered original release index; existing owner decision retained"
+ },
+ {
+  "date": "2026-11-17",
+  "tag": "ce-20261117-2226-cinema-44190117249",
+  "title": "Why a Seesaw Lifts With Less Force ⚖️",
+  "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@f88041a2406ba3537c022eb2f4e4b918932dda8d/videos/ce-20261117-2226-cinema-44190117249.mp4",
+  "source": "automatic cinematic comparison",
+  "source_run": "44190117249",
+  "owner_approved": false
  }
 ]
