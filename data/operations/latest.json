@@ -2,17 +2,14 @@
   "jobs": {
     "self-test": {
       "run_id": "44197524528",
-      "attempt": 1,
+      "attempt": 2,
       "kind": "self-test",
-      "stage": "Stopped",
-      "label": "Stopped",
-      "updated_at": "2026-11-17T23:14:09.091766+00:00",
+      "stage": "selection",
+      "label": "Selecting a new topic",
+      "updated_at": "2026-11-17T23:14:32.467036+00:00",
       "source_branch": "main",
       "owner_approved": false,
-      "retryable": true,
-      "next_retry_at": 1794957249.0917556,
-      "reason": "Temporary service or capacity failure",
-      "state": "waiting_to_resume"
+      "state": "running"
     }
   }
 }
