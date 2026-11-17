@@ -5,6 +5,7 @@ on:
     paths: [publish/cinema.trigger]
   workflow_dispatch:
 permissions:
+  actions: read
   contents: read
   models: read
 concurrency:
@@ -28,6 +29,26 @@ jobs:
           path: .ce-cache/cinema-voice
           key: cinema-voice-${{ runner.os }}-${{ github.run_id }}
           restore-keys: cinema-voice-${{ runner.os }}-
+      - name: Select matching accepted-stage recovery
+        id: resume
+        run: |
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          p=Path('publish/cinema.resume.json')
+          if p.exists():
+              r=json.loads(p.read_text())
+              if r.get('topic')==Path('publish/cinema.topic').read_text().strip() and type(r.get('run_id')) is int:
+                  with open(os.environ['GITHUB_OUTPUT'],'a') as f:
+                      f.write('run_id='+str(r['run_id'])+'\n')
+          PY
+      - uses: actions/download-artifact@v4
+        if: steps.resume.outputs.run_id != ''
+        with:
+          name: cinematic-comparison
+          path: cinema-resume
+          run-id: ${{ steps.resume.outputs.run_id }}
+          github-token: ${{ github.token }}
       - name: Generate and render from topic without authored script
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
@@ -38,6 +59,7 @@ jobs:
           CE_MAX_REQUESTS: '12'
           CE_MAX_SECONDS: '480'
           CE_METRICS_PATH: cinema-metrics.json
+          CE_CINEMA_RESUME_DIR: cinema-resume/cinema-output
         run: python -m studio_lib.cinema.build --topic-file publish/cinema.topic --out cinema-output
       - uses: actions/cache/save@v4
         if: always()

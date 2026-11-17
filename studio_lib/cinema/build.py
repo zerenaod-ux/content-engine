@@ -1,5 +1,5 @@
 """Topic -> generated script -> word-timed voice -> Blender -> captioned MP4."""
-import argparse,asyncio,hashlib,json,math,re,subprocess,time,wave
+import argparse,asyncio,hashlib,json,math,os,re,subprocess,time,wave
 from pathlib import Path
 import numpy as np
 import edge_tts
@@ -164,14 +164,14 @@ async def voice(plan,out):
         key=cache_key(b['say'],profile)
         audio=cache/(key+'.mp3');meta=cache/(key+'.jsonl')
         if not (audio.exists() and audio.stat().st_size>1000 and meta.exists() and meta.stat().st_size>20):
-            for attempt in range(3):
+            for attempt in range(4):
                 requests+=1
                 try:
                     await edge_tts.Communicate(b['say'],VOICE,rate=rate,pitch=profile['pitch'],volume=profile['volume'],boundary='WordBoundary').save(str(audio),str(meta))
                     break
                 except edge_tts.exceptions.NoAudioReceived:
-                    if attempt==2:raise
-                    await asyncio.sleep(2)
+                    if attempt==3:raise
+                    await asyncio.sleep(2**(attempt+1))
         else:hits+=1
         events=[json.loads(x) for x in meta.read_text().splitlines() if x.strip()]
         events=[x for x in events if x['type']=='WordBoundary']
@@ -227,10 +227,28 @@ def soundtrack(tl,out):
         f.setnchannels(1);f.setsampwidth(2);f.setframerate(sr);f.writeframes((np.clip(mix,-.98,.98)*32700).astype(np.int16).tobytes())
     (out/'sound-events.json').write_text(json.dumps(events,indent=2))
 
+def load_or_generate(topic,out):
+    """Resume only an accepted plan from the same topic, rechecking current rules."""
+    resume=os.environ.get('CE_CINEMA_RESUME_DIR')
+    if resume:
+        root=Path(resume)
+        if (root/'plan.json').exists():
+            plan=json.loads((root/'plan.json').read_text())
+            brief=json.loads((root/'topic-brief.json').read_text())
+            critique=json.loads((root/'narration-critique.json').read_text())
+            if brief.get('topic')!=topic or critique.get('errors')!=[] or script_errors(plan,topic):
+                raise ValueError('Saved narration cannot be reused under current topic/rules')
+            require_component(topic,out)
+            (out/'narration-critique.json').write_text(json.dumps(critique,indent=2))
+            (out/'resume-evidence.json').write_text(json.dumps({'resumed_accepted_plan':True,'topic':topic,'new_script_model_requests':0},indent=2))
+            print('Resumed accepted narration; no new script model requests.',flush=True)
+            return plan
+    return generate(topic,out)
+
 def run(topic,out):
     out=Path(out);out.mkdir(parents=True,exist_ok=True);started=time.monotonic()
     # A fresh model-written plan is required for this comparison; no authored script input.
-    plan=generate(topic,out);(out/'plan.json').write_text(json.dumps(plan,indent=2))
+    plan=load_or_generate(topic,out);(out/'plan.json').write_text(json.dumps(plan,indent=2))
     tl=asyncio.run(voice(plan,out));captions(tl,out);soundtrack(tl,out)
     script=Path(__file__).with_name('diagram_scene.py' if plan['mechanism'] in SPECS else 'scene.py')
     subprocess.run(['xvfb-run','-a','blender','-b','-t','2','--python',str(script),'--',str(out)],check=True)
