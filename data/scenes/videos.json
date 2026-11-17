@@ -240,5 +240,14 @@
   "source": "automatic cinematic comparison",
   "source_run": "44066025188",
   "owner_approved": false
+ },
+ {
+  "date": "2026-11-17",
+  "tag": "ce-20261117-1053-cinema-44068968307",
+  "title": "How Turning a Handle Lights a Lamp 💡",
+  "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@03caad18648b7d25b0699052e510ba344f1a9830/videos/ce-20261117-1053-cinema-44068968307.mp4",
+  "source": "automatic cinematic comparison",
+  "source_run": "44068968307",
+  "owner_approved": false
  }
 ]
