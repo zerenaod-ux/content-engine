@@ -35,5 +35,13 @@
     "owner": "44224309879",
     "state": "reserved",
     "mechanism": "thermal_contact"
+  },
+  {
+    "topic": "Why does the follower height vary sinusoidally in a fixed\u2011eccentricity circular cam?",
+    "topic_key": "cam circular eccentricity fixed follower height sinusoidally vary",
+    "owner": "44224913213",
+    "mechanism": "cam_follower",
+    "format": "original_full",
+    "state": "reserved"
   }
 ]
