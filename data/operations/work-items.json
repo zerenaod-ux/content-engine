@@ -40,11 +40,11 @@
     },
     {
       "key": "daily-short-temporary-narration-outage",
-      "status": "waiting_to_resume",
+      "status": "resuming",
       "run_id": 44266714493,
       "completed": false,
-      "next_retry_at": "2026-11-18T08:54:39Z",
-      "note": "Existing bounded GitHub recovery owns the eligible retry; do not manually duplicate the run."
+      "note": "The existing bounded recovery coordinator resumed the failed run after its wait; no separate generation run was created.",
+      "attempt": 2
     }
   ],
   "note": "Original full proof delivered for owner review; production deployment does not prove arbitrary-topic capability or every recovery scenario."
