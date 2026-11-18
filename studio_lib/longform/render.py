@@ -15,7 +15,16 @@ def frame(t,timeline,plan):
  phase=beat['action'];mechanism=plan['mechanism'];state=motion(t,mechanism,timeline);x=state['travel'];angle=state['angle']
  im=Image.new('RGB',(WIDTH,HEIGHT),(17,29,43));draw=ImageDraw.Draw(im)
  # Continuous small camera arc; close views keep the connected assembly in frame.
- zoom=1.45+.08*math.sin(t/23)**2;azimuth=(.95 if mechanism=='lead_screw' else .20)+.08*math.sin(t/28);sc=WideScene(t,zoom,(0,0,1.3),azimuth)
+ def camera_settings(mode):
+  zoom={'wide':1.45,'engagement':2.05,'output':1.8}.get(mode,1.45)
+  target=(0,0,1.3)
+  if mode=='engagement':target=(0,0,1.55)
+  if mode=='output':target=(.35*x,0,1.1) if mechanism=='rack_pinion' else (0,.35*x,1.3) if mechanism=='lead_screw' else (0,0,state['follower_z'])
+  return zoom,np.array(target)
+ previous=camera_settings(beats[max(0,index-1)].get('camera','wide'));current=camera_settings(beat.get('camera','wide'))
+ blend=ease((t-beat['start'])/1.4);zoom=previous[0]+(current[0]-previous[0])*blend
+ target=previous[1]+(current[1]-previous[1])*blend
+ azimuth=(.95 if mechanism=='lead_screw' else .20)+.08*math.sin(t/28);sc=WideScene(t,zoom,target,azimuth)
  blue=(63,170,210);gold=(237,175,60);steel=(135,156,170);red=(224,86,67)
  sc.box((0,0,.05),(9,5,.18),(36,54,69))
  if mechanism=='rack_pinion':

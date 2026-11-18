@@ -298,7 +298,7 @@ def run(topic,out):
     script=Path(__file__).with_name('diagram_scene.py' if plan['mechanism'] in SPECS else 'scene.py')
     print('CE_STAGE=render',flush=True)
     subprocess.run(['xvfb-run','-a','blender','-b','-t','2','--python',str(script),'--',str(out)],check=True)
-    subprocess.run(['ffmpeg','-v','error','-y','-framerate','24','-i',str(out/'frames/%05d.png'),'-i',str(out/'mix.wav'),'-vf',f"scale=720:1280:flags=lanczos,ass={out/'captions.ass'}",'-c:v','libx264','-preset','fast','-crf','19','-c:a','aac','-b:a','160k','-af','loudnorm=I=-16:TP=-1.5:LRA=9','-t',str(tl['duration']),'-movflags','+faststart',str(out/'video.mp4')],check=True)
+    subprocess.run(['ffmpeg','-v','error','-y','-framerate','24','-i',str(out/'frames/%05d.png'),'-i',str(out/'mix.wav'),'-vf',f"scale=720:1280:flags=lanczos,ass={out/'captions.ass'}",'-c:v','libx264','-preset','fast','-crf','19','-c:a','aac','-b:a','160k','-ar','48000','-af','loudnorm=I=-16:TP=-3:LRA=9,alimiter=limit=0.7:level=false','-t',str(tl['duration']),'-movflags','+faststart',str(out/'video.mp4')],check=True)
     subprocess.run(['ffmpeg','-v','error','-i',str(out/'video.mp4'),'-f','null','-'],check=True)
     require_video_duration(out/'video.mp4')
     print('CE_STAGE=audio',flush=True)

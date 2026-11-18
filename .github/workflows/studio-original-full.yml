@@ -5,6 +5,7 @@ on:
     branches: [studio-cinematic-proof]
     paths: [publish/long.trigger]
 permissions:
+  actions: read
   contents: write
   issues: write
   models: read
@@ -32,7 +33,9 @@ jobs:
             full-output/draft-plan.json
             full-output/narration-critique.json
           key: full-proof-${{ runner.os }}-${{ github.run_id }}-${{ github.run_attempt }}
-          restore-keys: full-proof-${{ runner.os }}-${{ github.run_id }}-
+          restore-keys: |
+            full-proof-${{ runner.os }}-${{ github.run_id }}-
+            full-proof-${{ runner.os }}-44262874938-
       - name: Select, write, narrate and render one original landscape topic
         env:
           GH_TOKEN: ${{ github.token }}

@@ -39,7 +39,7 @@ def errors(plan):
  if not beats[0].get('say','').rstrip().endswith('?'):out.append('Opening must be a question')
  if plan.get('mechanism')=='rack_pinion':
   for i,b in enumerate(beats):
-   if re.search(r'involute|rack.{0,25}fixed|gear ratio|motion (?:simply )?ceases|by hand',b.get('say',''),re.I):out.append('Section '+str(i)+': rack slides, no visible hand, no involute profile or extra gear ratio, and no end-stop collision is animated')
+   if re.search(r'involute|rack.{0,25}fixed|gear ratio|motion (?:simply )?ceases|by hand|stationary shaft|clockwise|upward along|instant|(?:reaches|hits|contacts).{0,30}(?:stop|barrier)|push.{0,20}barrier|against.{0,20}(?:stop|barrier)|one (?:full )?turn.{0,45}(?:one|single).{0,20}(?:tooth|teeth)',b.get('say',''),re.I):out.append('Section '+str(i)+': rack slides horizontally, shaft rotates in fixed bearings, one turn travels a full pitch circumference (many tooth spacings); no view-dependent clockwise claim, instant reversal or end-stop collision is shown')
  if not 430<=sum(len(b.get('say','').split()) for b in beats)<=650:out.append('Narration must total 430-650 words')
  return out
 

@@ -1,0 +1,7 @@
+# Full-video inspection correction
+
+Original automatic run 44262874938 passed script checks and generated a native 132.8-second landscape video, but final encoded audio review found +0.35 dB true peak. ASR word error was about 0.9%, which does not establish factual accuracy. Inspection identified incorrect stationary-shaft wording, one-turn travel, direction wording and end-stop collision claims. This is not a passing video and was not sent to Studio.
+
+Corrections: targeted section repair accepts explicit factual section errors, rotating-shaft/circumference/no-collision constraints are enforced, and saved plans must match the verified selected topic. The full renderer now uses the requested wide, engagement and output camera modes with smooth interpolation. Audio encoding uses 48 kHz, a -3 dB normalization ceiling and a non-amplifying limiter. An isolated audio finishing check on the failed mix measured -16.83 LUFS and -2.91 dB true peak; the production MP4 still needs its own encoded check. Emotion profiles remain enabled.
+
+The next run restores the previous cache, verifies the original system reservation and resumes that topic as a repair, not a new-topic proof. Nineteen full-format and 54 cinematic checks pass locally. No generated narration text or final video was edited by hand. Cloud rerun, full semantic inspection and Studio delivery remain pending. Auto-approval stays off.

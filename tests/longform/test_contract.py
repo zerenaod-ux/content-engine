@@ -38,3 +38,10 @@ class FullContractTests(unittest.TestCase):
   p={'mechanism':'rack_pinion','topic':'How a rack and pinion moves a carriage','title':'How a Rack Moves a Carriage','hook':'Turns become travel','beats':[{'action':a,'say':' '.join(['word']*30)+('?' if i==0 else '.'),'camera':'wide'} for i,a in enumerate(ACTIONS)]}
   p['beats'][1]['say']='The rack is fixed at both ends while the pinion uses a gear ratio to move the carriage.'
   self.assertTrue(any('rack slides' in e for e in errors(p)))
+
+ def test_observed_rack_claims_are_rejected_before_voice(self):
+  from studio_lib.longform.contract import ACTIONS
+  p={'mechanism':'rack_pinion','topic':'How a rack and pinion moves a carriage','title':'How a Rack Moves a Carriage','hook':'Turns become travel','beats':[{'action':a,'say':' '.join(['word']*30)+('?' if i==0 else '.'),'camera':'wide'} for i,a in enumerate(ACTIONS)]}
+  for wrong in ['The stationary shaft carries the pinion.', 'One turn equals one rack tooth spacing.', 'The rack pushes against the barrier.', 'Clockwise motion drives the rack upward along the rails.']:
+   p['beats'][7]['say']=wrong
+   self.assertTrue(any(e.startswith('Section 7:') for e in errors(p)))

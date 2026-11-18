@@ -21,6 +21,15 @@ def select(out):
   if path=='data/scenes/videos.json':created=data
  owned=[r for r in rows if str(r.get('owner'))==str(os.environ['GITHUB_RUN_ID']) and r.get('format')=='original_full']
  if owned:return {'topic':owned[-1]['topic'],'mechanism':owned[-1]['mechanism']}
+ resume=Path('publish/long.resume.json')
+ if resume.exists():
+  config=json.loads(resume.read_text());source=api('actions/runs/'+str(config['run_id']))
+  if source.get('head_branch')!='studio-cinematic-proof' or source.get('name')!='Original How It Ticks full video' or source.get('conclusion')!='failure':raise ValueError('Untrusted full-video repair source')
+  original=[r for r in rows if str(r.get('owner'))==str(config['run_id']) and r.get('format')=='original_full']
+  if len(original)!=1:raise ValueError('Missing original automatic full-video reservation')
+  selected={'topic':original[0]['topic'],'mechanism':original[0]['mechanism']}
+  (out/'resume-provenance.json').write_text(json.dumps({'repair_of_run':config['run_id'],'selected_by_system':True,'new_topic_count':0,**selected},indent=2))
+  return selected
  available={k:v for k,v in SOURCES.items() if not any(r.get('mechanism')==k for r in created)}
  if not available:raise ValueError('No uncovered full-format mechanism remains; do not repeat')
  rejected=[]
@@ -46,25 +55,26 @@ def select(out):
  raise ValueError('No unique supported full-video topic selected')
 
 def plan(out):
+ selected=select(out)
  saved=out/'accepted-plan.json'
  if saved.exists():
   result=json.loads(saved.read_text())
-  if not errors(result):
+  if not errors(result) and result.get('topic')==selected['topic'] and result.get('mechanism')==selected['mechanism']:
    evidence=out/'narration-critique.json'
    if evidence.exists() and json.loads(evidence.read_text()).get('errors')==[]:return result
    check=call('Audit saved narration against its exact rendered mechanism. Return JSON only.', 'Return {"errors":[specific unsupported claims]}. CONTRACT: '+json.dumps(SOURCES[result['mechanism']])+' ACTIONS: '+json.dumps(mechanism_facts(result['mechanism']))+' PLAN: '+json.dumps(result),max_tokens=1600,temperature=.1)
    evidence.write_text(json.dumps(check,indent=2))
    if check.get('errors')==[]:return result
  print('CE_STAGE=planning',flush=True)
- selected=select(out);rejected=[];result=None
+ rejected=[];result=None
  draft=out/'draft-plan.json'
  if draft.exists():
   prior=json.loads(draft.read_text())
   if prior.get('topic')==selected['topic'] and prior.get('mechanism')==selected['mechanism']:result=prior;rejected=errors(prior)
  for attempt in range(7):
-  if result is not None and rejected and all('chapter needs' in e.lower() or 'narration must total' in e.lower() or 'title must' in e.lower() or 'hook needs' in e.lower() for e in rejected):
+  if result is not None and rejected and all('chapter needs' in e.lower() or 'narration must total' in e.lower() or 'title must' in e.lower() or 'hook needs' in e.lower() or e.startswith('Section ') for e in rejected):
    result=repair_metadata(result,out,attempt)
-   result=repair_sections(result,out,attempt)
+   result=repair_sections(result,out,attempt,issues=rejected)
   else:result=call('Write one original factual continuous explainer. Return JSON only.',
    'One subject only. Native long format, not assembled shorts. Return {"topic":exact topic,"mechanism":exact id,"title":"How/Why 4-8 words","hook":"2-7 simple words max 40 characters","beats":[{"action":"exact action","say":"25-45 spoken words","camera":"wide|engagement|output"}]}. Exactly sixteen actions in order: '+json.dumps(ACTIONS)+'. Total 430-650 words. First spoken beat ends with ?. Energetic natural delivery, short clauses, concrete cause and effect. No spoken camera directions, padding, horror framing, invented parts or numerical performance. Do not describe an unshown force sensor or invisible force as a literal object. Facts/source and visible action contract: '+json.dumps({'selected':selected,'source':SOURCES[selected['mechanism']],'actions':mechanism_facts(selected['mechanism'])})+' PREVIOUS ERRORS: '+json.dumps(rejected),max_tokens=3600,temperature=.35)
   (out/f'raw-plan-{attempt}.json').write_text(json.dumps(result,indent=2));draft.write_text(json.dumps(result,indent=2));rejected=errors(result)
@@ -95,7 +105,7 @@ def run(out):
    if n%200==0:print('Full-video native frames: '+str(n),flush=True)
  finally:proc.stdin.close()
  if proc.wait():raise RuntimeError('Landscape render failed')
- subprocess.run(['ffmpeg','-v','error','-y','-i',str(out/'silent.mp4'),'-i',str(out/'mix.wav'),'-c:v','copy','-c:a','aac','-b:a','128k','-af','loudnorm=I=-16:TP=-1.5:LRA=9','-t',str(tl['duration']),'-movflags','+faststart',str(out/'video.mp4')],check=True)
+ subprocess.run(['ffmpeg','-v','error','-y','-i',str(out/'silent.mp4'),'-i',str(out/'mix.wav'),'-c:v','copy','-c:a','aac','-b:a','160k','-ar','48000','-af','loudnorm=I=-16:TP=-3:LRA=9,alimiter=limit=0.7:level=false','-t',str(tl['duration']),'-movflags','+faststart',str(out/'video.mp4')],check=True)
  measured=json.loads(subprocess.check_output(['ffprobe','-v','error','-show_streams','-show_format','-of','json',str(out/'video.mp4')]))
  stream=next(s for s in measured['streams'] if s['codec_type']=='video');require_media(float(measured['format']['duration']),stream['width'],stream['height'])
  subprocess.run(['ffmpeg','-v','error','-i',str(out/'video.mp4'),'-f','null','-'],check=True)
