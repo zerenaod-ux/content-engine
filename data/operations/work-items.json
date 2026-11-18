@@ -32,9 +32,19 @@
     },
     {
       "key": "health-heartbeat-first-unattended-run",
-      "status": "scheduled_not_yet_verified",
+      "status": "verified",
       "priority": 5,
-      "completed": false
+      "completed": true,
+      "checked_at": "2026-11-18T08:53:57Z",
+      "completion_evidence": "Scheduled heartbeat fired and successfully inspected both repositories, approval control, publishing snapshot and operations records; computer-off execution remains unproven"
+    },
+    {
+      "key": "daily-short-temporary-narration-outage",
+      "status": "waiting_to_resume",
+      "run_id": 44266714493,
+      "completed": false,
+      "next_retry_at": "2026-11-18T08:54:39Z",
+      "note": "Existing bounded GitHub recovery owns the eligible retry; do not manually duplicate the run."
     }
   ],
   "note": "Original full proof delivered for owner review; production deployment does not prove arbitrary-topic capability or every recovery scenario."
