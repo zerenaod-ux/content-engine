@@ -29,7 +29,7 @@ class DurableTopicTests(unittest.TestCase):
  def test_record_delta_retains_concurrent_records_and_is_idempotent(self):
   baseline={p:[] for p in durable.PATHS};durable.BASE.write_text(json.dumps(baseline))
   for p in durable.PATHS:Path(p).parent.mkdir(parents=True,exist_ok=True);Path(p).write_text('[]')
-  Path(durable.PATHS[1]).write_text(json.dumps([{'tag':'new','topic':'new topic'}]))
+  Path(durable.PATHS[1]).write_text(json.dumps([{'tag':'new','topic':'new topic'},{'tag':'new','topic':'new topic'}]))
   remote={durable.PATHS[0]:[],durable.PATHS[1]:[{'tag':'other','topic':'concurrent topic'}]}
   def read(path,default):return copy.deepcopy(remote[path]),'sha'
   def write(path,data,sha,message):remote[path]=copy.deepcopy(data)
