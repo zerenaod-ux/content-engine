@@ -1,5 +1,15 @@
 # Production planner — current contract and evidence
 
+## Latest verified state — November 18
+
+- The independent GitHub CPU voice fallback produced the 52.536-second short **Why a Check Valve Prevents Backflow**, automatically delivered to open Studio review card 55. Encoded audio passed (-16.95 LUFS, -3.07 dB true peak, 1.41% ASR word error). No human listening or final creative approval is claimed.
+- Inspection found horizontal/vertical narration mismatch, a steady-flow overclaim and cropped context. Warnings are attached to the card; no approval or replacement render was invented. Future daily scripts now reject the observed direction and discharge errors; cloud verification 44349043093 passed.
+- The corrected rack-and-pinion full video was a repeat-subject test, not a new-topic demonstration. The owner skipped card 54. Preserve that decision and do not automatically reopen or publish it. It did not meet the whole-object/interior-reveal storytelling standard.
+- Owner direction is to judge the existing short before deciding the next video. No additional full render has been launched from that feedback.
+- Automatic approval remains OFF; publishing uses owner-approved Saved items only. Daily schedules are attempts, not guarantees of completed videos. Arbitrary-topic animation and universal unattended recovery are not proven.
+- ShelfMade's story outage is tracked separately in its repository. Diagnostic retention and transient-aware handling passed dedicated cloud checks; successful story recovery is still unverified.
+
+
 Updated November 17, 2026. This is the forward plan; dated earlier notes remain historical.
 
 ## Owner requirements

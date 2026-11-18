@@ -1,6 +1,16 @@
 # How It Ticks (formerly "Content Engine")
 
-The 4th system (brand name How It Ticks; repo and job names keep `content-engine` so running jobs do not break): any topic in, a one-shot animated "living scene" explainer video out (energetic voice, sounds, music). Free tools only, runs on GitHub Actions, no laptop. Nothing is posted.
+## Latest verified state — November 18
+
+- The independent GitHub CPU voice fallback produced the 52.536-second short **Why a Check Valve Prevents Backflow**, automatically delivered to open Studio review card 55. Encoded audio passed (-16.95 LUFS, -3.07 dB true peak, 1.41% ASR word error). No human listening or final creative approval is claimed.
+- Inspection found horizontal/vertical narration mismatch, a steady-flow overclaim and cropped context. Warnings are attached to the card; no approval or replacement render was invented. Future daily scripts now reject the observed direction and discharge errors; cloud verification 44349043093 passed.
+- The corrected rack-and-pinion full video was a repeat-subject test, not a new-topic demonstration. The owner skipped card 54. Preserve that decision and do not automatically reopen or publish it. It did not meet the whole-object/interior-reveal storytelling standard.
+- Owner direction is to judge the existing short before deciding the next video. No additional full render has been launched from that feedback.
+- Automatic approval remains OFF; publishing uses owner-approved Saved items only. Daily schedules are attempts, not guarantees of completed videos. Arbitrary-topic animation and universal unattended recovery are not proven.
+- ShelfMade's story outage is tracked separately in its repository. Diagnostic retention and transient-aware handling passed dedicated cloud checks; successful story recovery is still unverified.
+
+
+The fourth system is How It Ticks. Repository and workflow names retain `content-engine`. It generates explainers using a limited tested animation library on GitHub Actions, with no laptop production. Unsupported topics are held. Completed videos go to Studio; only owner-approved Saved videos are eligible for enabled publishing. Historical entries below describe earlier configurations; the latest verified state above takes precedence.
 
 - Runs by itself twice a day (`.github/workflows/content-engine.yml`, 04:05 and 09:05 UTC). Start by hand: push `publish/run.trigger` (first line `auto` or a topic).
 - Each video is saved in its own release (tag `ce-YYYYMMDD-HHMM`); the list is `data/scenes/videos.json`. A `scene-review` issue is opened and shown in the owner's phone app Review tab, plus one ntfy ping.
