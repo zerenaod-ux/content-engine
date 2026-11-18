@@ -3,6 +3,7 @@ Everything is generated here; no downloaded sounds, no paid tools."""
 import json, os, shutil, subprocess, sys, wave
 from pathlib import Path
 import numpy as np
+from studio_lib.audio_mastering import mastering_args
 
 SR = 44100
 ROOT = Path(__file__).resolve().parent.parent
@@ -207,4 +208,4 @@ def write_wav(path, x):
 def mux(frames, audio, out, fps=30):
     ensure_ffmpeg()
     subprocess.run(['ffmpeg', '-v', 'error', '-y', '-framerate', str(fps), '-i', frames, '-i', audio, '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '18', '-pix_fmt', 'yuv420p',
-                    '-c:a', 'aac', '-b:a', '192k', '-shortest', '-movflags', '+faststart', out], check=True)
+                    '-c:a', 'aac', '-b:a', '192k', *mastering_args(), '-shortest', '-movflags', '+faststart', out], check=True)
