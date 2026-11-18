@@ -39,12 +39,11 @@
       "completion_evidence": "Scheduled heartbeat fired and successfully inspected both repositories, approval control, publishing snapshot and operations records; computer-off execution remains unproven"
     },
     {
-      "key": "daily-short-temporary-narration-outage",
-      "status": "resuming",
-      "run_id": 44266714493,
+      "key": "daily-component-capability-hold",
+      "status": "needs_visual_component",
       "completed": false,
-      "note": "The existing bounded recovery coordinator resumed the failed run after its wait; no separate generation run was created.",
-      "attempt": 2
+      "run_id": 44266714493,
+      "note": "Coating candidate and cached script retained, not rerendered or delivered. Known scope boundaries and conflict-safe persistence deployed; next fresh automatic daily output remains to verify."
     }
   ],
   "note": "Original full proof delivered for owner review; production deployment does not prove arbitrary-topic capability or every recovery scenario."
