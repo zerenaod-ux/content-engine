@@ -39,7 +39,7 @@
       "kind": "daily-short",
       "stage": "voice",
       "label": "Generating narration",
-      "updated_at": "2026-11-18T08:38:25.838945+00:00",
+      "updated_at": "2026-11-18T08:38:36.962000+00:00",
       "source_branch": "main",
       "owner_approved": false,
       "state": "running"
