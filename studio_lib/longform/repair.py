@@ -15,8 +15,10 @@ def repair_sections(plan,out,attempt=0,issues=None):
         bad=sorted(range(len(beats)),key=lambda i:len(beats[i]['say'].split()),reverse=True)[:4]
     if not bad:return plan
     bad=sorted(bad[:4])
-    raw=call('Repair only invalid narration sections. Return JSON only.',
-        'Return {"replacements":[{"index":integer,"say":"32-40 spoken words"}]}. Return exactly the requested indices, no others. Correct every listed factual error; use natural causal explanation, and a question ending ? for index 0. Do not change topic, title, hook, actions or cameras. Do not write production instructions or invent parts. ERRORS: '+json.dumps(issues or [])+' REQUESTED: '+json.dumps([{'index':i,'action':beats[i]['action'],'say':beats[i].get('say'),'measured_word_count':len(beats[i].get('say','').split()),'visible_facts':mechanism_facts(plan['mechanism'])[beats[i]['action']]} for i in bad])+' MECHANISM: '+json.dumps(SOURCES[plan['mechanism']]),max_tokens=1800,temperature=.2)
+    fact_bad={int(m.group(1)) for e in issues or [] for m in [re.match(r'Section (\d+):',e)] if m}
+    requested=[{'index':i,'action':beats[i]['action'],'measured_word_count':len(beats[i].get('say','').split()),'visible_facts':mechanism_facts(plan['mechanism'])[beats[i]['action']],**({'previous_claims_rejected':True} if i in fact_bad else {'say':beats[i].get('say')})} for i in bad]
+    raw=call('Write factual replacement narration from the canonical visible facts. Previous claims marked rejected are wrong: do not preserve their meaning. Return JSON only.',
+        'Return {"replacements":[{"index":integer,"say":"32-40 spoken words"}]}. Return exactly the requested indices, no others. Base replacements on the canonical visible facts, not rejected previous claims. Use a natural causal explanation, and a question ending ? for index 0. Do not change topic, title, hook, actions or cameras. Do not write production instructions or invent parts. REQUESTED: '+json.dumps(requested)+' MECHANISM: '+json.dumps(SOURCES[plan['mechanism']]),max_tokens=1800,temperature=min(.6,.25+.05*attempt))
     (out/f'section-repair-{attempt}.json').write_text(json.dumps(raw,indent=2))
     replacements=raw.get('replacements') if isinstance(raw,dict) else None
     if not isinstance(replacements,list) or sorted(x.get('index',-1) for x in replacements)!=bad:return plan

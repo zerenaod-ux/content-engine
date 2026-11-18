@@ -4,6 +4,12 @@ from unittest.mock import patch
 from studio_lib.longform.contract import ACTIONS
 from studio_lib.longform.repair import repair_sections,unsupported_comparison
 class SectionRepairTests(unittest.TestCase):
+ def test_factual_repair_uses_canonical_facts_instead_of_repeating_rejected_text(self):
+  p={'mechanism':'rack_pinion','beats':[{'action':a,'say':' '.join(['word']*30),'camera':'wide'} for a in ACTIONS]}
+  p['beats'][1]['say']='The stationary shaft turns the rack.'
+  answer={'replacements':[{'index':1,'say':' '.join(['correct']*35)}]}
+  with tempfile.TemporaryDirectory() as d,patch('studio_lib.longform.repair.call',return_value=answer) as model:r=repair_sections(p,Path(d),issues=['Section 1: shaft rotates'])
+  self.assertNotIn('The stationary shaft turns the rack.',model.call_args.args[1]);self.assertIn('previous_claims_rejected',model.call_args.args[1]);self.assertIn('stationary bearings',model.call_args.args[1]);self.assertNotEqual(r['beats'][1],p['beats'][1])
  def test_total_length_failure_repairs_chapters_even_when_each_chapter_is_valid(self):
   for count in (26,45):
    p={'mechanism':'rack_pinion','beats':[{'action':a,'say':' '.join(['word']*count),'camera':'wide'} for a in ACTIONS]}

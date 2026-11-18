@@ -5,6 +5,7 @@ SOURCES={
  'rack_pinion':{'source':'https://khkgears.us/media/wjon4hs3/gear-solutions_khk_converting-to-linear-motion-using-rack-and-pinion.pdf','scope':'A single fixed-diameter bench rack-and-pinion. The straight rack and attached carriage both TRANSLATE. Only guide rails and shaft supports stay fixed. Stylized rectangular teeth are not an involute/contact-stress simulation. There is no second gear, extra gear ratio or visible human hand. The assembly reverses before colliding with end stops. Not a complete car steering system.','relation':'Rack displacement equals pitch radius times pinion angle, without slip in the ideal geometry. Reverse rotation reverses travel.'},
  'lead_screw':{'source':'https://www.thomsonlinear.com/en/products/lead-screws/','scope':'A single fixed-lead rotating lead screw in fixed supports, a nonrotating nut attached to a guided translating carriage; not a ball screw or complete motor.','relation':'Nut travel equals screw lead times turns. The guide prevents the nut from rotating; reversing rotation reverses travel.'}}
 SOURCES['cam_follower']={'source':'https://ocw.metu.edu.tr/pluginfile.php/6467/mod_resource/content/4/ch8/8-4a.htm','scope':'One fixed-eccentricity circular cam, fixed rotating shaft, vertical guided roller follower and compression return spring. The spring keeps contact during the slow illustrative cycle. Not an engine valve or a force/dynamic simulation.','relation':'Follower height follows geometric roller-to-cam tangency; the offset circular cam raises and lowers the follower once per turn, with continuous contact in this ideal slow model.'}
+SOURCES['rack_pinion']['scope']+=' The input shaft ROTATES inside bearings that remain stationary. Rack travel is horizontal. One full shaft revolution advances one complete pitch circumference, spanning MANY tooth spacings. Reversal is smooth and occurs BEFORE touching an end stop. Describe direction as forward or reverse; clockwise depends on the viewing side.'
 FACTS={
  'question':'The assembled mechanism is moving slowly; ask a concrete question about rotation becoming straight travel.',
  'parts':'The same assembly remains visible. Identify fixed supports, rotating input and guided translating output.',
@@ -70,6 +71,13 @@ def require_media(seconds,width,height):
 
 def mechanism_facts(mechanism):
     facts=dict(FACTS)
+    if mechanism=='rack_pinion':
+        facts.update({'parts':'Fixed supports hold stationary bearings. The input shaft and its attached pinion ROTATE. The rack and connected carriage TRANSLATE horizontally along the guides.',
+          'forward':'Forward shaft rotation drives the rack horizontally in one direction along the rails; describe this direction without clockwise or vertical wording.',
+          'reverse':'Reversing the rotating shaft makes the rack travel horizontally back along the rails; this is a smooth reversal, not an instantaneous change.',
+          'distance':'One complete pinion revolution advances the rack by one entire pitch circumference, spanning MANY tooth spacings. Individual teeth engage successively.',
+          'limits':'Travel reverses smoothly BEFORE reaching the end stops. The gear never pushes the carriage into a stop. A practical machine needs limits appropriate to its real design.',
+          'payoff':'The rotating shaft and pinion stay engaged with the translating rack; changing rotation direction changes horizontal travel direction smoothly.'})
     if mechanism=='cam_follower':
         facts.update({
           'question':'The marked eccentric cam turns, raising and lowering a guided follower; ask how a circular disc creates reciprocating motion.',
