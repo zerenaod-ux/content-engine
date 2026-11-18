@@ -1,13 +1,11 @@
-import ast,time,unittest
-from pathlib import Path
+import unittest
 from unittest.mock import Mock,patch
-source=ast.parse(Path('ce_publisher.py').read_text())
-function=next(x for x in source.body if isinstance(x,ast.FunctionDef) and x.name=='create_approved_post')
+import ce_publisher as publisher
 class MediaRetryTests(unittest.TestCase):
     def run_submit(self,responses):
-        api=Mock(side_effect=responses);ns={'api':api,'time':time}
-        exec(compile(ast.Module(body=[function],type_ignores=[]),'ce_publisher.py','exec'),ns)
-        with patch('time.sleep'):result=ns['create_approved_post']({'channelId':'test','text':'approved'})
+        api=Mock(side_effect=responses)
+        with patch.object(publisher,'api',api),patch.object(publisher.time,'sleep'):
+            result=publisher.create_approved_post({'channelId':'test','text':'approved'})
         return result,api
     def test_explicit_video_fetch_error_retried_once_then_stops_on_success(self):
         error={'data':{'createPost':{'message':'Invalid post: Video could not be read from its URL.'}}}
