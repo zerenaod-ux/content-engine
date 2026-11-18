@@ -5,13 +5,14 @@
       "key": "original-full-video-proof",
       "status": "in_progress",
       "priority": 1,
-      "run_id": 44262874938,
+      "run_id": 44266325198,
       "completion_requires": [
         "successful encoded 120–300-second original landscape video",
         "semantic visual and audio inspection",
         "verified Studio review card"
       ],
-      "completed": false
+      "completed": false,
+      "last_failure": "Rejected factual narration; writer repair now uses canonical visible facts"
     },
     {
       "key": "voice-secondary-provider",
