@@ -1,1 +1,1 @@
-Correct pitch-line engagement, end-stop clearance and work/energy narration; preserve accepted topic and cached valid speech; 2026-11-18T15:00:00Z
+Repair only the invalid work/energy sentence from accepted narration; preserve every other accepted section and cached voice; engagement fix retained; 2026-11-18T15:06:00Z
