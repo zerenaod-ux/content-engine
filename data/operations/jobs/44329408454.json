@@ -7,8 +7,8 @@
   "updated_at": "2026-11-18T14:57:01.893973+00:00",
   "source_branch": "main",
   "owner_approved": false,
-  "retryable": true,
-  "next_retry_at": 1795014721.8939424,
-  "reason": "Temporary service or capacity failure",
-  "state": "waiting_to_resume"
+  "retryable": false,
+  "next_retry_at": null,
+  "reason": "Accepted script retained; explicit cloud CPU voice recovery requested after code verification",
+  "state": "superseded_by_saved_stage_recovery"
 }
