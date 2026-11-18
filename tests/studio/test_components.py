@@ -7,7 +7,7 @@ from studio_lib.director import ACTIONS,validate,pose,verify
 from studio_lib.checkpoints import Checkpoint
 from studio_lib.providers import call,_UNAVAILABLE
 def plan_fixture():
-    return {'mechanism':'bascule_bridge','title':'Why This Bascule Bridge Lifts for Ships','hook':'A road makes room for a ship','beats':[{'action':a,'say':'This is an authored engineering fixture for checking the component rather than automatic narration quality.','camera':'mechanism' if i in (2,3,4) else 'wide'} for i,a in enumerate(ACTIONS)]}
+    return {'mechanism':'bascule_bridge','title':'Why This Bascule Bridge Lifts for Ships','hook':'A road makes room for a ship','beats':[{'action':a,'say':'This is an authored engineering fixture for checking the component rather than automatic narration quality at each independently checked stage.','camera':'mechanism' if i in (2,3,4) else 'wide'} for i,a in enumerate(ACTIONS)]}
 def timeline():return {'beats':[dict(b,start=i*6,end=(i+1)*6) for i,b in enumerate(plan_fixture()['beats'])],'duration':48}
 class ComponentTests(unittest.TestCase):
     def test_unsupported_topic_cannot_be_substituted(self):

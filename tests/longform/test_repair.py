@@ -4,6 +4,11 @@ from unittest.mock import patch
 from studio_lib.longform.contract import ACTIONS
 from studio_lib.longform.repair import repair_sections,unsupported_comparison
 class SectionRepairTests(unittest.TestCase):
+ def test_extra_unrequested_question_does_not_discard_requested_valid_repairs(self):
+  p={'mechanism':'rack_pinion','beats':[{'action':a,'say':' '.join(['word']*(19 if i==11 else 33)),'camera':'wide'} for i,a in enumerate(ACTIONS)]}
+  answer={'replacements':[{'index':0,'say':' '.join(['unrequested']*35)},{'index':11,'say':' '.join(['fixed']*35)}]}
+  with tempfile.TemporaryDirectory() as d,patch('studio_lib.longform.repair.call',return_value=answer):r=repair_sections(p,Path(d))
+  self.assertEqual(r['beats'][0],p['beats'][0]);self.assertEqual(len(r['beats'][11]['say'].split()),35)
  def test_factual_repair_uses_canonical_facts_instead_of_repeating_rejected_text(self):
   p={'mechanism':'rack_pinion','beats':[{'action':a,'say':' '.join(['word']*30),'camera':'wide'} for a in ACTIONS]}
   p['beats'][1]['say']='The stationary shaft turns the rack.'

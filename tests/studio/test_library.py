@@ -6,7 +6,7 @@ from studio_lib.registry import REGISTRY
 from studio_lib.director import validate,verify,picture,normalize_narration
 from studio_lib import solar,pump,wind
 def fixture(kind):
-    return {'mechanism':kind,'title':'How This Tested Mechanism Transfers Useful Energy','hook':'Look inside the moving mechanism','beats':[{'action':a,'say':'This authored engineering fixture checks visible component behavior rather than proving automatically generated narration quality.','camera':'mechanism' if i in (2,3,4,5) else 'wide'} for i,a in enumerate(REGISTRY[kind]['actions'])]}
+    return {'mechanism':kind,'title':'How This Tested Mechanism Transfers Useful Energy','hook':'Look inside the moving mechanism','beats':[{'action':a,'say':'This authored engineering fixture checks visible component behavior rather than proving automatically generated narration quality within this controlled engineering test.','camera':'mechanism' if i in (2,3,4,5) else 'wide'} for i,a in enumerate(REGISTRY[kind]['actions'])]}
 def timeline(kind):return {'beats':[dict(b,start=i*6,end=(i+1)*6) for i,b in enumerate(fixture(kind)['beats'])],'duration':48}
 class LibraryTests(unittest.TestCase):
     def test_all_registered_plans_validate(self):

@@ -73,8 +73,8 @@ def mechanism_facts(mechanism):
     facts=dict(FACTS)
     if mechanism=='rack_pinion':
         facts.update({'parts':'Fixed supports hold stationary bearings. The input shaft and its attached pinion ROTATE. The rack and connected carriage TRANSLATE horizontally along the guides.',
-          'forward':'Forward shaft rotation drives the rack horizontally in one direction along the rails; describe this direction without clockwise or vertical wording.',
-          'reverse':'Reversing the rotating shaft makes the rack travel horizontally back along the rails; this is a smooth reversal, not an instantaneous change.',
+          'forward':'Forward shaft rotation drives the rack horizontally in one direction along the rails.',
+          'reverse':'Reversing the rotating shaft makes the rack travel horizontally back along the rails in a smooth reversal.',
           'distance':'One complete pinion revolution advances the rack by one entire pitch circumference, spanning MANY tooth spacings. Individual teeth engage successively.',
           'limits':'Travel reverses smoothly BEFORE reaching the end stops. The gear never pushes the carriage into a stop. A practical machine needs limits appropriate to its real design.',
           'payoff':'The rotating shaft and pinion stay engaged with the translating rack; changing rotation direction changes horizontal travel direction smoothly.'})

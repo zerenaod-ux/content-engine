@@ -21,9 +21,12 @@ def repair_sections(plan,out,attempt=0,issues=None):
         'Return {"replacements":[{"index":integer,"say":"32-40 spoken words"}]}. Return exactly the requested indices, no others. Base replacements on the canonical visible facts, not rejected previous claims. Use a natural causal explanation, and a question ending ? for index 0. Do not change topic, title, hook, actions or cameras. Do not write production instructions or invent parts. REQUESTED: '+json.dumps(requested)+' MECHANISM: '+json.dumps(SOURCES[plan['mechanism']]),max_tokens=1800,temperature=min(.6,.25+.05*attempt))
     (out/f'section-repair-{attempt}.json').write_text(json.dumps(raw,indent=2))
     replacements=raw.get('replacements') if isinstance(raw,dict) else None
-    if not isinstance(replacements,list) or sorted(x.get('index',-1) for x in replacements)!=bad:return plan
+    if not isinstance(replacements,list):return plan
     result=copy.deepcopy(plan)
+    seen=set()
     for item in replacements:
+        if not isinstance(item,dict) or type(item.get('index')) is not int or item['index'] not in bad or item['index'] in seen:continue
+        seen.add(item['index'])
         if isinstance(item.get('say'),str) and 20<=len(item['say'].split())<=50:result['beats'][item['index']]['say']=item['say']
     return result
 

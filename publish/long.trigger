@@ -1,1 +1,1 @@
-Repair rejected claims from canonical facts rather than paraphrasing wrong narration; same reserved original full-video topic; 2026-11-18
+Retain requested factual repairs despite unrequested extra output; shared mastering on all production formats; same automatic rack topic; 2026-11-18

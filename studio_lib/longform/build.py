@@ -1,3 +1,4 @@
+from studio_lib.audio_mastering import mastering_args
 from studio_lib.cinema.topic_memory import prompt_history
 """System-selected original single-topic long video, generated entirely on GitHub."""
 import argparse,asyncio,base64,json,math,os,subprocess,time
@@ -105,7 +106,7 @@ def run(out):
    if n%200==0:print('Full-video native frames: '+str(n),flush=True)
  finally:proc.stdin.close()
  if proc.wait():raise RuntimeError('Landscape render failed')
- subprocess.run(['ffmpeg','-v','error','-y','-i',str(out/'silent.mp4'),'-i',str(out/'mix.wav'),'-c:v','copy','-c:a','aac','-b:a','160k','-ar','48000','-af','loudnorm=I=-16:TP=-3:LRA=9,alimiter=limit=0.7:level=false','-t',str(tl['duration']),'-movflags','+faststart',str(out/'video.mp4')],check=True)
+ subprocess.run(['ffmpeg','-v','error','-y','-i',str(out/'silent.mp4'),'-i',str(out/'mix.wav'),'-c:v','copy','-c:a','aac','-b:a','160k',*mastering_args(),'-t',str(tl['duration']),'-movflags','+faststart',str(out/'video.mp4')],check=True)
  measured=json.loads(subprocess.check_output(['ffprobe','-v','error','-show_streams','-show_format','-of','json',str(out/'video.mp4')]))
  stream=next(s for s in measured['streams'] if s['codec_type']=='video');require_media(float(measured['format']['duration']),stream['width'],stream['height'])
  subprocess.run(['ffmpeg','-v','error','-i',str(out/'video.mp4'),'-f','null','-'],check=True)
