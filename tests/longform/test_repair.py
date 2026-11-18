@@ -19,3 +19,8 @@ class SectionRepairTests(unittest.TestCase):
  def test_unshown_geometry_comparison_is_not_a_supported_topic(self):
   self.assertTrue(unsupported_comparison('Why does travel change when pinion diameter is increased?','rack_pinion'))
   self.assertFalse(unsupported_comparison('How a rack and pinion moves a carriage','rack_pinion'))
+ def test_title_repair_never_rewrites_valid_narration_or_hook(self):
+  from studio_lib.longform.repair import repair_metadata
+  plan={'topic':'How a lead screw moves a carriage','title':'How a Very Long Screw Title Contains Far Too Many Words','hook':'Turns become travel','beats':[{'say':'Existing valid words'}]}
+  with tempfile.TemporaryDirectory() as d,patch('studio_lib.longform.repair.call',return_value={'title':'How Lead Screws Move a Carriage','hook':'Do not replace this'}):r=repair_metadata(plan,Path(d))
+  self.assertEqual(r['beats'],plan['beats']);self.assertEqual(r['hook'],plan['hook']);self.assertEqual(r['title'],'How Lead Screws Move a Carriage')

@@ -29,6 +29,7 @@ jobs:
           path: |
             .ce-cache/cinema-voice
             full-output/accepted-plan.json
+            full-output/draft-plan.json
           key: full-proof-${{ runner.os }}-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: full-proof-${{ runner.os }}-${{ github.run_id }}-
       - name: Select, write, narrate and render one original landscape topic
@@ -41,8 +42,8 @@ jobs:
           CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
-          CE_MAX_REQUESTS: '14'
-          CE_MAX_SECONDS: '600'
+          CE_MAX_REQUESTS: '24'
+          CE_MAX_SECONDS: '900'
         run: python -m studio_lib.recovery run --kind full -- bash -c 'python -m studio_lib.longform.build --out full-output && python -m studio_lib.longform.deliver'
       - uses: actions/cache/save@v4
         if: always()
@@ -50,6 +51,7 @@ jobs:
           path: |
             .ce-cache/cinema-voice
             full-output/accepted-plan.json
+            full-output/draft-plan.json
           key: full-proof-${{ runner.os }}-${{ github.run_id }}-${{ github.run_attempt }}
       - uses: actions/upload-artifact@v4
         if: always()
