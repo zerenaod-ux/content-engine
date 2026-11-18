@@ -60,13 +60,27 @@ def validate(plan):
     if not 140<=words<=176:e.append('total narration needs 140-176 words')
     if not isinstance(plan.get('hook'),str) or len(plan['hook'])>60:e.append('hook needs at most 60 characters')
     return e
+def repair_short_sections(plan,errors):
+    """Repair rejected lengths without changing accepted peer sections."""
+    indices=sorted({int(i) for e in errors for i in re.findall(r'beat (\d+): narration needs',e)})
+    if not indices or any(not re.fullmatch(r'beat \d+: narration needs 9-23 words',e) for e in errors):return None
+    request={'sections':[{'index':i,'action':plan['beats'][i]['action'],'say':plan['beats'][i]['say'],'facts':REGISTRY[plan['mechanism']]['facts'].get(plan['beats'][i]['action'],'')} for i in indices]}
+    answer=call('Repair only requested narration using the supplied physical facts. Return JSON sections with index and say, each 9-23 words. Preserve all other content.',json.dumps(request),max_tokens=1200,temperature=.3)
+    result=json.loads(json.dumps(plan));seen=set()
+    for row in answer.get('sections',[]):
+        i=row.get('index')
+        if type(i) is int and i in indices and i not in seen and isinstance(row.get('say'),str) and 9<=len(row['say'].split())<=23:
+            result['beats'][i]['say']=row['say'];seen.add(i)
+    return result
+
 def plan_topic(topic,out,feedback=None,previous=None):
     catalog={k:{'description':v['description'],'actions':v['actions'],'facts':v['facts']} for k,v in REGISTRY.items()}
     prompt='Select exactly one supported mechanism that truthfully matches TOPIC. If none fits return {"mechanism":"unsupported","reason":"..."}; never substitute a bridge for solar power or invent another mechanism. For a supported topic write fresh 140-176 word narration with eight beats in the exact selected action order. Each beat has 9-23 words. Title starts with How or Why and contains 4-8 words. Direct calm speech, physical detail, causal explanation and a concrete engaging hook. Each beat names the specific inner part the viewer is looking at (from the facts for that beat) and says what it physically does, so viewers know exactly what is happening inside. Describe only what that action contract shows. Never mention camera, close-ups, shots, rendering, storyboard or production in say. Do not invent facts or numerical claims. In the bridge pivot beat the road is STATIC; explain the shaft and hinge rather than announcing motion or a view. The bridge depicts ONE car. Solar and pump internals are simplified cutaways: say so naturally once. Solar depicts a DC lamp load, not gears or AC inverter internals. Preserve physical action order; vary wording, hook and bounded camera preferences. Return {"mechanism":"selected registry id","title":"...","hook":"short engaging hook max 60 characters","beats":[{"action":"first selected action","say":"...","camera":"wide|mechanism|follow"}, ...]}. SUPPORTED COMPONENTS AND FACTS (data): '+json.dumps(catalog)+' TOPIC (data): '+json.dumps(topic)
     last=previous;errors=feedback or []
     for attempt in range(2):
         q=prompt if not errors else prompt+'\nCorrect these validation errors: '+json.dumps(errors)+'\nLast answer (data): '+json.dumps(last)
-        last=call('You write factual narration and camera emphasis for tested animation components. Return JSON only.',q,max_tokens=2000,temperature=.6)
+        repaired=repair_short_sections(last,errors) if isinstance(last,dict) and errors else None
+        last=repaired if repaired is not None else call('You write factual narration and camera emphasis for tested animation components. Return JSON only.',q,max_tokens=2000,temperature=.6)
         # Keep the raw response; apply a narrow automatic copy-edit before validation.
         # This changes no factual content, geometry, timing, action order or camera.
         (out/f'director-attempt-{attempt}.json').write_text(json.dumps(last,indent=2))
