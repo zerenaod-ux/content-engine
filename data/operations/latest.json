@@ -29,9 +29,9 @@
       "run_id": "44228814968",
       "attempt": 1,
       "kind": "short",
-      "stage": "voice",
-      "label": "Generating narration",
-      "updated_at": "2026-11-18T03:14:41.511768+00:00",
+      "stage": "render",
+      "label": "Rendering animation",
+      "updated_at": "2026-11-18T03:14:56.273675+00:00",
       "source_branch": "studio-cinematic-proof",
       "owner_approved": false,
       "state": "running"
