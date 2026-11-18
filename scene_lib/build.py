@@ -27,7 +27,7 @@ def result_key(spec):
     for p in ['scene_lib/render.js','scene_lib/scene.html','scene_lib/check_frames.py',
               'scene_lib/evidence.py','scene_lib/validate.py','scene_lib/catalog.py',
               'scene_lib/assemble.py','scene_lib/audio.py','local_voice.py','scene_lib/build.py',
-              'scene_lib/prepare.py','scene_lib/repair.py','scene_lib/writer.py']:
+              'scene_lib/prepare.py','scene_lib/repair.py','scene_lib/writer.py','studio_lib/audio_mastering.py']:
         h.update((ROOT/p).read_bytes())
     h.update(os.environ.get('SCENE_VOICE','default').encode())
     context=os.environ.get('CE_REPAIR_CONTEXT')
