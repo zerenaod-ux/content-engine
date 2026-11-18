@@ -29,6 +29,7 @@ jobs:
     timeout-minutes: 20   # tested components use CPU rendering, no generative GPU batch
     steps:
       - uses: actions/checkout@v4
+        with: {ref: main, fetch-depth: 1, fetch-tags: false}
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -60,16 +61,6 @@ jobs:
           elif [ -n "$TOPIC_IN" ]; then printf '%s\n' "$TOPIC_IN" > topic.txt; else head -n 1 publish/run.trigger > topic.txt; fi
           python3 -m unittest discover -s tests/topic_guard -v
           python3 -m studio_lib.recovery run --kind daily-short --success-stage planning -- python3 -m studio_lib.production --prepare-only --topic-file topic.txt --out scene-factory.mp4
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/scenes/topic-ledger.json
-          git diff --cached --quiet || git commit -qm "Reserve unique How It Ticks topic before generation"
-          SAVED=0
-          for i in 1 2 3 4 5; do
-            if git pull --rebase --autostash -q && git push -q; then SAVED=1; break; fi
-            sleep 5
-          done
-          [ "$SAVED" = 1 ] || { echo "Topic reservation was not saved; refusing to render"; exit 1; }
           python3 -m studio_lib.recovery run --kind daily-short -- python3 -m studio_lib.production --topic-file topic.txt --out scene-factory.mp4
       - name: Verify the tested-component review contract
         run: |
@@ -98,6 +89,7 @@ jobs:
           v.append({'date': datetime.date.today().isoformat(), 'tag': sys.argv[1], 'title': sys.argv[2], 'video': sys.argv[3], 'topic': spec.get('topic'), 'topic_key': spec.get('topic_key')})
           p.write_text(json.dumps(v, indent=1, ensure_ascii=False) + '\n')
           PY
+          python3 -m studio_lib.durable_topics save-records
           gh label create scene-review --color 6a55c9 --description "How It Ticks video to watch (not posted)" 2>/dev/null || true
           printf 'How It Ticks video (4th system, NOT posted).\n\nWatch: %s\n\nSaved in the How It Ticks folder: release %s. Approve in the app to file it under Saved, or Skip to hold it under Delete. Nothing is posted or deleted.\n' "$URL" "$TAG" > body.txt
           V=$(python3 -c "import json;print(json.load(open('ce-checks.json')).get('verdict','warn'))" 2>/dev/null || echo warn)
@@ -108,19 +100,11 @@ jobs:
           [ -n "$NTFY_TOPIC" ] && curl -s -H "Title: How It Ticks: new video" -H "Click: https://zerenaod-ux.github.io/shelfmade-dashboard/app/#review" -d "$TITLE (not posted) is ready to watch in the app." "https://ntfy.sh/$NTFY_TOPIC" > /dev/null || true
       - name: Remember this angle and retain failed-attempt diagnostics
         if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           if [ -f scene-factory.mp4 ]; then python3 scene_lib/ideas.py record auto-scene.json; elif [ -f idea.json ] || [ -f writer-log.txt ]; then python3 scene_lib/ideas.py record auto-scene.json failed; else exit 0; fi
-          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/scenes/history.json data/scenes/videos.json data/scenes/inside-history.json data/icons 2>/dev/null || git add data/scenes/history.json
-          if ! git diff --cached --quiet; then
-            git commit -qm "scene factory: remember idea"
-            SAVED=0
-            for i in 1 2 3 4 5; do
-              if git pull --rebase --autostash -q && git push -q; then SAVED=1; break; fi
-              sleep 5
-            done
-            [ "$SAVED" = 1 ] || { echo "Video history/index was not saved"; exit 1; }
-          fi
+          python3 -m studio_lib.durable_topics save-records
       - name: Attach to release
         if: always()
         env:
@@ -146,6 +130,7 @@ jobs:
             *-log.txt
             auto-*.json
             metrics.json
+            daily-resume-provenance.json
             evidence-report.json
             fr/evidence/
           retention-days: 14

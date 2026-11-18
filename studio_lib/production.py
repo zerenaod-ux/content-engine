@@ -9,6 +9,7 @@ from studio_lib.director import run
 from studio_lib.registry import REGISTRY
 from studio_lib.providers import call
 from studio_lib.topic_guard import history,duplicate,require_new,reserve,signature
+from studio_lib import durable_topics as durable
 def choose_topic(history_path=Path('data/scenes/history.json')):
     rows=history(Path(history_path).parent,os.environ.get('GITHUB_RUN_ID'))
     prior=[x.get('topic') or x.get('title','') for x in rows if x.get('topic') or x.get('title')]
@@ -24,12 +25,19 @@ def choose_topic(history_path=Path('data/scenes/history.json')):
     raise ValueError('No non-repeating supported topic survived the full-history checks')
 
 def prepare(topic_file):
+    if durable.enabled():durable.refresh_history()
     topic_file=Path(topic_file);lines=topic_file.read_text().splitlines();topic=(lines[0] if lines else 'auto').strip();topic=re.sub(r'\s+20\d\d-\d\d-\d\dT[\d:]+$','',topic).strip()
+    recovered=re.fullmatch(r'resume (\d+)',topic)
+    owner=os.environ.get('GITHUB_RUN_ID')
+    if recovered:
+        if not durable.enabled():raise ValueError('Daily recovery requires a verified cloud source')
+        topic,owner=durable.resume_topic(recovered.group(1))
     if topic.lower() in ('','auto'):
         ledger=Path('data/scenes/topic-ledger.json')
         owned=[r for r in json.loads(ledger.read_text()) if str(r.get('owner'))==str(os.environ.get('GITHUB_RUN_ID'))] if ledger.exists() else []
         topic=owned[-1]['topic'] if owned else choose_topic()
-    reserve(topic,owner=os.environ.get('GITHUB_RUN_ID'))
+    if durable.enabled():durable.reserve_remote(topic,owner)
+    else:reserve(topic,owner=owner)
     topic_file.write_text(topic+'\n')
     return topic
 
@@ -52,7 +60,7 @@ def build(topic_file,out,work=Path('component-output/production')):
     if out.exists():raise FileExistsError('preserve the existing output; use a fresh build path')
     lines=Path(topic_file).read_text().splitlines();topic=(lines[0] if lines else 'auto').strip();topic=re.sub(r'\s+20\d\d-\d\d-\d\dT[\d:]+$','',topic).strip()
     if topic.lower() in ('','auto'):topic=choose_topic()
-    require_new(topic,owner=os.environ.get('GITHUB_RUN_ID'))
+    require_new(topic,owner=durable.reservation_owner(topic))
     try:
         run(topic,work);spec=emit_review_files(work);shutil.copyfile(work/'video.mp4',out)
         with Path('writer-log.txt').open('a') as f:f.write('tested component completed: '+spec['title']+'; owner review pending\n')
