@@ -79,5 +79,11 @@
     "topic_key": "backflow check piston prevents pump valve",
     "owner": "44329408454",
     "state": "reserved"
+  },
+  {
+    "topic": "Why a bascule bridge uses counterweights to balance the moving leaf",
+    "topic_key": "balance bascule bridge counterweights leaf moving uses",
+    "owner": "44363993361",
+    "state": "reserved"
   }
 ]
