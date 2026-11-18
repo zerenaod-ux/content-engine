@@ -15,12 +15,15 @@
       "run_id": "44264746092",
       "attempt": 1,
       "kind": "full",
-      "stage": "planning",
-      "label": "Writing and checking narration",
-      "updated_at": "2026-11-18T08:11:43.665866+00:00",
+      "stage": "Stopped",
+      "label": "Stopped",
+      "updated_at": "2026-11-18T08:11:48.456200+00:00",
       "source_branch": "studio-cinematic-proof",
       "owner_approved": false,
-      "state": "running"
+      "retryable": false,
+      "next_retry_at": null,
+      "reason": "Needs a code, content or configuration correction",
+      "state": "needs_attention"
     },
     "short": {
       "run_id": "44228814968",
