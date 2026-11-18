@@ -3,24 +3,39 @@
   "items": [
     {
       "key": "original-full-video-proof",
-      "status": "in_progress",
+      "status": "awaiting_owner_review",
       "priority": 1,
-      "run_id": 44266325198,
-      "completion_requires": [
-        "successful encoded 120–300-second original landscape video",
-        "semantic visual and audio inspection",
-        "verified Studio review card"
-      ],
-      "completed": false,
-      "last_failure": "Rejected factual narration; writer repair now uses canonical visible facts"
+      "run_id": 44269243004,
+      "issue_number": 53,
+      "completed": true,
+      "completion_evidence": "145.8s landscape; encoded audio and integrity passed; sampled all chapters and ASR transcript; Studio card verified",
+      "owner_approved": false,
+      "human_listening_completed": false
+    },
+    {
+      "key": "first-scheduled-main-full-video",
+      "status": "not_yet_observed",
+      "priority": 2,
+      "completed": false
+    },
+    {
+      "key": "daily-cinematic-renderer-rollout",
+      "status": "not_completed",
+      "priority": 3,
+      "completed": false
     },
     {
       "key": "voice-secondary-provider",
       "status": "not_implemented",
-      "priority": 2,
-      "blocked_by": "Complete the active full-video proof first",
+      "priority": 4,
+      "completed": false
+    },
+    {
+      "key": "health-heartbeat-first-unattended-run",
+      "status": "scheduled_not_yet_verified",
+      "priority": 5,
       "completed": false
     }
   ],
-  "note": "A saved change, passing component test, or submitted run is not end-to-end completion."
+  "note": "Original full proof delivered for owner review; production deployment does not prove arbitrary-topic capability or every recovery scenario."
 }
