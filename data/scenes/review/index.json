@@ -500,7 +500,46 @@
    "ready_for_future_publish": false,
    "record": "delete/ce-20261117-0233-p2/44231201324-1.json",
    "history": []
+  },
+  {
+   "tag": "ce-long-20261117-1921",
+   "title": "How Machines Work From the Inside 🔧",
+   "video": "https://zerenaod-ux.github.io/content-engine/videos/ce-long-20261117-1921.mp4",
+   "folder": "delete",
+   "issue_number": 47,
+   "issue_url": "https://github.com/zerenaod-ux/content-engine/issues/47",
+   "reviewed_at": "2026-11-18T03:34:06.323878+00:00",
+   "publishing_enabled": false,
+   "ready_for_future_publish": false,
+   "record": "delete/ce-long-20261117-1921/44231266024-1.json",
+   "history": []
+  },
+  {
+   "tag": "ce-20261117-2226-cinema-44190117249",
+   "title": "Why a Seesaw Lifts With Less Force ⚖️",
+   "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@f88041a2406ba3537c022eb2f4e4b918932dda8d/videos/ce-20261117-2226-cinema-44190117249.mp4",
+   "folder": "delete",
+   "issue_number": 49,
+   "issue_url": "https://github.com/zerenaod-ux/content-engine/issues/49",
+   "reviewed_at": "2026-11-18T03:34:06.878616+00:00",
+   "publishing_enabled": false,
+   "ready_for_future_publish": false,
+   "record": "delete/ce-20261117-2226-cinema-44190117249/44231266024-1.json",
+   "history": []
+  },
+  {
+   "tag": "ce-20261117-2315-cinema-44197813889",
+   "title": "Why Hydraulic Lift Raises Heavy Loads 🏗️",
+   "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@60a243cbd27a6137895561e2049d76dffe11a313/videos/ce-20261117-2315-cinema-44197813889.mp4",
+   "folder": "delete",
+   "issue_number": 50,
+   "issue_url": "https://github.com/zerenaod-ux/content-engine/issues/50",
+   "reviewed_at": "2026-11-18T03:34:07.145817+00:00",
+   "publishing_enabled": false,
+   "ready_for_future_publish": false,
+   "record": "delete/ce-20261117-2315-cinema-44197813889/44231266024-1.json",
+   "history": []
   }
  ],
- "updated_at": "2026-11-18T03:33:15.054022+00:00"
+ "updated_at": "2026-11-18T03:34:07.145817+00:00"
 }
