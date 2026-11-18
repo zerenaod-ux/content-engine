@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-11-18T03:28:30.953873+00:00",
+  "checked_at": "2026-11-18T03:28:52.464567+00:00",
   "read_only": true,
   "complete": true,
   "platforms": {
@@ -142,30 +142,6 @@
           {
             "status": "not_found_in_buffer",
             "prior_owner_skip": false
-          }
-        ]
-      }
-    },
-    {
-      "tag": "ce-20261116-1727",
-      "title": "How Solar Panels Turn Sunlight Into Power \u26a1",
-      "platforms": {
-        "youtube": [
-          {
-            "status": "scheduled",
-            "due": "2026-11-18T22:30:00.000Z"
-          }
-        ],
-        "instagram": [
-          {
-            "status": "scheduled",
-            "due": "2026-11-19T03:00:00.000Z"
-          }
-        ],
-        "tiktok": [
-          {
-            "status": "scheduled",
-            "due": "2026-11-19T02:30:00.000Z"
           }
         ]
       }
