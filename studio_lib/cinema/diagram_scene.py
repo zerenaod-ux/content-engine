@@ -61,7 +61,7 @@ def update(sc):
  index=min(7,next((i for i,b in enumerate(TL['beats']) if t<b['end']),7));beat=TL['beats'][index];phase=ease((t-beat['start'])/(beat['end']-beat['start']))
  data=diagram(mechanism,p,index,phase)
  for item in data['objects']:
-  o=objects[item['id']];o.data.materials[0].diffuse_color=(*item['color'],1)
+  o=objects[item['id']];o.hide_render=not item.get('visible',True);o.data.materials[0].diffuse_color=(*item['color'],1)
   if item['kind']=='beam':
    a,b=(Vector(v) for v in item['points']);o.location=(a+b)/2;o.scale=((b-a).length,*item['size']);o.rotation_euler=(b-a).to_track_quat('X','Z').to_euler()
   elif item['kind']=='line':
@@ -80,6 +80,11 @@ def update(sc):
   cam.location=Vector(positions[previous]).lerp(Vector(positions[index]),blend)
   cam.rotation_euler=(focus-cam.location).to_track_quat('-Z','Y').to_euler()
   camdata.ortho_scale=scales[previous]+(scales[index]-scales[previous])*blend
+ elif mechanism=='thermal_contact':
+  targets=[(0,0,2),(0,0,2),(0,0,2),(0,0,2),(0,0,2),(0,0,2),(0,0,2),(0,0,2)]
+  scales=[8.6,8.2,8.2,8.2,8.2,8.2,8.6,8.6]
+  previous=max(0,index-1);blend=ease((t-beat['start'])/1.2) if index else 1
+  focus=Vector(targets[index]);cam.location=Vector((1.5,-16,6));cam.rotation_euler=(focus-cam.location).to_track_quat('-Z','Y').to_euler();camdata.ortho_scale=scales[previous]+(scales[index]-scales[previous])*blend
  else:camdata.ortho_scale=9.5-.35*ease(t/TL['duration'])
  bpy.context.view_layer.update()
  for o in texts:

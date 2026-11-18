@@ -87,7 +87,7 @@ def script_errors(plan,topic):
         if component=='lever_balance':errors+=lever_narration_errors(plan)
         if component=='thermal_contact':
             for b in beats:
-                if re.search(r'highlight|labels? (?:each|the) block.{0,12}surface|blocks? it[.!?]?$',b.get('say',''),re.I):errors.append('No highlighted contact surface or surface labels are drawn; avoid malformed sentence endings.')
+                if re.search(r'blocks? it[.!?]?$',b.get('say',''),re.I):errors.append('Avoid malformed sentence endings in the thermal explanation.')
             if re.search(r'\b(fast|instantly|instantaneous)\b',str(plan.get('hook','')),re.I):errors.append('Thermal diagram does not establish a real transfer speed; use a hook without a fast/instant claim.')
         if component=='hydraulic_lift' and any(re.search(r'\b(instantly|instantaneous|powerful work|multiplies energy)\b',b.get('say',''),re.I) for b in beats):errors.append('Do not claim instantaneous pressure propagation or increased energy/work; explain force traded against travel.')
         if not 140<=sum(len(b.get('say','').split()) for b in beats)<=176:errors.append('Total narration needs 140-176 words.')
@@ -250,17 +250,16 @@ def repair_resumed_plan(plan,topic,out):
     brief=contract(topic);errors=script_errors(plan,topic)+hook_errors(plan.get('hook'));requests=0
     if not errors:return plan,{'errors':[]},requests
     (out/'resumed-original-plan.json').write_text(json.dumps(plan,indent=2))
-    for attempt in range(2):
+    specific=('The lever lift happens only in change; later beats hold the raised load. Arrows illustrate forces; ends never exchange sides. ' if plan.get('mechanism')=='lever_balance' else 'Use only the specified component and its visible action contract. Do not introduce a lever, motor or other unrelated mechanism. ')
+    for attempt in range(3):
         raw=call('Repair only the identified narration contradictions in this data. Return JSON only.',
-            'Return the full plan object. Preserve the title, hook, valid sentences and action order. '
+            'Return the full plan object. Preserve valid metadata, sentences and action order; correct only invalid fields. '
             'Keep mechanism unchanged and exactly eight beats in the contract order. '
             'Each beat must include action, say containing 9-23 spoken words, and camera=wide|mechanism|follow. '
             'Total narration MUST contain 140-176 words. Count words before returning. '
             'Title starts How/Why and has 4-8 words; hook is at most 7 words and 40 characters. '
             'The first spoken beat remains a direct question ending with ?. '
-            'The lever lift happens ONLY in change, after the wide view settles; later beats hold the raised load. '
-            'Arrows illustrate forces; they do not push. Ends never exchange sides. '
-            'ERRORS (data): '+json.dumps(errors)+' CONTRACT (data): '+json.dumps(brief)+' PLAN (data): '+json.dumps(plan),
+            +specific+'ERRORS (data): '+json.dumps(errors)+' CONTRACT (data): '+json.dumps(brief)+' PLAN (data): '+json.dumps(plan),
             max_tokens=2100,temperature=.2);requests+=1
         (out/f'resumed-plan-repair-{attempt}.json').write_text(json.dumps(raw,indent=2))
         plan=normalize_narration(raw);errors=script_errors(plan,topic)+hook_errors(plan.get('hook'))

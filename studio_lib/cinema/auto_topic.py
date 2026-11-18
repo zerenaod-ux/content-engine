@@ -44,6 +44,16 @@ def main():
         if not isinstance(data,list):raise ValueError('Invalid full-history data')
         rows.extend(data)
     ledger,sha=read('data/scenes/topic-ledger.json');rows+=ledger
+    recovery=Path('publish/cinema.resume.json')
+    config=json.loads(recovery.read_text()) if recovery.exists() else {}
+    if config.get('repair') is True:
+        source=api('actions/runs/'+str(config['run_id']))
+        if source.get('head_branch')!='studio-cinematic-proof' or source.get('name')!='Cinematic system comparison (not posted)' or source.get('conclusion')!='success':raise ValueError('Untrusted repair source')
+        topic=config['topic']
+        if not any(str(r.get('owner'))==str(config['run_id']) and r.get('topic')==topic for r in ledger):raise ValueError('Repair topic lacks its original automatic reservation')
+        Path('publish/cinema.topic').write_text(topic+'\n')
+        (out/'automatic-topic-selection.json').write_text(json.dumps({'selected_by_system':True,'repair_of_run':config['run_id'],'topic':topic,'new_topic_count':0},indent=2))
+        return
     owned=[r for r in ledger if str(r.get('owner'))==str(os.environ['GITHUB_RUN_ID']) and r.get('format')!='original_full']
     if owned:
         topic=owned[-1]['topic'];Path('publish/cinema.topic').write_text(topic+'\n')

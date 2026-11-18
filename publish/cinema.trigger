@@ -1,1 +1,1 @@
-targeted-length-repair-proof-20261117-continued
+Thermal internal-motion system correction; repair original automatic selection; 2026-11-18

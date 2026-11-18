@@ -1,5 +1,6 @@
 """Reusable explanatory diagram components, not arbitrary photorealistic scenes."""
 import math
+from studio_lib.science.micro_motion import lattice,transfer_markers
 from studio_lib.science.models import lever,resistor,hydraulics,heat_contact,complementary_dna,transfer_water
 ACTIONS=['overview','parts','input','change','transfer','result','limits','payoff']
 SPECS={
@@ -32,10 +33,10 @@ SPECS={
   'Hydraulics trades input travel for output force and still requires mechanical work.']),
  'thermal_contact':('Heat between contacting bodies','https://bsesc.energy.gov/energy-basics/heat-flow',[
   'A warmer body touches a cooler body; ask which way thermal energy moves.',
-  'Two adjacent blocks share a contact surface. Their colors encode temperature, not visible glowing heat.',
-  'The initial temperature difference allows energy transfer from the warmer body toward the cooler one.',
+  'A magnified cutaway shows two solid bodies, temperature labels, a highlighted interface and particles vibrating around fixed sites. Colors encode temperature; microscopic motion is a schematic illustration, not literal visible atoms or a material-specific simulation.',
+  'The temperature difference drives net energy from the warmer left body toward the cooler right body. Schematic particles vibrate locally without crossing the contact interface.',
   'The warmer body cools while the cooler body warms. Both solid bodies remain in place.',
-  'An arrow illustrates net thermal-energy transfer through contact, not material flowing between blocks.',
+  'A directional arrow and small yellow symbols illustrate net energy transfer through contact, not material particles flowing between the solids. Symbols fade at equilibrium while microscopic agitation continues.',
   'The temperatures approach the same equilibrium value while total energy is conserved.',
   'This isolated two-body model has constant heat capacities and no phase change. Progress is illustrative, not a real-time prediction.',
   'At thermal equilibrium there is no net heat transfer between the two bodies.']),
@@ -124,11 +125,23 @@ def diagram(mechanism,p,stage=None,phase=0):
         label('Small area',(-2,0,4));label('4x piston area',(1,0,4));values=x
     elif mechanism=='thermal_contact':
         x=heat_contact(90,10,2,2,p)
-        for name,xx,temp in (('warm',-1,x['temp_a']),('cool',1,x['temp_b'])):
+        clock=(stage or 0)*5+phase*5
+        for side,(name,xx,temp) in enumerate((('warm',-1,x['temp_a']),('cool',1,x['temp_b']))):
             f=(temp-10)/80;color=(.1+.75*f,.2,.85-.75*f)
-            box(name,(xx,0,2),(2,1,2),color);label(f'{temp:.0f} C',(xx,0,3.5))
-        path('heat_direction',[(-1,0,4),(1,0,4)],gold)
-        label('Net heat: warm to cool' if p<1 else 'Equilibrium: no net heat',(-2,0,4.7));values=x
+            box(name,(xx,.35,2),(2,.20,2),color)
+            for edge,dx,dz,size in [('left',-.94,0,(.12,1,2)),('right',.94,0,(.12,1,2)),('top',0,.94,(2,1,.12)),('bottom',0,-.94,(2,1,.12))]:
+                box(name+'_frame_'+edge,(xx+dx,0,2+dz),size,color)
+            for particle in lattice((xx,-.12,2),temp,clock,side):
+                ball(particle['id'],particle['at'],particle['radius'],color)
+            label(('Left ' if side==0 else 'Right ')+f'{temp:.0f} C',(xx,-.1,3.5))
+        path('contact_surface',[(0,-.58,1),(0,-.58,3)],gold,.035)
+        gradient=max(0,1-p)
+        path('heat_direction',[(-.75,-.8,3.9),(.75,-.8,3.9)],gold if gradient>.001 else gray,.035)
+        path('heat_arrow_head',[(.55,-.8,4.04),(.75,-.8,3.9),(.55,-.8,3.76)],gold if gradient>.001 else gray,.035)
+        for item in transfer_markers(p,clock):
+            ball(item['id'],item['at'],item['radius'],gold);objects[-1]['visible']=item['visible']
+        label('Microscopic motion: illustration',(0,-.1,.45))
+        label('Net heat: left to right' if p<1 else 'Equilibrium: no net heat',(0,-.2,4.6));values=x
     elif mechanism=='dna_pairing':
         x=complementary_dna('ATCG')
         colors={'A':red,'T':blue,'C':gold,'G':(.2,.75,.4)}
