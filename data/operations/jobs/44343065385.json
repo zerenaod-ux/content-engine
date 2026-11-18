@@ -2,9 +2,9 @@
   "run_id": "44343065385",
   "attempt": 1,
   "kind": "daily-short",
-  "stage": "audio",
-  "label": "Checking finished audio",
-  "updated_at": "2026-11-18T16:07:43.293909+00:00",
+  "stage": "planning",
+  "label": "Writing and checking narration",
+  "updated_at": "2026-11-18T16:07:46.738572+00:00",
   "source_branch": "main",
   "owner_approved": false,
   "state": "running"
