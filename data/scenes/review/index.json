@@ -487,7 +487,20 @@
    "ready_for_future_publish": false,
    "record": "delete/ce-20261117-2028-cinema-44169681052/44231074441-1.json",
    "history": []
+  },
+  {
+   "tag": "ce-20261117-0233-p2",
+   "title": "How a Reciprocating Piston Pump Moves Water",
+   "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@737ff28511e0d8d18d842503311b6e1c1f9e1628/videos/ce-20261117-0233-p2.mp4",
+   "folder": "delete",
+   "issue_number": 34,
+   "issue_url": "https://github.com/zerenaod-ux/content-engine/issues/34",
+   "reviewed_at": "2026-11-18T03:33:15.054022+00:00",
+   "publishing_enabled": false,
+   "ready_for_future_publish": false,
+   "record": "delete/ce-20261117-0233-p2/44231201324-1.json",
+   "history": []
   }
  ],
- "updated_at": "2026-11-18T03:32:13.973470+00:00"
+ "updated_at": "2026-11-18T03:33:15.054022+00:00"
 }
