@@ -15,9 +15,9 @@
       "run_id": "44262874938",
       "attempt": 1,
       "kind": "full",
-      "stage": "planning",
-      "label": "Writing and checking narration",
-      "updated_at": "2026-11-18T07:58:30.638413+00:00",
+      "stage": "voice",
+      "label": "Generating narration",
+      "updated_at": "2026-11-18T07:58:35.310442+00:00",
       "source_branch": "studio-cinematic-proof",
       "owner_approved": false,
       "state": "running"
