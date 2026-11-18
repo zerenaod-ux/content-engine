@@ -1,0 +1,26 @@
+name: Verify shared How It Ticks production rules
+on:
+  push:
+    branches: [main]
+    paths: [studio_lib/**, scene_lib/**, tests/**, .github/workflows/ce-long.yml, .github/workflows/how-it-ticks-verification.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: how-it-ticks-code-verification
+  cancel-in-progress: true
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 1, fetch-tags: false}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: pip install --quiet numpy pillow edge-tts imageio-ffmpeg
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg > /dev/null
+      - run: python -m unittest discover -s tests/longform -v
+      - run: python -m unittest discover -s tests/cinema -v
+      - run: python -m unittest discover -s tests/recovery -v
+      - run: python -m unittest discover -s tests/studio -v

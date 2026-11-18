@@ -1,0 +1,118 @@
+"""Data-driven Blender diagram backend; shares narration/audio/delivery pipeline.
+
+--check-only constructs and samples geometry without rendering any images/video.
+"""
+import sys,json,math
+from pathlib import Path
+sys.path.insert(0,str(Path(__file__).resolve().parents[2]))
+import bpy
+from mathutils import Vector
+from bpy_extras.object_utils import world_to_camera_view
+from bpy.app.handlers import persistent
+from studio_lib.science.components import diagram,SPECS
+from studio_lib.cinema.presentation import ease
+from studio_lib.cinema.production_contract import ESSENTIAL_PARTS,framing_errors
+ROOT=Path(sys.argv[sys.argv.index('--')+1]);TL=json.loads((ROOT/'timeline.json').read_text());PLAN=json.loads((ROOT/'plan.json').read_text())
+mechanism=PLAN['mechanism']
+if mechanism not in SPECS:raise ValueError('No diagram component')
+bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
+scene=bpy.context.scene;scene.render.engine='BLENDER_WORKBENCH'
+scene.render.resolution_x=540;scene.render.resolution_y=960;scene.render.resolution_percentage=100
+scene.render.fps=24;scene.render.image_settings.file_format='PNG'
+scene.display.shading.light='FLAT';scene.display.shading.color_type='MATERIAL'
+scene.display.shading.show_shadows=True;scene.display.shading.show_cavity=True
+scene.world.color=(.16,.22,.28);scene.display.shading.background_type='WORLD'
+scene.view_settings.view_transform='Standard'
+camdata=bpy.data.cameras.new('diagram camera');cam=bpy.data.objects.new('diagram camera',camdata);scene.collection.objects.link(cam);scene.camera=cam
+camdata.type='ORTHO';camdata.ortho_scale=9.5
+cam.location=(1.5,-16,6);target=Vector((0,0,2.5));cam.rotation_euler=(target-cam.location).to_track_quat('-Z','Y').to_euler()
+objects={};texts=[]
+def material(name,color):
+ m=bpy.data.materials.new(name);m.diffuse_color=(*color,1);return m
+
+def add(item):
+ kind=item['kind'];name=item['id']
+ if kind in ('box','beam'):
+  bpy.ops.mesh.primitive_cube_add(size=1);o=bpy.context.object
+  bevel=o.modifiers.new('soft edges','BEVEL');bevel.width=.04;bevel.segments=2
+ elif kind=='ball':
+  bpy.ops.mesh.primitive_uv_sphere_add(segments=16,ring_count=8,radius=1);o=bpy.context.object
+ elif kind=='line':
+  curve=bpy.data.curves.new(name,'CURVE');curve.dimensions='3D';curve.bevel_depth=item['radius'];curve.bevel_resolution=2
+  spline=curve.splines.new('POLY');spline.points.add(len(item['points'])-1)
+  o=bpy.data.objects.new(name,curve);scene.collection.objects.link(o)
+ else:raise ValueError('Unknown geometry primitive')
+ o.name=name;o.data.materials.append(material(name,item['color']));objects[name]=o
+
+first=diagram(mechanism,0)
+for item in first['objects']:add(item)
+for i,label in enumerate(first['labels']):
+ curve=bpy.data.curves.new('label '+str(i),'FONT');curve.size=.24;curve.align_x='CENTER'
+ obj=bpy.data.objects.new('label '+str(i),curve);scene.collection.objects.link(obj);obj.data.materials.append(material('text '+str(i),(.95,.96,1)));texts.append(obj)
+
+def progress(t):
+ # Motion follows its narration beat, not an arbitrary physical time scale.
+ start=TL['beats'][3]['start']+(1.2 if mechanism=='lever_balance' else 0);end=TL['beats'][3]['end'] if mechanism=='lever_balance' else TL['beats'][5]['end']
+ return ease((t-start)/(end-start))
+
+@persistent
+def update(sc):
+ t=(sc.frame_current-1)/24;p=progress(t)
+ index=min(7,next((i for i,b in enumerate(TL['beats']) if t<b['end']),7));beat=TL['beats'][index];phase=ease((t-beat['start'])/(beat['end']-beat['start']))
+ data=diagram(mechanism,p,index,phase)
+ for item in data['objects']:
+  o=objects[item['id']];o.hide_render=not item.get('visible',True);o.data.materials[0].diffuse_color=(*item['color'],1)
+  if item['kind']=='beam':
+   a,b=(Vector(v) for v in item['points']);o.location=(a+b)/2;o.scale=((b-a).length,*item['size']);o.rotation_euler=(b-a).to_track_quat('X','Z').to_euler()
+  elif item['kind']=='line':
+   for point,co in zip(o.data.splines[0].points,item['points']):point.co=(*co,1)
+  else:
+   o.location=item['at'];o.scale=item['size'] if item['kind']=='box' else (item['radius'],)*3;o.rotation_euler.y=item.get('rotation_y',0)
+ for o,label in zip(texts,data['labels']):
+  o.data.body=label['text'];o.location=label['at'];o.rotation_euler=(cam.location-o.location).to_track_quat('Z','Y').to_euler()
+ # Gentle whole-diagram framing, continuous with zero velocity at endpoints.
+ if mechanism=='lever_balance':
+  targets=[(-.4,0,2),(-.4,0,1.9),(-.4,0,2.1),(-.4,0,2),(-.4,0,2),(-.4,0,2),(-.4,0,2),(-.4,0,2)]
+  positions=[(3,-14,6),(2,-10,4),(.5,-11,4),(3,-14,6),(2.5,-14,6),(2,-14,5.5),(3,-14,6),(3.5,-14,6)]
+  scales=[8.8,8.8,8.8,8.8,8.8,8.8,8.8,8.6]
+  previous=max(0,index-1);blend=ease((t-beat['start'])/1.2) if index else 1
+  focus=Vector(targets[previous]).lerp(Vector(targets[index]),blend)
+  cam.location=Vector(positions[previous]).lerp(Vector(positions[index]),blend)
+  cam.rotation_euler=(focus-cam.location).to_track_quat('-Z','Y').to_euler()
+  camdata.ortho_scale=scales[previous]+(scales[index]-scales[previous])*blend
+ elif mechanism=='thermal_contact':
+  targets=[(0,0,2),(0,0,2),(0,0,2),(0,0,2),(0,0,2),(0,0,2),(0,0,2),(0,0,2)]
+  scales=[8.6,8.2,8.2,8.2,8.2,8.2,8.6,8.6]
+  previous=max(0,index-1);blend=ease((t-beat['start'])/1.2) if index else 1
+  focus=Vector(targets[index]);cam.location=Vector((1.5,-16,6));cam.rotation_euler=(focus-cam.location).to_track_quat('-Z','Y').to_euler();camdata.ortho_scale=scales[previous]+(scales[index]-scales[previous])*blend
+ else:camdata.ortho_scale=9.5-.35*ease(t/TL['duration'])
+ bpy.context.view_layer.update()
+ for o in texts:
+  o.rotation_euler=(cam.location-o.location).to_track_quat('Z','Y').to_euler()
+  bpy.context.view_layer.update()
+  projected=[world_to_camera_view(sc,cam,o.matrix_world @ Vector(corner)) for corner in o.bound_box]
+  o.hide_render=any(p.x<.035 or p.x>.965 or p.y<.08 or p.y>.9 or p.z<0 for p in projected)
+
+bpy.app.handlers.frame_change_pre.append(update)
+scene.frame_start=1;scene.frame_end=math.ceil(TL['duration']*24)
+framing=[]
+for beat in TL['beats']:
+ required=ESSENTIAL_PARTS.get(mechanism,{}).get(beat['action'],[])
+ for fraction in (.1,.5,.9):
+  scene.frame_set(round((beat['start']+(beat['end']-beat['start'])*fraction)*24)+1)
+  points={name:[tuple(world_to_camera_view(scene,cam,objects[name].matrix_world @ Vector(corner))) for corner in objects[name].bound_box] for name in required if name in objects}
+  errors=framing_errors(points,required)
+  framing.append({'action':beat['action'],'fraction':fraction,'errors':errors})
+(ROOT/'framing-checks.json').write_text(json.dumps({'samples':framing,'scope':'Essential part screen bounds only; not occlusion, scientific or aesthetic approval'},indent=2))
+if any(item['errors'] for item in framing):raise ValueError('Essential parts leave the frame; see framing-checks.json')
+if '--check-only' in sys.argv:
+ for beat in TL['beats']:
+  scene.frame_set(round((beat['start']+beat['end'])/2*24)+1)
+  if any(not all(math.isfinite(x) for x in o.location) for o in objects.values()):raise ValueError('Invalid geometry')
+ print(json.dumps({'geometry_check':'passed','mechanism':mechanism,'objects':len(objects),'rendered_images':0,'generated_video':False}),flush=True)
+ sys.exit(0)
+frames=ROOT/'frames';frames.mkdir(exist_ok=True)
+for i,b in enumerate(TL['beats']):
+ scene.frame_set(round((b['start']+b['end'])/2*24)+1);scene.render.filepath=str(ROOT/f'check-{i}.png');bpy.ops.render.render(write_still=True)
+bpy.ops.wm.save_as_mainfile(filepath=str(ROOT/'generated-scene.blend'))
+scene.render.filepath=str(frames/'#####');bpy.ops.render.render(animation=True)

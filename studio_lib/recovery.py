@@ -54,7 +54,7 @@ def watch():
   if not record_data.get('retryable') or (record_data.get('next_retry_at') or float('inf'))>time.time():continue
   run=github('actions/runs/'+str(record_data['run_id']))
   if run['status']!='completed' or run['conclusion']!='failure':continue
-  if (run['head_branch'],run['name']) not in [('studio-cinematic-proof','Cinematic system comparison (not posted)'),('studio-cinematic-proof','Original How It Ticks full video'),('main','scene-factory'),('main','Recovery self-test')]:continue
+  if (run['head_branch'],run['name']) not in [('studio-cinematic-proof','Cinematic system comparison (not posted)'),('studio-cinematic-proof','Original How It Ticks full video'),('main','Original How It Ticks full video'),('main','scene-factory'),('main','Recovery self-test')]:continue
   if int(run.get('run_attempt',1))>=4:continue
   github('actions/runs/'+str(run['id'])+'/rerun-failed-jobs','POST',{})
   print('Requested bounded recovery of '+record_data['kind']+' from its saved stages',flush=True)
