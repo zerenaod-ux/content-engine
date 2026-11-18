@@ -2,9 +2,9 @@
   "run_id": "44228814968",
   "attempt": 1,
   "kind": "short",
-  "stage": "planning",
-  "label": "Writing and checking narration",
-  "updated_at": "2026-11-18T03:14:03.840730+00:00",
+  "stage": "voice",
+  "label": "Generating narration",
+  "updated_at": "2026-11-18T03:14:07.654584+00:00",
   "source_branch": "studio-cinematic-proof",
   "owner_approved": false,
   "state": "running"
