@@ -6,6 +6,10 @@ from studio_lib.production import build,emit_review_files
 class ProductionTests(unittest.TestCase):
     def setUp(self):
         self.tmp=tempfile.TemporaryDirectory();self.before=Path.cwd();os.chdir(self.tmp.name)
+        # Explicit empty fixture history belongs only to this isolated test.
+        # Real missing production history must continue to block generation.
+        root=Path('data/scenes');root.mkdir(parents=True)
+        for name in ('history.json','videos.json','topic-ledger.json'):(root/name).write_text('[]')
     def tearDown(self):os.chdir(self.before);self.tmp.cleanup()
     def fake_build(self,topic,work):
         work=Path(work);work.mkdir(parents=True)
