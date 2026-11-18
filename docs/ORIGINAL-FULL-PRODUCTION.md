@@ -9,3 +9,6 @@ Cloud proof 44269243004 produced a corrected 145.8-second 1280×720 rack explana
 This proves the supported pipeline, not unlimited capacity, every subject or human listening. The daily short renderer is separate; its shared audio fix is live, but richer cinematic daily rollout is not complete. A second voice provider remains unimplemented. The first scheduled main full-video run still needs observation.
 
 A code-verification workflow runs full-format, cinematic, recovery and legacy studio tests on relevant production changes. It never generates media or publishes. A recurring fifteen-minute Codex health heartbeat is active alongside GitHub recovery; its first unattended execution has not yet been verified.
+
+
+Production verification completed: GitHub run 44270482021 passed all four suites (23 full-format + 54 cinematic + 17 recovery + 34 legacy studio = 128 checks). The first test run exposed missing explicit history in an isolated fixture; the fixture was fixed, and the production missing-history guard remains intact. The first scheduled main media-generation run is still distinct from these code checks and has not yet been observed.
