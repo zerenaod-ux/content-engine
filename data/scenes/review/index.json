@@ -539,7 +539,20 @@
    "ready_for_future_publish": false,
    "record": "delete/ce-20261117-2315-cinema-44197813889/44231266024-1.json",
    "history": []
+  },
+  {
+   "tag": "ce-long-20261117-0317",
+   "title": "How Machines Work From the Inside 🔧",
+   "video": "https://zerenaod-ux.github.io/content-engine/videos/ce-long-20261117-0317.mp4",
+   "folder": "delete",
+   "issue_number": 40,
+   "issue_url": "https://github.com/zerenaod-ux/content-engine/issues/40",
+   "reviewed_at": "2026-11-18T03:41:20.526723+00:00",
+   "publishing_enabled": false,
+   "ready_for_future_publish": false,
+   "record": "delete/ce-long-20261117-0317/44231266024-2.json",
+   "history": []
   }
  ],
- "updated_at": "2026-11-18T03:34:07.145817+00:00"
+ "updated_at": "2026-11-18T03:41:20.526723+00:00"
 }
