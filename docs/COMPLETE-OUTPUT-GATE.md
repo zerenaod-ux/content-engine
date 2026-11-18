@@ -1,0 +1,7 @@
+# Shared complete-output delivery gate — November 18 UTC
+
+New short and original full outputs must include encoded-media format/duration evidence, passing measured audio and narration-contract reports, and hashes binding the video, generated plan and reports. Missing/failed/changed evidence refuses delivery. This is a technical complete-output gate, NOT a substitute for semantic visual inspection, human listening or owner approval. The thermal-contact short still fails inspection for unshown highlighting and malformed narration; its successful render is not a quality pass.
+
+Delivery now searches retained review history across pages before creating a card, including closed cards. Repeated-delivery integration tests preserve one index entry and one existing closed card and do not add approval labels. Incomplete lookups fail closed. A release-archive permission refusal is recorded explicitly after a durable media copy has saved; it must never claim that a release archive exists. Other failures still stop. Existing release and media evidence are retained.
+
+Latest local tests: 51 cinematic, 15 full-format and 16 recovery/reliability checks pass. Full-format repairs now retain valid model-written replacements even when a peer replacement fails validation. Drafts and critique evidence remain recoverable. The current full proof is running; no original full video is yet inspected or approved. Stale UI stage reporting is being made explicit. Owner approval remains manual.
