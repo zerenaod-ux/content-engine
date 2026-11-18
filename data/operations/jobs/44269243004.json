@@ -4,8 +4,8 @@
   "kind": "full",
   "stage": "delivered",
   "label": "In Studio; owner review required",
-  "updated_at": "2026-11-18T08:44:22.633095+00:00",
+  "updated_at": "2026-11-18T08:44:25.460214+00:00",
   "source_branch": "studio-cinematic-proof",
   "owner_approved": false,
-  "state": "running"
+  "state": "awaiting_review"
 }
