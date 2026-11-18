@@ -1,26 +1,26 @@
 {
-  "checked_at": "2026-11-18T03:29:39.118445+00:00",
+  "checked_at": "2026-11-18T03:31:57.555385+00:00",
   "read_only": true,
   "complete": true,
   "platforms": {
     "youtube": {
-      "returned_posts": 4,
+      "returned_posts": 3,
       "statuses": {
-        "scheduled": 2,
+        "scheduled": 1,
         "sent": 2
       }
     },
     "instagram": {
-      "returned_posts": 4,
+      "returned_posts": 3,
       "statuses": {
-        "scheduled": 2,
+        "scheduled": 1,
         "sent": 2
       }
     },
     "tiktok": {
-      "returned_posts": 4,
+      "returned_posts": 3,
       "statuses": {
-        "scheduled": 2,
+        "scheduled": 1,
         "sent": 2
       }
     }
@@ -125,6 +125,30 @@
     {
       "tag": "ce-20261117-0234-p4",
       "title": "Why a Bascule Drawbridge Lifts for Ships",
+      "platforms": {
+        "youtube": [
+          {
+            "status": "not_found_in_buffer",
+            "prior_owner_skip": false
+          }
+        ],
+        "instagram": [
+          {
+            "status": "not_found_in_buffer",
+            "prior_owner_skip": false
+          }
+        ],
+        "tiktok": [
+          {
+            "status": "not_found_in_buffer",
+            "prior_owner_skip": false
+          }
+        ]
+      }
+    },
+    {
+      "tag": "ce-20261118-0312-cinema-44228814968",
+      "title": "Why Thermal Contact Matters \ud83c\udf21\ufe0f",
       "platforms": {
         "youtube": [
           {
