@@ -15,12 +15,15 @@
       "run_id": "44262874938",
       "attempt": 1,
       "kind": "full",
-      "stage": "audio",
-      "label": "Checking finished audio",
-      "updated_at": "2026-11-18T08:05:40.118514+00:00",
+      "stage": "Stopped",
+      "label": "Stopped",
+      "updated_at": "2026-11-18T08:05:52.354240+00:00",
       "source_branch": "studio-cinematic-proof",
       "owner_approved": false,
-      "state": "running"
+      "retryable": false,
+      "next_retry_at": null,
+      "reason": "Needs a code, content or configuration correction",
+      "state": "needs_attention"
     },
     "short": {
       "run_id": "44228814968",
