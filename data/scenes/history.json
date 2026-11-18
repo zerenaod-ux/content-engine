@@ -635,5 +635,16 @@
   "subject": "",
   "keywords": [],
   "category": ""
+ },
+ {
+  "techniques": [],
+  "failure_cause": "tested component rejected: No audio was received. Please verify that your parameters are correct.\n",
+  "date": "2026-11-18",
+  "topic": "Why photovoltaic cells use anti‑reflective coatings",
+  "title": "",
+  "subject": "photovoltaic_cell",
+  "keywords": [],
+  "category": "tested mechanism",
+  "failed": true
  }
 ]
