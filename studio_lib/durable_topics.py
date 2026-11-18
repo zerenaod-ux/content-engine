@@ -84,7 +84,11 @@ def save_records():
         for attempt in range(6):
             remote,sha=rows(path)
             identities={r.get('tag') or key(r) for r in remote}
-            merged=remote+[r for r in changes if (r.get('tag') or key(r)) not in identities]
+            merged=list(remote)
+            for row in changes:
+                identity=row.get('tag') or key(row)
+                if identity not in identities:
+                    merged.append(row);identities.add(identity)
             if merged==remote:break
             try:
                 write_document(path,merged,sha,'Retain generated records without git rebase');break
