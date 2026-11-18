@@ -474,7 +474,20 @@
    "ready_for_future_publish": true,
    "record": "saved/ce-20261118-0312-cinema-44228814968/44230933844-1.json",
    "history": []
+  },
+  {
+   "tag": "ce-20261117-2028-cinema-44169681052",
+   "title": "Why a Seesaw Lifts With Less Force ⚖️",
+   "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@ec9ae820991c7083469fce6d20432ef833da44de/videos/ce-20261117-2028-cinema-44169681052.mp4",
+   "folder": "delete",
+   "issue_number": 48,
+   "issue_url": "https://github.com/zerenaod-ux/content-engine/issues/48",
+   "reviewed_at": "2026-11-18T03:32:13.973470+00:00",
+   "publishing_enabled": false,
+   "ready_for_future_publish": false,
+   "record": "delete/ce-20261117-2028-cinema-44169681052/44231074441-1.json",
+   "history": []
   }
  ],
- "updated_at": "2026-11-18T03:31:09.895425+00:00"
+ "updated_at": "2026-11-18T03:32:13.973470+00:00"
 }
