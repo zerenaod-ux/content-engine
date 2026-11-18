@@ -59,5 +59,13 @@
     "mechanism": "lead_screw",
     "format": "original_full",
     "state": "reserved"
+  },
+  {
+    "topic": "Why does reversing the pinion rotation reverse the linear travel direction of the rack?",
+    "topic_key": "direction linear pinion rack reverse reversing rotate travel",
+    "owner": "44262874938",
+    "mechanism": "rack_pinion",
+    "format": "original_full",
+    "state": "reserved"
   }
 ]
