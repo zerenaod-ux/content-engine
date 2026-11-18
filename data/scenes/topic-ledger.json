@@ -28,5 +28,12 @@
     "mechanism": "lead_screw",
     "format": "original_full",
     "state": "reserved"
+  },
+  {
+    "topic": "Why thermal contact matters in heat transfer between touching objects",
+    "topic_key": "between contact heat matters objects thermal touching transfer",
+    "owner": "44224309879",
+    "state": "reserved",
+    "mechanism": "thermal_contact"
   }
 ]
