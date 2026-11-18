@@ -1,0 +1,11 @@
+{
+  "run_id": "44228814968",
+  "attempt": 1,
+  "kind": "short",
+  "stage": "selection",
+  "label": "Selecting a new topic",
+  "updated_at": "2026-11-18T03:13:45.926713+00:00",
+  "source_branch": "studio-cinematic-proof",
+  "owner_approved": false,
+  "state": "running"
+}
