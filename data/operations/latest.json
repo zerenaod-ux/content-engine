@@ -26,15 +26,15 @@
       "state": "needs_attention"
     },
     "short": {
-      "run_id": "44224309879",
+      "run_id": "44228814968",
       "attempt": 1,
       "kind": "short",
-      "stage": "ready",
-      "label": "Rendered; Studio delivery pending",
-      "updated_at": "2026-11-18T02:43:25.177439+00:00",
+      "stage": "selection",
+      "label": "Selecting a new topic",
+      "updated_at": "2026-11-18T03:13:45.926713+00:00",
       "source_branch": "studio-cinematic-proof",
       "owner_approved": false,
-      "state": "rendered"
+      "state": "running"
     }
   }
 }
