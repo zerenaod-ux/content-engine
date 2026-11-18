@@ -229,6 +229,7 @@ def run(topic,out):
     (out/'director-plan.json').write_text(json.dumps(plan,indent=2))
     # Voice measurements drive action durations; no authored narration is read.
     spec={'title':plan['title'],'beats':[dict(b,seconds=6) for b in plan['beats']]}
+    print('CE_STAGE=voice',flush=True)
     tl=saved.get('timeline')
     if not tl or not all(Path(b['voice']).is_file() for b in tl['beats']):tl=asyncio.run(narrate(spec,out,Path('.ce-cache/studio-voice')))
     require_duration(tl['duration'])
@@ -236,6 +237,7 @@ def run(topic,out):
     verify(plan,tl,out)
     fields={k:saved[k] for k in ('render_signature','silent_path','silent_sha256') if k in saved}
     save('narrated',plan,timeline=tl,**fields)
+    print('CE_STAGE=render',flush=True)
     render_start=time.monotonic();render_hit=False
     root=Path(__file__).resolve().parent
     render_sig=hashlib.sha256(b''.join((root/p).read_bytes() for p in ['director.py','mechanisms.py','mesh.py','solar.py','pump.py','wind.py','registry.py'])+json.dumps(tl,sort_keys=True).encode()).hexdigest()
@@ -254,6 +256,9 @@ def run(topic,out):
     save('rendered',plan,timeline=tl,render_signature=render_sig,silent_path=str(cached),silent_sha256=hashlib.sha256(cached.read_bytes()).hexdigest())
     assemble(spec,tl,out)
     require_video_duration(out/'video.mp4')
+    from studio_lib.daily_quality import verify as verify_output
+    print('CE_STAGE=audio',flush=True)
+    verify_output(plan,tl,out,critique)
     subprocess.run(['ffmpeg','-v','error','-i',str(out/'video.mp4'),'-f','null','-'],check=True)
     result={'status':'component_rendered_editorial_pending','topic':topic,'mechanism':plan['mechanism'],'automatic_narration':True,'tested_geometry_component':True,'manual_generated_plan_edits':False,'arbitrary_topic_support':False,'supported_mechanisms':list(REGISTRY),'owner_approved':False,'director_checkpoint_reused':reused,'render_cache_hit':render_hit,'duration':tl['duration'],'wall_seconds':time.monotonic()-start,'render_seconds':time.monotonic()-render_start}
     (out/'result.json').write_text(json.dumps(result,indent=2));print(json.dumps(result),flush=True)

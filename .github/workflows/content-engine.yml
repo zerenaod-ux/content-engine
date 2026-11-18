@@ -33,7 +33,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - run: pip install --quiet numpy pillow edge-tts
+      - run: pip install --quiet numpy pillow edge-tts faster-whisper kokoro-onnx==0.6.1
       - name: Use installed media tools before fetching dependencies
         run: |
           if ! command -v ffmpeg >/dev/null || [ ! -f /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf ]; then
@@ -65,6 +65,7 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" = "schedule" ]; then echo auto > topic.txt
           elif [ -n "$TOPIC_IN" ]; then printf '%s\n' "$TOPIC_IN" > topic.txt; else head -n 1 publish/run.trigger > topic.txt; fi
+          if [ "${{ github.event_name }}" = "push" ] && [ "$(sed -n '2p' publish/run.trigger)" = "cpu-voice-proof" ]; then export CE_FORCE_CPU_VOICE=1; fi
           python3 -m unittest discover -s tests/topic_guard -v
           python3 -m studio_lib.recovery run --kind daily-short --success-stage planning -- python3 -m studio_lib.production --prepare-only --topic-file topic.txt --out scene-factory.mp4
           python3 -m studio_lib.recovery run --kind daily-short -- python3 -m studio_lib.production --topic-file topic.txt --out scene-factory.mp4
@@ -137,6 +138,9 @@ jobs:
             auto-*.json
             metrics.json
             daily-resume-provenance.json
+            component-output/production/*.json
+            component-output/production/video.mp4
+            component-output/production/*.png
             evidence-report.json
             fr/evidence/
           retention-days: 14

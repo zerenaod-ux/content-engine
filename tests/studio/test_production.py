@@ -17,6 +17,11 @@ class ProductionTests(unittest.TestCase):
         (work/'director-plan.json').write_text(json.dumps({'title':'How a Solar Cell Supplies Direct Current','mechanism':'photovoltaic_cell'}))
         (work/'timeline.json').write_text(json.dumps({'duration':48,'beats':[{'start':0,'end':48,'say':'Authored test fixture, not an automatic video.','action':'panel'}]}))
         (work/'component-checks.json').write_text(json.dumps({'errors':[]}))
+        # Sealed fake evidence belongs to this mock integration fixture only.
+        from studio_lib.quality_gate import seal
+        (work/'plan.json').write_text('{}');(work/'narration-critique.json').write_text('{"errors":[]}')
+        (work/'audio-review.json').write_text(json.dumps({'errors':[],'integrated_lufs':-16,'true_peak_dbfs':-2,'independent_asr_word_error_rate':0}))
+        seal(work,'short',{'duration':48,'width':720,'height':1280})
     def test_completed_build_emits_legacy_review_contract_without_autoapproval(self):
         Path('topic.txt').write_text('How solar panels work\n')
         with patch('studio_lib.production.run',side_effect=self.fake_build):build('topic.txt','finished.mp4')
@@ -27,6 +32,10 @@ class ProductionTests(unittest.TestCase):
         with patch('studio_lib.production.run',side_effect=ValueError('unsupported component')):
             with self.assertRaises(ValueError):build('topic.txt','finished.mp4')
         self.assertFalse(Path('finished.mp4').exists());self.assertFalse(Path('ce-checks.json').exists())
+    def test_missing_output_evidence_cannot_emit_a_review_contract(self):
+        root=Path('missing-evidence');root.mkdir()
+        with self.assertRaises(ValueError):emit_review_files(root)
+        self.assertFalse(Path('ce-checks.json').exists())
     def test_existing_video_is_preserved(self):
         Path('topic.txt').write_text('topic');Path('finished.mp4').write_bytes(b'original')
         with self.assertRaises(FileExistsError):build('topic.txt','finished.mp4')

@@ -44,6 +44,8 @@ def prepare(topic_file):
     return topic
 
 def emit_review_files(work):
+    from studio_lib.quality_gate import require_seal
+    require_seal(work,'short')
     work=Path(work);plan=json.loads((work/'director-plan.json').read_text());tl=json.loads((work/'timeline.json').read_text()) if (work/'timeline.json').exists() else None
     # Cached runs retain the measured timeline in the checkpoint, so the adapter
     # accepts a build-generated metadata copy written by the director as well.
@@ -55,7 +57,7 @@ def emit_review_files(work):
     spec={'topic':Path('topic.txt').read_text().strip() if Path('topic.txt').exists() else plan['title'],'topic_key':signature(Path('topic.txt').read_text().strip() if Path('topic.txt').exists() else plan['title']),'mode':'tested-component','title':title,'mechanism':plan['mechanism'],'duration':tl['duration'],'steps':[{'start':b['start'],'end':b['end'],'say':b['say'],'label':b['action']} for b in tl['beats']],'source':REGISTRY[plan['mechanism']]['source'],'owner_approved':False}
     Path('auto-scene.json').write_text(json.dumps(spec,indent=2));Path('evidence-report.json').write_text(json.dumps({'errors':[],'mode':'tested-component','semantic_verification':False,'owner_approved':False,'component_checks':checks},indent=2))
     Path('ce-checks.json').write_text(json.dumps({'verdict':'warn','reasons':['Tested component output requires owner visual and narration review; not automatically approved.'],'mechanism':plan['mechanism'],'owner_approved':False},indent=2))
-    Path('voice-log.txt').write_text('Measured cached Andrew narration; no manual generated-plan edits.\n')
+    Path('voice-log.txt').write_text('Measured narration; provider '+str(tl.get('voice_provider','edge-tts'))+'; cached lines '+str(tl.get('cached_lines',0))+'; no manual generated-plan edits.\n')
     return spec
 def build(topic_file,out,work=Path('component-output/production')):
     out=Path(out);work=Path(work)
