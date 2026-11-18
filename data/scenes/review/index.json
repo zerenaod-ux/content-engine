@@ -552,7 +552,20 @@
    "ready_for_future_publish": false,
    "record": "delete/ce-long-20261117-0317/44231266024-2.json",
    "history": []
+  },
+  {
+   "tag": "ce-long-20261118-1508",
+   "title": "How Pinion Rotation Reverses Rack Travel ⚙️",
+   "video": "https://zerenaod-ux.github.io/content-engine/videos/ce-long-20261118-1508.mp4",
+   "folder": "delete",
+   "issue_number": 54,
+   "issue_url": "https://github.com/zerenaod-ux/content-engine/issues/54",
+   "reviewed_at": "2026-11-18T15:29:25.072009+00:00",
+   "publishing_enabled": false,
+   "ready_for_future_publish": false,
+   "record": "delete/ce-long-20261118-1508/44336154459-1.json",
+   "history": []
   }
  ],
- "updated_at": "2026-11-18T03:41:20.526723+00:00"
+ "updated_at": "2026-11-18T15:29:25.072009+00:00"
 }
