@@ -12,15 +12,15 @@
       "state": "rendered"
     },
     "full": {
-      "run_id": "44269243004",
+      "run_id": "44330666111",
       "attempt": 1,
       "kind": "full",
-      "stage": "delivered",
-      "label": "In Studio; owner review required",
-      "updated_at": "2026-11-18T08:44:25.460214+00:00",
+      "stage": "selection",
+      "label": "Selecting a new topic",
+      "updated_at": "2026-11-18T15:01:26.673719+00:00",
       "source_branch": "studio-cinematic-proof",
       "owner_approved": false,
-      "state": "awaiting_review"
+      "state": "running"
     },
     "short": {
       "run_id": "44228814968",
