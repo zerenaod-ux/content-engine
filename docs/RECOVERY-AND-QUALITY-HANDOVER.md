@@ -31,3 +31,8 @@
 - Detailed direct YouTube analytics for How It Ticks is not integrated; Buffer metrics can lag. Publishing freshness must be read from its report time, not assumed current.
 - Doodles GPU warning measures workflow elapsed time rather than actual billed GPU usage; accurate GPU accounting remains separate.
 - How It Ticks automatic approval remains OFF. Publishing remains limited to owner-approved Saved items. No generated proof is auto-approved.
+
+
+## Continued proof update — November 17, evening Chicago
+
+The short narration-length repair passed script and voice generation and is rendering in the cloud; encoded inspection and delivery are pending. The expanded full run selected a lead-screw subject but stopped on title and section-length validation. A further fix preserves draft narration, repairs title/hook metadata separately and repairs invalid sections in batches of at most four. A fresh full proof is active. Latest local suites: 51 cinematic, 12 full-format and 8 recovery tests pass. No new full-video output or aesthetic pass is claimed. The system still selects its topic; no hand-picked final subject or generated-script editing. All owner decisions remain intact, automatic approval stays off, and the legacy scheduled compilation is not yet replaced.
