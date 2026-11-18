@@ -2,9 +2,9 @@
   "run_id": "44267657356",
   "attempt": 1,
   "kind": "full",
-  "stage": "render",
-  "label": "Rendering animation",
-  "updated_at": "2026-11-18T08:34:04.092050+00:00",
+  "stage": "audio",
+  "label": "Checking finished audio",
+  "updated_at": "2026-11-18T08:35:04.764523+00:00",
   "source_branch": "studio-cinematic-proof",
   "owner_approved": false,
   "state": "running"
