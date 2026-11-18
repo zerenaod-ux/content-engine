@@ -43,5 +43,13 @@
     "mechanism": "cam_follower",
     "format": "original_full",
     "state": "reserved"
+  },
+  {
+    "topic": "Why does increasing the length of the rack not change the linear travel per pinion rotation?",
+    "topic_key": "change increasing length linear not per pinion rack rotate travel",
+    "owner": "44226410555",
+    "mechanism": "rack_pinion",
+    "format": "original_full",
+    "state": "reserved"
   }
 ]
