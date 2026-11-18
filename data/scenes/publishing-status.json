@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-11-18T17:46:08.683583+00:00",
+  "checked_at": "2026-11-18T17:48:30.108456+00:00",
   "read_only": true,
   "complete": true,
   "platforms": {
@@ -18,9 +18,9 @@
       }
     },
     "tiktok": {
-      "returned_posts": 4,
+      "returned_posts": 5,
       "statuses": {
-        "scheduled": 2,
+        "scheduled": 3,
         "sent": 2
       }
     }
@@ -188,8 +188,8 @@
         ],
         "tiktok": [
           {
-            "status": "not_found_in_buffer",
-            "prior_owner_skip": false
+            "status": "scheduled",
+            "due": "2026-11-20T00:00:00.000Z"
           }
         ]
       }
