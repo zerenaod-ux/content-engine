@@ -29,12 +29,12 @@
       "run_id": "44228814968",
       "attempt": 1,
       "kind": "short",
-      "stage": "ready",
-      "label": "Rendered; Studio delivery pending",
-      "updated_at": "2026-11-18T03:26:14.144045+00:00",
+      "stage": "delivered",
+      "label": "In Studio; owner review required",
+      "updated_at": "2026-11-18T03:26:38.274043+00:00",
       "source_branch": "studio-cinematic-proof",
       "owner_approved": false,
-      "state": "rendered"
+      "state": "awaiting_review"
     }
   }
 }
