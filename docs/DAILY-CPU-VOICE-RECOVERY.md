@@ -11,3 +11,9 @@ Owner's latest visual standard is whole recognizable object, interior reveal, co
 ## Cloud verification and recovery start
 
 Shared GitHub verification run 44340296698 passed all 142 checks (23 full-format, 54 cinematic, 30 recovery, 35 studio). These use mocked fallback synthesis, not an actual voice quality pass. Saved-stage recovery run 44343065385 is active and explicitly exercises CPU voice on the existing system-selected check-valve reservation from run 44329408454. The original operation was marked superseded rather than left eligible for duplicate automatic retries. Actual audio, render and Studio delivery remain pending.
+
+## Actual cloud result and inspection
+
+Run 44343065385 succeeded: 52.536-second check-valve short delivered automatically to Studio card 55, using Kokoro CPU stock voice and the saved accepted script. Encoded audio passed at -16.95 LUFS, -3.07 dB true peak and 1.41% ASR word error. Sampled encoded frames show overview, casing reveal and valve close views. This is actual fallback evidence, not just mocked tests.
+
+Inspection still found an opening direction mismatch (upward narration versus horizontal piston), an unsupported steady-discharge claim for a single-acting pump without smoothing, and cropped external context in close views. These notes are attached to the open review card. This is not a full quality pass or human listening review. Owner requested judging this short before deciding subsequent production; no new generation or owner decision is made here.
