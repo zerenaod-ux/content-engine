@@ -17,10 +17,10 @@
       "kind": "full",
       "stage": "delivered",
       "label": "In Studio; owner review required",
-      "updated_at": "2026-11-18T08:35:30.767695+00:00",
+      "updated_at": "2026-11-18T08:35:33.311130+00:00",
       "source_branch": "studio-cinematic-proof",
       "owner_approved": false,
-      "state": "running"
+      "state": "awaiting_review"
     },
     "short": {
       "run_id": "44228814968",
