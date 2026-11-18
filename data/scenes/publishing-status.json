@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-11-18T15:30:22.437354+00:00",
+  "checked_at": "2026-11-18T17:46:08.683583+00:00",
   "read_only": true,
   "complete": true,
   "platforms": {
@@ -166,6 +166,30 @@
           {
             "status": "scheduled",
             "due": "2026-11-19T02:30:00.000Z"
+          }
+        ]
+      }
+    },
+    {
+      "tag": "ce-20261118-1607",
+      "title": "Why a Check Valve Prevents Backflow \ud83d\udca7",
+      "platforms": {
+        "youtube": [
+          {
+            "status": "not_found_in_buffer",
+            "prior_owner_skip": false
+          }
+        ],
+        "instagram": [
+          {
+            "status": "not_found_in_buffer",
+            "prior_owner_skip": false
+          }
+        ],
+        "tiktok": [
+          {
+            "status": "not_found_in_buffer",
+            "prior_owner_skip": false
           }
         ]
       }
