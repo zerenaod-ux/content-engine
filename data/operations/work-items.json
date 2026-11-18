@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "items": [
+    {
+      "key": "original-full-video-proof",
+      "status": "in_progress",
+      "priority": 1,
+      "run_id": 44262874938,
+      "completion_requires": [
+        "successful encoded 120–300-second original landscape video",
+        "semantic visual and audio inspection",
+        "verified Studio review card"
+      ],
+      "completed": false
+    },
+    {
+      "key": "voice-secondary-provider",
+      "status": "not_implemented",
+      "priority": 2,
+      "blocked_by": "Complete the active full-video proof first",
+      "completed": false
+    }
+  ],
+  "note": "A saved change, passing component test, or submitted run is not end-to-end completion."
+}
