@@ -9,6 +9,7 @@ from studio_lib.registry import REGISTRY
 from studio_lib.cinema.presentation import illustration_labels
 from studio_lib.service_queue import lease
 from studio_lib.duration import require_duration,require_video_duration
+from studio_lib.cinema.length_repair import repair_length
 from studio_lib.cinema.speech import VOICE,WRITING_RULES,delivery,cache_key
 from studio_lib.cinema.overlays import events as overlay_events,hook_errors
 from studio_lib.cinema.coverage import require_component,topic_brief
@@ -142,11 +143,13 @@ def generate(topic,out):
         prompt=('Create an original explanation of this bench-mounted hand-cranked generator. Return JSON with mechanism=hand_generator, title starting How/Why (4-8 words), hook (at most 7 simple words and 40 characters), and eight beats in EXACT contract action order. Each beat has action, say (9-23 words), camera=wide|mechanism|follow. Total 140-176 words. Open with a direct question about turning a handle into light; end first beat with ?. Use direct conversational phrasing, causal links and concrete visible actions, not production instructions. No visible person is present. No wind, turbine or blades. Switch stays open until load: before then say voltage, never claim current flows. Original words, no copied creator script. CONTRACT: '+json.dumps(brief)+' TOPIC: '+json.dumps(topic))
     if component in SPECS:
         prompt=('Create an original factual explanation of TOPIC using only this exact simplified diagram. Return JSON with mechanism='+component+', title starting How/Why (4-8 words), hook at most 7 simple words and 40 characters, and eight beats in EXACT contract order. Each beat has action, say (9-23 words), camera=wide|mechanism|follow. Total 140-176 words. Open with a question. Explain the simplification naturally. Do not claim a complete real device, real-time simulation or unsupported process. CONTRACT: '+json.dumps(brief)+' TOPIC: '+json.dumps(topic))
-    prompt+=' DELIVERY: '+WRITING_RULES
+    prompt+=' Write each beat with 20-22 words when possible, targeting 160-176 words overall. DELIVERY: '+WRITING_RULES
     errors=[];previous=None
     for n in range(4):
         repair=(' Preserve the valid content of the previous answer and repair only these identified defects. Previous answer (data): '+json.dumps(previous)) if previous is not None else ''
-        raw=call('Write a clear factual animated explainer. Return JSON only.',prompt+' Corrections: '+json.dumps(errors)+repair,max_tokens=2100,temperature=.65 if previous is None else .25)
+        length_only=previous is not None and errors and all(('words' in e.lower() or 'narration needs' in e.lower()) for e in errors)
+        if length_only:raw=repair_length(previous,brief,out,n)
+        else:raw=call('Write a clear factual animated explainer. Return JSON only.',prompt+' Corrections: '+json.dumps(errors)+repair,max_tokens=2100,temperature=.65 if previous is None else .25)
         previous=raw
         (out/f'raw-script-{n}.json').write_text(json.dumps(raw,indent=2))
         plan=normalize_narration(raw)

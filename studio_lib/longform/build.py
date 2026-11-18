@@ -7,7 +7,7 @@ from studio_lib.topic_guard import duplicate,signature
 from studio_lib.cinema.auto_topic import api,read
 from studio_lib.cinema.build import voice,soundtrack
 from studio_lib.cinema.review import review
-from studio_lib.longform.contract import ACTIONS,SOURCES,FACTS,errors,require_media
+from studio_lib.longform.contract import ACTIONS,SOURCES,FACTS,mechanism_facts,errors,require_media
 from studio_lib.longform.repair import repair_sections,unsupported_comparison
 from studio_lib.longform.render import frame,WIDTH,HEIGHT
 
@@ -19,15 +19,17 @@ def select(out):
   rows+=data
  owned=[r for r in rows if str(r.get('owner'))==str(os.environ['GITHUB_RUN_ID']) and r.get('format')=='original_full']
  if owned:return {'topic':owned[-1]['topic'],'mechanism':owned[-1]['mechanism']}
+ available={k:v for k,v in SOURCES.items() if not any(r.get('mechanism')==k for r in rows)}
+ if not available:raise ValueError('No uncovered full-format mechanism remains; do not repeat')
  rejected=[]
  for i in range(4):
   candidate=call('Choose a genuinely new original full-video topic. Return JSON only.',
-   'The system chooses the subject. Return {"topic":"specific How/Why question","mechanism":"rack_pinion or lead_screw"}. Use only these actual supported scopes, never claim an entire factory or vehicle. No reworded repeat. SCOPES: '+json.dumps(SOURCES)+' FULL HISTORY: '+json.dumps(prompt_history(rows))+' REJECTED: '+json.dumps(rejected),max_tokens=700,temperature=.5)
+   'The system chooses the subject. Return {"topic":"specific How/Why question","mechanism":"exact supported id"}. Use only these actual supported scopes, never claim an entire factory or vehicle. No reworded repeat. SCOPES: '+json.dumps(available)+' FULL HISTORY: '+json.dumps(prompt_history(rows))+' REJECTED: '+json.dumps(rejected),max_tokens=700,temperature=.5)
   (out/f'topic-selection-{i}.json').write_text(json.dumps(candidate,indent=2))
   topic=candidate.get('topic','');mechanism=candidate.get('mechanism')
   reason=duplicate(topic,rows)
   if mechanism in SOURCES and unsupported_comparison(topic,mechanism):reason='This topic requires geometry variants not shown by the fixed mechanism; choose a topic within the actual scope'
-  if mechanism not in SOURCES or reason:rejected.append(reason or 'Unsupported scope');continue
+  if mechanism not in available or reason:rejected.append(reason or 'Unsupported scope');continue
   own=str(os.environ['GITHUB_RUN_ID'])
   for attempt in range(4):
    ledger,sha=read('data/scenes/topic-ledger.json')
@@ -52,12 +54,12 @@ def plan(out):
   if result is not None and rejected and all('chapter needs' in e.lower() or 'narration must total' in e.lower() for e in rejected):
    result=repair_sections(result,out,attempt)
   else:result=call('Write one original factual continuous explainer. Return JSON only.',
-   'One subject only. Native long format, not assembled shorts. Return {"topic":exact topic,"mechanism":exact id,"title":"How/Why 4-8 words","hook":"2-7 simple words max 40 characters","beats":[{"action":"exact action","say":"30-44 spoken words","camera":"wide|engagement|output"}]}. Exactly sixteen actions in order: '+json.dumps(ACTIONS)+'. Total 480-650 words. First spoken beat ends with ?. Energetic natural delivery, short clauses, concrete cause and effect. No spoken camera directions, padding, horror framing, invented parts or numerical performance. Do not describe an unshown force sensor or invisible force as a literal object. Facts/source and visible action contract: '+json.dumps({'selected':selected,'source':SOURCES[selected['mechanism']],'actions':FACTS})+' PREVIOUS ERRORS: '+json.dumps(rejected),max_tokens=3600,temperature=.35)
+   'One subject only. Native long format, not assembled shorts. Return {"topic":exact topic,"mechanism":exact id,"title":"How/Why 4-8 words","hook":"2-7 simple words max 40 characters","beats":[{"action":"exact action","say":"30-44 spoken words","camera":"wide|engagement|output"}]}. Exactly sixteen actions in order: '+json.dumps(ACTIONS)+'. Total 480-650 words. First spoken beat ends with ?. Energetic natural delivery, short clauses, concrete cause and effect. No spoken camera directions, padding, horror framing, invented parts or numerical performance. Do not describe an unshown force sensor or invisible force as a literal object. Facts/source and visible action contract: '+json.dumps({'selected':selected,'source':SOURCES[selected['mechanism']],'actions':mechanism_facts(selected['mechanism'])})+' PREVIOUS ERRORS: '+json.dumps(rejected),max_tokens=3600,temperature=.35)
   (out/f'raw-plan-{attempt}.json').write_text(json.dumps(result,indent=2));rejected=errors(result)
   if result.get('topic')!=selected['topic'] or result.get('mechanism')!=selected['mechanism']:rejected.append('Preserve selected topic and mechanism')
   if rejected:continue
   critique=call('Audit original narration against the exact shown mechanism. Return JSON only.',
-   'Return {"errors":[specific unsupported claims or action mismatches]}. Reject unrelated topics, invented components, energy gain and production narration. CONTRACT: '+json.dumps(SOURCES[selected['mechanism']])+' ACTIONS: '+json.dumps(FACTS)+' PLAN: '+json.dumps(result),max_tokens=1800,temperature=.1)
+   'Return {"errors":[specific unsupported claims or action mismatches]}. Reject unrelated topics, invented components, energy gain and production narration. CONTRACT: '+json.dumps(SOURCES[selected['mechanism']])+' ACTIONS: '+json.dumps(mechanism_facts(selected['mechanism']))+' PLAN: '+json.dumps(result),max_tokens=1800,temperature=.1)
   (out/f'critique-{attempt}.json').write_text(json.dumps(critique,indent=2))
   rejected=critique.get('errors')
   if not isinstance(rejected,list):raise ValueError('Factual review unavailable')

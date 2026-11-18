@@ -31,7 +31,7 @@ def frame(t,timeline,plan):
   for yy in (-1,1):sc.box((0,yy,.9),(.35,.3,1.4),steel)
   sc.box((x,0,.36),(1.2,1.4,.2),red)
   for xx in (-4.2,4.2):sc.box((xx,0,.6),(.2,1.5,.85),steel)
- else:
+ elif mechanism=='lead_screw':
   for xx in (-.8,.8):sc.beam((xx,-3,.6),(xx,3,.6),.07,steel)
   sc.cylinder((0,0,1.2),.16,6,steel,n=16)
   # A visible continuous helix on the rotating screw; translation is derived from turns.
@@ -43,6 +43,21 @@ def frame(t,timeline,plan):
   sc.box((0,x,1.72),(1,.55,.38),red)
   sc.cylinder((0,-3.35,1.2),.45,.16,blue,angle=angle,n=20)
   sc.beam((0,-3.5,1.2),(.4*math.cos(angle),-3.5,1.2+.4*math.sin(angle)),.035,gold)
+ else:
+  cx=state['cam_x'];cz=state['cam_z'];fz=state['follower_z']
+  sc.cylinder((cx,0,cz),.8,.4,gold,n=40)
+  sc.cylinder((0,-.27,1.5),.13,.6,steel,n=20)
+  sc.beam((0,-.35,1.5),(.5*math.sin(angle),-.35,1.5+.5*math.cos(angle)),.035,red)
+  sc.cylinder((0,0,fz),.16,.48,blue,angle=-angle,n=20)
+  sc.beam((0,0,fz),(0,0,fz+1.15),.07,steel)
+  for xx in (-1.4,1.4):sc.box((xx,0,1.9),(.18,.6,3.5),steel)
+  sc.box((0,0,3.45),(3,.6,.22),steel)
+  sc.box((0,0,fz+.35),(.65,.7,.13),red)
+  sc.box((0,0,fz+1.15),(.6,.6,.18),blue)
+  coil=[]
+  for q in np.linspace(0,1,85):
+   a=q*math.pi*2*7;coil.append((.23*math.sin(a),.23*math.cos(a),fz+.43+(3.32-fz-.43)*q))
+  for a,b in zip(coil,coil[1:]):sc.beam(a,b,.018,gold)
  sc.paint(im)
  font='/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
  try:small=ImageFont.truetype(font,22);large=ImageFont.truetype(font,44)
