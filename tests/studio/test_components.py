@@ -12,6 +12,18 @@ def timeline():return {'beats':[dict(b,start=i*6,end=(i+1)*6) for i,b in enumera
 class ComponentTests(unittest.TestCase):
     def test_unsupported_topic_cannot_be_substituted(self):
         s=plan_fixture();s['mechanism']='solar';self.assertTrue(validate(s))
+    def test_pump_rejects_vertical_motion_and_steady_flow_claims(self):
+        from studio_lib.registry import REGISTRY
+        s=plan_fixture();s['mechanism']='piston_pump'
+        for b,a in zip(s['beats'],REGISTRY['piston_pump']['actions']):b['action']=a
+        s['beats'][0]['say']='The piston rod pulls upward, expanding the cylinder chamber and creating low pressure ready to draw water.'
+        s['beats'][7]['say']='Because each check valve only permits flow one way, backflow is prevented and the pump delivers steady water.'
+        errors=validate(s)
+        self.assertTrue(any('moves horizontally' in e for e in errors))
+        self.assertTrue(any('pulsating' in e for e in errors))
+        s['beats'][0]['say']='The piston rod moves horizontally, expanding the cylinder chamber and lowering pressure to draw source water inward.'
+        s['beats'][7]['say']='The pump transfers water in pulses, while the check valves keep net flow toward the receiving reservoir.'
+        self.assertFalse(any('moves horizontally' in e or 'pulsating' in e for e in validate(s)))
     def test_safety_action_order_cannot_change(self):
         s=plan_fixture();s['beats'][1]['action']='pass';self.assertTrue(validate(s))
     def test_narration_cannot_announce_motion_during_static_pivot(self):
