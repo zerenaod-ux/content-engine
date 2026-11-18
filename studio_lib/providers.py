@@ -6,7 +6,7 @@ from studio_lib.service_queue import lease,cooling_down,remember_cooldown
 _UNAVAILABLE=set()
 class ServiceUnavailable(ValueError):
     """No usable free service answered; retain valid work for a later run."""
-def call(system,prompt,max_tokens=10000,temperature=.5):
+def call(system,prompt,max_tokens=10000,temperature=.5,reasoning_effort="low"):
     # GitHub Models produced empty responses in the first proof run; do not
     # burn repeated fallback attempts on it. Other channels' router is untouched.
     providers=[p for p in llm.PROVIDERS if p[0]!='GITHUB_MODELS_TOKEN' and os.environ.get(p[0])]
@@ -42,7 +42,7 @@ def call(system,prompt,max_tokens=10000,temperature=.5):
                 model_name=model.removeprefix('models/') if env=='GEMINI_API_KEY' else model
                 messages=[{'role':'system','content':system},{'role':'user','content':prompt}]
                 body={'model':model_name,'messages':messages,'temperature':temperature,'max_tokens':max_tokens}
-                if 'gpt-oss' in model_name:body['reasoning_effort']='low'
+                if 'gpt-oss' in model_name:body['reasoning_effort']=reasoning_effort
                 if json_mode:body['response_format']={'type':'json_object'}
                 with lease('ai'):
                     if cooling_down(host):raise llm.ProviderCoolingDown('Shared provider cooldown active')

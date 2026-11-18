@@ -1,1 +1,1 @@
-Retain requested factual repairs despite unrequested extra output; shared mastering on all production formats; same automatic rack topic; 2026-11-18
+Resume retained valid sections; repair final claim with explicit forbidden terms and medium reasoning; 2026-11-18
