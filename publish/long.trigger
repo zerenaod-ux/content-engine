@@ -1,1 +1,1 @@
-measured-duration-natural-sections-and-factual-gates-20261118
+Correct aggregate narration repair dead end and prove original full pipeline; 2026-11-18

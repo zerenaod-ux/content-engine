@@ -4,6 +4,13 @@ from unittest.mock import patch
 from studio_lib.longform.contract import ACTIONS
 from studio_lib.longform.repair import repair_sections,unsupported_comparison
 class SectionRepairTests(unittest.TestCase):
+ def test_total_length_failure_repairs_chapters_even_when_each_chapter_is_valid(self):
+  for count in (26,45):
+   p={'mechanism':'rack_pinion','beats':[{'action':a,'say':' '.join(['word']*count),'camera':'wide'} for a in ACTIONS]}
+   answer={'replacements':[{'index':i,'say':' '.join(['model']*36)} for i in range(4)]}
+   with tempfile.TemporaryDirectory() as d,patch('studio_lib.longform.repair.call',return_value=answer) as model:r=repair_sections(p,Path(d))
+   model.assert_called_once();self.assertNotEqual(r,p)
+   for i in range(4,16):self.assertEqual(r['beats'][i],p['beats'][i])
  def test_two_invalid_sections_are_model_repaired_without_changing_valid_chapters(self):
   p={'mechanism':'rack_pinion','topic':'How a rack and pinion moves a carriage','title':'How a Pinion Moves a Carriage','hook':'Turns become travel','beats':[{'action':a,'say':' '.join(['word']*33),'camera':'wide'} for a in ACTIONS]}
   p['beats'][11]['say']=' '.join(['short']*19);p['beats'][13]['say']=' '.join(['short']*18);original=copy.deepcopy(p)
