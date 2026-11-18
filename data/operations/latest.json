@@ -34,19 +34,15 @@
       "state": "awaiting_review"
     },
     "daily-short": {
-      "run_id": "44266714493",
-      "attempt": 2,
+      "run_id": "44329408454",
+      "attempt": 1,
       "kind": "daily-short",
-      "stage": "Stopped",
-      "label": "Held: unsupported visual detail",
-      "updated_at": "2026-11-18T09:10:06.984951+00:00",
+      "stage": "selection",
+      "label": "Selecting a new topic",
+      "updated_at": "2026-11-18T14:54:38.059410+00:00",
       "source_branch": "main",
       "owner_approved": false,
-      "state": "needs_attention",
-      "retryable": false,
-      "next_retry_at": null,
-      "reason": "The chosen anti-reflective coating explanation is not depicted by the photovoltaic component. Cached narration is preserved; do not blindly rerender.",
-      "diagnosed_by": "scheduled health monitor"
+      "state": "running"
     }
   }
 }
