@@ -6,7 +6,7 @@ from studio_lib.longform.repair import repair_sections,unsupported_comparison
 class SectionRepairTests(unittest.TestCase):
  def test_two_invalid_sections_are_model_repaired_without_changing_valid_chapters(self):
   p={'mechanism':'rack_pinion','topic':'How a rack and pinion moves a carriage','title':'How a Pinion Moves a Carriage','hook':'Turns become travel','beats':[{'action':a,'say':' '.join(['word']*33),'camera':'wide'} for a in ACTIONS]}
-  p['beats'][11]['say']=' '.join(['short']*29);p['beats'][13]['say']=' '.join(['short']*28);original=copy.deepcopy(p)
+  p['beats'][11]['say']=' '.join(['short']*19);p['beats'][13]['say']=' '.join(['short']*18);original=copy.deepcopy(p)
   answer={'replacements':[{'index':i,'say':' '.join(['repaired']*35)} for i in (11,13)]}
   with tempfile.TemporaryDirectory() as d,patch('studio_lib.longform.repair.call',return_value=answer) as model:r=repair_sections(p,Path(d))
   model.assert_called_once();self.assertEqual(p,original)
@@ -14,7 +14,7 @@ class SectionRepairTests(unittest.TestCase):
    if i not in (11,13):self.assertEqual(r['beats'][i],original['beats'][i])
   self.assertEqual(r['topic'],original['topic']);self.assertEqual(r['title'],original['title'])
  def test_unrequested_rewrite_is_rejected(self):
-  p={'mechanism':'rack_pinion','beats':[{'action':a,'say':' '.join(['word']*(29 if i==11 else 33)),'camera':'wide'} for i,a in enumerate(ACTIONS)]}
+  p={'mechanism':'rack_pinion','beats':[{'action':a,'say':' '.join(['word']*(19 if i==11 else 33)),'camera':'wide'} for i,a in enumerate(ACTIONS)]}
   with tempfile.TemporaryDirectory() as d,patch('studio_lib.longform.repair.call',return_value={'replacements':[{'index':0,'say':' '.join(['wrong']*35)}]}):self.assertEqual(repair_sections(p,Path(d)),p)
  def test_unshown_geometry_comparison_is_not_a_supported_topic(self):
   self.assertTrue(unsupported_comparison('Why does travel change when pinion diameter is increased?','rack_pinion'))
@@ -25,7 +25,7 @@ class SectionRepairTests(unittest.TestCase):
   with tempfile.TemporaryDirectory() as d,patch('studio_lib.longform.repair.call',return_value={'title':'How Lead Screws Move a Carriage','hook':'Do not replace this'}):r=repair_metadata(plan,Path(d))
   self.assertEqual(r['beats'],plan['beats']);self.assertEqual(r['hook'],plan['hook']);self.assertEqual(r['title'],'How Lead Screws Move a Carriage')
  def test_valid_model_replacements_survive_an_invalid_peer(self):
-  p={'mechanism':'rack_pinion','beats':[{'action':a,'say':' '.join(['word']*(29 if i in (11,13) else 33)),'camera':'wide'} for i,a in enumerate(ACTIONS)]}
+  p={'mechanism':'rack_pinion','beats':[{'action':a,'say':' '.join(['word']*(19 if i in (11,13) else 33)),'camera':'wide'} for i,a in enumerate(ACTIONS)]}
   answer={'replacements':[{'index':11,'say':' '.join(['fixed']*35)},{'index':13,'say':'still too short'}]}
   with tempfile.TemporaryDirectory() as d,patch('studio_lib.longform.repair.call',return_value=answer):r=repair_sections(p,Path(d))
   self.assertEqual(len(r['beats'][11]['say'].split()),35);self.assertEqual(r['beats'][13],p['beats'][13])

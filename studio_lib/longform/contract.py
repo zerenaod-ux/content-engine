@@ -2,7 +2,7 @@
 import math,re
 ACTIONS=['question','parts','input','contact','forward','guide','reverse','distance','detail','force','work','control','limits','application','recap','payoff']
 SOURCES={
- 'rack_pinion':{'source':'https://khkgears.us/media/wjon4hs3/gear-solutions_khk_converting-to-linear-motion-using-rack-and-pinion.pdf','scope':'A single fixed-diameter bench rack-and-pinion with a fixed bearing, marked rotating pinion, meshing straight rack and translating carriage; not a complete car steering system.','relation':'Rack displacement equals pitch radius times pinion angle, without slip in the ideal geometry. Reverse rotation reverses travel.'},
+ 'rack_pinion':{'source':'https://khkgears.us/media/wjon4hs3/gear-solutions_khk_converting-to-linear-motion-using-rack-and-pinion.pdf','scope':'A single fixed-diameter bench rack-and-pinion. The straight rack and attached carriage both TRANSLATE. Only guide rails and shaft supports stay fixed. Stylized rectangular teeth are not an involute/contact-stress simulation. There is no second gear, extra gear ratio or visible human hand. The assembly reverses before colliding with end stops. Not a complete car steering system.','relation':'Rack displacement equals pitch radius times pinion angle, without slip in the ideal geometry. Reverse rotation reverses travel.'},
  'lead_screw':{'source':'https://www.thomsonlinear.com/en/products/lead-screws/','scope':'A single fixed-lead rotating lead screw in fixed supports, a nonrotating nut attached to a guided translating carriage; not a ball screw or complete motor.','relation':'Nut travel equals screw lead times turns. The guide prevents the nut from rotating; reversing rotation reverses travel.'}}
 SOURCES['cam_follower']={'source':'https://ocw.metu.edu.tr/pluginfile.php/6467/mod_resource/content/4/ch8/8-4a.htm','scope':'One fixed-eccentricity circular cam, fixed rotating shaft, vertical guided roller follower and compression return spring. The spring keeps contact during the slow illustrative cycle. Not an engine valve or a force/dynamic simulation.','relation':'Follower height follows geometric roller-to-cam tangency; the offset circular cam raises and lowers the follower once per turn, with continuous contact in this ideal slow model.'}
 FACTS={
@@ -33,11 +33,14 @@ def errors(plan):
  beats=plan.get('beats',[])
  if not isinstance(beats,list) or [b.get('action') for b in beats if isinstance(b,dict)]!=ACTIONS:return out+['Preserve the sixteen causal actions in order']
  for b in beats:
-  if not isinstance(b.get('say'),str) or not 30<=len(b.get('say','').split())<=44:out.append('Each chapter needs 30-44 spoken words')
+  if not isinstance(b.get('say'),str) or not 20<=len(b.get('say','').split())<=50:out.append('Each chapter needs 20-50 spoken words')
   if b.get('camera') not in ('wide','engagement','output'):out.append('Unsupported camera')
-  if re.search(r'\b(camera|render|shot|storyboard|zoom)\b',b.get('say',''),re.I):out.append('Narration must explain the mechanism, not production')
+  if re.search(r'\b(camera|render|shot|storyboard|zoom(?:ing|s)?)\b',b.get('say',''),re.I):out.append('Narration must explain the mechanism, not production')
  if not beats[0].get('say','').rstrip().endswith('?'):out.append('Opening must be a question')
- if not 480<=sum(len(b.get('say','').split()) for b in beats)<=650:out.append('Narration must total 480-650 words')
+ if plan.get('mechanism')=='rack_pinion':
+  for i,b in enumerate(beats):
+   if re.search(r'involute|rack.{0,25}fixed|gear ratio|motion (?:simply )?ceases|by hand',b.get('say',''),re.I):out.append('Section '+str(i)+': rack slides, no visible hand, no involute profile or extra gear ratio, and no end-stop collision is animated')
+ if not 430<=sum(len(b.get('say','').split()) for b in beats)<=650:out.append('Narration must total 430-650 words')
  return out
 
 def motion(t,beat,timeline=None):

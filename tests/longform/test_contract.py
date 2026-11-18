@@ -28,3 +28,13 @@ class FullContractTests(unittest.TestCase):
   tl={'beats':[{'action':a,'start':i*10,'end':(i+1)*10} for i,a in enumerate(ACTIONS)]}
   self.assertLess(motion(40.1,'cam_follower',tl)['follower_z'],motion(49.9,'cam_follower',tl)['follower_z'])
   self.assertGreater(motion(60.1,'cam_follower',tl)['follower_z'],motion(69.9,'cam_follower',tl)['follower_z'])
+ def test_natural_section_lengths_do_not_replace_the_measured_duration_gate(self):
+  from studio_lib.longform.contract import ACTIONS
+  p={'mechanism':'lead_screw','topic':'How a lead screw moves a carriage','title':'How a Lead Screw Moves a Carriage','hook':'Turns become travel','beats':[{'action':a,'say':' '.join(['word']*28)+('?' if i==0 else '.'),'camera':'wide'} for i,a in enumerate(ACTIONS)]}
+  self.assertEqual(errors(p),[])
+  with self.assertRaises(ValueError):require_media(119,1280,720)
+ def test_observed_unshown_gear_geometry_claims_fail_before_delivery(self):
+  from studio_lib.longform.contract import ACTIONS
+  p={'mechanism':'rack_pinion','topic':'How a rack and pinion moves a carriage','title':'How a Rack Moves a Carriage','hook':'Turns become travel','beats':[{'action':a,'say':' '.join(['word']*30)+('?' if i==0 else '.'),'camera':'wide'} for i,a in enumerate(ACTIONS)]}
+  p['beats'][1]['say']='The rack is fixed at both ends while the pinion uses a gear ratio to move the carriage.'
+  self.assertTrue(any('rack slides' in e for e in errors(p)))

@@ -6,7 +6,7 @@ from studio_lib.longform.contract import FACTS,SOURCES,mechanism_facts
 def repair_sections(plan,out,attempt=0):
     beats=plan.get('beats',[])
     if not isinstance(beats,list) or len(beats)!=16:return plan
-    bad=[i for i,b in enumerate(beats) if not isinstance(b.get('say'),str) or not 30<=len(b['say'].split())<=44]
+    bad=[i for i,b in enumerate(beats) if not isinstance(b.get('say'),str) or not 20<=len(b['say'].split())<=50]
     if not bad:return plan
     bad=bad[:4]
     raw=call('Repair only invalid narration sections. Return JSON only.',
@@ -16,7 +16,7 @@ def repair_sections(plan,out,attempt=0):
     if not isinstance(replacements,list) or sorted(x.get('index',-1) for x in replacements)!=bad:return plan
     result=copy.deepcopy(plan)
     for item in replacements:
-        if isinstance(item.get('say'),str) and 30<=len(item['say'].split())<=44:result['beats'][item['index']]['say']=item['say']
+        if isinstance(item.get('say'),str) and 20<=len(item['say'].split())<=50:result['beats'][item['index']]['say']=item['say']
     return result
 
 def unsupported_comparison(topic,mechanism):
