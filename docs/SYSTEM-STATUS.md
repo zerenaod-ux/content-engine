@@ -131,3 +131,8 @@ See [the complete recovery and quality handover](RECOVERY-AND-QUALITY-HANDOVER.m
 ## Latest follow-through — November 17
 
 The previous short stopped on total narration length and the original full proof exhausted unique candidates. Implemented targeted model-only length repair and added a coupled eccentric cam/follower/spring component to full-format coverage. System-selected automatic proofs are running with these changes; no completed quality pass is claimed. Local tests: 51 cinematic, 11 full-format and 8 recovery pass. See [latest quality corrections](LATEST-QUALITY-CORRECTIONS.md) for exact scope, physical assumptions and pending verification. Full video remains on the test branch, not the scheduled compilation replacement. All owner decisions and approval settings are preserved.
+
+
+## Continued proof update — November 17, evening Chicago
+
+The short narration-length repair passed script and voice generation and is rendering in the cloud; encoded inspection and delivery are pending. The expanded full run selected a lead-screw subject but stopped on title and section-length validation. A further fix preserves draft narration, repairs title/hook metadata separately and repairs invalid sections in batches of at most four. A fresh full proof is active. Latest local suites: 51 cinematic, 12 full-format and 8 recovery tests pass. No new full-video output or aesthetic pass is claimed. The system still selects its topic; no hand-picked final subject or generated-script editing. All owner decisions remain intact, automatic approval stays off, and the legacy scheduled compilation is not yet replaced.
