@@ -335,5 +335,18 @@
   "source_run": "44267657356",
   "media_commit": "e03e32308a39aa655e955934aa4e6d2752862793",
   "owner_approved": false
+ },
+ {
+  "date": "2026-11-18",
+  "tag": "ce-long-20261118-0842",
+  "title": "How Pinion Rotation Reverses Rack Travel ⚙️",
+  "topic": "Why does reversing the pinion rotation reverse the linear travel direction of the rack?",
+  "video": "https://zerenaod-ux.github.io/content-engine/videos/ce-long-20261118-0842.mp4",
+  "kind": "long",
+  "format": "original_full",
+  "duration": 145.8,
+  "source_run": "44269243004",
+  "media_commit": "fa03f30f88a11d147c5bbe99f0a4a48b8bb40686",
+  "owner_approved": false
  }
 ]
