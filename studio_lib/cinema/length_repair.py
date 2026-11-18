@@ -23,7 +23,7 @@ def repair_length(plan,brief,out,attempt):
     (out/f'length-repair-{attempt}.json').write_text(json.dumps(raw,indent=2))
     rows=raw.get('replacements') if isinstance(raw,dict) else None
     if not isinstance(rows,list) or sorted(r.get('index',-1) for r in rows)!=indexes:return plan
-    if any(not isinstance(r.get('say'),str) or not 9<=len(r['say'].split())<=23 for r in rows):return plan
     fixed=copy.deepcopy(plan)
-    for row in rows:fixed['beats'][row['index']]['say']=row['say']
+    for row in rows:
+        if isinstance(row.get('say'),str) and 9<=len(row['say'].split())<=23:fixed['beats'][row['index']]['say']=row['say']
     return fixed

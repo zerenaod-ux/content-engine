@@ -7,6 +7,7 @@ from studio_lib.director import validate,normalize_narration
 from studio_lib.providers import call
 from studio_lib.registry import REGISTRY
 from studio_lib.cinema.presentation import illustration_labels
+from studio_lib.quality_gate import seal
 from studio_lib.service_queue import lease
 from studio_lib.duration import require_duration,require_video_duration
 from studio_lib.cinema.length_repair import repair_length
@@ -84,6 +85,10 @@ def script_errors(plan,topic):
             elif re.search(r'\b(camera|render|renderer|shot|storyboard)\b',text,re.I):errors.append('Speak about the topic, not production instructions.')
         if not beats[0].get('say','').rstrip().endswith('?'):errors.append('Open with a concrete question.')
         if component=='lever_balance':errors+=lever_narration_errors(plan)
+        if component=='thermal_contact':
+            for b in beats:
+                if re.search(r'highlight|labels? (?:each|the) block.{0,12}surface|blocks? it[.!?]?$',b.get('say',''),re.I):errors.append('No highlighted contact surface or surface labels are drawn; avoid malformed sentence endings.')
+            if re.search(r'\b(fast|instantly|instantaneous)\b',str(plan.get('hook','')),re.I):errors.append('Thermal diagram does not establish a real transfer speed; use a hook without a fast/instant claim.')
         if component=='hydraulic_lift' and any(re.search(r'\b(instantly|instantaneous|powerful work|multiplies energy)\b',b.get('say',''),re.I) for b in beats):errors.append('Do not claim instantaneous pressure propagation or increased energy/work; explain force traded against travel.')
         if not 140<=sum(len(b.get('say','').split()) for b in beats)<=176:errors.append('Total narration needs 140-176 words.')
         return errors
@@ -300,6 +305,9 @@ def run(topic,out):
     print('CE_STAGE=audio',flush=True)
     from studio_lib.cinema.review import review
     review(plan,tl,out)
+    encoded=json.loads(subprocess.check_output(['ffprobe','-v','error','-show_streams','-show_format','-of','json',str(out/'video.mp4')]))
+    track=next(x for x in encoded['streams'] if x['codec_type']=='video')
+    seal(out,'short',{'duration':float(encoded['format']['duration']),'width':track['width'],'height':track['height']})
     result={'topic':topic,'duration':tl['duration'],'wall_seconds':time.monotonic()-started,'manual_script_or_video_edits':False,'render_engine':'Blender Workbench, software graphics on GitHub','scope':plan['mechanism']+'; cinematic comparison','owner_approved':False,'production_deployed':False,'caption_source':'synthesis WordBoundary metadata','reference_audio_measured':False}
     (out/'result.json').write_text(json.dumps(result,indent=2));print(json.dumps(result),flush=True)
 def main():

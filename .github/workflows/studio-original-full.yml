@@ -30,6 +30,7 @@ jobs:
             .ce-cache/cinema-voice
             full-output/accepted-plan.json
             full-output/draft-plan.json
+            full-output/narration-critique.json
           key: full-proof-${{ runner.os }}-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: full-proof-${{ runner.os }}-${{ github.run_id }}-
       - name: Select, write, narrate and render one original landscape topic
@@ -52,6 +53,7 @@ jobs:
             .ce-cache/cinema-voice
             full-output/accepted-plan.json
             full-output/draft-plan.json
+            full-output/narration-critique.json
           key: full-proof-${{ runner.os }}-${{ github.run_id }}-${{ github.run_attempt }}
       - uses: actions/upload-artifact@v4
         if: always()

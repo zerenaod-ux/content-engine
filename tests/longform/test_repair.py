@@ -24,3 +24,11 @@ class SectionRepairTests(unittest.TestCase):
   plan={'topic':'How a lead screw moves a carriage','title':'How a Very Long Screw Title Contains Far Too Many Words','hook':'Turns become travel','beats':[{'say':'Existing valid words'}]}
   with tempfile.TemporaryDirectory() as d,patch('studio_lib.longform.repair.call',return_value={'title':'How Lead Screws Move a Carriage','hook':'Do not replace this'}):r=repair_metadata(plan,Path(d))
   self.assertEqual(r['beats'],plan['beats']);self.assertEqual(r['hook'],plan['hook']);self.assertEqual(r['title'],'How Lead Screws Move a Carriage')
+ def test_valid_model_replacements_survive_an_invalid_peer(self):
+  p={'mechanism':'rack_pinion','beats':[{'action':a,'say':' '.join(['word']*(29 if i in (11,13) else 33)),'camera':'wide'} for i,a in enumerate(ACTIONS)]}
+  answer={'replacements':[{'index':11,'say':' '.join(['fixed']*35)},{'index':13,'say':'still too short'}]}
+  with tempfile.TemporaryDirectory() as d,patch('studio_lib.longform.repair.call',return_value=answer):r=repair_sections(p,Path(d))
+  self.assertEqual(len(r['beats'][11]['say'].split()),35);self.assertEqual(r['beats'][13],p['beats'][13])
+ def test_cam_does_not_claim_exact_sinusoid_or_dwell_from_fixed_eccentric_circle(self):
+  self.assertTrue(unsupported_comparison('Why does an eccentric cam follower move sinusoidally?','cam_follower'))
+  self.assertFalse(unsupported_comparison('How does a return spring maintain cam follower contact?','cam_follower'))

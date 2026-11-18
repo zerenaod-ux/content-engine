@@ -3,6 +3,7 @@ from studio_lib.cinema.topic_memory import prompt_history
 import argparse,asyncio,base64,json,math,os,subprocess,time
 from pathlib import Path
 from studio_lib.providers import call
+from studio_lib.quality_gate import seal
 from studio_lib.topic_guard import duplicate,signature
 from studio_lib.cinema.auto_topic import api,read
 from studio_lib.cinema.build import voice,soundtrack
@@ -12,14 +13,15 @@ from studio_lib.longform.repair import repair_sections,repair_metadata,unsupport
 from studio_lib.longform.render import frame,WIDTH,HEIGHT
 
 def select(out):
- rows=[]
+ rows=[];created=[]
  for path in ('data/scenes/history.json','data/scenes/videos.json','data/scenes/topic-ledger.json'):
   data,_=read(path)
   if not isinstance(data,list):raise ValueError('Full topic history unavailable')
   rows+=data
+  if path=='data/scenes/videos.json':created=data
  owned=[r for r in rows if str(r.get('owner'))==str(os.environ['GITHUB_RUN_ID']) and r.get('format')=='original_full']
  if owned:return {'topic':owned[-1]['topic'],'mechanism':owned[-1]['mechanism']}
- available={k:v for k,v in SOURCES.items() if not any(r.get('mechanism')==k for r in rows)}
+ available={k:v for k,v in SOURCES.items() if not any(r.get('mechanism')==k for r in created)}
  if not available:raise ValueError('No uncovered full-format mechanism remains; do not repeat')
  rejected=[]
  for i in range(4):
@@ -47,7 +49,12 @@ def plan(out):
  saved=out/'accepted-plan.json'
  if saved.exists():
   result=json.loads(saved.read_text())
-  if not errors(result):return result
+  if not errors(result):
+   evidence=out/'narration-critique.json'
+   if evidence.exists() and json.loads(evidence.read_text()).get('errors')==[]:return result
+   check=call('Audit saved narration against its exact rendered mechanism. Return JSON only.', 'Return {"errors":[specific unsupported claims]}. CONTRACT: '+json.dumps(SOURCES[result['mechanism']])+' ACTIONS: '+json.dumps(mechanism_facts(result['mechanism']))+' PLAN: '+json.dumps(result),max_tokens=1600,temperature=.1)
+   evidence.write_text(json.dumps(check,indent=2))
+   if check.get('errors')==[]:return result
  print('CE_STAGE=planning',flush=True)
  selected=select(out);rejected=[];result=None
  draft=out/'draft-plan.json'
@@ -68,7 +75,8 @@ def plan(out):
   (out/f'critique-{attempt}.json').write_text(json.dumps(critique,indent=2))
   rejected=critique.get('errors')
   if not isinstance(rejected,list):raise ValueError('Factual review unavailable')
-  if not rejected:saved.write_text(json.dumps(result,indent=2));return result
+  if not rejected:
+   (out/'narration-critique.json').write_text(json.dumps(critique,indent=2));saved.write_text(json.dumps(result,indent=2));return result
  raise ValueError('Original full script failed bounded validation: '+str(rejected))
 
 def run(out):
@@ -92,6 +100,7 @@ def run(out):
  stream=next(s for s in measured['streams'] if s['codec_type']=='video');require_media(float(measured['format']['duration']),stream['width'],stream['height'])
  subprocess.run(['ffmpeg','-v','error','-i',str(out/'video.mp4'),'-f','null','-'],check=True)
  print('CE_STAGE=audio',flush=True);review(p,tl,out)
+ seal(out,'original_full',{'duration':float(measured['format']['duration']),'width':stream['width'],'height':stream['height']})
  result={'topic':p['topic'],'mechanism':p['mechanism'],'format':'original_full','duration':float(measured['format']['duration']),'width':stream['width'],'height':stream['height'],'manual_script_or_video_edits':False,'selected_by_system':True,'reused_short_assets':False,'owner_approved':False,'wall_seconds':time.monotonic()-started,'source':SOURCES[p['mechanism']]['source'],'quality_state':'technical_checks_passed_owner_visual_review_required'}
  (out/'result.json').write_text(json.dumps(result,indent=2));print(json.dumps(result),flush=True)
 if __name__=='__main__':

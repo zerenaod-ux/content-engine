@@ -1,6 +1,9 @@
 """File a successful generated comparison in existing Studio review, never approve."""
 import base64,datetime,hashlib,json,os,time,urllib.request,urllib.error
 from pathlib import Path
+from studio_lib.review_cards import find_by_marker
+from studio_lib.quality_gate import require_seal
+from studio_lib.delivery_archive import release_or_record
 from studio_lib.duration import require_duration
 REPO=os.environ['GITHUB_REPOSITORY'];TOKEN=os.environ['GH_TOKEN'];RUN=os.environ['SOURCE_RUN']
 def api(method,path,data=None):
@@ -30,6 +33,7 @@ def main():
     if result.get('manual_script_or_video_edits') is not False or result.get('owner_approved') is not False:raise ValueError('invalid automatic provenance')
     if plan.get('mechanism') not in ('wind_turbine','hand_generator','lever_balance','resistive_circuit','hydraulic_lift','thermal_contact','dna_pairing','water_transfer'):raise ValueError('unregistered cinematic subject')
     require_duration(result.get('duration',0))
+    require_seal(root,'short')
     video=root/'video.mp4'
     if not video.is_file() or video.stat().st_size<100000:raise ValueError('finished video missing')
     run=api('GET','actions/runs/'+RUN)
@@ -42,9 +46,9 @@ def main():
     url='https://cdn.jsdelivr.net/gh/'+REPO+'@'+sha+'/videos/'+tag+'.mp4'
     # Release is archival; the card uses a direct Pages MP4 for mobile playback.
     release=get('releases/tags/'+tag)
-    if not release:release=api('POST','releases',{'tag_name':tag,'target_commitish':run['head_sha'],'name':'How It Ticks comparison: '+title,'body':'Automatic cinematic comparison; owner review pending. Video: '+url+'\nSource run: '+run['html_url'],'prerelease':True})
+    if not release:release=release_or_record(api,get,'releases/tags/'+tag,{'tag_name':tag,'target_commitish':run['head_sha'],'name':'How It Ticks comparison: '+title,'body':'Automatic cinematic comparison; owner review pending. Video: '+url+'\nSource run: '+run['html_url'],'prerelease':True},root/'archive-warning.json')
     name=tag+'.mp4'
-    if not any(x['name']==name for x in release.get('assets',[])):
+    if release and not any(x['name']==name for x in release.get('assets',[])):
         req=urllib.request.Request('https://uploads.github.com/repos/'+REPO+'/releases/'+str(release['id'])+'/assets?name='+name,data=video.read_bytes(),method='POST',headers={'Authorization':'Bearer '+TOKEN,'Content-Type':'video/mp4','Accept':'application/vnd.github+json'})
         with urllib.request.urlopen(req,timeout=120) as response:json.load(response)
     def merge(v):
@@ -56,8 +60,7 @@ def main():
     for label in labels:
         if not get('labels/'+label):api('POST','labels',{'name':label,'color':'d29922'})
     marker='cinematic-source-run: '+RUN
-    existing=api('GET','issues?state=all&labels=cinematic-test&per_page=100')
-    issue=next((x for x in existing if marker in (x.get('body') or '')),None)
+    issue=find_by_marker(api,'cinematic-test',marker)
     if not issue:
         issue=api('POST','issues',{'title':'How It Ticks: '+title,'labels':labels,'body':'Automatically generated cinematic comparison. NOT approved or published.\n\nWatch: '+url+'\n\nApprove or Skip in Studio. Automatic approval is off.\n\nChecks: warn — visual, narration and sound review pending.\n\n'+marker+'\nSource: '+run['html_url']})
     print(json.dumps({'review_card':issue['html_url'],'video':url,'index_saved':True,'approved':False,'media_commit':sha}))
