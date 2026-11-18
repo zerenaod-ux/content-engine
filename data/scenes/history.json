@@ -671,5 +671,18 @@
     "category": "",
     "record_run": "44343065385",
     "record_attempt": "1"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "tested component rejected: director rejected: beat 2: narration needs 9-23 words\n",
+    "date": "2026-11-18",
+    "topic": "Why a bascule bridge uses counterweights to balance the moving leaf",
+    "title": "",
+    "subject": "bascule_bridge",
+    "keywords": [],
+    "category": "tested mechanism",
+    "failed": true,
+    "record_run": "44363993361",
+    "record_attempt": "1"
   }
 ]
