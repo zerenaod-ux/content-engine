@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-11-18T02:56:52.615805+00:00",
+  "checked_at": "2026-11-18T03:28:20.191154+00:00",
   "read_only": true,
   "complete": true,
   "platforms": {
@@ -13,8 +13,8 @@
     "instagram": {
       "returned_posts": 3,
       "statuses": {
-        "scheduled": 2,
-        "sent": 1
+        "scheduled": 1,
+        "sent": 2
       }
     },
     "tiktok": {
@@ -110,7 +110,7 @@
         ],
         "instagram": [
           {
-            "status": "scheduled",
+            "status": "sent",
             "due": "2026-11-18T03:00:00.000Z"
           }
         ],
@@ -125,6 +125,30 @@
     {
       "tag": "ce-20261117-0234-p4",
       "title": "Why a Bascule Drawbridge Lifts for Ships",
+      "platforms": {
+        "youtube": [
+          {
+            "status": "not_found_in_buffer",
+            "prior_owner_skip": false
+          }
+        ],
+        "instagram": [
+          {
+            "status": "not_found_in_buffer",
+            "prior_owner_skip": false
+          }
+        ],
+        "tiktok": [
+          {
+            "status": "not_found_in_buffer",
+            "prior_owner_skip": false
+          }
+        ]
+      }
+    },
+    {
+      "tag": "ce-20261116-1727",
+      "title": "How Solar Panels Turn Sunlight Into Power \u26a1",
       "platforms": {
         "youtube": [
           {
@@ -174,7 +198,7 @@
       "instagram": {
         "views": null,
         "reactions": null,
-        "reported_posts": 1,
+        "reported_posts": 2,
         "source_updated_at": "2026-11-17T17:27:46.114Z"
       },
       "tiktok": {
