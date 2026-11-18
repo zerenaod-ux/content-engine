@@ -1,0 +1,32 @@
+name: Cancel rejected solar bookings
+on:
+  push:
+    branches: [main]
+    paths: [publish/cancel-solar.trigger]
+permissions:
+  contents: read
+concurrency:
+  group: ce-publisher
+  cancel-in-progress: false
+jobs:
+  cancel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+          fetch-tags: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify rejection and cancel only future solar bookings
+        env:
+          BUFFER_TOKEN: ${{ secrets.BUFFER_TOKEN }}
+        run: python -m publish.cancel_rejected_solar
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: solar-cancellation-evidence
+          path: solar-cancellation-report.json
