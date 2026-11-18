@@ -20,5 +20,13 @@
     "owner": "44199928492",
     "state": "reserved",
     "mechanism": "resistive_circuit"
+  },
+  {
+    "topic": "Why does a lead screw convert rotational motion into precise linear travel in CNC machines?",
+    "topic_key": "cnc convert lead linear machines motion precise rotational screw travel",
+    "owner": "44224309696",
+    "mechanism": "lead_screw",
+    "format": "original_full",
+    "state": "reserved"
   }
 ]
