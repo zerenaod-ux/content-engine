@@ -3,7 +3,7 @@ import math
 import numpy as np
 from PIL import Image,ImageDraw,ImageFont
 from studio_lib.mesh import Scene,ease
-from studio_lib.longform.contract import motion
+from studio_lib.longform.contract import motion,rack_geometry
 WIDTH,HEIGHT=1280,720
 class WideScene(Scene):
  def project(self,points):
@@ -28,16 +28,17 @@ def frame(t,timeline,plan):
  blue=(63,170,210);gold=(237,175,60);steel=(135,156,170);red=(224,86,67)
  sc.box((0,0,.05),(9,5,.18),(36,54,69))
  if mechanism=='rack_pinion':
+  geometry=rack_geometry();pinion_z=geometry['pinion_z'];radius=geometry['radius']
   for yy in (-.6,.6):sc.beam((-4,yy,.45),(4,yy,.45),.055,steel)
   sc.box((x,0,.68),(5.8,.8,.35),blue)
   # Rack pitch matches the marked pinion's circular pitch. Teeth are illustrative.
-  pitch=2*math.pi*.6/16
+  pitch=2*math.pi*radius/16
   for i in range(-12,13):
    tx=x+i*pitch
    sc.box((tx,0,.92),(.10,.75,.13),gold)
-  sc.gear((0,0,1.62),.6,16,angle,gold)
-  sc.cylinder((0,0,1.62),.12,2.1,steel,angle=angle,n=20)
-  sc.beam((0,-1.08,1.62),(.10*math.cos(angle),-1.08,1.62+.10*math.sin(angle)),.025,red)
+  sc.gear((0,0,pinion_z),radius,16,angle,gold,root_ratio=geometry['root_ratio'],tip_ratio=geometry['tip_ratio'])
+  sc.cylinder((0,0,pinion_z),.12,2.6,steel,angle=angle,n=20)
+  sc.beam((0,-1.33,pinion_z),(.10*math.cos(angle),-1.33,pinion_z+.10*math.sin(angle)),.025,red)
   for yy in (-1,1):sc.box((0,yy,.9),(.35,.3,1.4),steel)
   sc.box((x,0,.36),(1.2,1.4,.2),red)
   for xx in (-4.2,4.2):sc.box((xx,0,.6),(.2,1.5,.85),steel)

@@ -1,6 +1,13 @@
 import math,unittest
 from studio_lib.longform.contract import motion,require_media,errors
 class FullContractTests(unittest.TestCase):
+ def test_rack_stays_clear_of_end_stops_and_moves_during_guide_explanation(self):
+  from studio_lib.longform.contract import ACTIONS
+  tl={'beats':[{'action':a,'start':i*10,'end':(i+1)*10} for i,a in enumerate(ACTIONS)]}
+  for j in range(1600):
+   s=motion(j*.1,'rack_pinion',tl)
+   self.assertGreaterEqual(4.1-(abs(s['travel'])+2.9),.099999)
+  self.assertGreater(motion(59.9,'rack_pinion',tl)['travel'],motion(50.1,'rack_pinion',tl)['travel'])
  def test_full_duration_and_native_landscape_are_distinct_from_shorts(self):
   require_media(150,1280,720)
   for values in [(40,1280,720),(301,1280,720),(150,720,1280),(float('nan'),1280,720)]:
@@ -56,3 +63,16 @@ class FullContractTests(unittest.TestCase):
   for wrong in ['The stationary shaft carries the pinion.', 'One turn equals one rack tooth spacing.', 'The rack pushes against the barrier.', 'Clockwise motion drives the rack upward along the rails.']:
    p['beats'][7]['say']=wrong
    self.assertTrue(any(e.startswith('Section 7:') for e in errors(p)))
+
+ def test_pinion_mount_and_tooth_clearance_follow_the_actual_rack_pitch_line(self):
+  from studio_lib.longform.contract import rack_geometry
+  g=rack_geometry()
+  self.assertAlmostEqual(g['pinion_z']-g['pitch_z'],g['radius'])
+  self.assertGreater(g['pinion_z']-g['radius']*g['root_ratio'],g['rack_tip_z'])
+  tip=g['pinion_z']-g['radius']*g['tip_ratio']
+  self.assertLess(tip,g['rack_tip_z']);self.assertGreater(tip,g['rack_root_z'])
+ def test_work_cannot_be_equated_entirely_with_kinetic_energy(self):
+  from studio_lib.longform.contract import ACTIONS
+  p={'mechanism':'rack_pinion','topic':'How a rack and pinion moves a carriage','title':'How a Rack Moves a Carriage','hook':'Turns become travel','beats':[{'action':a,'say':' '.join(['word']*30)+('?' if i==0 else '.'),'camera':'wide'} for i,a in enumerate(ACTIONS)]}
+  p['beats'][10]['say']='As the shaft turns, that work becomes the kinetic energy of the moving carriage, minus friction.'
+  self.assertTrue(any('kinetic energy' in e for e in errors(p)))

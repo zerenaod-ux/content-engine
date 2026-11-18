@@ -1,5 +1,12 @@
 """Explicit supported long-format mechanisms and measurable narrative contract."""
 import math,re
+RACK_PITCH_Z=.92
+PINION_PITCH_RADIUS=.6
+PINION_ROOT_RATIO=.88
+PINION_TIP_RATIO=1.05
+
+def rack_geometry():
+ return {'pitch_z':RACK_PITCH_Z,'pinion_z':RACK_PITCH_Z+PINION_PITCH_RADIUS,'radius':PINION_PITCH_RADIUS,'root_ratio':PINION_ROOT_RATIO,'tip_ratio':PINION_TIP_RATIO,'rack_root_z':.855,'rack_tip_z':.985}
 ACTIONS=['question','parts','input','contact','forward','guide','reverse','distance','detail','force','work','control','limits','application','recap','payoff']
 SOURCES={
  'rack_pinion':{'source':'https://khkgears.us/media/wjon4hs3/gear-solutions_khk_converting-to-linear-motion-using-rack-and-pinion.pdf','scope':'A single fixed-diameter bench rack-and-pinion. The straight rack and attached carriage both TRANSLATE. Only guide rails and shaft supports stay fixed. Stylized rectangular teeth are not an involute/contact-stress simulation. There is no second gear, extra gear ratio or visible human hand. The assembly reverses before colliding with end stops. Not a complete car steering system.','relation':'Rack displacement equals pitch radius times pinion angle, without slip in the ideal geometry. Reverse rotation reverses travel.'},
@@ -40,6 +47,7 @@ def errors(plan):
  if not beats[0].get('say','').rstrip().endswith('?'):out.append('Opening must be a question')
  if plan.get('mechanism')=='rack_pinion':
   for i,b in enumerate(beats):
+   if re.search(r'\b(?:that|all|the input) work (?:becomes|turns into) (?:the )?kinetic energy',b.get('say',''),re.I):out.append('Section '+str(i)+': input work can move an opposing load, change kinetic energy and supply losses; do not equate all work with carriage kinetic energy')
    if re.search(r'involute|rack.{0,25}fixed|gear ratio|motion (?:simply )?ceases|by hand|stationary shaft|clockwise|upward along|instant|(?:reaches|hits|contacts).{0,30}(?:stop|barrier)|push.{0,20}barrier|against.{0,20}(?:stop|barrier)|one (?:full )?turn.{0,45}(?:one|single).{0,20}(?:tooth|teeth)',b.get('say',''),re.I):out.append('Section '+str(i)+': rack slides horizontally, shaft rotates in fixed bearings, one turn travels a full pitch circumference (many tooth spacings); no view-dependent clockwise claim, instant reversal or end-stop collision is shown')
  if not 430<=sum(len(b.get('say','').split()) for b in beats)<=650:out.append('Narration must total 430-650 words')
  return out
@@ -57,11 +65,11 @@ def motion(t,beat,timeline=None):
   state=cam_state(angle);state['travel']=state['follower_z'];return state
  if timeline:
   beats=timeline['beats'];i=min(len(beats)-1,next((j for j,b in enumerate(beats) if t<b['end']),len(beats)-1))
-  targets=[0,-.4,-1.2,-.7,1.2,1.2,-1.2,1.2,-1.2,1.2,-1.2,1.2,0,.8,-.8,.8]
+  targets=[0,-.4,-1.0,-.7,1.0,1.1,-1.0,1.0,-1.0,1.0,-1.0,1.0,0,.8,-.8,.8]
   b=beats[i];p=max(0,min(1,(t-b['start'])/(b['end']-b['start'])));p=p*p*(3-2*p)
   start=targets[i-1] if i else -.4;travel=start+(targets[i]-start)*p
- else:travel=1.45*math.sin(.20*t)
- if beat=='rack_pinion':return {'travel':travel,'angle':travel/.6}
+ else:travel=1.1*math.sin(.20*t)
+ if beat=='rack_pinion':return {'travel':travel,'angle':travel/PINION_PITCH_RADIUS}
  return {'travel':travel,'angle':-travel/.45*2*math.pi}
 
 def require_media(seconds,width,height):
@@ -76,6 +84,7 @@ def mechanism_facts(mechanism):
           'forward':'Forward shaft rotation drives the rack horizontally in one direction along the rails.',
           'reverse':'Reversing the rotating shaft makes the rack travel horizontally back along the rails in a smooth reversal.',
           'distance':'One complete pinion revolution advances the rack by one entire pitch circumference, spanning MANY tooth spacings. Individual teeth engage successively.',
+          'work':'Real mechanisms require input work to move an opposing load, change speed and overcome friction. This component illustrates displacement coupling; it does not calculate forces, energy or losses.',
           'limits':'Travel reverses smoothly BEFORE reaching the end stops. The gear never pushes the carriage into a stop. A practical machine needs limits appropriate to its real design.',
           'payoff':'The rotating shaft and pinion stay engaged with the translating rack; changing rotation direction changes horizontal travel direction smoothly.'})
     if mechanism=='cam_follower':

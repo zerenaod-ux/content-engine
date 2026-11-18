@@ -55,10 +55,10 @@ class Scene:
         rings=[np.array([[x+r*math.cos(a+angle),y+dy,z+r*math.sin(a+angle)] for a in np.linspace(0,2*math.pi,n,endpoint=False)]) for dy in [-length/2,length/2]]
         self.face(rings[0],color);self.face(rings[1],tuple(min(255,int(c*1.15)) for c in color))
         for i in range(n):self.face([rings[0][i],rings[0][(i+1)%n],rings[1][(i+1)%n],rings[1][i]],tuple(int(c*(.72+.18*math.sin(i/n*math.pi*2))) for c in color))
-    def gear(self,center,r,teeth,angle,color):
+    def gear(self,center,r,teeth,angle,color,root_ratio=.92,tip_ratio=1.05):
         x,y,z=center; pts=[]
         for i in range(teeth*4):
-            a=i/(teeth*4)*2*math.pi+angle; rr=r*(1.05 if i%4 in (1,2) else .92)
+            a=i/(teeth*4)*2*math.pi+angle; rr=r*(tip_ratio if i%4 in (1,2) else root_ratio)
             pts.append([x+rr*math.cos(a),y-.10,z+rr*math.sin(a)])
         self.face(pts,color); self.cylinder(center,r*.3,.24,(53,70,80))
         for a in np.linspace(0,2*math.pi,6,endpoint=False):

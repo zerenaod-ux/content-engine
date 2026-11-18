@@ -22,7 +22,13 @@ jobs:
       - uses: actions/setup-python@v5
         with: {python-version: '3.11'}
       - run: pip install --quiet numpy pillow edge-tts faster-whisper
-      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg fonts-dejavu-core > /dev/null
+      - name: Use installed media tools before fetching dependencies
+        run: |
+          if ! command -v ffmpeg >/dev/null || [ ! -f /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf ]; then
+            timeout 180s sudo apt-get update -qq
+            timeout 180s sudo apt-get install -y -qq ffmpeg fonts-dejavu-core > /dev/null
+          fi
+          ffmpeg -version | head -n 1
       - run: python -m unittest discover -s tests/longform -v
       - run: python -m unittest discover -s tests/cinema -v
       - uses: actions/cache/restore@v4
@@ -35,8 +41,7 @@ jobs:
           key: full-proof-${{ runner.os }}-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: |
             full-proof-${{ runner.os }}-${{ github.run_id }}-
-            full-proof-${{ runner.os }}-44267657356-
-            full-proof-${{ runner.os }}-44262874938-
+            full-proof-${{ runner.os }}-44269243004-
       - name: Select, write, narrate and render one original landscape topic
         env:
           GH_TOKEN: ${{ github.token }}

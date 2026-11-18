@@ -1,1 +1,1 @@
-Enforce contact velocity and thread-phase geometry; retain all accepted narration; 2026-11-18
+Correct pitch-line engagement, end-stop clearance and work/energy narration; preserve accepted topic and cached valid speech; 2026-11-18T15:00:00Z
