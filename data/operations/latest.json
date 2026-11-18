@@ -37,12 +37,16 @@
       "run_id": "44266714493",
       "attempt": 2,
       "kind": "daily-short",
-      "stage": "planning",
-      "label": "Writing and checking narration",
+      "stage": "Stopped",
+      "label": "Held: unsupported visual detail",
       "updated_at": "2026-11-18T09:10:06.984951+00:00",
       "source_branch": "main",
       "owner_approved": false,
-      "state": "running"
+      "state": "needs_attention",
+      "retryable": false,
+      "next_retry_at": null,
+      "reason": "The chosen anti-reflective coating explanation is not depicted by the photovoltaic component. Cached narration is preserved; do not blindly rerender.",
+      "diagnosed_by": "scheduled health monitor"
     }
   }
 }
