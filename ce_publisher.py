@@ -80,7 +80,8 @@ def create_approved_post(inp):
         message=str(result.get('message','')).lower()
         if 'video could not be read from its url' not in message or attempt==2:return response
         if attempt==0:
-            original=inp['assets'][0]['video']['url']
+            assets=inp.get('assets') or []
+            original=((assets[0].get('video') or {}).get('url','') if assets and isinstance(assets[0],dict) else '')
             alternate=readable_pages_alternative(original)
             if alternate:
                 inp=json.loads(json.dumps(inp));inp['assets'][0]['video']['url']=alternate
