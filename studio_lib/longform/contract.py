@@ -61,8 +61,8 @@ def motion(t,beat,timeline=None):
   b=beats[i];p=max(0,min(1,(t-b['start'])/(b['end']-b['start'])));p=p*p*(3-2*p)
   start=targets[i-1] if i else -.4;travel=start+(targets[i]-start)*p
  else:travel=1.45*math.sin(.20*t)
- if beat=='rack_pinion':return {'travel':travel,'angle':-travel/.6}
- return {'travel':travel,'angle':travel/.45*2*math.pi}
+ if beat=='rack_pinion':return {'travel':travel,'angle':travel/.6}
+ return {'travel':travel,'angle':-travel/.45*2*math.pi}
 
 def require_media(seconds,width,height):
  if not math.isfinite(seconds) or not 120<=seconds<=300:raise ValueError('Original full video must measure 120–300 seconds')

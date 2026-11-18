@@ -36,7 +36,8 @@ def frame(t,timeline,plan):
    tx=x+i*pitch
    sc.box((tx,0,.92),(.10,.75,.13),gold)
   sc.gear((0,0,1.62),.6,16,angle,gold)
-  sc.beam((0,-1.05,1.62),(0,1.05,1.62),.12,steel)
+  sc.cylinder((0,0,1.62),.12,2.1,steel,angle=angle,n=20)
+  sc.beam((0,-1.08,1.62),(.10*math.cos(angle),-1.08,1.62+.10*math.sin(angle)),.025,red)
   for yy in (-1,1):sc.box((0,yy,.9),(.35,.3,1.4),steel)
   sc.box((x,0,.36),(1.2,1.4,.2),red)
   for xx in (-4.2,4.2):sc.box((xx,0,.6),(.2,1.5,.85),steel)

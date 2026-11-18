@@ -7,8 +7,19 @@ class FullContractTests(unittest.TestCase):
    with self.assertRaises(ValueError):require_media(*values)
  def test_rigid_motion_uses_one_causal_coordinate_and_stays_bounded(self):
   for t in range(300):
-   r=motion(t,'rack_pinion');self.assertLessEqual(abs(r['travel']),1.45);self.assertAlmostEqual(r['travel'],-.6*r['angle'])
-   s=motion(t,'lead_screw');self.assertAlmostEqual(s['travel'],s['angle']/(2*math.pi)*.45)
+   r=motion(t,'rack_pinion');self.assertLessEqual(abs(r['travel']),1.45);self.assertAlmostEqual(r['travel'],.6*r['angle'])
+   s=motion(t,'lead_screw');self.assertAlmostEqual(s['travel'],-s['angle']/(2*math.pi)*.45)
+ def test_rack_velocity_matches_the_bottom_contact_point_of_the_rendered_pinion(self):
+  for t in (1,5,10,20,35):
+   a=motion(t,'rack_pinion');b=motion(t+.00001,'rack_pinion')
+   # A point initially at the pinion's bottom moves +x for positive
+   # rotation in the renderer's x/z circle, independently of travel formula.
+   contact_dx=.6*math.sin(b['angle']-a['angle'])
+   self.assertAlmostEqual(b['travel']-a['travel'],contact_dx,places=9)
+ def test_nut_stays_on_the_same_thread_phase_as_the_screw_rotates(self):
+  for t in (0,2,10,20,50):
+   s=motion(t,'lead_screw');phase=2*math.pi*s['travel']/.45+s['angle']
+   self.assertAlmostEqual(phase,0,places=9)
  def test_compilation_or_unsupported_plan_cannot_pass(self):
   self.assertTrue(errors({'mechanism':'compilation','beats':[]}))
  def test_forward_and_reverse_follow_their_actual_narration_chapters(self):
