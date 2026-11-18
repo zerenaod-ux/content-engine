@@ -1,25 +1,27 @@
 {
-  "checked_at": "2026-11-17T22:28:00.500655+00:00",
+  "checked_at": "2026-11-18T02:41:08.688154+00:00",
   "read_only": true,
   "complete": true,
   "platforms": {
     "youtube": {
       "returned_posts": 3,
       "statuses": {
-        "scheduled": 2,
-        "sent": 1
+        "scheduled": 1,
+        "sent": 2
       }
     },
     "instagram": {
       "returned_posts": 3,
       "statuses": {
-        "scheduled": 3
+        "scheduled": 2,
+        "sent": 1
       }
     },
     "tiktok": {
       "returned_posts": 3,
       "statuses": {
-        "scheduled": 3
+        "scheduled": 1,
+        "sent": 2
       }
     }
   },
@@ -60,13 +62,13 @@
         ],
         "instagram": [
           {
-            "status": "scheduled",
+            "status": "sent",
             "due": "2026-11-18T01:00:00.000Z"
           }
         ],
         "tiktok": [
           {
-            "status": "scheduled",
+            "status": "sent",
             "due": "2026-11-18T00:00:00.000Z"
           }
         ]
@@ -102,7 +104,7 @@
       "platforms": {
         "youtube": [
           {
-            "status": "scheduled",
+            "status": "sent",
             "due": "2026-11-17T22:30:00.000Z"
           }
         ],
@@ -114,7 +116,7 @@
         ],
         "tiktok": [
           {
-            "status": "scheduled",
+            "status": "sent",
             "due": "2026-11-18T02:30:00.000Z"
           }
         ]
@@ -164,22 +166,22 @@
     "available": true,
     "platforms": {
       "youtube": {
-        "views": 0.0,
-        "reactions": 0.0,
-        "reported_posts": 1,
-        "source_updated_at": "2026-11-17T18:33:30.890Z"
+        "views": 1389.0,
+        "reactions": 29.0,
+        "reported_posts": 2,
+        "source_updated_at": "2026-11-18T00:35:09.869Z"
       },
       "instagram": {
         "views": null,
         "reactions": null,
-        "reported_posts": 0,
-        "source_updated_at": null
+        "reported_posts": 1,
+        "source_updated_at": "2026-11-17T17:27:46.114Z"
       },
       "tiktok": {
-        "views": null,
-        "reactions": null,
-        "reported_posts": 0,
-        "source_updated_at": null
+        "views": 0.0,
+        "reactions": 0.0,
+        "reported_posts": 2,
+        "source_updated_at": "2026-11-17T17:27:47.311Z"
       }
     },
     "scope": "recent 20 published posts",
