@@ -58,6 +58,17 @@ def video_url(tag):
 def video_url_default(tag):   # public, direct mp4 (Buffer must fetch it): jsDelivr copy on gh-pages (made at build time)
     return 'https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@gh-pages/videos/%s.mp4' % tag
 
+def readable_pages_alternative(url):
+    match=re.fullmatch(r'https://cdn\\.jsdelivr\\.net/gh/zerenaod-ux/content-engine@[^/]+/videos/(ce-[a-zA-Z0-9-]+\\.mp4)',str(url))
+    if not match:return None
+    alternate='https://zerenaod-ux.github.io/content-engine/videos/'+match.group(1)
+    try:
+        with urllib.request.urlopen(urllib.request.Request(alternate,method='HEAD'),timeout=20) as response:
+            if response.status==200 and response.headers.get('Content-Type','').split(';')[0]=='video/mp4':
+                return alternate
+    except (OSError,ValueError):pass
+    return None
+
 def create_approved_post(inp):
     # Retry only an explicit media-fetch rejection, which confirms no post exists.
     # Never retry an ambiguous transport failure or a successful creation.
@@ -68,7 +79,12 @@ def create_approved_post(inp):
         if result.get('post'):return response
         message=str(result.get('message','')).lower()
         if 'video could not be read from its url' not in message or attempt==2:return response
-        print('Media fetch refused; retrying the same approved post without rescheduling other platforms.')
+        if attempt==0:
+            original=inp['assets'][0]['video']['url']
+            alternate=readable_pages_alternative(original)
+            if alternate:
+                inp=json.loads(json.dumps(inp));inp['assets'][0]['video']['url']=alternate
+        print('Media fetch refused; retrying only this uncreated approved post without rescheduling other platforms.')
         time.sleep(8*(attempt+1))
     return response
 
@@ -127,6 +143,8 @@ def main():
         else:
             print('    NOT sent:', json.dumps(r)[:200]); failed.append(plat)
             if 'limit' in json.dumps(r).lower() or 'allowance' in json.dumps(r).lower(): break
+
+    if failed:raise RuntimeError('Publishing incomplete for: '+', '.join(sorted(set(failed)))+'; successful bookings are retained and must not be duplicated')
 
 if __name__ == '__main__':
     main()
