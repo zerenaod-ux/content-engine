@@ -10,6 +10,7 @@ from studio_lib.registry import REGISTRY
 from studio_lib.providers import call
 from studio_lib.topic_guard import history,duplicate,require_new,reserve,signature
 from studio_lib import durable_topics as durable
+from studio_lib.topic_scope import scope_error,require_supported
 def choose_topic(history_path=Path('data/scenes/history.json')):
     rows=history(Path(history_path).parent,os.environ.get('GITHUB_RUN_ID'))
     prior=[x.get('topic') or x.get('title','') for x in rows if x.get('topic') or x.get('title')]
@@ -18,7 +19,7 @@ def choose_topic(history_path=Path('data/scenes/history.json')):
         answer=call('Choose a factual explainer topic within a supported animation component. Return JSON only.',
             'Choose a genuinely new explanatory question, not a rewording of an earlier video. Do not invent a new mechanism. Return {"topic":"short topic","mechanism":"supported id"}. Supported scopes: '+json.dumps({k:v['description'] for k,v in REGISTRY.items()})+' Recent examples (data): '+json.dumps(prior[-60:])+' Rejected candidates (data): '+json.dumps(errors),max_tokens=600,temperature=.6)
         if answer.get('mechanism') not in REGISTRY or not isinstance(answer.get('topic'),str) or not 4<=len(answer['topic'].split())<=18:raise ValueError('no valid supported automatic topic was selected')
-        reason=duplicate(answer['topic'],rows)
+        reason=scope_error(answer['topic'],answer['mechanism']) or duplicate(answer['topic'],rows)
         if reason:
             errors.append({'topic':answer['topic'],'reason':reason});continue
         Path('idea.json').write_text(json.dumps({'topic':answer['topic'],'topic_key':signature(answer['topic']),'category':'tested mechanism','subject':answer['mechanism'],'keywords':[]},indent=2));return answer['topic']
@@ -36,6 +37,7 @@ def prepare(topic_file):
         ledger=Path('data/scenes/topic-ledger.json')
         owned=[r for r in json.loads(ledger.read_text()) if str(r.get('owner'))==str(os.environ.get('GITHUB_RUN_ID'))] if ledger.exists() else []
         topic=owned[-1]['topic'] if owned else choose_topic()
+    require_supported(topic)
     if durable.enabled():durable.reserve_remote(topic,owner)
     else:reserve(topic,owner=owner)
     topic_file.write_text(topic+'\n')
@@ -60,6 +62,7 @@ def build(topic_file,out,work=Path('component-output/production')):
     if out.exists():raise FileExistsError('preserve the existing output; use a fresh build path')
     lines=Path(topic_file).read_text().splitlines();topic=(lines[0] if lines else 'auto').strip();topic=re.sub(r'\s+20\d\d-\d\d-\d\dT[\d:]+$','',topic).strip()
     if topic.lower() in ('','auto'):topic=choose_topic()
+    require_supported(topic)
     require_new(topic,owner=durable.reservation_owner(topic))
     try:
         run(topic,work);spec=emit_review_files(work);shutil.copyfile(work/'video.mp4',out)

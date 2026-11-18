@@ -16,6 +16,7 @@ from studio_lib.audio import narrate,assemble
 from studio_lib.checkpoints import Checkpoint
 from studio_lib.registry import REGISTRY
 from studio_lib import solar,pump,wind
+from studio_lib.topic_scope import scope_error,require_supported
 
 # The engine owns the safe action order. The model may choose narration,
 # emphasis and framing; it cannot invent joints or disconnect rigid parts.
@@ -34,6 +35,8 @@ def validate(plan):
     if not isinstance(plan,dict):return ['plan must be JSON object']
     mechanism=plan.get('mechanism')
     if not isinstance(mechanism,str) or mechanism not in REGISTRY:return ['unsupported mechanism; no generic substitute permitted']
+    reason=scope_error(' '.join([str(plan.get('title',''))]+[str(b.get('say','')) for b in plan.get('beats',[]) if isinstance(b,dict)]),mechanism)
+    if reason:e.append(reason)
     title=plan.get('title','')
     if not isinstance(title,str) or not 4<=len(title.split())<=8 or title.split()[0] not in ('How','Why'):e.append('title must start with How or Why and contain 4-8 words')
     actions=REGISTRY[mechanism]['actions']
@@ -196,6 +199,7 @@ def verify_component(plan,tl,out):
     sheet.save(out/'contact.jpg');(out/'component-checks.json').write_text(json.dumps({'errors':errors,'measurements':measure,'owner_approved':False,'scope':mechanism},indent=2))
     if errors:raise ValueError('; '.join(errors))
 def run(topic,out):
+    require_supported(topic)
     out=Path(out);out.mkdir(parents=True,exist_ok=True);start=time.monotonic()
     cp=Checkpoint(topic,validator=validate,namespace='tested-library-v3');saved=cp.load()
     def contract_version(plan):return hashlib.sha256(json.dumps(REGISTRY[plan['mechanism']],sort_keys=True).encode()).hexdigest()
