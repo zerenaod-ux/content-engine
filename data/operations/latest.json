@@ -32,6 +32,17 @@
       "source_branch": "studio-cinematic-proof",
       "owner_approved": false,
       "state": "awaiting_review"
+    },
+    "daily-short": {
+      "run_id": "44266714493",
+      "attempt": 1,
+      "kind": "daily-short",
+      "stage": "selection",
+      "label": "Selecting a new topic",
+      "updated_at": "2026-11-18T08:36:29.154569+00:00",
+      "source_branch": "main",
+      "owner_approved": false,
+      "state": "running"
     }
   }
 }
