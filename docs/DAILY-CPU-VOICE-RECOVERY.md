@@ -7,3 +7,7 @@ The active daily encoder now uses shared peak-safe audio mastering. Final encode
 Verification at this commit: 30 recovery and 35 studio local tests pass with mocked CPU synthesis. Actual cloud model download, synthesis, encoded-media inspection and Studio delivery remain unverified. No new video is claimed. A targeted saved-stage recovery of the previously system-selected check-valve short is authorized; it must preserve history and not duplicate cards or owner decisions. How It Ticks automatic approval stays off.
 
 Owner's latest visual standard is whole recognizable object, interior reveal, connected cause-and-effect actions and detailed narration-aligned close-ups. The existing full-video rack test does not meet that creative standard. It was skipped by the owner; do not reopen or approve it. Finish the existing short for owner judgment before another full render.
+
+## Cloud verification and recovery start
+
+Shared GitHub verification run 44340296698 passed all 142 checks (23 full-format, 54 cinematic, 30 recovery, 35 studio). These use mocked fallback synthesis, not an actual voice quality pass. Saved-stage recovery run 44343065385 is active and explicitly exercises CPU voice on the existing system-selected check-valve reservation from run 44329408454. The original operation was marked superseded rather than left eligible for duplicate automatic retries. Actual audio, render and Studio delivery remain pending.
