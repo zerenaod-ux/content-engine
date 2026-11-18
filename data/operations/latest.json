@@ -15,9 +15,9 @@
       "run_id": "44332170319",
       "attempt": 1,
       "kind": "full",
-      "stage": "audio",
-      "label": "Checking finished audio",
-      "updated_at": "2026-11-18T15:10:34.737158+00:00",
+      "stage": "delivery",
+      "label": "Sending to Studio",
+      "updated_at": "2026-11-18T15:10:42.816758+00:00",
       "source_branch": "studio-cinematic-proof",
       "owner_approved": false,
       "state": "running"
