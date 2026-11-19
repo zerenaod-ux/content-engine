@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-11-19T21:37:46.285304+00:00",
+  "checked_at": "2026-11-19T23:14:32.787595+00:00",
   "read_only": true,
   "complete": true,
   "platforms": {
@@ -7,8 +7,8 @@
       "returned_posts": 8,
       "statuses": {
         "error": 1,
-        "scheduled": 3,
-        "sent": 4
+        "scheduled": 2,
+        "sent": 5
       }
     },
     "instagram": {
@@ -201,7 +201,7 @@
       "platforms": {
         "youtube": [
           {
-            "status": "scheduled",
+            "status": "sent",
             "due": "2026-11-19T22:30:00.000Z"
           }
         ],
@@ -266,6 +266,30 @@
           }
         ]
       }
+    },
+    {
+      "tag": "ce-20261119-2225",
+      "title": "Why a Three\u2011Wheel Padlock Only Releases \u2699\ufe0f",
+      "platforms": {
+        "youtube": [
+          {
+            "status": "not_found_in_buffer",
+            "prior_owner_skip": false
+          }
+        ],
+        "instagram": [
+          {
+            "status": "not_found_in_buffer",
+            "prior_owner_skip": false
+          }
+        ],
+        "tiktok": [
+          {
+            "status": "not_found_in_buffer",
+            "prior_owner_skip": false
+          }
+        ]
+      }
     }
   ],
   "timezone": "America/Chicago",
@@ -289,7 +313,7 @@
       "youtube": {
         "views": 2464.0,
         "reactions": 38.0,
-        "reported_posts": 4,
+        "reported_posts": 5,
         "source_updated_at": "2026-11-19T00:26:23.848Z"
       },
       "instagram": {
