@@ -405,5 +405,15 @@
     "topic_key": "barriers before begins bridge close lift road",
     "record_run": "44534851466",
     "record_attempt": "1"
+  },
+  {
+    "date": "2026-11-19",
+    "tag": "ce-20261119-1727",
+    "title": "How the Iris Aperture Controls Exposure Brightness \u2699\ufe0f",
+    "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@304816d0c6c2aab7eb16d352034ccefba8dd3124/videos/ce-20261119-1727.mp4",
+    "topic": "How the iris aperture controls exposure brightness",
+    "topic_key": "aperture brightness controls exposure iris",
+    "record_run": "44576248575",
+    "record_attempt": "1"
   }
 ]
