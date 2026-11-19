@@ -578,7 +578,20 @@
    "ready_for_future_publish": true,
    "record": "saved/ce-20261118-1607/44362086403-1.json",
    "history": []
+  },
+  {
+   "tag": "ce-20261119-0327",
+   "title": "Why a Bascule Bridge Uses Counterweights Effectively 🚢",
+   "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@39cc1854ba3089eaf5801cd793e7d18d1659507d/videos/ce-20261119-0327.mp4",
+   "folder": "saved",
+   "issue_number": 56,
+   "issue_url": "https://github.com/zerenaod-ux/content-engine/issues/56",
+   "reviewed_at": "2026-11-19T04:09:04.089311+00:00",
+   "publishing_enabled": false,
+   "ready_for_future_publish": true,
+   "record": "saved/ce-20261119-0327/44456270111-1.json",
+   "history": []
   }
  ],
- "updated_at": "2026-11-18T17:45:17.468312+00:00"
+ "updated_at": "2026-11-19T04:09:04.089311+00:00"
 }
