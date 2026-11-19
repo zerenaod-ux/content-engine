@@ -1,4 +1,6 @@
 {
+  "refresh_policy": "on_request",
+  "automatic_refresh": false,
   "available": true,
   "checked_at": "2026-11-19T23:19:51+00:00",
   "handle": "@HowItTicks-p2v",
@@ -18,7 +20,7 @@
     }
   ],
   "average_view_percentage": null,
-  "note": "Verified owner-connected vidIQ retention snapshot. Scheduled direct-API credential refresh is not configured; writing guidance expires after 48 hours.",
+  "note": "Verified owner-connected vidIQ retention snapshot. Owner selected request-only refresh; no automatic analytics requests are made. Writing guidance expires after 48 hours.",
   "channel_id": "UCXjX-Qu_SeFJN-oV4C2JjSQ",
   "start_date": "2026-11-01",
   "end_date": "2026-11-18",
@@ -431,6 +433,5 @@
       ]
     }
   ],
-  "state": "available_snapshot",
-  "automatic_refresh": false
+  "state": "available_snapshot"
 }
