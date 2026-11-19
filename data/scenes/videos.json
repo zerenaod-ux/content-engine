@@ -385,5 +385,15 @@
       "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@cee93d864600e897dc2a03d2d50330e750863449/videos/ce-20261119-0327.mp4"
     ],
     "correction_source_run": "44453122884"
+  },
+  {
+    "date": "2026-11-19",
+    "tag": "ce-20261119-0839",
+    "title": "Why a Trunnion Pivot Enables Smooth Bridge Lifting \ud83d\udea2",
+    "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@6cde6da938d8c4930a1ec306ca5e5640f6c58f2a/videos/ce-20261119-0839.mp4",
+    "topic": "Why a bascule bridge uses a trunnion pivot for smooth lifting",
+    "topic_key": "bascule bridge lifting pivot smooth trunnion uses",
+    "record_run": "44488879657",
+    "record_attempt": "1"
   }
 ]
