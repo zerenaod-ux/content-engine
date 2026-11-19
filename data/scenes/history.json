@@ -746,5 +746,18 @@
     "category": "",
     "record_run": "44534851466",
     "record_attempt": "1"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "tested component rejected: director rejected: beat 7: motion_cue must name this action or the internal part being revealed\n",
+    "date": "2026-11-19",
+    "topic": "How the iris aperture controls exposure brightness",
+    "title": "",
+    "subject": "camera_iris",
+    "keywords": [],
+    "category": "tested mechanism",
+    "failed": true,
+    "record_run": "44575729538",
+    "record_attempt": "1"
   }
 ]
