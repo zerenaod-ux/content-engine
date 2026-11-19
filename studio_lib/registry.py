@@ -7,7 +7,7 @@ BRIDGE_FACTS={
  'balance':'Road rises while its rigidly attached heel counterweight swings down into its chamber.',
  'drive':'The counterweight offsets much of the load; a motor and meshing gears control motion. It does not lift for free.',
  'pass':'Bridge stays fully raised while the tall vessel passes through the channel.',
- 'lower':'After the vessel clears, road lowers and counterweight swings up.',
+ 'lower':'After the vessel clears, road lowers and counterweight swings up. The rising counterweight gains gravitational potential energy while the road loses height; do not say the rising counterweight returns or releases energy. The motor controls the motion and losses remain.',
  'resume':'Span seats and locks, barriers rise, one car crosses a continuous road.'}
 REGISTRY={
  'bascule_bridge':{'description':'Single-leaf trunnion bascule drawbridge, not other bridge types','actions':BRIDGE_ACTIONS,'facts':BRIDGE_FACTS,'source':'https://www.ncdot.gov/initiatives-policies/Transportation/bridges/historic-bridges/bridge-types/Pages/bascule.aspx'},
