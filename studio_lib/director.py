@@ -62,6 +62,7 @@ def validate(plan):
         if re.search(r'\b([a-z]+)\s+\1\b',text) or re.search(r'permanent[\s\-\u2011]+magnet[\s\-\u2011]+magnets',text):e.append(f'beat {i}: remove accidentally repeated words or redundant magnet wording')
         if re.search(r'\b(today clearly|safely now|firmly still|smoothly efficiently|smoothly for all|smoothly again|significantly during operation)\b',text):e.append(f'beat {i}: replace filler added to reach a word quota with a concrete explanatory fact')
         if mechanism=='camera_iris':
+            if i==7 and re.search(r'\b(?:iris|blades?|aperture|opening)\s+(?:returns?|opens?|closes?|moves?|narrows?|widens?|shrinks?)\b',text):e.append(f'beat {i}: the iris is already open and held; only the housing returns, do not announce a new iris movement')
             if i==2 and 'cutaway' not in text:e.append(f'beat {i}: name the simplified cutaway before revealing internal parts')
             if re.search(r'\b(blades?|pivots?)\b.{0,18}\b(slid\w*|translat\w*)',text):e.append(f'beat {i}: iris blades rotate about fixed pivots; they do not slide independently')
             if re.search(r'\b(doubl\w*|quadrupl\w*|sharper|focuses|zooms)\b',text):e.append(f'beat {i}: unsupported optical or numerical claim; only opening and fixed-setting exposure are illustrated')

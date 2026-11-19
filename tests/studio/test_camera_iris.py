@@ -53,6 +53,17 @@ class IrisVisibilityTests(unittest.TestCase):
    self.assertEqual(evidence['errors'],[])
    self.assertEqual({row['part'] for row in evidence['measurements']},{'blades','ring','pins','sensor'})
 
+class FinalNarrationStateTests(unittest.TestCase):
+ def test_iris_cannot_return_again_during_housing_return(self):
+  from studio_lib.director import validate
+  from test_library import fixture
+  plan=fixture('camera_iris')
+  plan['beats'][2]['say']='This simplified cutaway exposes the fixed pivots and blade control ring inside the camera so their physical connections become visible.'
+  plan['beats'][7]['say']='The iris returns to its original state, showing how coordinated blade movement directly controls brightness.'
+  self.assertTrue(any('already open and held' in error for error in validate(plan)))
+  plan['beats'][7]['say']='The housing returns over the lens while the iris stays open, preserving the same mechanical control of incoming light.'
+  self.assertFalse(any('already open and held' in error for error in validate(plan)))
+
 class SelectionProvenanceTests(unittest.TestCase):
  def test_only_owned_system_selection_supplies_component(self):
   from studio_lib.production import selected_mechanism
