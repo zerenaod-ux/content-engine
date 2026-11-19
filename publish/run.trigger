@@ -1,3 +1,3 @@
-resume 44575729538
-original-optical-family-proof
-Continue the verified unfinished automatic optical topic after cue validation repair. No video was rendered in the source run. Preserve permanent novelty memory and block any completed video from repetition. The system owns narration and generation; Studio approval remains manual.
+auto
+causal-capability-proof
+The regular system must select a genuinely unused supported topic and original visual family, write its own causal narration, use the approved fixed narrator, verify actual motion against measured speech and deliver one fresh video to Studio after gates pass. No past video may be recreated. Owner publishing approval remains manual.
