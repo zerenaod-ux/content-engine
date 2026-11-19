@@ -1,3 +1,3 @@
-auto
+resume 44533440191
 spoken-action-proof
-System-select a supported, non-repeating topic after the scope and exact spoken-cue corrections. Keep narration original; no manual script/video edits. Deliver only with timing/framing/audio evidence and manual owner approval.
+Resume the same automatic topic and accepted narration after bounded word-anchor correction. Reuse cached speech; no new topic and no manual generated-word edits. Deliver through the regular Studio path only after evidence passes.
