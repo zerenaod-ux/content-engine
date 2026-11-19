@@ -34,13 +34,15 @@ jobs:
         with:
           python-version: '3.11'
       - run: pip install --quiet numpy pillow edge-tts faster-whisper kokoro-onnx==0.6.1
-      - name: Use installed media tools before fetching dependencies
+      - name: Set up cached FFmpeg and FFprobe without apt
+        uses: FedericoCarboni/setup-ffmpeg@36c6454b5a2348e7794ba2d82a21506605921e3d
+        with:
+          ffmpeg-version: release
+      - name: Verify media tools
         run: |
-          if ! command -v ffmpeg >/dev/null || [ ! -f /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf ]; then
-            timeout 180s sudo apt-get update -qq
-            timeout 180s sudo apt-get install -y -qq ffmpeg fonts-dejavu-core > /dev/null
-          fi
           ffmpeg -version | head -n 1
+          ffprobe -version | head -n 1
+          python -c "from PIL import ImageFont; ImageFont.truetype('DejaVuSans.ttf',24)"
       - name: Restore accepted stages and narration
         uses: actions/cache/restore@v4
         with:
