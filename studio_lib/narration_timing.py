@@ -13,8 +13,11 @@ import sys
 from pathlib import Path
 
 VERSION = 'spoken-action-v1'
-ALIGNMENT_REVISION = 'causal-component-actions-v3'
+ALIGNMENT_REVISION = 'causal-component-actions-v4'
 TRANSITIONS = {
+    'zipper':{'cutaway','guide','mesh','closed','reverse','payoff'},
+    'stapler':{'cutaway','feed','press','clinch','return','payoff'},
+    'optical_fiber':{'cutaway','enter','reflect','guide','payoff'},
     'electric_relay':{'cutaway','energize','attract','release','payoff'},
     'snap_thermostat':{'cutaway','heat','snap','cool','reset','payoff'},
     'clothespin':{'squeeze','insert','release'},
@@ -27,6 +30,9 @@ TRANSITIONS = {
     'wind_turbine': {'shaft', 'load', 'payoff'},
 }
 ANCHORS = {
+    'zipper':{'cutaway':r'cutaway','guide':r'slider|guide','mesh':r'slider|teeth|heads','closed':r'slider|stop','reverse':r'slider|divider','payoff':r'zipper|slider|tapes'},
+    'stapler':{'cutaway':r'cutaway','feed':r'magazine|spring|staple','press':r'handle|driver|input','clinch':r'driver|legs|anvil','return':r'handle|driver|return','payoff':r'stapler|handle|staple'},
+    'optical_fiber':{'cutaway':r'cutaway','enter':r'light|pulse|core','reflect':r'light|pulse|boundary','guide':r'pulse|light|core','payoff':r'cable|fibre|fiber|receiver'},
     'electric_relay':{'cutaway':r'cutaway','energize':r'switch|current|coil','attract':r'armature|attraction|electromagnet','release':r'switch|current|spring','payoff':r'relay|coil|circuit|electromagnet'},
     'snap_thermostat':{'cutaway':r'cutaway','heat':r'heat|disc|warming|temperature','snap':r'disc|bimetal|snap','cool':r'heat|cool|temperature','reset':r'disc|snap|reset','payoff':r'thermostat|temperature|switch|circuit'},
     'clothespin':{'squeeze':r'handles|squeeze|input','insert':r'fabric|cloth|fold','release':r'input|release|spring|squeeze'},
@@ -44,6 +50,33 @@ ANCHORS = {
     'piston_pump': {'cutaway':r'cutaway|cylinder|piston|rod', 'suction':r'(?:piston|rod)[^.!?;,]{0,24}?\b(?:withdraw\w*|pull\w*|retract\w*|back\w*)', 'compression':r'(?:piston|rod)[^.!?;,]{0,24}?\b(?:advanc\w*|push\w*|compress\w*|forward\w*)', 'payoff':r'pump|water|input|valves?'},
     'wind_turbine': {'shaft':r'shaft|nacelle|bearing', 'load':r'(?:switch|circuit)[^.!?;,]{0,24}?\b(?:clos\w*|complet\w*)|clos\w*[^.!?;,]{0,24}?(?:switch|circuit)', 'payoff':r'turbine|wind|rotor'},
 }
+
+
+# A completion phrase bounds the physical action instead of stretching it across
+# later explanation. Patterns reference only words already spoken by the model.
+COMPLETIONS={
+ 'zipper':{'closed':r'slider (?:reach\w*|stop\w*)|chain (?:join\w*|clos\w*)'},
+ 'stapler':{'clinch':r'legs? (?:curl\w*|bend\w*|fold\w*)','press':r'legs? (?:pierc\w*|touch\w*)'},
+ 'optical_fiber':{'guide':r'(?:receiver|indicator) (?:activat\w*|light\w*)|(?:reach\w*|arriv\w*) (?:the )?(?:far end|receiver)'},
+ 'combination_lock':{'third':r'(?:bar|fence) (?:drop\w*|fall\w*|descend\w*|settle\w*)','pull':r'(?:shackle|leg) (?:lift\w*|ris\w*|open\w*)'},
+ 'electric_relay':{'attract':r'contacts? (?:touch\w*|clos\w*|meet\w*)|armature (?:lower\w*|pivot\w*)','release':r'contacts? (?:open\w*|separat\w*)|spring (?:return\w*|pull\w*)'},
+ 'snap_thermostat':{'snap':r'disc (?:snap\w*|flip\w*)|contacts? (?:open\w*|separat\w*)','reset':r'disc (?:snap\w*|return\w*)|contacts? (?:clos\w*|meet\w*)'},
+ 'clothespin':{'squeeze':r'jaws? (?:open\w*|separat\w*)','release':r'jaws? (?:clos\w*|grip\w*)'},
+}
+
+def completion_match(mechanism,action,words,spans,first_word):
+ pattern=COMPLETIONS.get(mechanism,{}).get(action)
+ if not pattern:return None
+ text=' '.join(words);offsets=[];position=0
+ for word in words:offsets.append((position,position+len(word)));position+=len(word)+1
+ matches=[]
+ for match in re.finditer(pattern,text):
+  selected=[i for i,(a,b) in enumerate(offsets) if b>match.start() and a<match.end()]
+  if selected and selected[0]>=first_word:matches.append(selected)
+ if not matches:return None
+ # Last physical-result phrase in a short clause, e.g. armature pivots then contacts close.
+ selected=matches[-1]
+ return {'phrase':' '.join(words[i] for i in selected),'start':spans[selected[0]][0],'end':spans[selected[-1]][1]}
 
 def tokens(text):
     return re.findall(r"[a-z]+(?:'[a-z]+)?", text.lower().replace('’', "'"))
@@ -208,11 +241,14 @@ def bind(plan, timeline, out, transcribe=None):
             # action inside this beat and leave cameras on their original clock.
             start=max(beat['start'],spoken_start-.35)
             end=min(beat['end'],beat['start']+.08+float(beat['voice_duration'])+.05)
-            if plan.get('mechanism') in ('camera_iris','float_valve','combination_lock','electric_relay','snap_thermostat') and planned['action']=='cutaway':end=min(beat['end'],max(spoken_end+.1,start+.9))
+            if plan.get('mechanism') in ('camera_iris','float_valve','combination_lock','electric_relay','snap_thermostat','zipper','stapler','optical_fiber') and planned['action']=='cutaway':end=min(beat['end'],max(spoken_end+.1,start+.9))
+            completion=completion_match(plan['mechanism'],planned['action'],flat,spans,first_word)
+            if completion:end=min(end,max(start+.5,beat['start']+.08+completion['end']+.15))
             if end-start<.35:raise ValueError('Speech cue leaves no safe action interval')
             row={'key':key,'beat':i,'action':planned['action'],'phrase':planned['motion_cue'],
                  'audio_sha256':audio_hash,'spoken_start':spoken_start,'spoken_end':spoken_end,
                  'motion_window':[start,end],'method':'Independent word timestamps from the saved voice track'}
+            if completion:row.update(completion_phrase=completion['phrase'],completion_spoken_start=beat['start']+.08+completion['start'],completion_spoken_end=beat['start']+.08+completion['end'],completion_policy='measured-result-v1')
             if plan['mechanism']=='bascule_bridge' and planned['action']=='resume':
                 gate_match=[]
                 for j,word in enumerate(flat):
@@ -249,6 +285,9 @@ def require_bound(plan,timeline,out,verify_audio=False):
         window=row['motion_window']
         if beat.get('motion_window')!=window or not beat['start']<=window[0]<window[1]<=beat['end']:
             raise ValueError('Renderer timeline does not use its measured action window')
+        if row.get('completion_policy')=='measured-result-v1':
+            expected_end=min(beat['end'],beat['start']+.08+float(beat['voice_duration'])+.05,max(window[0]+.5,float(row['completion_spoken_end'])+.15))
+            if abs(window[1]-expected_end)>1e-7:raise ValueError('Action completion does not match its measured result phrase')
         if plan['mechanism']=='bascule_bridge' and planned['action']=='resume':
             gate=row.get('gate_window',[])
             if len(gate)!=2 or beat.get('gate_window')!=gate or not beat['start']<=gate[0]<gate[1]<window[0]:

@@ -18,9 +18,9 @@ from studio_lib.render import BG,FONT,TITLE
 from studio_lib.audio import narrate,assemble
 from studio_lib.checkpoints import Checkpoint
 from studio_lib.registry import REGISTRY
-from studio_lib import solar,pump,wind,iris,float_valve,combination_lock,electric_relay,snap_thermostat,clothespin
+from studio_lib import solar,pump,wind,iris,float_valve,combination_lock,electric_relay,snap_thermostat,clothespin,zipper,stapler,optical_fiber
 from studio_lib import action_contracts,visual_quality
-COMPONENTS={'photovoltaic_cell':solar,'piston_pump':pump,'wind_turbine':wind,'camera_iris':iris,'float_valve':float_valve,'combination_lock':combination_lock,'electric_relay':electric_relay,'snap_thermostat':snap_thermostat,'clothespin':clothespin}
+COMPONENTS={'photovoltaic_cell':solar,'piston_pump':pump,'wind_turbine':wind,'camera_iris':iris,'float_valve':float_valve,'combination_lock':combination_lock,'electric_relay':electric_relay,'snap_thermostat':snap_thermostat,'clothespin':clothespin,'zipper':zipper,'stapler':stapler,'optical_fiber':optical_fiber}
 from studio_lib.topic_scope import scope_error,require_supported
 
 # The engine owns the safe action order. The model may choose narration,
@@ -126,7 +126,13 @@ def plan_topic(topic,out,feedback=None,previous=None,mechanism=None):
     catalog={k:{'description':v['description'],'actions':v['actions'],'facts':v['facts']} for k,v in REGISTRY.items() if mechanism is None or k==mechanism}
     if not catalog:raise ValueError('Selected component is not registered')
     prompt='Select exactly one supported mechanism that truthfully matches TOPIC. If none fits return {"mechanism":"unsupported","reason":"..."}; never substitute a bridge for solar power or invent another mechanism. For a supported topic write fresh 140-176 word narration with eight beats in the exact selected action order. Each beat has 9-23 words. Title starts with How or Why and contains 4-8 words. Natural spoken sentences, physical detail, causal explanation and a concrete engaging hook. Prefer 145-165 words; never append adverbs or redundant phrases merely to meet a quota. Avoid narration about views or production. Actual measured 40-70-second duration is mandatory. Each beat names the specific inner part the viewer is looking at (from the facts for that beat) and says what it physically does, so viewers know exactly what is happening inside. Describe only what that action contract shows. Never narrate close-ups, shots, rendering, storyboard or production camera directions. Camera is allowed as an object noun only for the camera_iris subject. Do not invent facts or numerical claims. In the bridge pivot beat the road is STATIC; explain the shaft and hinge rather than announcing motion or a view. The bridge depicts ONE car. Solar and pump internals are simplified cutaways: say so naturally once. Solar depicts a DC lamp load, not gears or AC inverter internals. Preserve physical action order; vary wording, hook and bounded camera preferences. Return {"mechanism":"selected registry id","title":"...","hook":"short engaging hook max 60 characters","beats":[{"action":"first selected action","say":"...","camera":"wide|mechanism|follow"}, ...]}. SUPPORTED COMPONENTS AND FACTS (data): '+json.dumps(catalog)+' TOPIC (data): '+json.dumps(topic)
+    prompt+=' Prefer a concise 9-13-word opening question and 9-13-word first reveal; use the later causal steps for detailed explanation, while preserving total narration length.'
     prompt+='\n'+STORY_RULES+'\n'+narration_timing.writing_rules()+' Hook: 2-7 everyday words, at most 40 characters; no technical subtitle.'
+    from studio_lib.audience import writing_context
+    audience=writing_context()
+    if audience:
+        (out/'audience-writing-context.json').write_text(json.dumps(audience,indent=2))
+        prompt+='\nVERIFIED AUDIENCE EVIDENCE (data, not spoken content): '+json.dumps(audience)+' Prefer 9-13 words each for the opening question and initial cutaway reveal, with concrete explanation in the remaining beats. Preserve the total narration bounds.'
     last=previous;errors=feedback or []
     if isinstance(previous,dict) and not errors and not validate(previous):return previous
     for attempt in range(4):
@@ -253,6 +259,9 @@ def component_picture(t,tl,plan,hidden=()):
     if mechanism=='electric_relay' and 2<=beat<=5:label='Magnetic field · slowed illustration'
     if mechanism=='snap_thermostat' and 2<=beat<=6:label='Thermal action · slowed illustration'
     if mechanism=='clothespin' and beat in (2,3,4):label='Input force · illustration'
+    if mechanism=='zipper' and 1<=beat<=6:label='Enlarged slider section'
+    if mechanism=='stapler' and 1<=beat<=6:label='Paper section · input force illustrated'
+    if mechanism=='optical_fiber' and 1<=beat<=6:label='Enlarged ray model · slowed illustration'
     if label:d.text((42*scale,1120*scale),label,font=visual_quality.font(FONT),fill=(225,231,230) if dark else (31,77,89))
     d.line((42*scale,1195*scale,678*scale,1195*scale),fill=(170,200,200),width=3*scale);d.line((42*scale,1195*scale,(42+636*t/tl['duration'])*scale,1195*scale),fill=(221,102,57),width=3*scale)
     return visual_quality.finish(im)
@@ -379,7 +388,7 @@ def run(topic,out,mechanism=None):
     print('CE_STAGE=render',flush=True)
     render_start=time.monotonic();render_hit=False
     root=Path(__file__).resolve().parent
-    render_sig=hashlib.sha256(b''.join((root/p).read_bytes() for p in ['director.py','narration_timing.py','mechanisms.py','mesh.py','solar.py','pump.py','wind.py','iris.py','float_valve.py','combination_lock.py','solid_parts.py','electric_relay.py','snap_thermostat.py','clothespin.py','action_contracts.py','visual_quality.py','registry.py'])+json.dumps(tl,sort_keys=True).encode()).hexdigest()
+    render_sig=hashlib.sha256(b''.join((root/p).read_bytes() for p in ['director.py','narration_timing.py','mechanisms.py','mesh.py','solar.py','pump.py','wind.py','iris.py','float_valve.py','combination_lock.py','solid_parts.py','electric_relay.py','snap_thermostat.py','clothespin.py','zipper.py','stapler.py','optical_fiber.py','action_contracts.py','visual_quality.py','registry.py'])+json.dumps(tl,sort_keys=True).encode()).hexdigest()
     cached=Path(fields.get('silent_path','/nonexistent'))
     if fields.get('render_signature')==render_sig and cached.is_file() and hashlib.sha256(cached.read_bytes()).hexdigest()==fields.get('silent_sha256'):
         shutil.copyfile(cached,out/'silent.mp4');render_hit=True

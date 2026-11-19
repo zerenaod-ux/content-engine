@@ -131,3 +131,33 @@ REGISTRY.update({
   'source':'https://patents.google.com/patent/DE29803034U1/en',
   'mechanism_source':'https://patents.google.com/patent/US2748437A/en'}
 })
+
+REGISTRY.update({
+ 'zipper':{'description':'Closed-end non-locking metal zipper: Y-channel guides staggered rigid teeth; not coil, waterproof or automatic-lock sliders','actions':['zipper','cutaway','guide','mesh','closed','hold','reverse','payoff'],'facts':{
+ 'zipper':'Introduce two separated fabric tapes with staggered metal teeth and one slider at the open end. No hand or clothing wearer is shown.',
+ 'cutaway':'A simplified cutaway lifts the slider upper plate and pull tab, revealing its Y-shaped guide and central divider. Teeth remain still.',
+ 'guide':'The slider advances along the first section. Its converging guide brings the staggered tooth rows inward; paired heads begin interleaving behind it.',
+ 'mesh':'The slider continues across the middle. Rigid tooth heads enter spaces between opposite stems; the fabric tapes bend into the guided path.',
+ 'closed':'The slider reaches the far stop, leaving the visible tooth chain joined behind it. No automatic locking pawl is depicted.',
+ 'hold':'The slider and joined teeth are now held still. Explain that the shaped heads overlap opposing stems; no new sliding or force test occurs.',
+ 'reverse':'The slider reverses along the same chain. Its divider guides the rows apart progressively, separating the fabric tapes without bending metal teeth.',
+ 'payoff':'The slider remains at the open end, rows separated. The cutaway plate returns as the explanation concludes; no second closing cycle.'},'source':'https://www.ykk.com/english/ykk/tech/01.html'},
+ 'stapler':{'description':'Representative desk stapler with sectioned paper, manual handle, magazine spring, guided driver and inward clinching anvil; not flat-clinch or an electric gun','actions':['tool','cutaway','feed','press','clinch','hold','return','payoff'],'facts':{
+ 'tool':'Introduce the recognizable stapler, paper and base. The handle, driver and loaded staple are still; no pressing hand is shown.',
+ 'cutaway':'A simplified cutaway lifts the outer shell and exposes a paper section, magazine, feed spring, driver and shaping anvil below.',
+ 'feed':'The magazine spring extends to push the connected staple row forward, positioning its leading staple beneath the stationary driver.',
+ 'press':'Illustrated input force lowers the hinged handle and guided driver. The leading staple moves down; straight legs pierce the paper until touching the anvil.',
+ 'clinch':'Continued downward driver motion forces the staple legs against the anvil grooves. Legs curl inward below the paper while preserving their wire length.',
+ 'hold':'The staple is now clinched and held below the paper. The driver is still down; explain the completed fastening without announcing another bend.',
+ 'return':'The handle and driver rise while the clinched staple stays in the paper. The magazine advances the next staple without firing it.',
+ 'payoff':'The handle is raised and the used staple stays clinched. Cutaway sections return; no second staple is driven. This is a representative sectioned teaching model.'},'source':'https://patents.google.com/patent/US4315589A'},
+ 'optical_fiber':{'description':'Straight step-index optical fibre, enlarged meridional ray model with accepted angle, core and lower-index cladding; not bending, wave modes or network electronics','actions':['cable','cutaway','enter','reflect','guide','pulse','receive','payoff'],'facts':{
+ 'cable':'Introduce one straight optical cable between a light source and a receiving indicator. The source is off and no ray is moving yet.',
+ 'cutaway':'A simplified cutaway lifts front sections of jacket, cladding and core, revealing an enlarged longitudinal view. Layers remain distinct.',
+ 'enter':'An illustrative light pulse enters the higher-index core at a supported shallow angle and travels toward the first core-cladding boundary.',
+ 'reflect':'The pulse reaches lower-index cladding and changes direction back into the core by total internal reflection. Angle is measured from the normal, not from the fibre axis.',
+ 'guide':'The pulse continues reflecting at successive boundaries along the straight core until reaching the far end and activating the receiver indicator.',
+ 'pulse':'More illustrative pulses travel along that same supported path. Their slow visible movement illustrates propagation, not the real speed of light.',
+ 'receive':'Pulses continue arriving at the receiving end; the indicator is already active. No packet decoding, electricity generation or camera sensor internals are shown.',
+ 'payoff':'Cutaway layers return to show the complete cable with its receiver still active. Explain guided light without claiming perfect transmission or every launch angle is trapped.'},'source':'https://www.thefoa.org/tech/ref/basic/total_internal_reflection.html','mechanism_source':'https://ntrs.nasa.gov/api/citations/19960011720/downloads/19960011720.pdf'}
+})

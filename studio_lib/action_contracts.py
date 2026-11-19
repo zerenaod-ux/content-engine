@@ -34,6 +34,25 @@ CONTRACTS.update({
   'visible':[(2,'jaws'),(2,'spring'),(2,'input'),(4,'cloth')]}
 })
 
+
+CONTRACTS.update({
+ 'zipper':{
+  'subjects':[r'zipper|teeth|tape|slider',r'cutaway',r'slider|guide|teeth',r'slider|head|teeth',r'slider|stop|chain',r'head|teeth|slider',r'slider|divider|teeth',r'zipper|slider|tapes'],
+  'moves':{1:{'cut':1},2:{'slider':1,'joined':1},3:{'slider':1,'joined':1},4:{'slider':1,'joined':1},6:{'slider':-1,'joined':-1},7:{'cut':-1}},
+  'holds':{0:['slider','joined'],1:['slider','joined'],5:['slider','joined'],7:['slider','joined']},
+  'visible':[(2,'teeth'),(2,'guides'),(2,'divider'),(3,'tapes'),(3,'slider')]},
+ 'stapler':{
+  'subjects':[r'stapler|paper|staple|handle',r'cutaway',r'spring|magazine|staple',r'handle|driver|leg',r'leg|anvil|driver',r'staple|driver|leg',r'handle|driver|magazine',r'stapler|handle|staple'],
+  'moves':{1:{'cut':1},2:{'feed':1},3:{'driver_z':-1,'crown_z':-1},4:{'crown_z':-1,'bend':1},6:{'driver_z':1,'next_feed':1},7:{'cut':-1}},
+  'holds':{0:['feed','driver_z','bend'],1:['feed','driver_z','bend'],2:['driver_z','bend'],3:['bend'],5:['driver_z','crown_z','bend'],6:['crown_z','bend'],7:['driver_z','crown_z','bend']},
+  'visible':[(2,'magazine'),(2,'spring'),(3,'driver'),(4,'anvil'),(3,'input')]},
+ 'optical_fiber':{
+  'subjects':[r'cable|fibre|fiber|light',r'cutaway',r'pulse|light|core',r'pulse|light|cladding|reflect',r'pulse|core|light|receiver',r'pulse|light|path',r'pulse|receiver|indicator',r'cable|receiver|fibre|fiber'],
+  'moves':{1:{'cut':1},2:{'front':1},3:{'front':1},4:{'front':1,'output':1},7:{'cut':-1}},
+  'holds':{0:['front','output'],1:['front','output'],5:['front','output'],6:['front','output'],7:['front','output']},
+  'visible':[(3,'rays'),(3,'core'),(3,'cladding'),(5,'pulse'),(6,'detector')]}
+})
+
 def narration_errors(plan):
  kind=plan.get('mechanism');contract=CONTRACTS.get(kind);errors=[]
  if not contract:return errors
@@ -61,6 +80,18 @@ def narration_errors(plan):
   elif kind=='snap_thermostat':
    if i in (1,2,4,5,7) and re.search(r'\b(disc|pin|contact)\s+(snaps|moves|rises|lowers|bends|opens|closes|returns)\b',text):errors.append(f'beat {i}: the mechanism is held until its assigned snap/reset phase')
    if re.search(r'\b(melts|melting|burns|fire|digital processor)\b',text):errors.append(f'beat {i}: no melting, fire or digital controller is depicted')
+  elif kind=='zipper':
+   if re.search(r'\bteeth\s+(bend|stretch|melt|flex)\b',text):errors.append(f'beat {i}: metal teeth translate rigidly; only fabric tapes bend')
+   if i in (0,1,5,7) and re.search(r'\bslider\s+(moves|travels|reverses|advances|slides)\b',text):errors.append(f'beat {i}: slider is held during this explanation')
+   if re.search(r'automatic lock|locking pawl|waterproof',text):errors.append(f'beat {i}: no locking pawl or waterproof seal is depicted')
+  elif kind=='stapler':
+   if i<4 and re.search(r'\blegs?\s+(bend|bends|curl|curls|fold|folds)\b',text):errors.append(f'beat {i}: staple legs stay straight until the anvil-clinching phase')
+   if i in (5,6,7) and re.search(r'\bstaple\s+(bends|moves|descends|rises|returns)\b',text):errors.append(f'beat {i}: the clinched staple stays in the paper')
+   if re.search(r'\b(hand|motor|finger)\s+(presses|pushes|drives)\b',text):errors.append(f'beat {i}: manual input is illustrated with arrows; no hand or motor is shown')
+  elif kind=='optical_fiber':
+   if re.search(r'\b(perfect|lossless|every angle|all angles|no loss)\b',text):errors.append(f'beat {i}: this accepted ray model does not establish lossless guidance at every angle')
+   if re.search(r'critical angle[^.!?]{0,40}(?:from|to) the (?:axis|surface)\b',text):errors.append(f'beat {i}: incidence/critical angle is measured from the interface normal')
+   if re.search(r'\b(electrons|electricity|packets?|bits?)\b',text):errors.append(f'beat {i}: only guided light and a receiver indicator are depicted')
   elif kind=='clothespin':
    if i in (1,3,4,6,7) and re.search(r'\bjaws?\s+(open|opens|close|closes|move|moves|rotate|rotates)\b',text):errors.append(f'beat {i}: the jaws are held; no extra movement occurs here')
    if re.search(r'\bwood\s+(bends|flexes|stretches)\b',text):errors.append(f'beat {i}: the wooden members rotate rigidly; only the metal spring elastically deforms')
@@ -100,6 +131,13 @@ def verify_motion(kind,module,tl,out,plan=None):
     if p['powered'] and p['gap']>.001:errors.append('Thermostat lamp powered across an open gap')
    elif kind=='clothespin':
     if p['beat']>=5 and p['gap']<module.THICKNESS-1e-6:errors.append('Jaws passed through the inserted fabric')
+   elif kind=='stapler':
+    if p['bend']>1e-6 and p['crown_z']>module.CONTACT+1e-6:errors.append('Staple bends before touching its anvil')
+    for side in (-1,1):
+     if module.leg_points(p['crown_z'],side)[-1][2]<module.ANVIL-1e-6:errors.append('Staple penetrated the anvil floor')
+   elif kind=='optical_fiber':
+    if math.pi/2-module.AXIAL<=module.CRITICAL:errors.append('Illustrated ray fails the total-internal-reflection condition')
+    if p['output'] and p['front']<.999:errors.append('Receiver activates before pulse arrival')
    elif kind=='combination_lock':
     if p['shackle']>0 and p['free']<.999:errors.append('Shackle lifted before all gates and locking tab cleared')
     if p['bar_z']<module.BAR_HIGH-1e-5 and not module.aligned(p['angles']):errors.append('Locking bar crossed an unaligned wheel rim')

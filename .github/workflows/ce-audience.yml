@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: [.github/workflows/ce-audience.yml]
+    paths: [.github/workflows/ce-audience.yml, studio_lib/audience.py, data/analytics/howitticks-vidiq.json]
 permissions:
   contents: write
 concurrency:

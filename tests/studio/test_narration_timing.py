@@ -25,6 +25,28 @@ class NarrationTimingTests(unittest.TestCase):
             self.assertEqual(result['motion_policy'],timing.VERSION)
             self.assertGreater(result['beats'][0]['motion_window'][1],15.)
 
+    def test_result_phrase_finishes_motion_before_trailing_explanation(self):
+        from studio_lib import combination_lock as lock
+        with tempfile.TemporaryDirectory() as folder:
+            voice=Path(folder)/'voice.wav';voice.write_bytes(b'engineering voice fixture')
+            say='The third wheel turns and the bar drops into its notch, freeing the raised shackle for release.'
+            plan={'mechanism':'combination_lock','motion_policy':timing.VERSION,'beats':[{'action':'third','say':say,'motion_cue':'third wheel'}]}
+            words=[{'text':word,'start':i*.3,'end':(i+1)*.3} for i,word in enumerate(say.split())]
+            beat=dict(plan['beats'][0],start=25.,end=32.,voice=str(voice),voice_duration=6.5)
+            tl={'beats':[beat]};timing.bind(plan,tl,folder,lambda p:words)
+            row=timing.require_bound(plan,tl,folder)['cues'][0]
+            self.assertEqual(row['completion_phrase'],'bar drops')
+            self.assertLess(beat['motion_window'][1],28.)
+            self.assertAlmostEqual(beat['motion_window'][1],row['completion_spoken_end']+.15)
+            # The production kinematics now put the spring-driven fence down by
+            # its spoken result, instead of waiting for unrelated trailing words.
+            beats=[{'start':i*6.,'end':(i+1)*6.} for i in range(8)]
+            beats[4].update(start=25.,end=32.,motion_window=beat['motion_window'])
+            self.assertAlmostEqual(lock.state(beat['motion_window'][1],{'beats':beats})['bar_z'],lock.BAR_LOW)
+            row['motion_window'][1]+=1
+            report=Path(folder)/'spoken-action-timing.json';data=json.loads(report.read_text());data['cues'][0]=row;report.write_text(json.dumps(data));beat['motion_window']=row['motion_window']
+            with self.assertRaisesRegex(ValueError,'completion'):timing.require_bound(plan,tl,folder)
+
     def test_missing_or_repeated_exact_phrase_holds(self):
         with tempfile.TemporaryDirectory() as folder:
             plan,tl,recognize=self.bind_fixture(folder)

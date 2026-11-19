@@ -82,6 +82,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           CE_SHARED_SERVICES: '1'
           CE_JOB_KIND: short
+          CE_AUTOMATIC_SLOT: ${{ github.event.inputs.automatic_slot }}
           CE_MAX_SECONDS: '480'
           CE_MAX_REQUESTS: '12'
           TOPIC_IN: ${{ github.event.inputs.topic }}
@@ -136,7 +137,7 @@ jobs:
           try: v = json.loads(p.read_text())
           except Exception: v = []
           spec = json.loads(Path('auto-scene.json').read_text())
-          v.append({'date': datetime.date.today().isoformat(), 'tag': sys.argv[1], 'title': sys.argv[2], 'video': sys.argv[3], 'topic': spec.get('topic'), 'topic_key': spec.get('topic_key')})
+          v.append({'date': datetime.date.today().isoformat(), 'tag': sys.argv[1], 'title': sys.argv[2], 'video': sys.argv[3], 'topic': spec.get('topic'), 'topic_key': spec.get('topic_key'), 'generation_origin':spec.get('generation_origin'), 'production_evidence':spec.get('production_evidence')})
           p.write_text(json.dumps(v, indent=1, ensure_ascii=False) + '\n')
           PY
           python3 -m studio_lib.durable_topics save-records

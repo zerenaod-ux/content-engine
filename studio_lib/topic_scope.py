@@ -15,7 +15,13 @@ def scope_error(topic,mechanism=None):
         elif re.search(r'relay',text):mechanism='electric_relay'
         elif re.search(r'thermostat|bimetal|snap.disc',text):mechanism='snap_thermostat'
         elif re.search(r'clothespin|clothes.peg',text):mechanism='clothespin'
+        elif re.search(r'zipper',text):mechanism='zipper'
+        elif re.search(r'stapler|stapling',text):mechanism='stapler'
+        elif re.search(r'optical fib|fiber.optic|fibre.optic',text):mechanism='optical_fiber'
     patterns={
+      'zipper':r'waterproof|coil zipper|automatic.lock|magnetic|invisible zipper|separating pin',
+      'stapler':r'electric|pneumatic|flat.clinch|tack(?:ing)?|staple gun|remove staple',
+      'optical_fiber':r'bend|curv|dispersion|wavelength|single.mode|wave optic|network protocol|packet|perfect transmission',
       'electric_relay':r'solid.state|latching|reed relay|contactor|arc suppression|flyback|transistor',
       'snap_thermostat':r'digital|microprocessor|refrigerant|wax|manual.reset|melt|thermal fuse',
       'clothespin':r'clothesline tension|plastic hinge|wind load|centrifugal',

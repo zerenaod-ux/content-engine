@@ -10,6 +10,7 @@ from studio_lib.topic_guard import duplicate
 POLICY='original-idea-and-visuals-v1'
 MEMORY='data/scenes/novelty-ledger.json'
 FAMILIES={
+ 'zipper':'interlocking_zipper','stapler':'staple_clinching','optical_fiber':'step_index_guidance',
  'electric_relay':'electromagnetic_relay','snap_thermostat':'snap_disc_switch','clothespin':'torsion_peg',
  'float_valve':'tank_float_control','combination_lock':'gated_padlock',
  'camera_iris':'optical_iris',
@@ -20,6 +21,9 @@ FAMILIES={
  'thermal_contact':'science_diagram','dna_pairing':'science_diagram','water_transfer':'science_diagram',
 }
 PATTERNS={
+ 'zipper':r'\b(zipper|zip fastener)\b',
+ 'stapler':r'\b(stapler|stapling|clinching anvil)\b',
+ 'optical_fiber':r'\b(optical fib(?:er|re)|fibre.optic|fiber.optic|total internal reflection)\b',
  'electric_relay':r'\brelay\b','snap_thermostat':r'\b(thermostat|bimetal|snap.disc)\b','clothespin':r'\b(clothespin|clothes.peg|clothes.pin)\b',
  'float_valve':r'\b(float valve|ballcock|tank.{0,30}float|float.{0,30}tank)\b',
  'combination_lock':r'\b(padlock|combination lock|tumbler wheel|locking bar)\b',

@@ -66,7 +66,7 @@ def prepare(topic_file):
 
 def emit_review_files(work):
     from studio_lib.quality_gate import require_seal
-    require_seal(work,'short')
+    sealed=require_seal(work,'short')
     work=Path(work);plan=json.loads((work/'director-plan.json').read_text());tl=json.loads((work/'timeline.json').read_text()) if (work/'timeline.json').exists() else None
     # Cached runs retain the measured timeline in the checkpoint, so the adapter
     # accepts a build-generated metadata copy written by the director as well.
@@ -76,6 +76,9 @@ def emit_review_files(work):
     emoji={'wind_turbine':' 💨','photovoltaic_cell':' 🌞','piston_pump':' 💧','bascule_bridge':' 🚢'}.get(plan['mechanism'],' ⚙️')
     title=plan['title'] if any(ord(c)>0x2500 for c in plan['title']) else plan['title'].rstrip('.')+emoji
     spec={'topic':Path('topic.txt').read_text().strip() if Path('topic.txt').exists() else plan['title'],'topic_key':signature(Path('topic.txt').read_text().strip() if Path('topic.txt').exists() else plan['title']),'mode':'tested-component','title':title,'mechanism':plan['mechanism'],'visual_family':novelty.identity('',plan['mechanism']),'novelty_policy':novelty.POLICY,'story_policy':plan.get('story_policy'),'voice':tl.get('voice'),'voice_policy':tl.get('voice_policy'),'duration':tl['duration'],'steps':[{'start':b['start'],'end':b['end'],'say':b['say'],'label':b['action']} for b in tl['beats']],'source':REGISTRY[plan['mechanism']]['source'],'owner_approved':False}
+    origin={'event':os.environ.get('GITHUB_EVENT_NAME'),'automatic_slot':os.environ.get('CE_AUTOMATIC_SLOT')=='true','run_id':os.environ.get('GITHUB_RUN_ID'),'attempt':int(os.environ.get('GITHUB_RUN_ATTEMPT','1')),'event_sha':os.environ.get('GITHUB_SHA'),'source_ref':os.environ.get('GITHUB_REF_NAME'),'manual_media_edits':False}
+    spec['generation_origin']=origin
+    spec['production_evidence']={'policy':'unattended-proof-v1','novelty_policy':novelty.POLICY,'width':sealed['width'],'height':sealed['height'],'duration':sealed['duration'],'media_sha256':sealed['hashes']['video.mp4'],'alignment_revision':json.loads((work/'spoken-action-timing.json').read_text()).get('alignment_revision') if (work/'spoken-action-timing.json').is_file() else None,'render_policy':plan.get('render_policy'),'voice':tl.get('voice'),'voice_policy':tl.get('voice_policy'),'errors':[],'owner_approved':False}
     Path('auto-scene.json').write_text(json.dumps(spec,indent=2));Path('evidence-report.json').write_text(json.dumps({'errors':[],'mode':'tested-component','semantic_verification':False,'owner_approved':False,'component_checks':checks,'story_checks':json.loads((work/'story-checks.json').read_text()) if (work/'story-checks.json').exists() else None,'causal_motion_checks':json.loads((work/'causal-motion-checks.json').read_text()) if (work/'causal-motion-checks.json').exists() else None},indent=2))
     Path('ce-checks.json').write_text(json.dumps({'verdict':'warn','reasons':['Tested component output requires owner visual and narration review; not automatically approved.'],'mechanism':plan['mechanism'],'owner_approved':False},indent=2))
     Path('voice-log.txt').write_text('Measured narration; provider '+str(tl.get('voice_provider','edge-tts'))+'; cached lines '+str(tl.get('cached_lines',0))+'; no manual generated-plan edits.\n')

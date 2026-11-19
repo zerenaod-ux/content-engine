@@ -30,3 +30,4 @@ jobs:
         run: |
           python -m studio_lib.recovery watch
           python -m studio_lib.factory_slots watch
+          python -m studio_lib.unattended

@@ -1,0 +1,13 @@
+{
+  "source_video_sha256": "5397fb1cb8a2d3f34d8d8f2b8f302de85fb2e33031e475291e0b94f1d70408be",
+  "actual_spoken_phrase": "bar drop",
+  "actual_phrase_window": [
+    29.104625999999996,
+    29.744625999999997
+  ],
+  "previous_bar_midpoint": 31.129348539269632,
+  "new_kinematic_bar_midpoint": 29.421892030015005,
+  "new_motion_end": 29.894625999999995,
+  "new_video_generated": false,
+  "scope": "Replay original measured words through updated timing and physical states, without changing or recreating existing media"
+}
