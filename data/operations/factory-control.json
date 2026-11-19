@@ -9,10 +9,10 @@
   "due_slots": 2,
   "ready_today": 5,
   "daily_target": 3,
-  "unused_visuals": 3,
+  "unused_visuals": 6,
   "should_build": false,
   "reason": "Daily output target already covered",
   "dispatches": 0,
   "requested_at": 0,
-  "checked_at": "2026-11-19T22:33:25.343816+00:00"
+  "checked_at": "2026-11-19T23:34:03.209652+00:00"
 }
