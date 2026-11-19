@@ -2,6 +2,7 @@
 import math
 import numpy as np
 from studio_lib.mesh import ease,ramp
+from studio_lib.narration_timing import progress,span_progress,event_started
 def cylinder_x(s,x,y,z,r,length,color):
     rings=[np.array([[x+dx,y+r*math.cos(a),z+r*math.sin(a)] for a in np.linspace(0,2*math.pi,20,endpoint=False)]) for dx in [-length/2,length/2]]
     s.face(rings[0],color);s.face(rings[1],tuple(min(255,int(c*1.1)) for c in color))
@@ -9,8 +10,8 @@ def cylinder_x(s,x,y,z,r,length,color):
 def phase(t,tl):
     beats=tl['beats'];i=min(7,next((i for i,b in enumerate(beats) if t<b['end']),7));b=beats[i];u=max(0,min(1,(t-b['start'])/(b['end']-b['start'])))
     if i<2:total=0.0
-    elif i in (2,3):total=.5*ease((t-beats[2]['start'])/(beats[3]['end']-beats[2]['start']))
-    elif i in (4,5):total=.5+.5*ease((t-beats[4]['start'])/(beats[5]['end']-beats[4]['start']))
+    elif i in (2,3):total=.5*ease(span_progress(t,beats,2,3))
+    elif i in (4,5):total=.5+.5*ease(span_progress(t,beats,4,5))
     else:total=1+(t-beats[6]['start'])/4
     q=total%1;cycles=math.floor(total)
     # q 0..0.5: withdrawal; q .5..1: compression.
@@ -21,9 +22,9 @@ def phase(t,tl):
     delivery_cycles=cycles+(0 if withdrawal else 1-fraction)
     # A normalized illustrative volume balance, not calibrated physical units.
     source_level=1.3-.23*intake_cycles;receiver_level=.25+.23*delivery_cycles
-    return {'beat':i,'q':q,'piston_x':pistonx,'intake':withdrawal and i>=2,'delivery':not withdrawal and i>=2,'chamber_length':1.6-pistonx,'source_level':source_level,'receiver_level':receiver_level,'chamber_fill':intake_cycles-delivery_cycles}
+    return {'beat':i,'q':q,'piston_x':pistonx,'intake':withdrawal and i>=2 and event_started(t,beats[2]),'delivery':not withdrawal and i>=2 and event_started(t,beats[4]),'chamber_length':1.6-pistonx,'source_level':source_level,'receiver_level':receiver_level,'chamber_fill':intake_cycles-delivery_cycles}
 def draw(s,t,tl,hidden=()):
-    p=phase(t,tl);px=p['piston_x'];cut=ramp(t,tl['beats'][1]['start']-.5,tl['beats'][1]['start']+1)
+    p=phase(t,tl);px=p['piston_x'];cut=ease(progress(t,tl['beats'][1]))*(1-ease(progress(t,tl['beats'][7]))) if tl.get('motion_policy') else ramp(t,tl['beats'][1]['start']-.5,tl['beats'][1]['start']+1)
     # Source and receiver reservoirs, open at the top.
     for x,waterlevel in [(-4.7,p['source_level']),(4.1,p['receiver_level'])]:
         s.box((x,0,.1),(1.45,1.5,.2),(181,199,201))
@@ -73,12 +74,12 @@ def draw(s,t,tl,hidden=()):
     return p
 
 # CLOSE_SHOTS (owner 2026-11-16): camera pushes in on the part each line talks about.
-SHOTS=[((-.3,0,2.1),1.15,.34),      # pump: whole system
+SHOTS=[((-.3,0,2.1),.85,.34),      # pump: whole connected system before the cutaway
        ((-.6,0,2.35),1.7,.40),      # cutaway: cylinder opens
        ((-.9,0,2.35),2.4,.45),      # suction: piston pulls back, chamber fills
        ((.3,-.25,1.9),2.7,.35),     # inlet: inlet flap valve opens
        ((-.4,0,2.35),2.4,.30),      # compression: piston pushes in
        ((.3,-.25,2.8),2.7,.35),     # outlet: outlet flap valve opens
        ((1.6,0,2.2),1.4,.30),       # repeat: water reaching the receiving tank
-       ((-.3,0,2.1),1.15,.30)]       # payoff: whole system
+       ((-.3,0,2.1),.85,.30)]       # payoff: whole system
 def shot(i):return SHOTS[min(i,7)]

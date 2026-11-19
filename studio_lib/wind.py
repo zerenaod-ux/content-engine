@@ -2,23 +2,25 @@
 import math
 import numpy as np
 from studio_lib.mesh import ramp
+from studio_lib.narration_timing import progress,event_started
+from studio_lib.mesh import ease
 
 def pose(t,tl):
     i=min(7,next((i for i,b in enumerate(tl['beats']) if t<b['end']),7))
-    cut=ramp(t,tl['beats'][3]['start']-.8,tl['beats'][3]['start']+1.2)*(1-ramp(t,tl['beats'][7]['start'],tl['beats'][7]['start']+1.2))
-    return dict(beat=i,angle=t*.85,shaft_angle=t*.85,magnet_angle=t*.85,cut=cut,closed=i>=6)
+    cut=ease(progress(t,tl['beats'][3]))*(1-ease(progress(t,tl['beats'][7]))) if tl.get('motion_policy') else ramp(t,tl['beats'][3]['start']-.8,tl['beats'][3]['start']+1.2)*(1-ramp(t,tl['beats'][7]['start'],tl['beats'][7]['start']+1.2))
+    return dict(beat=i,angle=t*.85,shaft_angle=t*.85,magnet_angle=t*.85,cut=cut,closed=i>=6 and event_started(t,tl['beats'][6]))
 
 # CLOSE_SHOTS (owner 2026-11-16): the camera pushes in tight on the exact part each line talks about.
 # (target, zoom, azimuth) per action beat; azimuth ~1.2 looks along the shaft from the side so the blades do not hide the generator.
 CX,CZ=-.65,5.1
-SHOTS=[((.9,0,3.3),1.4,.35),      # turbine: whole machine + lamp
+SHOTS=[((.9,0,3.3),.95,.35),      # turbine: entire rotor, tower and lamp
        ((CX,-1.5,CZ),2.3,.55),       # wind: blades in moving air
        ((CX,-1.5,CZ),4.2,.75),       # rotor: hub, blade roots, pitch bearings
        ((CX,-.35,CZ),4.4,1.2),      # shaft: main bearing + brake disc inside the opened nacelle
        ((CX,.35,CZ),5.6,1.05),       # generator: magnets inside the copper coils
        ((CX+.55,.4,CZ+.35),8.0,.95), # induction: one coil as magnets sweep past it
        ((4.15,-.35,1.2),3.9,.42),   # load: switch closes, lamp lights
-       ((.9,0,3.3),1.4,.30)]       # payoff: whole machine again
+       ((.9,0,3.3),.95,.30)]       # payoff: whole machine again
 def shot(i):return SHOTS[min(i,7)]
 
 def wire_point(q):
@@ -57,7 +59,7 @@ def draw(s,t,tl,hidden=()):
             ang=k*math.pi/6
             near=max(math.cos(ang-(a+j*math.pi/4)) for j in range(8))
             glow=on*max(0,(near-.93)/.07)
-            col=tuple(int(c+(g-c)*glow) for c,g in zip((199,127,70),(255,226,120)))
+            col=(199,127,70)  # Copper does not literally flash as magnets pass.
             x,z=cx+.83*math.sin(ang),cz+.83*math.cos(ang)
             s.cylinder((x,.55,z),.075,.62,(96,104,110),n=8)
             for yy in (.38,.5,.62):s.cylinder((x,yy,z),.145,.09,col,n=12)

@@ -2,10 +2,12 @@
 import math
 import numpy as np
 from studio_lib.mesh import ease,ramp
+from studio_lib.narration_timing import progress,event_started
 def pose(t,tl):
     i=min(7,next((i for i,b in enumerate(tl['beats']) if t<b['end']),7));b=tl['beats'][i];u=max(0,min(1,(t-b['start'])/(b['end']-b['start'])))
-    cut=ramp(t,tl['beats'][2]['start']-.7,tl['beats'][2]['start']+1)*(1-ramp(t,tl['beats'][7]['start'],tl['beats'][7]['start']+1.2))
-    return {'beat':i,'u':u,'cut':cut,'powered':i>=5,'light':i>=1,'current':i>=5}
+    cut=ease(progress(t,tl['beats'][2]))*(1-ease(progress(t,tl['beats'][7]))) if tl.get('motion_policy') else ramp(t,tl['beats'][2]['start']-.7,tl['beats'][2]['start']+1)*(1-ramp(t,tl['beats'][7]['start'],tl['beats'][7]['start']+1.2))
+    closed=i>=5 and event_started(t,tl['beats'][5])
+    return {'beat':i,'u':u,'cut':cut,'powered':closed,'light':i>=1,'current':closed}
 def dot(s,p,r,color):s.cylinder(p,r,r*.7,color,n=12)
 def circuit_point(q):
     # From top contact to the lamp and back to bottom contact: a closed path.
@@ -65,12 +67,12 @@ def draw(s,t,tl,hidden=()):
     return p
 
 # CLOSE_SHOTS (owner 2026-11-16): camera pushes in on the part each line talks about.
-SHOTS=[((-.1,0,2.15),1.5,.30),      # panel
+SHOTS=[((-.1,0,2.15),1.05,.30),      # whole panel, physical wires and lamp
        ((-.2,0,2.8),1.9,.35),       # light arriving
        ((-.6,-.9,2.2),4.0,.25),     # absorb: enlarged cell layers
        ((-.2,-.94,2.15),5.5,.20),   # separate: electrons and holes split
        ((-2.0,-.6,2.3),3.5,.45),   # contacts: metal contact + wire
        ((-3.0,-1.2,1.8),3.8,.35), # circuit: switch closes
        ((3.0,-1.3,1.9),3.4,.30),  # load: lamp lights
-       ((-.1,0,2.1),1.5,.30)]       # payoff
+       ((-.1,0,2.1),1.05,.30)]       # payoff
 def shot(i):return SHOTS[min(i,7)]

@@ -3,9 +3,11 @@ import importlib.util,json,os,subprocess,sys
 from pathlib import Path
 from studio_lib.quality_gate import seal,require_seal
 from studio_lib.cinema.review import review
+from studio_lib.narration_timing import require_bound
 
 def verify(plan,timeline,out,audit):
  out=Path(out);evidence=out/'narration-critique.json'
+ require_bound(plan,timeline,out,verify_audio=True)
  if not evidence.exists() or json.loads(evidence.read_text()).get('errors')!=[]:
   if audit(plan,out):raise ValueError('Daily narration/action audit failed')
  (out/'plan.json').write_text(json.dumps(plan,indent=2))

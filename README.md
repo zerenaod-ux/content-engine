@@ -258,3 +258,5 @@ The first cloud verification of these scope guards was cancelled during an unbou
 ### How It Ticks explanation style
 
 Future generated explanations use a shared [causal visual storytelling policy](docs/CAUSAL-VISUAL-STORYTELLING.md): concrete problem, supported solution, visible consequence and payoff. Wording stays original. Every narrated physical action must match the supplied visible action for that beat; camera movement alone is not mechanism evidence. The rule is connected to daily component, cinematic, original full-format and experimental scene writers. This authoring change does not claim a new rendered quality pass.
+
+Daily How It Ticks transition timing and whole-object framing are implemented in the [spoken-action update](docs/SPOKEN-ACTION-TIMING.md). Real media verification remains pending; this is not a new video quality pass or arbitrary-topic support.

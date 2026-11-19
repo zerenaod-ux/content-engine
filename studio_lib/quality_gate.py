@@ -3,6 +3,16 @@ import hashlib,json,math
 from pathlib import Path
 FILES=('video.mp4','audio-review.json','narration-critique.json')
 
+def evidence_names(root,kind):
+    root=Path(root);plan_name='accepted-plan.json' if kind=='original_full' else 'plan.json'
+    names=list(FILES)+[plan_name]
+    if (root/plan_name).is_file():
+        plan=json.loads((root/plan_name).read_text())
+        if plan.get('motion_policy')=='spoken-action-v1':
+            names+=['timeline.json','spoken-action-timing.json','component-checks.json']
+            if plan.get('mechanism')!='bascule_bridge':names.append('overview-checks.json')
+    return names
+
 def file_hash(path):
     digest=hashlib.sha256()
     with Path(path).open('rb') as stream:
@@ -24,6 +34,19 @@ def check_evidence(root,kind):
     if isinstance(audio.get('independent_asr_word_error_rate'),(int,float)) and audio['independent_asr_word_error_rate']>.25:errors.append('Narration transcription mismatch')
     if isinstance(audio.get('integrated_lufs'),(int,float)) and not -20<=audio['integrated_lufs']<=-12:errors.append('Loudness outside range')
     if isinstance(audio.get('true_peak_dbfs'),(int,float)) and audio['true_peak_dbfs']>-.8:errors.append('Audio peaks outside range')
+    plan_name='accepted-plan.json' if kind=='original_full' else 'plan.json'
+    if (root/plan_name).is_file():
+        plan=json.loads((root/plan_name).read_text())
+        if plan.get('motion_policy')=='spoken-action-v1':
+            try:
+                from studio_lib.narration_timing import require_bound
+                require_bound(plan,json.loads((root/'timeline.json').read_text()),root)
+                if json.loads((root/'component-checks.json').read_text()).get('errors')!=[]:
+                    errors.append('Component motion/visibility evidence failed')
+                if plan.get('mechanism')!='bascule_bridge':
+                    samples=json.loads((root/'overview-checks.json').read_text()).get('samples',[])
+                    if len(samples)!=4 or any(s.get('errors')!=[] for s in samples):errors.append('Whole-object framing evidence failed')
+            except (OSError,ValueError,KeyError,TypeError) as e:errors.append('Spoken-action evidence unavailable or invalid: '+str(e))
     return errors
 
 def seal(root,kind,media):
@@ -34,7 +57,7 @@ def seal(root,kind,media):
     if kind=='original_full' and width*9!=height*16:errors.append('Full video is not native landscape')
     if kind=='short' and height<=width:errors.append('Short video is not portrait')
     if errors:raise ValueError('Complete-output gate rejected: '+str(errors))
-    names=list(FILES)+(['accepted-plan.json'] if kind=='original_full' else ['plan.json'])
+    names=evidence_names(root,kind)
     if not all((root/name).is_file() for name in names):raise ValueError('Generated plan evidence missing')
     report={'format':kind,'errors':[],'duration':duration,'width':width,'height':height,'checks':'encoded media, audio, narration contract, file integrity','hashes':{name:file_hash(root/name) for name in names},'owner_approved':False,'human_visual_review_completed':False,'human_listening_completed':False}
     (root/'quality-gate.json').write_text(json.dumps(report,indent=2));return report
@@ -44,7 +67,7 @@ def require_seal(root,kind):
     if not path.is_file():raise ValueError('Complete-output evidence is missing; delivery refused')
     report=json.loads(path.read_text())
     if report.get('format')!=kind or report.get('errors')!=[] or report.get('owner_approved') is not False:raise ValueError('Complete-output evidence invalid')
-    required=list(FILES)+(['accepted-plan.json'] if kind=='original_full' else ['plan.json'])
+    required=evidence_names(root,kind)
     hashes=report.get('hashes',{})
     if set(hashes)!=set(required):raise ValueError('Incomplete evidence manifest')
     for name,expected in hashes.items():

@@ -21,7 +21,7 @@ REGISTRY={
   'load':'The depicted low-voltage DC lamp lights when supplied electrical power. Individual electrons do not travel instantaneously from the Sun to the bulb.',
   'payoff':'Return to the panel and lit load: photovoltaic conversion turns absorbed light energy into electrical energy. Not all light becomes electricity.'},'source':'https://www.energy.gov/cmei/systems/how-does-solar-energy-work'},
  'piston_pump':{'description':'Single-acting reciprocating piston water pump with inlet and outlet check valves; not a centrifugal pump or engine','actions':['pump','cutaway','suction','inlet','compression','outlet','repeat','payoff'],'facts':{
-  'pump':'The piston and rod move horizontally along the cylinder axis, never upward or downward. A piston water pump moves water from a source reservoir to a receiving reservoir using mechanical input.',
+  'pump':'Show the complete connected source, pump and receiving reservoir first. The piston is held still for this introduction; actual withdrawal starts in suction. Later the piston and rod move horizontally along the cylinder axis, never vertically. Mechanical input transfers water.',
   'cutaway':'Reveal a simplified cutaway: piston and rod inside a cylinder, with separate inlet and outlet check valves. No combustion.',
   'suction':'Piston withdraws, chamber volume increases and pressure falls. The pressure difference draws water from the source; the piston does not create water.',
   'inlet':'During intake the inlet check valve opens and the outlet check valve stays closed, preventing reverse flow from the outlet.',

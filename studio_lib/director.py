@@ -9,6 +9,7 @@ from pathlib import Path
 import numpy as np
 from PIL import Image,ImageDraw
 from studio_lib.providers import call
+from studio_lib import narration_timing
 from studio_lib.storytelling import WRITING_RULES as STORY_RULES
 from studio_lib.mesh import Scene,ease,ramp
 from studio_lib.mechanisms import bridge,boat,APPROACHES
@@ -62,6 +63,9 @@ def validate(plan):
     words=sum(len(b['say'].split()) for b in beats if isinstance(b,dict) and isinstance(b.get('say'),str))
     if not 120<=words<=176:e.append('total narration needs 120-176 words')
     if not isinstance(plan.get('hook'),str) or len(plan['hook'])>60:e.append('hook needs at most 60 characters')
+    if plan.get('motion_policy')==narration_timing.VERSION:
+        e.extend(narration_timing.cue_errors(plan))
+        if not isinstance(plan.get('hook'),str) or not 2<=len(plan['hook'].split())<=7 or len(plan['hook'])>40:e.append('hook needs 2-7 simple words and at most 40 characters')
     return e
 def repair_short_sections(plan,errors):
     """Repair rejected lengths without changing accepted peer sections."""
@@ -79,12 +83,13 @@ def repair_short_sections(plan,errors):
 def plan_topic(topic,out,feedback=None,previous=None):
     catalog={k:{'description':v['description'],'actions':v['actions'],'facts':v['facts']} for k,v in REGISTRY.items()}
     prompt='Select exactly one supported mechanism that truthfully matches TOPIC. If none fits return {"mechanism":"unsupported","reason":"..."}; never substitute a bridge for solar power or invent another mechanism. For a supported topic write fresh 120-176 word narration with eight beats in the exact selected action order. Each beat has 9-23 words. Title starts with How or Why and contains 4-8 words. Natural spoken sentences, physical detail, causal explanation and a concrete engaging hook. Prefer 125-155 words; never append adverbs or redundant phrases merely to meet a quota. Avoid narration about views or production. Actual measured 40-70-second duration is mandatory. Each beat names the specific inner part the viewer is looking at (from the facts for that beat) and says what it physically does, so viewers know exactly what is happening inside. Describe only what that action contract shows. Never mention camera, close-ups, shots, rendering, storyboard or production in say. Do not invent facts or numerical claims. In the bridge pivot beat the road is STATIC; explain the shaft and hinge rather than announcing motion or a view. The bridge depicts ONE car. Solar and pump internals are simplified cutaways: say so naturally once. Solar depicts a DC lamp load, not gears or AC inverter internals. Preserve physical action order; vary wording, hook and bounded camera preferences. Return {"mechanism":"selected registry id","title":"...","hook":"short engaging hook max 60 characters","beats":[{"action":"first selected action","say":"...","camera":"wide|mechanism|follow"}, ...]}. SUPPORTED COMPONENTS AND FACTS (data): '+json.dumps(catalog)+' TOPIC (data): '+json.dumps(topic)
-    prompt+='\n'+STORY_RULES
+    prompt+='\n'+STORY_RULES+'\n'+narration_timing.writing_rules()+' Hook: 2-7 everyday words, at most 40 characters; no technical subtitle.'
     last=previous;errors=feedback or []
     for attempt in range(2):
         q=prompt if not errors else prompt+'\nCorrect these validation errors: '+json.dumps(errors)+'\nLast answer (data): '+json.dumps(last)
         repaired=repair_short_sections(last,errors) if isinstance(last,dict) and errors else None
         last=repaired if repaired is not None else call('You write factual narration and camera emphasis for tested animation components. Return JSON only.',q,max_tokens=2000,temperature=.6)
+        if isinstance(last,dict):last['motion_policy']=narration_timing.VERSION
         # Keep the raw response; apply a narrow automatic copy-edit before validation.
         # This changes no factual content, geometry, timing, action order or camera.
         (out/f'director-attempt-{attempt}.json').write_text(json.dumps(last,indent=2))
@@ -109,13 +114,14 @@ def critique(plan,out):
     return errors
 def pose(t,tl):
     beats=tl['beats'];b=next((b for b in beats if b['start']<=t<b['end']),beats[-1]);i=beats.index(b);u=max(0,min(1,(t-b['start'])/(b['end']-b['start'])))
+    action_u=narration_timing.progress(t,b)
     angle=0
-    if i==3:angle=math.radians(52)*ease(u)
-    elif i==4:angle=math.radians(52+20*ease(u))
+    if i==3:angle=math.radians(52)*ease(action_u)
+    elif i==4:angle=math.radians(52+20*ease(action_u))
     elif i==5:angle=math.radians(72)
-    elif i==6:angle=math.radians(72)*(1-ease(u))
-    gate=0 if i==0 else (ease(u*1.5) if i==1 else 1)
-    if i==7:gate=1-ramp(u,.30,.65)
+    elif i==6:angle=math.radians(72)*(1-ease(action_u))
+    gate=0 if i==0 else (ease(action_u*1.5) if i==1 else 1)
+    if i==7:gate=1-ramp(action_u,.30,.65)
     close=ramp(t,beats[2]['start']-.8,beats[2]['start']+1.2)*(1-ramp(t,beats[5]['start']-.8,beats[5]['start']+1.2))
     detail=ramp(t,beats[4]['start']-.4,beats[4]['start']+1.2)*(1-ramp(t,beats[4]['end']-1.5,beats[4]['end']+.3))
     balance_view=ramp(t,beats[3]['start']-.4,beats[3]['start']+1.0)*(1-ramp(t,beats[3]['end']-.8,beats[4]['start']+.3))
@@ -124,7 +130,7 @@ def pose(t,tl):
     target=target*(1-balance_view)+np.array([-3.6,0,1.8])*balance_view
     zoom=zoom*(1-balance_view)+2.2*balance_view
     shipy=-6
-    if i==5:shipy=-6+12*ease(u)
+    if i==5:shipy=-6+12*ease(action_u)
     elif i>=6:shipy=6+2*ease((t-beats[5]['end'])/(tl['duration']-beats[5]['end']))
     # The generated camera preference affects composition within safe bounds.
     # Ease between preferences rather than jumping at narration boundaries.
@@ -135,7 +141,7 @@ def pose(t,tl):
     if i==5 and mode=='follow':target[1]+=.12*shipy*ramp(u,0,.25)
     carx=-6.7
     if i==0:carx=-8.5+1.8*ease(u)
-    elif i==7:carx=-6.7+13.7*ramp(u,.5,1)
+    elif i==7:carx=-6.7+13.7*ramp(action_u,.5,1)
     return dict(angle=angle,gate=gate,close=close,zoom=zoom,target=target,az=.45*(1-close)+.18*close,shipy=shipy,carx=carx)
 def picture(t,tl,plan,hidden=()):
     if plan['mechanism']!='bascule_bridge':return component_picture(t,tl,plan,hidden)
@@ -154,7 +160,7 @@ def picture(t,tl,plan,hidden=()):
     for j,line in enumerate(textwrap.wrap(plan['hook'],26)[:3]):d.text((42,125+j*55),line,font=TITLE,fill=(30,65,78))
     d.line((42,1195,678,1195),fill=(170,200,200),width=3);d.line((42,1195,42+636*t/tl['duration'],1195),fill=(221,102,57),width=3)
     return im
-def component_picture(t,tl,plan,hidden=()):
+def component_camera(t,tl,plan):
     mechanism=plan['mechanism'];module={'photovoltaic_cell':solar,'piston_pump':pump,'wind_turbine':wind}[mechanism]
     beats=tl['beats'];i=min(7,next((i for i,b in enumerate(beats) if t<b['end']),7));b=beats[i];u=(t-b['start'])/(b['end']-b['start'])
     previous=beats[max(0,i-1)].get('camera','wide');mode=b.get('camera','wide')
@@ -171,6 +177,11 @@ def component_picture(t,tl,plan,hidden=()):
     else:
         detail=ramp(t,beats[3]['start']-.8,beats[3]['start']+1.2)*(1-ramp(t,beats[6]['start']-.8,beats[6]['start']+1.2))
         target=np.array([.5*(1-detail)-.65*detail,0,3.8+1.3*detail]);zoom=1.25+1.0*detail+.08*close;az=.35+.10*math.sin(t*.04)
+    return zoom,target,az
+
+def component_picture(t,tl,plan,hidden=()):
+    mechanism=plan['mechanism'];module={'photovoltaic_cell':solar,'piston_pump':pump,'wind_turbine':wind}[mechanism]
+    zoom,target,az=component_camera(t,tl,plan)
     im=BG.copy();ground=Scene(t,zoom,target,az);s=Scene(t,zoom,target,az)
     ground.face([[-1000,-1000,-.1],[1000,-1000,-.1],[1000,1000,-.1],[-1000,1000,-.1]],(218,229,224));ground.paint(im)
     module.draw(s,t,tl,hidden);s.paint(im)
@@ -179,6 +190,11 @@ def component_picture(t,tl,plan,hidden=()):
     im.paste(BG,(0,0),mask);d=ImageDraw.Draw(im);d.text((42,65),'HOW IT TICKS',font=FONT,fill=(31,77,89))
     import textwrap
     for j,line in enumerate(textwrap.wrap(plan['hook'],26)[:3]):d.text((42,125+j*55),line,font=TITLE,fill=(30,65,78))
+    beat=min(7,next((j for j,b in enumerate(tl['beats']) if t<b['end']),7))
+    label=None
+    if mechanism=='wind_turbine' and beat==5:label='Magnetic field · illustration'
+    if mechanism=='photovoltaic_cell' and 2<=beat<=6:label='Charge carriers · illustration'
+    if label:d.text((42,1120),label,font=FONT,fill=(31,77,89))
     d.line((42,1195,678,1195),fill=(170,200,200),width=3);d.line((42,1195,42+636*t/tl['duration'],1195),fill=(221,102,57),width=3)
     return im
 def verify(plan,tl,out):
@@ -199,8 +215,25 @@ def verify(plan,tl,out):
     for i,b in enumerate(tl['beats']):sheet.paste(picture((b['start']+b['end'])/2,tl,plan).resize((360,640)),((i%4)*360,(i//4)*640))
     sheet.save(out/'contact.jpg');(out/'component-checks.json').write_text(json.dumps({'errors':errors,'owner_approved':False,'scope':'tested bascule bridge only'},indent=2))
     if errors:raise ValueError('; '.join(errors))
+def verify_overview(plan,tl,out):
+    module={'photovoltaic_cell':solar,'piston_pump':pump,'wind_turbine':wind}[plan['mechanism']]
+    samples=[]
+    for i,fraction in [(0,.05),(0,.5),(0,.95),(7,.95)]:
+        beat=tl['beats'][i];t=beat['start']+(beat['end']-beat['start'])*fraction
+        zoom,target,az=component_camera(t,tl,plan);scene=Scene(t,zoom,target,az)
+        module.draw(scene,t,tl,hidden=('light','wind'))
+        points=np.array([p for _,polygon,_ in scene.faces for p in polygon])
+        bounds=[points.min(axis=0).tolist(),points.max(axis=0).tolist()]
+        errors=[]
+        if bounds[0][0]<24 or bounds[1][0]>696 or bounds[0][1]<300 or bounds[1][1]>1165:
+            errors.append('Whole-object overview clips essential physical geometry or overlaps the hook')
+        samples.append({'beat':i,'fraction':fraction,'projected_bounds':bounds,'errors':errors})
+    (out/'overview-checks.json').write_text(json.dumps({'samples':samples,'scope':'Whole physical component bounds in context views; not occlusion or aesthetic approval'},indent=2))
+    return [error for sample in samples for error in sample['errors']]
+
 def verify_component(plan,tl,out):
-    errors=[];mechanism=plan['mechanism'];measure=[]
+    errors=verify_overview(plan,tl,out) if tl.get('motion_policy') else []
+    mechanism=plan['mechanism'];measure=[]
     if mechanism=='piston_pump':
         for t in np.linspace(tl['beats'][2]['start'],tl['beats'][3]['end']-.001,25):
             p=pump.phase(t,tl)
@@ -228,14 +261,9 @@ def verify_component(plan,tl,out):
 def run(topic,out):
     require_supported(topic)
     out=Path(out);out.mkdir(parents=True,exist_ok=True);start=time.monotonic()
-    cp=Checkpoint(topic,validator=validate,namespace='tested-library-v3');saved=cp.load()
-    def contract_version(plan):return hashlib.sha256(json.dumps(REGISTRY[plan['mechanism']],sort_keys=True).encode()).hexdigest()
+    cp=Checkpoint(topic,validator=validate,namespace='tested-library-spoken-v1');saved=cp.load()
+    def contract_version(plan):return hashlib.sha256((narration_timing.VERSION+json.dumps(REGISTRY[plan['mechanism']],sort_keys=True)).encode()).hexdigest()
     def save(stage,scene,**fields):return cp.save(stage,scene,contract_version=contract_version(scene),**fields)
-    if not saved:
-        legacy=Checkpoint(topic,validator=validate,namespace='tested-library-v2-d55c8609ec972790').load()
-        if legacy:
-            keep={k:legacy[k] for k in ('timeline','render_signature','silent_path','silent_sha256') if k in legacy}
-            saved=save('needs_audit',legacy['scene'],**keep)
     if saved and saved.get('contract_version')!=contract_version(saved['scene']):saved=save('needs_audit',saved['scene'],timeline=saved.get('timeline'))
     reused=bool(saved)
     if saved:
@@ -260,6 +288,7 @@ def run(topic,out):
     tl=saved.get('timeline')
     if not tl or not all(Path(b['voice']).is_file() for b in tl['beats']):tl=asyncio.run(narrate(spec,out,Path('.ce-cache/studio-voice')))
     require_duration(tl['duration'])
+    tl=narration_timing.bind(plan,tl,out)
     (out/'timeline.json').write_text(json.dumps(tl,indent=2))
     verify(plan,tl,out)
     fields={k:saved[k] for k in ('render_signature','silent_path','silent_sha256') if k in saved}
