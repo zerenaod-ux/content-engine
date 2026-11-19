@@ -1,26 +1,27 @@
 {
-  "checked_at": "2026-11-19T18:27:10.931994+00:00",
+  "checked_at": "2026-11-19T19:53:05.140320+00:00",
   "read_only": true,
   "complete": true,
   "platforms": {
     "youtube": {
-      "returned_posts": 6,
+      "returned_posts": 7,
       "statuses": {
+        "error": 1,
         "scheduled": 2,
         "sent": 4
       }
     },
     "instagram": {
-      "returned_posts": 6,
+      "returned_posts": 7,
       "statuses": {
-        "scheduled": 2,
+        "scheduled": 3,
         "sent": 4
       }
     },
     "tiktok": {
-      "returned_posts": 6,
+      "returned_posts": 7,
       "statuses": {
-        "scheduled": 2,
+        "scheduled": 3,
         "sent": 4
       }
     }
@@ -176,7 +177,7 @@
       "platforms": {
         "youtube": [
           {
-            "status": "scheduled",
+            "status": "error",
             "due": "2026-11-19T18:30:00.000Z"
           }
         ],
@@ -214,6 +215,30 @@
           {
             "status": "scheduled",
             "due": "2026-11-20T02:30:00.000Z"
+          }
+        ]
+      }
+    },
+    {
+      "tag": "ce-20261119-1727",
+      "title": "How the Iris Aperture Controls Exposure Brightness \u2699\ufe0f",
+      "platforms": {
+        "youtube": [
+          {
+            "status": "scheduled",
+            "due": "2026-11-20T18:30:00.000Z"
+          }
+        ],
+        "instagram": [
+          {
+            "status": "scheduled",
+            "due": "2026-11-21T01:00:00.000Z"
+          }
+        ],
+        "tiktok": [
+          {
+            "status": "scheduled",
+            "due": "2026-11-21T00:00:00.000Z"
           }
         ]
       }
