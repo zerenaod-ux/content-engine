@@ -5,7 +5,7 @@ import numpy as np
 from PIL import Image,ImageDraw,ImageFont
 from studio_lib.mesh import Scene,ease
 W,H=720,1280
-FONTPATH=next(p for p in ['/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf','/System/Library/Fonts/Supplemental/Arial.ttf'] if Path(p).exists())
+FONTPATH=next((p for p in ['/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf','/usr/share/fonts/truetype/liberation2/LiberationSans-Regular.ttf','/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf','/System/Library/Fonts/Supplemental/Arial.ttf'] if Path(p).exists()),'DejaVuSans.ttf')
 FONT=ImageFont.truetype(FONTPATH,22);TITLE=ImageFont.truetype(FONTPATH,43)
 BG=Image.fromarray(np.broadcast_to(np.linspace([245,246,233],[201,225,225],H,dtype=np.uint8)[:,None,:],(H,W,3)).copy())
 def sample(keys,phase,default):
