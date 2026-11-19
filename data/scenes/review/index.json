@@ -630,7 +630,20 @@
    "ready_for_future_publish": true,
    "record": "saved/ce-20261119-1727/44602638409-1.json",
    "history": []
+  },
+  {
+   "tag": "ce-20261119-2047",
+   "title": "How a Float Valve Prevents Overfilling ⚙️",
+   "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@48ec2c5e98bf48f1467b9106af1bdfd00582a8ac/videos/ce-20261119-2047.mp4",
+   "folder": "saved",
+   "issue_number": 60,
+   "issue_url": "https://github.com/zerenaod-ux/content-engine/issues/60",
+   "reviewed_at": "2026-11-19T21:35:51.748642+00:00",
+   "publishing_enabled": false,
+   "ready_for_future_publish": true,
+   "record": "saved/ce-20261119-2047/44620288449-1.json",
+   "history": []
   }
  ],
- "updated_at": "2026-11-19T19:51:47.643425+00:00"
+ "updated_at": "2026-11-19T21:35:51.748642+00:00"
 }
