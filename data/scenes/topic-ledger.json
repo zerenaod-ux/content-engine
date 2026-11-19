@@ -97,5 +97,11 @@
     "topic_key": "bascule bearing bridge during friction lift reduces trunnion",
     "owner": "44532230515",
     "state": "reserved"
+  },
+  {
+    "topic": "Why the road barriers close before the bridge begins to lift",
+    "topic_key": "barriers before begins bridge close lift road",
+    "owner": "44533440191",
+    "state": "reserved"
   }
 ]
