@@ -37,9 +37,9 @@
       "run_id": "44576248575",
       "attempt": 1,
       "kind": "daily-short",
-      "stage": "render",
-      "label": "Rendering animation",
-      "updated_at": "2026-11-19T17:23:39.464062+00:00",
+      "stage": "audio",
+      "label": "Checking finished audio",
+      "updated_at": "2026-11-19T17:27:02.572556+00:00",
       "source_branch": "main",
       "owner_approved": false,
       "state": "running"
