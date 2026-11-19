@@ -1,27 +1,27 @@
 {
-  "checked_at": "2026-11-19T20:45:01.512158+00:00",
+  "checked_at": "2026-11-19T21:37:04.418873+00:00",
   "read_only": true,
   "complete": true,
   "platforms": {
     "youtube": {
-      "returned_posts": 7,
+      "returned_posts": 8,
       "statuses": {
         "error": 1,
-        "scheduled": 2,
+        "scheduled": 3,
         "sent": 4
       }
     },
     "instagram": {
-      "returned_posts": 7,
+      "returned_posts": 8,
       "statuses": {
-        "scheduled": 3,
+        "scheduled": 4,
         "sent": 4
       }
     },
     "tiktok": {
-      "returned_posts": 7,
+      "returned_posts": 8,
       "statuses": {
-        "scheduled": 3,
+        "scheduled": 4,
         "sent": 4
       }
     }
@@ -242,6 +242,30 @@
           }
         ]
       }
+    },
+    {
+      "tag": "ce-20261119-2047",
+      "title": "How a Float Valve Prevents Overfilling \u2699\ufe0f",
+      "platforms": {
+        "youtube": [
+          {
+            "status": "scheduled",
+            "due": "2026-11-20T22:30:00.000Z"
+          }
+        ],
+        "instagram": [
+          {
+            "status": "scheduled",
+            "due": "2026-11-21T03:00:00.000Z"
+          }
+        ],
+        "tiktok": [
+          {
+            "status": "scheduled",
+            "due": "2026-11-21T02:30:00.000Z"
+          }
+        ]
+      }
     }
   ],
   "timezone": "America/Chicago",
@@ -269,16 +293,16 @@
         "source_updated_at": "2026-11-19T00:26:23.848Z"
       },
       "instagram": {
-        "views": 265.0,
+        "views": 522.0,
         "reactions": 3.0,
         "reported_posts": 4,
-        "source_updated_at": "2026-11-17T20:24:56.448Z"
+        "source_updated_at": "2026-11-19T21:08:03.256Z"
       },
       "tiktok": {
-        "views": 1313.0,
+        "views": 1345.0,
         "reactions": 90.0,
         "reported_posts": 4,
-        "source_updated_at": "2026-11-19T13:11:05.322Z"
+        "source_updated_at": "2026-11-19T21:12:08.471Z"
       }
     },
     "scope": "recent 20 published posts",
