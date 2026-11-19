@@ -1,3 +1,3 @@
 resume 44607841613
 causal-capability-proof
-Continue the same unfinished system-selected tank project after 215 cloud checks pass. Retain valid model-written sections, repair held-state wording from current facts, use measured pacing and the approved fixed narrator, and preserve original novelty ownership. No completed video exists for this project; never recreate an encoded video. Studio delivery requires all evidence gates.
+Continue the original unfinished tank project with the valid-narration/stale-cue repair-order fix. All 217 cloud checks passed. Preserve the original topic and fixed narrator, use accepted model-written sections and measured pacing, and never regenerate a completed encoded video. Deliver the first output only after causal motion, visibility and media evidence pass.
