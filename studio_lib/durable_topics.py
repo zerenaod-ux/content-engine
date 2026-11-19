@@ -31,7 +31,7 @@ def refresh_history():
         if path in PATHS:baseline[path]=data
     BASE.write_text(json.dumps(baseline))
 
-def reserve_remote(topic,owner):
+def reserve_remote(topic,owner,mechanism=None):
     for attempt in range(6):
         ledger,sha=rows(LEDGER,False)
         complete=[]
@@ -43,7 +43,11 @@ def reserve_remote(topic,owner):
         if reason:raise ValueError(reason)
         if prior:
             Path(LEDGER).write_text(json.dumps(ledger,indent=2)+'\n');return
-        ledger.append({'topic':topic,'topic_key':signature(topic),'owner':str(owner),'state':'reserved'})
+        row={'topic':topic,'topic_key':signature(topic),'owner':str(owner),'state':'reserved'}
+        if mechanism:
+            from studio_lib.novelty import identity
+            row.update(mechanism=mechanism,visual_family=identity(topic,mechanism))
+        ledger.append(row)
         try:
             write_document(LEDGER,ledger,sha,'Reserve unique daily topic without git rebase')
             Path(LEDGER).write_text(json.dumps(ledger,indent=2)+'\n');return

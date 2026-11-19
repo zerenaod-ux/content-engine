@@ -26,8 +26,21 @@ def choose_topic(history_path=Path('data/scenes/history.json')):
         reason=scope_error(answer['topic'],answer['mechanism']) or novelty.reason(answer['topic'],answer['mechanism'],rows,os.environ.get('GITHUB_RUN_ID'))
         if reason:
             errors.append({'topic':answer['topic'],'reason':reason});continue
-        Path('idea.json').write_text(json.dumps({'topic':answer['topic'],'topic_key':signature(answer['topic']),'category':'tested mechanism','subject':answer['mechanism'],'keywords':[]},indent=2));return answer['topic']
+        Path('idea.json').write_text(json.dumps({'topic':answer['topic'],'topic_key':signature(answer['topic']),'category':'tested mechanism','subject':answer['mechanism'],'selected_by_system':True,'selection_owner':os.environ.get('GITHUB_RUN_ID'),'keywords':[]},indent=2));return answer['topic']
     raise ValueError('No non-repeating supported topic survived the full-history checks')
+
+def selected_mechanism(topic):
+    owner=os.environ.get('GITHUB_RUN_ID')
+    if not owner:return None
+    p=Path('idea.json')
+    if p.exists():
+        d=json.loads(p.read_text())
+        if d.get('selected_by_system') is True and str(d.get('selection_owner'))==str(owner) and d.get('topic')==topic and d.get('subject') in REGISTRY:return d['subject']
+    p=Path('data/scenes/topic-ledger.json')
+    if p.exists():
+        matches=[r for r in json.loads(p.read_text()) if str(r.get('owner'))==str(owner) and r.get('topic')==topic and r.get('mechanism') in REGISTRY]
+        if len(matches)==1:return matches[0]['mechanism']
+    return None
 
 def prepare(topic_file):
     if durable.enabled():durable.refresh_history()
@@ -42,8 +55,11 @@ def prepare(topic_file):
         owned=[r for r in json.loads(ledger.read_text()) if str(r.get('owner'))==str(os.environ.get('GITHUB_RUN_ID'))] if ledger.exists() else []
         topic=owned[-1]['topic'] if owned else choose_topic()
     require_supported(topic)
-    novelty.require_new(topic,owner=owner)
-    if durable.enabled():durable.reserve_remote(topic,owner)
+    mechanism=selected_mechanism(topic)
+    novelty.require_new(topic,mechanism,owner=owner)
+    if durable.enabled():
+        if mechanism:durable.reserve_remote(topic,owner,mechanism=mechanism)
+        else:durable.reserve_remote(topic,owner)
     else:reserve(topic,owner=owner)
     topic_file.write_text(topic+'\n')
     return topic
@@ -72,7 +88,10 @@ def build(topic_file,out,work=Path('component-output/production')):
     require_supported(topic)
     require_new(topic,owner=durable.reservation_owner(topic))
     try:
-        run(topic,work);spec=emit_review_files(work);shutil.copyfile(work/'video.mp4',out)
+        mechanism=selected_mechanism(topic)
+        if mechanism:run(topic,work,mechanism=mechanism)
+        else:run(topic,work)
+        spec=emit_review_files(work);shutil.copyfile(work/'video.mp4',out)
         with Path('writer-log.txt').open('a') as f:f.write('tested component completed: '+spec['title']+'; owner review pending\n')
         return spec
     except Exception as e:

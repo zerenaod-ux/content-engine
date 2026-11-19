@@ -15,12 +15,14 @@ from pathlib import Path
 VERSION = 'spoken-action-v1'
 ALIGNMENT_REVISION = 'phrase-through-sentence-v2'
 TRANSITIONS = {
+    'camera_iris': {'cutaway','close','open','payoff'},
     'bascule_bridge': {'stop', 'balance', 'pass', 'lower', 'resume'},
     'photovoltaic_cell': {'absorb', 'circuit', 'payoff'},
     'piston_pump': {'cutaway', 'suction', 'compression', 'payoff'},
     'wind_turbine': {'shaft', 'load', 'payoff'},
 }
 ANCHORS = {
+    'camera_iris': {'cutaway':r'cutaway', 'close':r'(?:ring|blades|iris|opening|aperture)[^.!?;,]{0,30}?\b(?:turn\w*|pivot\w*|rotat\w*|clos\w*|narrow\w*|shrink\w*)', 'open':r'(?:ring|blades|iris|opening|aperture)[^.!?;,]{0,30}?\b(?:revers\w*|open\w*|widen\w*|pivot\w*|rotat\w*)', 'payoff':r'camera|aperture|opening'},
     'bascule_bridge': {
         'stop': r'(?:barriers?|gates?)[^.!?;,]{0,28}?\b(?:clos\w*|lower\w*|shut\w*)',
         'balance': r'(?:road|span|bridge)[^.!?;,]{0,24}?\b(?:ris\w*|lift\w*|rais\w*)|counterweight[^.!?;,]{0,24}?\b(?:swing\w*|descend\w*|drop\w*)',
@@ -189,6 +191,7 @@ def bind(plan, timeline, out, transcribe=None):
             # action inside this beat and leave cameras on their original clock.
             start=max(beat['start'],spoken_start-.35)
             end=min(beat['end'],beat['start']+.08+float(beat['voice_duration'])+.05)
+            if plan.get('mechanism')=='camera_iris' and planned['action']=='cutaway':end=min(beat['end'],max(spoken_end+.1,start+.9))
             if end-start<.35:raise ValueError('Speech cue leaves no safe action interval')
             row={'key':key,'beat':i,'action':planned['action'],'phrase':planned['motion_cue'],
                  'audio_sha256':audio_hash,'spoken_start':spoken_start,'spoken_end':spoken_end,

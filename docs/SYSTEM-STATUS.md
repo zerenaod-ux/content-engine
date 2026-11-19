@@ -1,4 +1,6 @@
 # How It Ticks — current verified status
+
+**Optical iris expansion (November 19):** reusable whole-camera, internal pivoted blades/control ring, illustrative light transmission and sensor exposure are implemented. Local geometry and visibility checks pass. Cloud generation and exact video inspection are pending; no new finished video is claimed. Permanent no-repeat protection remains enforced. See [component scope and evidence](OPTICAL-IRIS.md).
 Updated November 17, 2026 (America/Chicago). This page supersedes older dated status claims; historical README entries are retained.
 
 ## Live system

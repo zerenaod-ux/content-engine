@@ -10,6 +10,7 @@ from studio_lib.topic_guard import duplicate
 POLICY='original-idea-and-visuals-v1'
 MEMORY='data/scenes/novelty-ledger.json'
 FAMILIES={
+ 'camera_iris':'optical_iris',
  'bascule_bridge':'bascule_bridge', 'photovoltaic_cell':'photovoltaic_cell',
  'piston_pump':'piston_pump', 'wind_turbine':'rotary_generator', 'hand_generator':'rotary_generator',
  'rack_pinion':'mechanism_bench','lead_screw':'mechanism_bench','cam_follower':'mechanism_bench',
@@ -17,6 +18,7 @@ FAMILIES={
  'thermal_contact':'science_diagram','dna_pairing':'science_diagram','water_transfer':'science_diagram',
 }
 PATTERNS={
+ 'camera_iris':r'\b(camera|lens)\b.{0,60}\b(aperture|iris|diaphragm)\b|\b(aperture|iris)\b.{0,60}\b(camera|lens)\b',
  'bascule_bridge':r'\b(bascule|drawbridge|bridge|trunnion)\b',
  'photovoltaic_cell':r'\b(solar|photovoltaic)\b',
  'piston_pump':r'\b(piston pump|pump|pumping)\b',

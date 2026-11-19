@@ -14,10 +14,10 @@ def unit(a): return a/np.linalg.norm(a)
 
 class Scene:
     """A tiny perspective mesh renderer; all assets remain local and reusable."""
-    def __init__(self,t,zoom,target,azimuth):
+    def __init__(self,t,zoom,target,azimuth,elevation=10):
         self.t=t; self.faces=[]; self.lines=[]; self.gear_marks=[]
         self.target=np.array(target,dtype=float)
-        self.eye=self.target+np.array([math.sin(azimuth)*16,-math.cos(azimuth)*16,10])/zoom
+        self.eye=self.target+np.array([math.sin(azimuth)*16,-math.cos(azimuth)*16,elevation])/zoom
         self.forward=unit(self.target-self.eye)
         self.right=unit(np.cross(self.forward,[0,0,1])); self.up=np.cross(self.right,self.forward)
     def project(self,points):

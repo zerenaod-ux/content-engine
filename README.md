@@ -1,5 +1,7 @@
 # How It Ticks (formerly "Content Engine")
 
+**Optical iris expansion (November 19):** reusable whole-camera, internal pivoted blades/control ring, illustrative light transmission and sensor exposure are implemented. Local geometry and visibility checks pass. Cloud generation and exact video inspection are pending; no new finished video is claimed. Permanent no-repeat protection remains enforced. See [component scope and evidence](docs/OPTICAL-IRIS.md).
+
 **Current production rule:** create only a new idea with an unused visual setup. Previously created, reserved, scheduled, published, skipped or deleted videos stay in permanent history. Renaming, changing format, compiling shorts or rendering a corrected copy does not qualify. If no unused supported visuals remain, hold generation. See [the permanent originality policy](docs/PERMANENT-ORIGINALITY.md).
 
 ## Latest verified state — November 18

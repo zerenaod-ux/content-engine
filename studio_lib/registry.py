@@ -43,3 +43,18 @@ REGISTRY['wind_turbine']={
   'load':'The demonstration switch closes and a small illustrative lamp lights. Moving markers indicate an electrical path, not literal giant particles. This is not a grid-connection diagram; no rectifier or inverter internals are depicted.',
   'payoff':'The same turbine keeps turning as the nacelle cover returns. Wind kinetic energy becomes mechanical rotation and then electrical energy, with losses; no claim of perfect conversion.'},
  'source':'https://www.energy.gov/cmei/systems/how-do-wind-turbines-work'}
+
+REGISTRY['camera_iris']={
+ 'description':'A complete camera body and representative lens iris with seven rigid pivoted blades, fixed pivots, moving control pins, a coupled rotating guide ring, illustrative light paths and a fixed-setting exposure illustration. Not autofocus, depth of field, shutter mechanics or a manufacturer-specific optical simulation.',
+ 'actions':['camera','light','cutaway','close','small','open','exposure','payoff'],
+ 'facts':{
+  'camera':'Show a recognizable complete camera and lens first. The iris starts open and held. Introduce controlling how much light reaches the sensor, not a shutter or focus question.',
+  'light':'Gold moving markers illustrate incoming light, not visible giant photons. Light travels along the lens axis. No focusing, refraction, image inversion or background blur is simulated.',
+  'cutaway':'A simplified cutaway lifts the outer lens cap and camera top to expose the same iris assembly. Name the overlapping metal blades and fixed pivot pins. It is an explanatory reveal, not the camera disassembling during normal use. The aperture is still open and held.',
+  'close':'The common copper-colored control ring turns. Its curved slots guide the moving blade pins; the blades pivot together about their stationary pins and narrow the central opening. No electric motor internals or independent sliding blades are shown.',
+  'small':'Hold the small opening. Fewer illustrated light paths pass through; paths blocked by the blades terminate before the blade plane. The blades do not absorb every ray: the center stays open. The fixed-setting exposure illustration is dimmer.',
+  'open':'The ring reverses its rotation; all seven blades pivot outward together and widen the opening. The fixed pivots stay still, and each moving pin stays on its guide slot. No gears or focus movement are shown.',
+  'exposure':'With a wider opening more light passes. The checker-pattern sensor illustration is brighter with the same representative exposure time and gain. It is an exposure illustration, not simulated image formation or an actual photograph. Do not claim more sharpness, more zoom, clearer detail or doubled light.',
+  'payoff':'Return to the same complete camera as the cutaway covers return. The iris stays open. Resolve how the coordinated blades regulate light. Do not say a new closing cycle or shutter action begins.'},
+ 'source':'https://www.nikonusa.com/learn-and-explore/c/tips-and-techniques/a-basic-look-at-the-basics-of-exposure',
+ 'mechanism_source':'https://patents.google.com/patent/US3132576A/en'}
