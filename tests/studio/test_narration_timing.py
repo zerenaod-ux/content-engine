@@ -3,7 +3,8 @@ from pathlib import Path
 from unittest.mock import Mock
 from studio_lib import narration_timing as timing
 from studio_lib import solar,pump,wind
-from studio_lib.director import pose,verify_overview
+from studio_lib.director import pose,verify_overview,verify_component
+from studio_lib.topic_scope import scope_error
 from unittest.mock import patch
 from test_components import plan_fixture,timeline
 
@@ -30,6 +31,19 @@ class NarrationTimingTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError,'uniquely'):timing.bind(plan,tl,folder,recognize)
             plan['beats'][0]['say']='bridge rises then bridge rises'
             self.assertTrue(timing.cue_errors(plan))
+
+    def test_cue_function_word_repair_preserves_every_spoken_word(self):
+        original={'beats':[{'say':'The span seats, barriers lift, and the car crosses.','motion_cue':'span seats and barriers lift'}]}
+        fixed=timing.normalize_cues(original)
+        self.assertEqual(fixed['beats'][0]['say'],original['beats'][0]['say'])
+        self.assertEqual(fixed['beats'][0]['motion_cue'],'span seats, barriers lift')
+        self.assertEqual(original['beats'][0]['motion_cue'],'span seats and barriers lift')
+        original['beats'][0]['motion_cue']='span does not seat'
+        self.assertEqual(timing.normalize_cues(original),original)
+
+    def test_unshown_bearing_friction_topic_is_rejected_before_media(self):
+        self.assertTrue(scope_error('How the trunnion bearing reduces friction during a bascule bridge lift','bascule_bridge'))
+        self.assertFalse(scope_error('How a bascule bridge counterweight balances the moving road','bascule_bridge'))
 
     def test_resume_reuses_only_matching_audio_and_phrase(self):
         with tempfile.TemporaryDirectory() as folder:
@@ -88,5 +102,12 @@ class NarrationTimingTests(unittest.TestCase):
     def test_cropped_overview_is_rejected(self):
         with tempfile.TemporaryDirectory() as folder,patch('studio_lib.solar.shot',return_value=((0,0,2),8,.3)):
             self.assertTrue(verify_overview({'mechanism':'photovoltaic_cell'},timeline(),Path(folder)))
+
+    def test_component_audit_uses_delayed_stroke_cues(self):
+        from test_library import fixture,timeline as component_timeline
+        plan=fixture('piston_pump');tl=component_timeline('piston_pump');tl['motion_policy']=timing.VERSION
+        for i in (1,2,4,7):
+            beat=tl['beats'][i];beat['motion_window']=[beat['start']+1.5,beat['end']-.2]
+        with tempfile.TemporaryDirectory() as folder:verify_component(plan,tl,Path(folder))
 
 if __name__=='__main__':unittest.main()

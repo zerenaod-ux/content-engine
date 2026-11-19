@@ -93,7 +93,7 @@ def plan_topic(topic,out,feedback=None,previous=None):
         # Keep the raw response; apply a narrow automatic copy-edit before validation.
         # This changes no factual content, geometry, timing, action order or camera.
         (out/f'director-attempt-{attempt}.json').write_text(json.dumps(last,indent=2))
-        last=normalize_narration(last)
+        last=narration_timing.normalize_cues(normalize_narration(last))
         (out/f'director-normalized-{attempt}.json').write_text(json.dumps(last,indent=2));errors=validate(last)
         if not errors:return last
         if last.get('mechanism')=='unsupported':break
@@ -235,10 +235,12 @@ def verify_component(plan,tl,out):
     errors=verify_overview(plan,tl,out) if tl.get('motion_policy') else []
     mechanism=plan['mechanism'];measure=[]
     if mechanism=='piston_pump':
-        for t in np.linspace(tl['beats'][2]['start'],tl['beats'][3]['end']-.001,25):
+        intake_start=tl['beats'][2].get('motion_window',[tl['beats'][2]['start']])[0]
+        delivery_start=tl['beats'][4].get('motion_window',[tl['beats'][4]['start']])[0]
+        for t in np.linspace(intake_start+.001,tl['beats'][3]['end']-.001,25):
             p=pump.phase(t,tl)
             if not p['intake'] or p['delivery']:errors.append('incorrect inlet/outlet state during intake')
-        for t in np.linspace(tl['beats'][4]['start']+.001,tl['beats'][5]['end']-.001,25):
+        for t in np.linspace(delivery_start+.001,tl['beats'][5]['end']-.001,25):
             p=pump.phase(t,tl)
             if not p['delivery'] or p['intake']:errors.append('incorrect inlet/outlet state during delivery')
         evidence=[(3,'piston'),(5,'flow')]

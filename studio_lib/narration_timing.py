@@ -48,6 +48,33 @@ def cue_errors(plan):
             errors.append(f'beat {i}: motion_cue must occur exactly once in its narration')
     return errors
 
+def normalize_cues(plan):
+    """Repair cue pointers only by selecting existing words, never narration.
+
+    A model sometimes adds 'and' to a cue where the spoken text has a comma.
+    Only function-word differences are allowed; all content words and negations
+    must remain identical. Ambiguous anchors are left invalid for the gate.
+    """
+    result=json.loads(json.dumps(plan));ignored={'and','the','a','an'}
+    core=lambda words:[w for w in words if w not in ignored]
+    for beat in result.get('beats',[]):
+        cue=beat.get('motion_cue');say=beat.get('say')
+        if not isinstance(cue,str) or not isinstance(say,str):continue
+        matches=list(re.finditer(r"[a-z]+(?:'[a-z]+)?",say.lower().replace('’',"'")))
+        words=[m.group() for m in matches];needle=tokens(cue)
+        if locations(words,needle):continue
+        content=core(needle)
+        if len(content)<2:continue
+        candidates=[]
+        for size in range(max(2,len(needle)-2),min(10,len(needle)+2)+1):
+            for i in range(len(words)-size+1):
+                if core(words[i:i+size])==content:
+                    candidates.append((size,i,say[matches[i].start():matches[i+size-1].end()]))
+        if candidates:
+            shortest=min(c[0] for c in candidates);best=[c for c in candidates if c[0]==shortest]
+            if len(best)==1:beat['motion_cue']=best[0][2]
+    return result
+
 def progress(t, beat):
     a,b=beat.get('motion_window', [beat['start'],beat['end']])
     return max(0.,min(1.,(t-a)/(b-a)))

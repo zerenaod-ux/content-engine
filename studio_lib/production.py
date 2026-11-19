@@ -17,7 +17,7 @@ def choose_topic(history_path=Path('data/scenes/history.json')):
     errors=[]
     for attempt in range(4):
         answer=call('Choose a factual explainer topic within a supported animation component. Return JSON only.',
-            'Choose a genuinely new explanatory question, not a rewording of an earlier video. Do not invent a new mechanism. Return {"topic":"short topic","mechanism":"supported id"}. Supported scopes: '+json.dumps({k:v['description'] for k,v in REGISTRY.items()})+' Recent examples (data): '+json.dumps(prior[-60:])+' Rejected candidates (data): '+json.dumps(errors),max_tokens=600,temperature=.6)
+            'Choose a genuinely new explanatory question, not a rewording of an earlier video. Its causal change must be visible in the supplied action facts. Never choose bearing friction/lubrication, measured efficiency, or another unshown detail. Do not invent a new mechanism. Return {"topic":"short topic","mechanism":"supported id"}. Supported scopes: '+json.dumps({k:{'description':v['description'],'actions':v['facts']} for k,v in REGISTRY.items()})+' Recent examples (data): '+json.dumps(prior[-60:])+' Rejected candidates (data): '+json.dumps(errors),max_tokens=600,temperature=.6)
         if answer.get('mechanism') not in REGISTRY or not isinstance(answer.get('topic'),str) or not 4<=len(answer['topic'].split())<=18:raise ValueError('no valid supported automatic topic was selected')
         reason=scope_error(answer['topic'],answer['mechanism']) or duplicate(answer['topic'],rows)
         if reason:
