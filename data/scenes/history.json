@@ -797,5 +797,19 @@
     "failed": true,
     "record_run": "44609483544",
     "record_attempt": "1"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "tested component rejected: director rejected: beat 7: do not speak visual production directions to the audience\n",
+    "date": "2026-11-19",
+    "topic": "How a float valve stops a tank from overfilling",
+    "title": "",
+    "subject": "",
+    "keywords": [],
+    "category": "",
+    "failed": true,
+    "record_run": "44610876894",
+    "record_attempt": "1",
+    "owner": "44607841613"
   }
 ]
