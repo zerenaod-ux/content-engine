@@ -13,3 +13,9 @@ Scope limit: the shared writing style applies to daily, cinematic and original f
 ## Cloud checks and actual automatic proof
 
 Cloud verification 44532030449 passed 158 checks: 23 full-format, 54 cinematic, 30 recovery and 51 daily-component checks. New regular scene-factory run 44532230515 has started from `auto`; no topic, narration or video was hand authored. It uses the production daily path and manual Studio approval. Topic selection, speech alignment, final media inspection and successful Studio delivery have not yet been verified for this run. Doodles remains independent; its generation was not changed or polled for this How It Ticks proof.
+
+## First real attempt and targeted correction
+
+Run 44532230515 stopped before voice/rendering: the model inserted an extra conjunction in a timing cue that was not present in its spoken sentence. It also selected a bearing-friction question outside the depicted action scope. No video or Studio card was produced. Cue normalization now selects only existing spoken words, preserves all content words/negations, and chooses the actual moving subject/action instead of a static neighboring clause. Unsupported bearing-friction topics are rejected before media; topic selection now receives the complete supported action facts. The pump state auditor now samples its measured stroke window rather than assuming movement begins at section start.
+
+Latest cloud verification 44533295714 passed all suites, including 55 daily-component checks (15 timing/framing regressions). New automatic regular-path proof 44533440191 is active. The system selects the topic; generated speech/video are not hand edited. This is not a completed-render or Studio-delivery claim. Doodles is left independent, with no further active polling for this task.
