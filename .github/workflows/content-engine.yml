@@ -42,7 +42,7 @@ jobs:
         run: |
           ffmpeg -version | head -n 1
           ffprobe -version | head -n 1
-          python -c "from PIL import ImageFont; ImageFont.truetype('DejaVuSans.ttf',24)"
+          python -c "from studio_lib.render import FONT; assert FONT is not None"
       - name: Restore accepted stages and narration
         uses: actions/cache/restore@v4
         with:
