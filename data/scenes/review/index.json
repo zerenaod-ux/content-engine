@@ -591,7 +591,20 @@
    "ready_for_future_publish": true,
    "record": "saved/ce-20261119-0327/44456270111-1.json",
    "history": []
+  },
+  {
+   "tag": "ce-20261119-0839",
+   "title": "Why a Trunnion Pivot Enables Smooth Bridge Lifting 🚢",
+   "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@6cde6da938d8c4930a1ec306ca5e5640f6c58f2a/videos/ce-20261119-0839.mp4",
+   "folder": "delete",
+   "issue_number": 57,
+   "issue_url": "https://github.com/zerenaod-ux/content-engine/issues/57",
+   "reviewed_at": "2026-11-19T12:14:07.264804+00:00",
+   "publishing_enabled": false,
+   "ready_for_future_publish": false,
+   "record": "delete/ce-20261119-0839/44521931451-1.json",
+   "history": []
   }
  ],
- "updated_at": "2026-11-19T04:09:04.089311+00:00"
+ "updated_at": "2026-11-19T12:14:07.264804+00:00"
 }
