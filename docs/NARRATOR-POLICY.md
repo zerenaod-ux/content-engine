@@ -9,3 +9,9 @@ Delivery varies by story role: curious opening, slower focused reveal, a quicker
 No existing video is changed or regenerated. A separate four-line audio-only engineering fixture verifies the voice can synthesize, decode and use one identity across delivery roles; it creates no topic, MP4, review card, approval or publication. Listening preference still needs owner judgment.
 
 Voice availability reference: https://huggingface.co/hexgrad/Kokoro-82M/blob/main/VOICES.md
+
+## Verification
+
+Shared cloud verification [44603295259](https://github.com/zerenaod-ux/content-engine/actions/runs/44603295259) passed 190 tests: 23 full-format, 55 cinematic, 32 recovery, 80 daily/component. Identity, stale-cache rejection, same-speaker recovery, measured word timing and absence of a different-speaker fallback are covered.
+
+The first audio fixture generated the fixed voice but lacked the finishing executable. The fixture now provisions that executable explicitly. Voice-only proof [44603568366](https://github.com/zerenaod-ux/content-engine/actions/runs/44603568366) succeeded and produced a 15.50-second preview, with `am_fenrir` used for all four roles. The downloaded preview fully decodes. No video/topic, Studio card, approval or publication was created. Direct human listening and owner preference are not claimed verified.
