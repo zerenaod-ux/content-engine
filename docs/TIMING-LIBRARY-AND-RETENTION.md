@@ -25,7 +25,9 @@ The owner connected the How It Ticks account through vidIQ. The connected channe
 
 A non-secret owner-authorized snapshot is in `data/analytics/howitticks-vidiq.json`. The writer may use a fresh identity-verified report with at least two videos of 100+ views as bounded evidence for concise hooks/reveals. It cannot change facts, supported actions, novelty, the fixed narrator or duration gates. Preferred opening/reveal length is 9–13 words, with detail in later steps and the original total-length bounds retained. The data is not narrated to viewers and does not claim a proven winning style.
 
-Writing guidance expires after 48 hours instead of using stale or foreign-channel statistics. Direct scheduled YouTube API refresh credentials are not configured. A daily vidIQ refresh would use five credits per day; the user's refresh preference is pending and no recurring credit spending was enabled. Current connection and retrieval work; automated ongoing refresh is a separate pending choice. Doodles generation, review decisions and publishing settings are untouched.
+Writing guidance expires after 48 hours instead of using stale or foreign-channel statistics. Direct scheduled YouTube API refresh credentials are not configured. The owner selected request-only refresh. No recurring vidIQ credit spending or automatic YouTube analytics requests are enabled. Current connection and retrieval work; future refresh occurs only on the owner's request. Doodles generation, review decisions and publishing settings are untouched.
 
 ## Verification status
 Local regression and engineering checks pass; cloud verification and live status read-backs are pending deployment. New assemblies have not yet appeared in a finished generated film. Keep that distinct from tested geometry and integration.
+
+Retention preference confirmed: refresh only when requested. Saved evidence expires for writing guidance after 48 hours. No daily vidIQ credit spending or recurring Codex reminder was enabled.

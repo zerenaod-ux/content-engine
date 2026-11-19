@@ -296,3 +296,5 @@ Final verification: [236 cloud checks passed](https://github.com/zerenaod-ux/con
 
 ## 2026-11-19 timing, library and connected retention follow-up
 Future-action timing now uses measured result phrases. Zipper, stapler and optical-fibre assemblies extend the unused library to six families. Real How It Ticks retention is connected through vidIQ and captured with freshness limits. An unattended-proof recorder distinguishes a completed real scheduled delivery from manual tests or quota holds; that next real run is still pending. See [implementation, evidence and remaining boundaries](docs/TIMING-LIBRARY-AND-RETENTION.md). Cloud verification is pending; existing media and owner decisions are preserved.
+
+Retention preference confirmed: refresh only when requested. Saved evidence expires for writing guidance after 48 hours. No daily vidIQ credit spending or recurring Codex reminder was enabled.

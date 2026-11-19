@@ -23,6 +23,7 @@ jobs:
       - name: Verify channel identity and collect delayed retention
         env:
           GH_TOKEN: ${{ github.token }}
+          CE_RETENTION_REFRESH: ${{ github.event_name == 'workflow_dispatch' && 'requested' || 'snapshot_only' }}
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
           YT_REFRESH_TOKEN_HOWITTICKS: ${{ secrets.YT_REFRESH_TOKEN_HOWITTICKS }}

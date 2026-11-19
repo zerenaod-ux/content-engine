@@ -1,0 +1,6 @@
+{
+  "refresh": "on_request",
+  "recurring_vidiq_credit_use": false,
+  "snapshot_max_age_hours": 48,
+  "note": "Owner chose request-only analytics refresh. Automatic checks may read existing reports; expired data cannot guide writing."
+}
