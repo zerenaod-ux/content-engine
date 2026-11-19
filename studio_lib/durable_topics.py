@@ -3,7 +3,7 @@
 Concurrent stage/lease writers must never require a JSON git-rebase merge.
 Only newly produced local records are merged into the latest remote document.
 """
-import argparse,copy,json,os,time,urllib.error
+import argparse,copy,json,os,time,urllib.error,base64,re
 from pathlib import Path
 from studio_lib.service_queue import read_document,write_document,github
 from studio_lib.topic_guard import duplicate,signature
@@ -63,7 +63,17 @@ def resume_topic(source_run):
     owned=[r for r in ledger if str(r.get('owner'))==str(source_run)]
     if len(owned)!=1:raise ValueError('Original daily reservation is missing or ambiguous')
     topic=owned[0]['topic']
-    Path('daily-resume-provenance.json').write_text(json.dumps({'source_run':str(source_run),'current_run':os.environ['GITHUB_RUN_ID'],'topic':topic,'new_topic_count':0}))
+    related={str(source_run),os.environ['GITHUB_RUN_ID']}
+    history_rows,_=rows(PATHS[0])
+    for row in history_rows:
+        candidate=str(row.get('record_run',''))
+        if row.get('failed') is not True or row.get('topic')!=topic or not candidate.isdigit() or candidate in related:continue
+        child=github('actions/runs/'+candidate)
+        if child.get('head_branch')!='main' or child.get('name')!='scene-factory' or child.get('conclusion')!='failure':continue
+        trigger=github('contents/publish/run.trigger?ref='+str(child['head_sha']))
+        first=base64.b64decode(trigger['content']).decode().splitlines()[0].strip()
+        if first=='resume '+str(source_run):related.add(candidate)
+    Path('daily-resume-provenance.json').write_text(json.dumps({'source_run':str(source_run),'current_run':os.environ['GITHUB_RUN_ID'],'topic':topic,'verified_recovery_run_ids':sorted(related),'new_topic_count':0}))
     return topic,str(source_run)
 
 def reservation_owner(topic):
@@ -85,6 +95,7 @@ def save_records():
         for row in changes:
             row.setdefault('record_run',os.environ['GITHUB_RUN_ID'])
             row.setdefault('record_attempt',os.environ.get('GITHUB_RUN_ATTEMPT','1'))
+            if row.get('failed') is True and row.get('topic'):row.setdefault('owner',reservation_owner(row['topic']))
         for attempt in range(6):
             remote,sha=rows(path)
             identities={r.get('tag') or key(r) for r in remote}

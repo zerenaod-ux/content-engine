@@ -52,6 +52,7 @@ def validate(plan):
         if b.get('action')!=actions[i]:e.append('preserve the engine safety order')
         if not isinstance(b.get('say'),str) or not 9<=len(b['say'].split())<=23:e.append(f'beat {i}: narration needs 9-23 words')
         text=b.get('say','').lower() if isinstance(b.get('say'),str) else ''
+        if re.search(r'\b(show the (?:whole|complete)|return to the (?:whole|complete))\b',text):e.append(f'beat {i}: do not speak visual production directions to the audience')
         if re.search(r'\b(render|renderer|shot|storyboard|animation engine|close.up|view shifts)\b',text):e.append(f'beat {i}: speak about the mechanism, never production or camera instructions')
         if re.search(r'\bcamera\b',text) and (mechanism!='camera_iris' or re.search(r'camera (?:moves|pans|zooms|view)',text)):e.append(f'beat {i}: do not narrate production or camera instructions')
         if mechanism=='bascule_bridge' and i==2 and re.search(r'\b(begins?|starts?|starting|beginning)\b',text):e.append('pivot beat is a static close-up; opening does not begin until the balance beat')
@@ -91,7 +92,7 @@ def repair_short_sections(plan,errors):
             result['beats'][i]['say']=row['say'];seen.add(i)
     return result
 
-def repair_causal_sections(plan,issues):
+def repair_causal_sections(plan,issues,diagnostic=None):
     """Ask the writer to repair only rejected sections; retain valid peers."""
     if not isinstance(plan,dict) or plan.get('mechanism') not in action_contracts.CONTRACTS:return None
     beats=plan.get('beats')
@@ -105,13 +106,17 @@ def repair_causal_sections(plan,issues):
         indices.update(available[:4])
     indices=sorted(i for i in indices if 0<=i<8)[:4]
     if not indices:return None
-    request={'issues':issues,'sections':[{'index':i,'action':beats[i]['action'],'say':beats[i].get('say',''),'facts':REGISTRY[plan['mechanism']]['facts'][beats[i]['action']]} for i in indices]}
-    answer=call('Repair only these requested narration sections with fresh everyday words. Return JSON {"sections":[{"index":integer,"say":"9-23 words"}]}. Preserve the action and facts. The first section, if index zero, is a concrete question ending with ?. Keep all accepted sections untouched. '+STORY_RULES,json.dumps(request),max_tokens=1600,temperature=.25)
+    request={'issues':issues,'sections':[{'index':i,'action':beats[i]['action'],'state_only':(plan['mechanism']=='float_valve' and i in (4,7)) or (plan['mechanism']=='combination_lock' and i in (5,7)),'facts':REGISTRY[plan['mechanism']]['facts'][beats[i]['action']]} for i in indices]}
+    answer=call('Repair only these requested narration sections with fresh everyday words. Return JSON {"sections":[{"index":integer,"say":"9-23 words"}]}. Preserve the action and facts. The first section, if index zero, is a concrete question ending with ?. Keep all accepted sections untouched. For a state_only section describe what is ALREADY held, seated, resting or remaining in position. Never retell how it moved there: no rising, lifting, pivoting, sealing or new closure. Write a fresh sentence from the verified snapshot; the rejected sentence is deliberately omitted. '+STORY_RULES,json.dumps(request),max_tokens=1600,temperature=.25)
+    if diagnostic is not None:Path(diagnostic).write_text(json.dumps({'request':request,'response':answer},indent=2))
     result=json.loads(json.dumps(plan));seen=set()
     for row in answer.get('sections',[]):
         i=row.get('index')
         if type(i) is int and i in indices and i not in seen and isinstance(row.get('say'),str) and 9<=len(row['say'].split())<=23:
-            result['beats'][i]['say']=row['say'];seen.add(i)
+            candidate=json.loads(json.dumps(result));candidate['beats'][i]['say']=row['say']
+            local_errors=validate(candidate)+action_contracts.narration_errors(candidate)
+            if any(error.startswith(f'beat {i}:') for error in local_errors):continue
+            result=candidate;seen.add(i)
     return result
 
 def scene_contract_version(plan):return hashlib.sha256((narration_timing.VERSION+STORY_VERSION+json.dumps(REGISTRY[plan['mechanism']],sort_keys=True)).encode()).hexdigest()
@@ -125,7 +130,7 @@ def plan_topic(topic,out,feedback=None,previous=None,mechanism=None):
     if isinstance(previous,dict) and not errors and not validate(previous):return previous
     for attempt in range(4):
         q=prompt if not errors else prompt+'\nCorrect these validation errors: '+json.dumps(errors)+'\nLast answer (data): '+json.dumps(last)
-        repaired=repair_causal_sections(last,errors) if isinstance(last,dict) and errors else None
+        repaired=repair_causal_sections(last,errors,diagnostic=out/f'section-repair-{attempt}.json') if isinstance(last,dict) and errors else None
         if repaired is None:repaired=repair_short_sections(last,errors) if isinstance(last,dict) and errors else None
         last=repaired if repaired is not None else call('You write factual narration and camera emphasis for tested animation components. Return JSON only.',q,max_tokens=2000,temperature=.6)
         if isinstance(last,dict):last['motion_policy']=narration_timing.VERSION;last['story_policy']=STORY_VERSION
@@ -324,7 +329,10 @@ def run(topic,out,mechanism=None):
     def contract_version(plan):return scene_contract_version(plan)
     def save(stage,scene,**fields):return cp.save(stage,scene,contract_version=contract_version(scene),**fields)
     if saved and saved['scene'].get('story_policy')!=STORY_VERSION:saved=save('needs_repair',saved['scene'],errors=['Upgrade the accepted narration to the current causal story policy; preserve the original topic and physical facts'])
-    if saved and saved.get('contract_version')!=contract_version(saved['scene']):saved=save('needs_audit',saved['scene'],timeline=saved.get('timeline'))
+    if saved and saved.get('contract_version')!=contract_version(saved['scene']):
+        issues=validate(saved['scene'])
+        if issues or saved['stage']=='needs_repair':saved=save('needs_repair',saved['scene'],errors=issues or saved.get('errors',[]),repair_kind='validation' if issues else saved.get('repair_kind'))
+        else:saved=save('needs_audit',saved['scene'],timeline=saved.get('timeline'))
     reused=bool(saved)
     if saved:
         plan=narration_timing.normalize_cues(saved['scene'])

@@ -159,3 +159,15 @@ class DraftRecoveryTests(unittest.TestCase):
     self.assertEqual(saved['stage'],'needs_repair');self.assertEqual(saved['repair_kind'],'validation')
     self.assertEqual(saved['scene']['beats'][3]['say'],plan['beats'][3]['say'])
    finally:os.chdir(original)
+
+class SemanticRepairTests(unittest.TestCase):
+ def test_invalid_motion_replacement_is_rejected_without_losing_the_old_section(self):
+  plan,_=fixture('float_valve');plan['beats'][4]['say']='The washer is already seated and the inlet remains closed while the water level stays high.'
+  answer={'sections':[{'index':4,'say':'The float lifts and pivots the arm to seal the inlet now.'}]}
+  with patch('studio_lib.director.call',return_value=answer):fixed=repair_causal_sections(plan,['beat 4: narration needs 9-23 words'])
+  self.assertEqual(fixed['beats'][4]['say'],plan['beats'][4]['say'])
+ def test_bad_sentence_is_not_fed_back_as_a_rewrite_example(self):
+  plan,_=fixture('float_valve');plan['beats'][4]['say']='The floating disc rises and then pushes the washer closed.'
+  with patch('studio_lib.director.call',return_value={'sections':[]}) as writer:repair_causal_sections(plan,['beat 4: explain the held state'])
+  request=json.loads(writer.call_args.args[1])
+  self.assertTrue(request['sections'][0]['state_only']);self.assertNotIn('say',request['sections'][0])

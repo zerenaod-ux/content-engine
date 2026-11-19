@@ -64,6 +64,12 @@ def identity(topic,mechanism=None):
 def pending_owner(row,owner):
  if owner is None:return False
  belongs=any(str(row.get(k))==str(owner) for k in ('owner','record_run','run_id'))
+ if not belongs and os.environ.get('GITHUB_ACTIONS')=='true':
+  provenance=Path('daily-resume-provenance.json')
+  if provenance.exists():
+   data=json.loads(provenance.read_text())
+   trusted=data.get('source_run')==str(owner) and data.get('current_run')==os.environ.get('GITHUB_RUN_ID') and data.get('topic')==row.get('topic')
+   if trusted:belongs=str(row.get('record_run')) in data.get('verified_recovery_run_ids',[])
  produced=any(row.get(k) for k in ('video','tag','media_sha256','published_at','scheduled_at')) or row.get('state') in ('created','rendered','scheduled','published','skipped','deleted','saved')
  return belongs and not produced and (row.get('state')=='reserved' or row.get('failed') is True)
 
