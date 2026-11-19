@@ -21,11 +21,25 @@ jobs:
       - run: pip install --quiet numpy pillow edge-tts imageio-ffmpeg
       - name: Use installed media tools before fetching dependencies
         run: |
-          if ! command -v ffmpeg >/dev/null || [ ! -f /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf ]; then
-            timeout 180s sudo apt-get update -qq
-            timeout 180s sudo apt-get install -y -qq ffmpeg fonts-dejavu-core > /dev/null
+          if ! command -v ffmpeg >/dev/null || ! command -v ffprobe >/dev/null; then
+            pip install --quiet static-ffmpeg==3.0
+            mkdir -p "$RUNNER_TEMP/verified-media-tools"
+            timeout 180 python -c "from static_ffmpeg import run; run.get_or_fetch_platform_executables_else_raise()"
+            python - <<'PY'
+          import os,shutil
+          from pathlib import Path
+          from static_ffmpeg import run
+          ffmpeg,ffprobe=run.get_or_fetch_platform_executables_else_raise()
+          destination=Path(os.environ['RUNNER_TEMP'])/'verified-media-tools'
+          for name,source in [('ffmpeg',ffmpeg),('ffprobe',ffprobe)]:
+              shutil.copyfile(source,destination/name)
+              (destination/name).chmod(0o755)
+          with open(os.environ['GITHUB_PATH'],'a') as f:f.write(str(destination)+'\n')
+          PY
+            export PATH="$RUNNER_TEMP/verified-media-tools:$PATH"
           fi
           ffmpeg -version | head -n 1
+          ffprobe -version | head -n 1
       - run: python -m unittest discover -s tests/longform -v
       - run: python -m unittest discover -s tests/cinema -v
       - run: python -m unittest discover -s tests/recovery -v
