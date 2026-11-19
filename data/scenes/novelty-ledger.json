@@ -603,5 +603,13 @@
     "encoded_run": "44611900211",
     "policy": "original-idea-and-visuals-v1",
     "media_sha256": "773c62a8d76aa76686e0493c278317dd54ff8f78981dfe15f7aa8342ec49dd42"
+  },
+  {
+    "topic": "Why a three\u2011wheel combination padlock only releases when all wheels align",
+    "visual_family": "gated_padlock",
+    "owner": "44626696622",
+    "state": "reserved",
+    "policy": "original-idea-and-visuals-v1",
+    "mechanism": "combination_lock"
   }
 ]
