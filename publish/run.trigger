@@ -1,3 +1,3 @@
-resume 44329408454
+resume 44363993361
 cpu-voice-proof
-Owner-authorized saved-stage recovery after shared cloud checks passed. Retain the original system-selected check-valve topic; no new topic or approval. 2026-11-18T16:04Z
+Recover original automatic counterweight topic after fixing media setup; preserve history and manual approval. 2026-11-18 evening
