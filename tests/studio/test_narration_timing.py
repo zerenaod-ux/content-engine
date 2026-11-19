@@ -45,6 +45,12 @@ class NarrationTimingTests(unittest.TestCase):
         self.assertTrue(scope_error('How the trunnion bearing reduces friction during a bascule bridge lift','bascule_bridge'))
         self.assertFalse(scope_error('How a bascule bridge counterweight balances the moving road','bascule_bridge'))
 
+    def test_passage_cue_names_the_moving_vessel_not_the_static_road(self):
+        original={'mechanism':'bascule_bridge','beats':[{'action':'pass','say':'The road stays fully raised as the vessel glides through the channel.','motion_cue':'road stays fully raised'}]}
+        fixed=timing.normalize_cues(original)
+        self.assertEqual(fixed['beats'][0]['say'],original['beats'][0]['say'])
+        self.assertIn('vessel glides',fixed['beats'][0]['motion_cue'])
+
     def test_resume_reuses_only_matching_audio_and_phrase(self):
         with tempfile.TemporaryDirectory() as folder:
             plan,tl,recognize=self.bind_fixture(folder);timing.bind(plan,tl,folder,recognize)

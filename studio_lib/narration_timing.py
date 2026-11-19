@@ -19,6 +19,18 @@ TRANSITIONS = {
     'piston_pump': {'cutaway', 'suction', 'compression', 'payoff'},
     'wind_turbine': {'shaft', 'load', 'payoff'},
 }
+ANCHORS = {
+    'bascule_bridge': {
+        'stop': r'(?:barriers?|gates?).{0,28}\b(?:clos\w*|lower\w*|shut\w*)',
+        'balance': r'(?:road|span|bridge).{0,24}\b(?:ris\w*|lift\w*|rais\w*)|counterweight.{0,24}\b(?:swing\w*|descend\w*|drop\w*)',
+        'pass': r'(?:ship|vessel).{0,24}\b(?:pass\w*|glid\w*|sail\w*|travel\w*)',
+        'lower': r'(?:road|span|bridge).{0,24}\b(?:lower\w*|descend\w*|drop\w*)|counterweight.{0,24}\b(?:ris\w*|swing\w*)',
+        'resume': r'(?:car|traffic).{0,24}\b(?:cross\w*|resum\w*|mov\w*)',
+    },
+    'photovoltaic_cell': {'absorb':r'cutaway|layers?|semiconductor|cell', 'circuit':r'(?:switch|circuit).{0,24}\b(?:clos\w*|complet\w*)|clos\w*.{0,24}(?:switch|circuit)', 'payoff':r'panel|solar|light|energy'},
+    'piston_pump': {'cutaway':r'cutaway|cylinder|piston|rod', 'suction':r'(?:piston|rod).{0,24}\b(?:withdraw\w*|pull\w*|retract\w*|back\w*)', 'compression':r'(?:piston|rod).{0,24}\b(?:advanc\w*|push\w*|compress\w*|forward\w*)', 'payoff':r'pump|water|input|valves?'},
+    'wind_turbine': {'shaft':r'shaft|nacelle|bearing', 'load':r'(?:switch|circuit).{0,24}\b(?:clos\w*|complet\w*)|clos\w*.{0,24}(?:switch|circuit)', 'payoff':r'turbine|wind|rotor'},
+}
 
 def tokens(text):
     return re.findall(r"[a-z]+(?:'[a-z]+)?", text.lower().replace('’', "'"))
@@ -46,6 +58,8 @@ def cue_errors(plan):
             errors.append(f'beat {i}: motion_cue needs 2-10 exact spoken words')
         elif len(locations(tokens(b.get('say','')),tokens(cue))) != 1:
             errors.append(f'beat {i}: motion_cue must occur exactly once in its narration')
+        elif not re.search(ANCHORS[plan['mechanism']][b['action']],cue,re.I):
+            errors.append(f'beat {i}: motion_cue must name this action or the internal part being revealed')
     return errors
 
 def normalize_cues(plan):
@@ -73,6 +87,24 @@ def normalize_cues(plan):
         if candidates:
             shortest=min(c[0] for c in candidates);best=[c for c in candidates if c[0]==shortest]
             if len(best)==1:beat['motion_cue']=best[0][2]
+    # Prefer the actual moving subject/action over a nearby static clause.
+    # Select only existing model-written words; never supply spoken content.
+    for beat in result.get('beats',[]):
+        pattern=ANCHORS.get(result.get('mechanism'),{}).get(beat.get('action'))
+        say=beat.get('say','')
+        if not pattern or not isinstance(say,str):continue
+        supplied=beat.get('motion_cue','')
+        if isinstance(supplied,str) and len(locations(tokens(say),tokens(supplied)))==1 and re.search(pattern,supplied,re.I):continue
+        match=re.search(pattern,say,re.I)
+        if not match:continue
+        words=list(re.finditer(r"[a-z]+(?:'[a-z]+)?",say.lower().replace('’',"'")))
+        selected=[i for i,w in enumerate(words) if w.end()>match.start() and w.start()<match.end()]
+        if not selected:continue
+        first,last=min(selected),max(selected)
+        if first==last:
+            if first>0:first-=1
+            elif last+1<len(words):last+=1
+        if 2<=last-first+1<=10:beat['motion_cue']=say[words[first].start():words[last].end()]
     return result
 
 def progress(t, beat):
