@@ -51,6 +51,16 @@ class NarrationTimingTests(unittest.TestCase):
         self.assertEqual(fixed['beats'][0]['say'],original['beats'][0]['say'])
         self.assertIn('vessel glides',fixed['beats'][0]['motion_cue'])
 
+    def test_long_cue_reduces_to_actual_short_trigger_without_crossing_sentences(self):
+        plan={'mechanism':'bascule_bridge','beats':[{'action':'stop','say':'The car stops behind the barrier. Barriers close before the bridge moves.','motion_cue':'barrier. Barriers close'},{'action':'balance','say':'Road rises while its rigidly attached heel counterweight swings down.','motion_cue':'Road rises while its rigidly attached heel counterweight swings down'}]}
+        fixed=timing.normalize_cues(plan)
+        self.assertEqual(fixed['beats'][0]['motion_cue'],'Barriers close')
+        self.assertEqual(fixed['beats'][1]['motion_cue'],'Road rises')
+
+    def test_compound_word_alignment_never_changes_spoken_content(self):
+        self.assertEqual(timing.measured_matches(['the','counter','weight','swings','down'],['counterweight','swings']),[(1,3)])
+        self.assertEqual(timing.measured_matches(['carriage','moves'],['car','moves']),[])
+
     def test_resume_reuses_only_matching_audio_and_phrase(self):
         with tempfile.TemporaryDirectory() as folder:
             plan,tl,recognize=self.bind_fixture(folder);timing.bind(plan,tl,folder,recognize)

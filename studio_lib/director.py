@@ -269,7 +269,11 @@ def run(topic,out):
     if saved and saved.get('contract_version')!=contract_version(saved['scene']):saved=save('needs_audit',saved['scene'],timeline=saved.get('timeline'))
     reused=bool(saved)
     if saved:
-        plan=saved['scene'];print('resume generated director plan without a new model call',flush=True)
+        plan=narration_timing.normalize_cues(saved['scene'])
+        if plan!=saved['scene']:
+            prior={k:saved[k] for k in ('timeline','render_signature','silent_path','silent_sha256') if k in saved}
+            saved=save('needs_audit',plan,**prior)
+        print('resume generated director plan without rewriting its narration',flush=True)
     else:
         plan=plan_topic(topic,out);saved=save('needs_audit',plan)
     if saved['stage']=='needs_repair':

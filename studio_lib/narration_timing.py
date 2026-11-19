@@ -21,15 +21,15 @@ TRANSITIONS = {
 }
 ANCHORS = {
     'bascule_bridge': {
-        'stop': r'(?:barriers?|gates?).{0,28}\b(?:clos\w*|lower\w*|shut\w*)',
-        'balance': r'(?:road|span|bridge).{0,24}\b(?:ris\w*|lift\w*|rais\w*)|counterweight.{0,24}\b(?:swing\w*|descend\w*|drop\w*)',
-        'pass': r'(?:ship|vessel).{0,24}\b(?:pass\w*|glid\w*|sail\w*|travel\w*)',
-        'lower': r'(?:road|span|bridge).{0,24}\b(?:lower\w*|descend\w*|drop\w*)|counterweight.{0,24}\b(?:ris\w*|swing\w*)',
-        'resume': r'(?:car|traffic).{0,24}\b(?:cross\w*|resum\w*|mov\w*)',
+        'stop': r'(?:barriers?|gates?)[^.!?;,]{0,28}?\b(?:clos\w*|lower\w*|shut\w*)',
+        'balance': r'(?:road|span|bridge)[^.!?;,]{0,24}?\b(?:ris\w*|lift\w*|rais\w*)|counterweight[^.!?;,]{0,24}?\b(?:swing\w*|descend\w*|drop\w*)',
+        'pass': r'(?:ship|vessel)[^.!?;,]{0,24}?\b(?:pass\w*|glid\w*|sail\w*|travel\w*)',
+        'lower': r'(?:road|span|bridge)[^.!?;,]{0,24}?\b(?:lower\w*|descend\w*|drop\w*)|counterweight[^.!?;,]{0,24}?\b(?:ris\w*|swing\w*)',
+        'resume': r'(?:car|traffic)[^.!?;,]{0,24}?\b(?:cross\w*|resum\w*|mov\w*)',
     },
-    'photovoltaic_cell': {'absorb':r'cutaway|layers?|semiconductor|cell', 'circuit':r'(?:switch|circuit).{0,24}\b(?:clos\w*|complet\w*)|clos\w*.{0,24}(?:switch|circuit)', 'payoff':r'panel|solar|light|energy'},
-    'piston_pump': {'cutaway':r'cutaway|cylinder|piston|rod', 'suction':r'(?:piston|rod).{0,24}\b(?:withdraw\w*|pull\w*|retract\w*|back\w*)', 'compression':r'(?:piston|rod).{0,24}\b(?:advanc\w*|push\w*|compress\w*|forward\w*)', 'payoff':r'pump|water|input|valves?'},
-    'wind_turbine': {'shaft':r'shaft|nacelle|bearing', 'load':r'(?:switch|circuit).{0,24}\b(?:clos\w*|complet\w*)|clos\w*.{0,24}(?:switch|circuit)', 'payoff':r'turbine|wind|rotor'},
+    'photovoltaic_cell': {'absorb':r'cutaway|layers?|semiconductor|cell', 'circuit':r'(?:switch|circuit)[^.!?;,]{0,24}?\b(?:clos\w*|complet\w*)|clos\w*[^.!?;,]{0,24}?(?:switch|circuit)', 'payoff':r'panel|solar|light|energy'},
+    'piston_pump': {'cutaway':r'cutaway|cylinder|piston|rod', 'suction':r'(?:piston|rod)[^.!?;,]{0,24}?\b(?:withdraw\w*|pull\w*|retract\w*|back\w*)', 'compression':r'(?:piston|rod)[^.!?;,]{0,24}?\b(?:advanc\w*|push\w*|compress\w*|forward\w*)', 'payoff':r'pump|water|input|valves?'},
+    'wind_turbine': {'shaft':r'shaft|nacelle|bearing', 'load':r'(?:switch|circuit)[^.!?;,]{0,24}?\b(?:clos\w*|complet\w*)|clos\w*[^.!?;,]{0,24}?(?:switch|circuit)', 'payoff':r'turbine|wind|rotor'},
 }
 
 def tokens(text):
@@ -38,6 +38,22 @@ def tokens(text):
 def locations(haystack, needle):
     return [i for i in range(len(haystack)-len(needle)+1)
             if haystack[i:i+len(needle)] == needle] if needle else []
+
+def measured_matches(words,cue):
+    exact=locations(words,cue)
+    if exact:return [(i,i+len(cue)-1) for i in exact]
+    # Speech recognizers can split a compound ('counter weight') differently.
+    # Match identical letters only, with boundaries on complete heard words.
+    joined=''.join(words);needle=''.join(cue);starts={};ends={};position=0
+    for i,word in enumerate(words):
+        starts[position]=i;position+=len(word);ends[position]=i
+    matches=[];offset=0
+    while needle:
+        hit=joined.find(needle,offset)
+        if hit<0:break
+        if hit in starts and hit+len(needle) in ends:matches.append((starts[hit],ends[hit+len(needle)]))
+        offset=hit+1
+    return matches
 
 def writing_rules():
     return ('For each transition action listed below, add motion_cue to that beat: '
@@ -94,7 +110,7 @@ def normalize_cues(plan):
         say=beat.get('say','')
         if not pattern or not isinstance(say,str):continue
         supplied=beat.get('motion_cue','')
-        if isinstance(supplied,str) and len(locations(tokens(say),tokens(supplied)))==1 and re.search(pattern,supplied,re.I):continue
+        if isinstance(supplied,str) and len(locations(tokens(say),tokens(supplied)))==1 and 2<=len(tokens(supplied))<=3 and re.fullmatch(pattern,supplied.strip(),re.I):continue
         match=re.search(pattern,say,re.I)
         if not match:continue
         words=list(re.finditer(r"[a-z]+(?:'[a-z]+)?",say.lower().replace('’',"'")))
@@ -162,10 +178,11 @@ def bind(plan, timeline, out, transcribe=None):
                 if b>float(beat['voice_duration'])+.25:raise ValueError('Word extends beyond its voice track')
                 last_end=b
                 for token in tokens(word['text']):flat.append(token);spans.append((a,b))
-            cue=tokens(planned['motion_cue']);matches=locations(flat,cue)
+            (out/f'spoken-action-words-{i:02}.json').write_text(json.dumps({'audio_sha256':audio_hash,'expected':planned['say'],'phrase':planned['motion_cue'],'measured_words':words},indent=2))
+            cue=tokens(planned['motion_cue']);matches=measured_matches(flat,cue)
             if len(matches)!=1:
                 raise ValueError(f"Measured audio did not uniquely contain action cue in beat {i}; hold before rendering")
-            k=matches[0];spoken_start=beat['start']+.08+spans[k][0];spoken_end=beat['start']+.08+spans[k+len(cue)-1][1]
+            first_word,last_word=matches[0];spoken_start=beat['start']+.08+spans[first_word][0];spoken_end=beat['start']+.08+spans[last_word][1]
             if spoken_end<=spoken_start:raise ValueError('Action cue has no measured spoken interval')
             # Brief lead-in exposes the part before its name; preserve the full
             # action inside this beat and leave cameras on their original clock.
