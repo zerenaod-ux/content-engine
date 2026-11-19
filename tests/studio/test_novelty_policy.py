@@ -35,6 +35,12 @@ class NoveltyPolicyTests(unittest.TestCase):
   with tempfile.TemporaryDirectory() as root:
    with self.assertRaisesRegex(ValueError,'missing'):novelty.records(root)
 
+ def test_empty_but_valid_json_cannot_reset_originality_memory(self):
+  with tempfile.TemporaryDirectory() as root:
+   base=Path(root)/'data/scenes';base.mkdir(parents=True)
+   for name in ('novelty-ledger','history','videos','topic-ledger'):(base/(name+'.json')).write_text('[]')
+   with self.assertRaisesRegex(ValueError,'emptied'):novelty.records(root)
+
  def test_permanent_memory_survives_removed_index_entry(self):
   with tempfile.TemporaryDirectory() as root:
    base=Path(root)/'data/scenes';base.mkdir(parents=True)
@@ -63,9 +69,10 @@ class NoveltyPolicyTests(unittest.TestCase):
  def test_first_encoded_media_is_remembered_even_before_quality_review(self):
   with tempfile.TemporaryDirectory() as root,patch.dict(os.environ,{'GITHUB_ACTIONS':'true','GH_TOKEN':'fixture','GITHUB_RUN_ID':'new'}):
    video=Path(root)/'fixture.mp4';video.write_bytes(b'not real media: hash fixture only')
-   with patch('studio_lib.service_queue.read_document',return_value=([],'sha')),patch('studio_lib.service_queue.write_document') as write:
+   seed=[{'topic':'Old solar explanation','visual_family':'photovoltaic_cell','state':'historical'}]
+   with patch('studio_lib.service_queue.read_document',return_value=(seed,'sha')),patch('studio_lib.service_queue.write_document') as write:
     novelty.record_created('Why a wind turbine rotates','wind_turbine',video)
-    row=write.call_args[0][1][0]
+    row=write.call_args[0][1][-1]
     self.assertEqual(row['state'],'created');self.assertEqual(row['visual_family'],'rotary_generator')
     self.assertTrue(novelty.reason('Why wind blades turn a shaft','wind_turbine',[row],owner='new'))
 

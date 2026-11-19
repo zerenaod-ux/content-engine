@@ -86,6 +86,8 @@ def records(root=None):
    if not path.is_file():raise ValueError('Permanent novelty history missing; generation held: '+name)
    data=json.loads(path.read_text())
   if not isinstance(data,list) or any(not isinstance(r,dict) for r in data):raise ValueError('Permanent novelty history is invalid: '+name)
+  if name==MEMORY and (not data or any(not isinstance(r.get('topic'),str) or not r['topic'].strip() or not isinstance(r.get('state'),str) for r in data)):
+   raise ValueError('Permanent novelty history was emptied or damaged; never reset originality memory')
   rows.extend(data)
  for name in ('data/scenes/publishing-status.json','data/scenes/review/index.json'):
   path=base/name
@@ -114,7 +116,7 @@ def reserve_new(topic,mechanism=None):
  owner=os.environ['GITHUB_RUN_ID']
  for attempt in range(6):
   ledger,sha=read_document(MEMORY,None)
-  if not isinstance(ledger,list):raise ValueError('Permanent novelty ledger unavailable')
+  if not isinstance(ledger,list) or not ledger:raise ValueError('Permanent novelty ledger unavailable or emptied')
   error=reason(topic,mechanism,records()+ledger,owner)
   if error:raise ValueError('Permanent no-repeat policy: '+error)
   if any(r.get('owner')==owner and r.get('topic')==topic and r.get('state')=='reserved' for r in ledger):return family
@@ -136,7 +138,7 @@ def record_created(topic,mechanism,path):
       'media_sha256':hashlib.sha256(Path(path).read_bytes()).hexdigest()}
  for attempt in range(6):
   ledger,sha=read_document(MEMORY,None)
-  if not isinstance(ledger,list):raise ValueError('Permanent novelty ledger unavailable')
+  if not isinstance(ledger,list) or not ledger:raise ValueError('Permanent novelty ledger unavailable or emptied')
   if any(r.get('media_sha256')==row['media_sha256'] for r in ledger):return
   error=reason(topic,mechanism,ledger,row['owner'])
   if error:raise ValueError('Permanent no-repeat policy: '+error)
