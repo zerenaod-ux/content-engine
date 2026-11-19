@@ -415,5 +415,15 @@
     "topic_key": "aperture brightness controls exposure iris",
     "record_run": "44576248575",
     "record_attempt": "1"
+  },
+  {
+    "date": "2026-11-19",
+    "tag": "ce-20261119-2047",
+    "title": "How a Float Valve Prevents Overfilling \u2699\ufe0f",
+    "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@48ec2c5e98bf48f1467b9106af1bdfd00582a8ac/videos/ce-20261119-2047.mp4",
+    "topic": "How a float valve stops a tank from overfilling",
+    "topic_key": "float overfilling stops tank valve",
+    "record_run": "44611900211",
+    "record_attempt": "1"
   }
 ]
