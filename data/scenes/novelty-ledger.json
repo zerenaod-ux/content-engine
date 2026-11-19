@@ -611,5 +611,15 @@
     "state": "reserved",
     "policy": "original-idea-and-visuals-v1",
     "mechanism": "combination_lock"
+  },
+  {
+    "topic": "Why a three\u2011wheel combination padlock only releases when all wheels align",
+    "mechanism": "combination_lock",
+    "visual_family": "gated_padlock",
+    "state": "created",
+    "owner": "44626696622",
+    "encoded_run": "44626696622",
+    "policy": "original-idea-and-visuals-v1",
+    "media_sha256": "5397fb1cb8a2d3f34d8d8f2b8f302de85fb2e33031e475291e0b94f1d70408be"
   }
 ]
