@@ -395,5 +395,15 @@
     "topic_key": "bascule bridge lifting pivot smooth trunnion uses",
     "record_run": "44488879657",
     "record_attempt": "1"
+  },
+  {
+    "date": "2026-11-19",
+    "tag": "ce-20261119-1338",
+    "title": "Why the bridge barriers close first \ud83d\udea2",
+    "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@9572a8cb77d214de6e6e5db5fc756217e46f1375/videos/ce-20261119-1338.mp4",
+    "topic": "Why the road barriers close before the bridge begins to lift",
+    "topic_key": "barriers before begins bridge close lift road",
+    "record_run": "44534851466",
+    "record_attempt": "1"
   }
 ]
