@@ -359,10 +359,10 @@ def run(topic,out,mechanism=None):
             if review_attempt:raise ValueError('automatic narration repair still contradicts supplied facts')
             plan=plan_topic(topic,out,errors,plan,mechanism=mechanism);saved=save('needs_audit',plan)
     if novelty.identity(topic,plan['mechanism'])!=reserved_family:raise ValueError('Planner changed the reserved visual family; no media allowed')
+    if plan['mechanism']!='bascule_bridge':plan['render_policy']=visual_quality.POLICY
     story_issues=story_errors(plan)
     (out/'story-checks.json').write_text(json.dumps({'policy':STORY_VERSION,'plan_sha256':action_contracts.fingerprint(plan),'errors':story_issues,'scope':'Concrete opening, causal wording, distinct narration and component-owned held-state claims; not an acting-quality score'},indent=2))
     if story_issues:raise ValueError('Causal story contract failed: '+str(story_issues))
-    if plan['mechanism']!='bascule_bridge':plan['render_policy']=visual_quality.POLICY
     (out/'director-plan.json').write_text(json.dumps(plan,indent=2))
     # Voice measurements drive action durations; no authored narration is read.
     spec={'title':plan['title'],'beats':[dict(b,seconds=3.5) for b in plan['beats']]}

@@ -21,3 +21,13 @@ class OutputGateTests(unittest.TestCase):
    with tempfile.TemporaryDirectory() as d:
     p=Path(d);self.prepare(p);(p/name).write_text('{"errors":["failed"]}')
     with self.assertRaises(ValueError):seal(p,'short',{'duration':50,'width':720,'height':1280})
+ def test_native_finish_requires_its_evidence_and_real_dimensions(self):
+  for mode in ('missing','wrong_dimensions','valid'):
+   with tempfile.TemporaryDirectory() as d:
+    p=Path(d);self.prepare(p);(p/'plan.json').write_text('{"render_policy":"native-studio-1080-v1"}')
+    if mode!='missing':(p/'render-quality-checks.json').write_text('{"policy":"native-studio-1080-v1","width":1080,"height":1920,"errors":[]}')
+    media={'duration':50,'width':720 if mode=='wrong_dimensions' else 1080,'height':1280 if mode=='wrong_dimensions' else 1920}
+    if mode=='valid':
+     seal(p,'short',media);self.assertIn('render-quality-checks.json',require_seal(p,'short')['hashes'])
+    else:
+     with self.assertRaises(ValueError):seal(p,'short',media)
