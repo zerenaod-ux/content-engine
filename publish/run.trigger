@@ -1,3 +1,3 @@
-auto
+resume 44607841613
 causal-capability-proof
-The regular system must select a genuinely unused supported topic and original visual family, write its own causal narration, use the approved fixed narrator, verify actual motion against measured speech and deliver one fresh video to Studio after gates pass. No past video may be recreated. Owner publishing approval remains manual.
+Continue the verified unfinished, system-selected float-valve project after causal wording and measured-pacing corrections. The source produced no audio or video. Preserve its original novelty reservation and use the approved fixed narrator. Do not recreate any completed video. Deliver only after the full evidence gates pass.
