@@ -2,9 +2,9 @@
   "run_id": "44626696622",
   "attempt": 1,
   "kind": "daily-short",
-  "stage": "voice",
-  "label": "Generating narration",
-  "updated_at": "2026-11-19T22:16:00.071374+00:00",
+  "stage": "render",
+  "label": "Rendering animation",
+  "updated_at": "2026-11-19T22:17:00.757053+00:00",
   "source_branch": "main",
   "owner_approved": false,
   "state": "running"
