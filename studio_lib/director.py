@@ -102,11 +102,14 @@ def repair_causal_sections(plan,issues,diagnostic=None):
     allowed=('total narration needs','Explain at least three','Repeated narration','Use audience-facing')
     if any(not issue.startswith(allowed) for issue in global_issues):return None
     if global_issues:
-        available=sorted(range(8),key=lambda i:len(str(beats[i].get('say','')).split()))
+        # Preserve concise accepted hook/reveal beats. Length repair belongs in
+        # the explanatory mechanism steps, not another long introduction.
+        pool=range(2,8) if all(9<=len(str(beats[i].get('say','')).split())<=13 for i in (0,1)) else range(8)
+        available=sorted(pool,key=lambda i:len(str(beats[i].get('say','')).split()))
         indices.update(available[:4])
     indices=sorted(i for i in indices if 0<=i<8)[:4]
     if not indices:return None
-    request={'issues':issues,'sections':[{'index':i,'action':beats[i]['action'],'target_words':20 if global_issues else 18,'state_only':i>0 and beats[i]['action']!='cutaway' and i in action_contracts.CONTRACTS[plan['mechanism']]['holds'] and not any(key!='cut' for key in action_contracts.CONTRACTS[plan['mechanism']]['moves'].get(i,{})),'facts':REGISTRY[plan['mechanism']]['facts'][beats[i]['action']]} for i in indices]}
+    request={'issues':issues,'sections':[{'index':i,'action':beats[i]['action'],'target_words':12 if i<2 else 22 if global_issues else 18,'state_only':i>0 and beats[i]['action']!='cutaway' and i in action_contracts.CONTRACTS[plan['mechanism']]['holds'] and not any(key!='cut' for key in action_contracts.CONTRACTS[plan['mechanism']]['moves'].get(i,{})),'facts':REGISTRY[plan['mechanism']]['facts'][beats[i]['action']]} for i in indices]}
     answer=call('Repair only these requested narration sections with fresh everyday words. Return JSON {"sections":[{"index":integer,"say":"9-23 words"}]}. Aim for target_words with factual substance, never padding or copied production directions. Preserve the action and facts. The first section, if index zero, is a concrete question ending with ?. Keep all accepted sections untouched. For a state_only section describe what is ALREADY held, seated, resting or remaining in position. Never retell how it moved there: no rising, lifting, pivoting, sealing or new closure. Write a fresh sentence from the verified snapshot; the rejected sentence is deliberately omitted. '+STORY_RULES,json.dumps(request),max_tokens=1600,temperature=.25)
     if diagnostic is not None:Path(diagnostic).write_text(json.dumps({'request':request,'response':answer},indent=2))
     result=json.loads(json.dumps(plan));seen=set()
