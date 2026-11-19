@@ -1,3 +1,3 @@
 auto
 spoken-action-proof
-Owner-authorized new system-selected topic using causal storytelling, measured action cues, whole-object context and supported interior closeups. No manual generated-script or video edits. Keep approval manual.
+System-select a supported, non-repeating topic after the scope and exact spoken-cue corrections. Keep narration original; no manual script/video edits. Deliver only with timing/framing/audio evidence and manual owner approval.
