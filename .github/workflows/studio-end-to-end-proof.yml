@@ -16,6 +16,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   video:
+    if: ${{ false }} # Retired: owner forbids regenerated or similar videos.
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
