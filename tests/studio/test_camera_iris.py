@@ -34,6 +34,19 @@ class CameraIrisTests(unittest.TestCase):
   self.assertEqual(novelty.identity('How a camera aperture controls light'),'optical_iris')
   self.assertTrue(novelty.reason('Why another wind turbine spins','wind_turbine',[{'mechanism':'hand_generator','state':'created'}],None))
 
+class IrisVisibilityTests(unittest.TestCase):
+ def test_overview_and_internal_parts_visible_before_production(self):
+  from studio_lib.director import verify_component
+  from studio_lib.registry import REGISTRY
+  beats=[{'start':i*6,'end':(i+1)*6,'action':a,'camera':'wide','say':'Engineering fixture only.'} for i,a in enumerate(REGISTRY['camera_iris']['actions'])]
+  plan={'mechanism':'camera_iris','hook':'Engineering visibility fixture','beats':beats}
+  timeline={'beats':beats,'duration':48,'motion_policy':'engineering-fixture'}
+  with tempfile.TemporaryDirectory() as directory:
+   verify_component(plan,timeline,Path(directory))
+   evidence=json.loads((Path(directory)/'component-checks.json').read_text())
+   self.assertEqual(evidence['errors'],[])
+   self.assertEqual({row['part'] for row in evidence['measurements']},{'blades','ring','pins','sensor'})
+
 class SelectionProvenanceTests(unittest.TestCase):
  def test_only_owned_system_selection_supplies_component(self):
   from studio_lib.production import selected_mechanism
