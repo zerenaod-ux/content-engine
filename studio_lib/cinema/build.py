@@ -6,6 +6,7 @@ import numpy as np
 import edge_tts
 from studio_lib.director import validate,normalize_narration
 from studio_lib.providers import call
+from studio_lib import novelty
 from studio_lib.storytelling import WRITING_RULES as STORY_RULES
 from studio_lib.registry import REGISTRY
 from studio_lib.cinema.presentation import illustration_labels
@@ -293,6 +294,7 @@ def load_or_generate(topic,out):
 
 def run(topic,out):
     out=Path(out);out.mkdir(parents=True,exist_ok=True);started=time.monotonic()
+    novelty.reserve_new(topic,topic_brief(topic)['mechanism'])
     # A fresh model-written plan is required for this comparison; no authored script input.
     print('CE_STAGE=planning',flush=True)
     plan=load_or_generate(topic,out);(out/'plan.json').write_text(json.dumps(plan,indent=2))
@@ -303,6 +305,7 @@ def run(topic,out):
     subprocess.run(['xvfb-run','-a','blender','-b','-t','2','--python',str(script),'--',str(out)],check=True)
     subprocess.run(['ffmpeg','-v','error','-y','-framerate','24','-i',str(out/'frames/%05d.png'),'-i',str(out/'mix.wav'),'-vf',f"scale=720:1280:flags=lanczos,ass={out/'captions.ass'}",'-c:v','libx264','-preset','fast','-crf','19','-c:a','aac','-b:a','160k',*mastering_args(),'-t',str(tl['duration']),'-movflags','+faststart',str(out/'video.mp4')],check=True)
     subprocess.run(['ffmpeg','-v','error','-i',str(out/'video.mp4'),'-f','null','-'],check=True)
+    novelty.record_created(topic,plan['mechanism'],out/'video.mp4')
     require_video_duration(out/'video.mp4')
     print('CE_STAGE=audio',flush=True)
     from studio_lib.cinema.review import review

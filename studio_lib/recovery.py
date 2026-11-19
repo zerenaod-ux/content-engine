@@ -5,6 +5,8 @@ LABELS={'selection':'Selecting a new topic','planning':'Writing and checking nar
 
 def classify_failure(text,attempt):
  lower=text.lower()
+ if any(x in lower for x in ('no-repeat policy','no unused supported visual','visual setup already used','completed-video regeneration','completed-video replacement')):
+  return {'retryable':False,'next_retry_at':None,'reason':'No-repeat hold: a genuinely new idea and unused visual setup are required','state':'held_for_novelty'}
  transient=any(x in lower for x in ('noaudioreceived','serviceunavailable','servicebusy','cooldown active','timed out','timeout','http error 429','http 429','http error 503','connection reset'))
  permanent=any(x in lower for x in ('http 413','request too large','unsupported','script failed bounded validation','outside required duration','essential parts leave the frame'))
  retry=transient and not permanent and attempt<4
@@ -37,7 +39,7 @@ def execute(kind,command,success_stage='ready'):
  if status:
   info=classify_failure(''.join(tail),int(os.environ.get('GITHUB_RUN_ATTEMPT','1')))
   if kind=='self-test' and os.environ.get('CE_RECOVERY_TEST')=='1' and info['retryable']:info['next_retry_at']=time.time()
-  record(kind,'Stopped',**info)
+  record(kind,'No-repeat hold' if info.get('state')=='held_for_novelty' else 'Stopped',**info)
  else:record(kind,'delivered' if last_stage=='delivered' else success_stage,state='awaiting_review' if last_stage=='delivered' else 'rendered' if success_stage=='ready' else 'running')
  return status
 
@@ -50,11 +52,22 @@ def watch():
   raise
  for item in files:
   if item.get('type')!='file':continue
-  record_data,_=read_document(item['path'],{})
+  record_data,record_sha=read_document(item['path'],{})
   if not record_data.get('retryable') or (record_data.get('next_retry_at') or float('inf'))>time.time():continue
   run=github('actions/runs/'+str(record_data['run_id']))
   if run['status']!='completed' or run['conclusion']!='failure':continue
   if (run['head_branch'],run['name']) not in [('studio-cinematic-proof','Cinematic system comparison (not posted)'),('studio-cinematic-proof','Original How It Ticks full video'),('main','Original How It Ticks full video'),('main','scene-factory'),('main','Recovery self-test')]:continue
+  if run['name']!='Recovery self-test':
+   compatible=run['head_branch']=='main' and bool(run.get('head_sha'))
+   if compatible:
+    try:compatible=isinstance(github('contents/studio_lib/novelty.py?ref='+run['head_sha']),dict)
+    except urllib.error.HTTPError as e:
+     if e.code!=404:raise
+     compatible=False
+   if not compatible:
+    record_data.update(retryable=False,next_retry_at=None,state='held_for_novelty',reason='Legacy media retry retired by the permanent no-repeat policy')
+    write_document(item['path'],record_data,record_sha,'Hold legacy retry instead of regenerating prior visuals')
+    continue
   if int(run.get('run_attempt',1))>=4:continue
   github('actions/runs/'+str(run['id'])+'/rerun-failed-jobs','POST',{})
   print('Requested bounded recovery of '+record_data['kind']+' from its saved stages',flush=True)

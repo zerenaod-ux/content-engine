@@ -3,6 +3,7 @@ from studio_lib.cinema.topic_memory import prompt_history
 import base64,json,os,time,urllib.request,urllib.error
 from pathlib import Path
 from studio_lib.providers import call
+from studio_lib import novelty
 from studio_lib.topic_guard import duplicate,signature
 from studio_lib.cinema.coverage import topic_brief
 from studio_lib.science.components import SPECS
@@ -25,7 +26,7 @@ def candidate_valid(candidate,rows):
     if not isinstance(candidate,dict) or not isinstance(candidate.get('topic'),str):return 'Missing topic'
     brief=topic_brief(candidate['topic'])
     if brief['mechanism']!=candidate.get('mechanism') or not brief['mechanism']:return 'Topic does not match its implemented component'
-    reason=duplicate(candidate['topic'],rows)
+    reason=novelty.reason(candidate['topic'],candidate['mechanism'],rows)
     if reason:return reason
     # For this proof, a new wording of a previously covered cinematic component
     # is insufficient. This is deliberately stricter than the daily topic guard.
@@ -44,9 +45,11 @@ def main():
         if not isinstance(data,list):raise ValueError('Invalid full-history data')
         rows.extend(data)
     ledger,sha=read('data/scenes/topic-ledger.json');rows+=ledger
+    rows+=novelty.records()
     recovery=Path('publish/cinema.resume.json')
     config=json.loads(recovery.read_text()) if recovery.exists() else {}
     if config.get('repair') is True:
+        raise ValueError('Completed-video regeneration is forbidden by the permanent no-repeat policy')
         source=api('actions/runs/'+str(config['run_id']))
         if source.get('head_branch')!='studio-cinematic-proof' or source.get('name')!='Cinematic system comparison (not posted)' or source.get('conclusion')!='success':raise ValueError('Untrusted repair source')
         topic=config['topic']
@@ -68,6 +71,7 @@ def main():
             except ValueError:pass
     phrases={'lever_balance':'lever','resistive_circuit':'resistor circuit','hydraulic_lift':'hydraulic lift','thermal_contact':'thermal contact','dna_pairing':'DNA base pairing','water_transfer':'water between reservoirs'}
     available={key:{'scope':value[0],'required_topic_phrase':phrases[key]} for key,value in SPECS.items() if key not in covered}
+    available=novelty.unused(available,rows,os.environ.get('GITHUB_RUN_ID'))
     if not available:raise ValueError('No uncovered supported component remains; no repeat will be generated')
     rejected=[]
     for attempt in range(4):

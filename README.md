@@ -1,5 +1,7 @@
 # How It Ticks (formerly "Content Engine")
 
+**Current production rule:** create only a new idea with an unused visual setup. Previously created, reserved, scheduled, published, skipped or deleted videos stay in permanent history. Renaming, changing format, compiling shorts or rendering a corrected copy does not qualify. If no unused supported visuals remain, hold generation. See [the permanent originality policy](docs/PERMANENT-ORIGINALITY.md).
+
 ## Latest verified state — November 18
 
 - The independent GitHub CPU voice fallback produced the 52.536-second short **Why a Check Valve Prevents Backflow**, automatically delivered to open Studio review card 55. Encoded audio passed (-16.95 LUFS, -3.07 dB true peak, 1.41% ASR word error). No human listening or final creative approval is claimed.

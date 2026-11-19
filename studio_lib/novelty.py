@@ -1,0 +1,159 @@
+"""Permanent, conservative novelty gate across formats and review outcomes.
+
+An unfamiliar paraphrase is not a proof of semantic novelty. Known visual
+families are single-use; missing history or unknown families hold production.
+"""
+import hashlib,json,os,re,time,urllib.error
+from pathlib import Path
+from studio_lib.topic_guard import duplicate
+
+POLICY='original-idea-and-visuals-v1'
+MEMORY='data/scenes/novelty-ledger.json'
+FAMILIES={
+ 'bascule_bridge':'bascule_bridge', 'photovoltaic_cell':'photovoltaic_cell',
+ 'piston_pump':'piston_pump', 'wind_turbine':'rotary_generator', 'hand_generator':'rotary_generator',
+ 'rack_pinion':'mechanism_bench','lead_screw':'mechanism_bench','cam_follower':'mechanism_bench',
+ 'lever_balance':'science_diagram','resistive_circuit':'science_diagram','hydraulic_lift':'science_diagram',
+ 'thermal_contact':'science_diagram','dna_pairing':'science_diagram','water_transfer':'science_diagram',
+}
+PATTERNS={
+ 'bascule_bridge':r'\b(bascule|drawbridge|bridge|trunnion)\b',
+ 'photovoltaic_cell':r'\b(solar|photovoltaic)\b',
+ 'piston_pump':r'\b(piston pump|pump|pumping)\b',
+ 'wind_turbine':r'\b(wind|turbine|turbines)\b',
+ 'hand_generator':r'\b(hand.?crank|cranked|cranking|crank handle|handle.{0,25}lamp|generator)\b',
+ 'rack_pinion':r'\b(rack|pinion)\b','lead_screw':r'\blead.?screw\b','cam_follower':r'\b(cam|follower)\b',
+ 'lever_balance':r'\b(lever|seesaw)\b','resistive_circuit':r'\b(resistor|resistive|ohmic)\b',
+ 'hydraulic_lift':r'\bhydraulic\b','thermal_contact':r'\b(thermal|heat|temperature)\b',
+ 'dna_pairing':r'\bdna\b','water_transfer':r'\bwater.{0,20}reservoir\b',
+}
+
+def entities(value):
+ if isinstance(value,list):
+  for item in value:yield from entities(item)
+ elif isinstance(value,dict):
+  if any(k in value for k in ('topic','title','mechanism','visual_family','subject','tag','video')):yield value
+  for item in value.values():
+   if isinstance(item,(dict,list)):yield from entities(item)
+
+def families(row):
+ found=set()
+ for key in ('visual_family','mechanism','subject','prototype'):
+  value=row.get(key)
+  if isinstance(value,str):
+   if value in FAMILIES:found.add(FAMILIES[value])
+   elif value in set(FAMILIES.values()):found.add(value)
+ text=' '.join(str(row.get(k,'')) for k in ('topic','title','topic_key','description')).lower().replace('_',' ')
+ for key,pattern in PATTERNS.items():
+  if re.search(pattern,text):found.add(FAMILIES[key])
+ return found
+
+def identity(topic,mechanism=None):
+ if mechanism is not None:
+  if mechanism not in FAMILIES:raise ValueError('Unregistered visual family; novelty cannot be established')
+  return FAMILIES[mechanism]
+ found=families({'topic':topic})
+ if len(found)!=1:raise ValueError('A single registered visual family is required before generation')
+ return next(iter(found))
+
+def pending_owner(row,owner):
+ if owner is None:return False
+ belongs=any(str(row.get(k))==str(owner) for k in ('owner','record_run','run_id'))
+ produced=any(row.get(k) for k in ('video','tag','media_sha256','published_at','scheduled_at')) or row.get('state') in ('created','rendered','scheduled','published','skipped','deleted','saved')
+ return belongs and not produced and (row.get('state')=='reserved' or row.get('failed') is True)
+
+def reason(topic,mechanism,rows,owner=None):
+ try:family=identity(topic,mechanism)
+ except ValueError as e:return str(e)
+ prior=[row for row in rows if not pending_owner(row,owner)]
+ repeated=duplicate(topic,prior)
+ if repeated:return repeated+'; no reworded or corrected copy is allowed'
+ if any(family in families(row) for row in prior):
+  return 'Visual setup already used or reserved: '+family+'; a new title, format or camera angle is not a new video'
+ return ''
+
+def records(root=None):
+ base=Path(root) if root else Path(__file__).resolve().parent.parent
+ paths=[MEMORY,'data/scenes/history.json','data/scenes/videos.json','data/scenes/topic-ledger.json']
+ rows=[]
+ cloud=root is None and os.environ.get('GITHUB_ACTIONS')=='true' and bool(os.environ.get('GH_TOKEN'))
+ for name in paths:
+  if cloud:
+   from studio_lib.service_queue import read_document
+   data,_=read_document(name,None)
+  else:
+   path=base/name
+   if not path.is_file():raise ValueError('Permanent novelty history missing; generation held: '+name)
+   data=json.loads(path.read_text())
+  if not isinstance(data,list) or any(not isinstance(r,dict) for r in data):raise ValueError('Permanent novelty history is invalid: '+name)
+  rows.extend(data)
+ for name in ('data/scenes/publishing-status.json','data/scenes/review/index.json'):
+  path=base/name
+  if path.exists():rows.extend(entities(json.loads(path.read_text())))
+ review=base/'data/scenes/review'
+ if review.exists():
+  for path in review.glob('*/*/*.json'):rows.extend(entities(json.loads(path.read_text())))
+ return rows
+
+def require_new(topic,mechanism=None,owner=None,root=None):
+ owner=os.environ.get('GITHUB_RUN_ID') if owner is None else owner
+ error=reason(topic,mechanism,records(root),owner)
+ if error:raise ValueError('Permanent no-repeat policy: '+error)
+ return identity(topic,mechanism)
+
+def unused(catalog,rows,owner=None):
+ blocked=set().union(*(families(r) for r in rows if not pending_owner(r,owner))) if rows else set()
+ return {k:v for k,v in catalog.items() if k in FAMILIES and FAMILIES[k] not in blocked}
+
+def reserve_new(topic,mechanism=None):
+ """Claim the visual family atomically before any writing/voice/render call."""
+ family=identity(topic,mechanism)
+ if os.environ.get('GITHUB_ACTIONS')!='true' or not os.environ.get('GH_TOKEN'):
+  raise ValueError('Production novelty reservation requires the cloud job')
+ from studio_lib.service_queue import read_document,write_document
+ owner=os.environ['GITHUB_RUN_ID']
+ for attempt in range(6):
+  ledger,sha=read_document(MEMORY,None)
+  if not isinstance(ledger,list):raise ValueError('Permanent novelty ledger unavailable')
+  error=reason(topic,mechanism,records()+ledger,owner)
+  if error:raise ValueError('Permanent no-repeat policy: '+error)
+  if any(r.get('owner')==owner and r.get('topic')==topic and r.get('state')=='reserved' for r in ledger):return family
+  entry={'topic':topic,'visual_family':family,'owner':owner,'state':'reserved','policy':POLICY}
+  if mechanism:entry['mechanism']=mechanism
+  ledger.append(entry)
+  try:write_document(MEMORY,ledger,sha,'Reserve an unused idea and visual setup before media');return family
+  except urllib.error.HTTPError as error:
+   if error.code not in (409,422) or attempt==5:raise
+   time.sleep(1)
+
+def record_created(topic,mechanism,path):
+ """Remember the first encoded video even if later quality or delivery fails."""
+ if os.environ.get('GITHUB_ACTIONS')!='true' or not os.environ.get('GH_TOKEN'):
+  raise ValueError('Production novelty records must be saved by the cloud job')
+ from studio_lib.service_queue import read_document,write_document
+ row={'topic':topic,'mechanism':mechanism,'visual_family':identity(topic,mechanism),
+      'state':'created','owner':os.environ['GITHUB_RUN_ID'],'policy':POLICY,
+      'media_sha256':hashlib.sha256(Path(path).read_bytes()).hexdigest()}
+ for attempt in range(6):
+  ledger,sha=read_document(MEMORY,None)
+  if not isinstance(ledger,list):raise ValueError('Permanent novelty ledger unavailable')
+  if any(r.get('media_sha256')==row['media_sha256'] for r in ledger):return
+  error=reason(topic,mechanism,ledger,row['owner'])
+  if error:raise ValueError('Permanent no-repeat policy: '+error)
+  ledger.append(row)
+  try:write_document(MEMORY,ledger,sha,'Remember rendered visual family permanently, regardless of review result');return
+  except urllib.error.HTTPError as error:
+   if error.code not in (409,422) or attempt==5:raise
+   time.sleep(1)
+
+def audit():
+ from studio_lib.registry import REGISTRY
+ rows=records()
+ return {'policy':POLICY,'history_records':len(rows),'used_visual_families':sorted(set().union(*(families(r) for r in rows))),
+         'unused_daily_components':list(unused(REGISTRY,rows)),'generation_requests':0,'rendered_videos':0}
+
+if __name__=='__main__':
+ import argparse
+ parser=argparse.ArgumentParser(description='Read-only audit of permanent novelty history; never generates media')
+ parser.add_argument('--audit',action='store_true',required=True);parser.parse_args()
+ print(json.dumps(audit(),indent=2))

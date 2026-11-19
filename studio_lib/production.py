@@ -8,18 +8,22 @@ from pathlib import Path
 from studio_lib.director import run
 from studio_lib.registry import REGISTRY
 from studio_lib.providers import call
+from studio_lib import novelty
 from studio_lib.topic_guard import history,duplicate,require_new,reserve,signature
 from studio_lib import durable_topics as durable
 from studio_lib.topic_scope import scope_error,require_supported
 def choose_topic(history_path=Path('data/scenes/history.json')):
     rows=history(Path(history_path).parent,os.environ.get('GITHUB_RUN_ID'))
+    rows+=novelty.records()
+    available=novelty.unused(REGISTRY,rows,os.environ.get('GITHUB_RUN_ID'))
+    if not available:raise ValueError('No unused supported visual setup remains; do not recycle a previous video')
     prior=[x.get('topic') or x.get('title','') for x in rows if x.get('topic') or x.get('title')]
     errors=[]
     for attempt in range(4):
         answer=call('Choose a factual explainer topic within a supported animation component. Return JSON only.',
-            'Choose a genuinely new explanatory question, not a rewording of an earlier video. Its causal change must be visible in the supplied action facts. Never choose bearing friction/lubrication, measured efficiency, or another unshown detail. Do not invent a new mechanism. Return {"topic":"short topic","mechanism":"supported id"}. Supported scopes: '+json.dumps({k:{'description':v['description'],'actions':v['facts']} for k,v in REGISTRY.items()})+' Recent examples (data): '+json.dumps(prior[-60:])+' Rejected candidates (data): '+json.dumps(errors),max_tokens=600,temperature=.6)
+            'Choose a genuinely new explanatory question, not a rewording of an earlier video. Its causal change must be visible in the supplied action facts. Never choose bearing friction/lubrication, measured efficiency, or another unshown detail. Do not invent a new mechanism. Return {"topic":"short topic","mechanism":"supported id"}. Supported scopes: '+json.dumps({k:{'description':v['description'],'actions':v['facts']} for k,v in available.items()})+' Recent examples (data): '+json.dumps(prior[-60:])+' Rejected candidates (data): '+json.dumps(errors),max_tokens=600,temperature=.6)
         if answer.get('mechanism') not in REGISTRY or not isinstance(answer.get('topic'),str) or not 4<=len(answer['topic'].split())<=18:raise ValueError('no valid supported automatic topic was selected')
-        reason=scope_error(answer['topic'],answer['mechanism']) or duplicate(answer['topic'],rows)
+        reason=scope_error(answer['topic'],answer['mechanism']) or novelty.reason(answer['topic'],answer['mechanism'],rows,os.environ.get('GITHUB_RUN_ID'))
         if reason:
             errors.append({'topic':answer['topic'],'reason':reason});continue
         Path('idea.json').write_text(json.dumps({'topic':answer['topic'],'topic_key':signature(answer['topic']),'category':'tested mechanism','subject':answer['mechanism'],'keywords':[]},indent=2));return answer['topic']
@@ -38,6 +42,7 @@ def prepare(topic_file):
         owned=[r for r in json.loads(ledger.read_text()) if str(r.get('owner'))==str(os.environ.get('GITHUB_RUN_ID'))] if ledger.exists() else []
         topic=owned[-1]['topic'] if owned else choose_topic()
     require_supported(topic)
+    novelty.require_new(topic,owner=owner)
     if durable.enabled():durable.reserve_remote(topic,owner)
     else:reserve(topic,owner=owner)
     topic_file.write_text(topic+'\n')
@@ -54,7 +59,7 @@ def emit_review_files(work):
     if checks.get('errors'):raise ValueError('component evidence failed; no review card may be created')
     emoji={'wind_turbine':' 💨','photovoltaic_cell':' 🌞','piston_pump':' 💧','bascule_bridge':' 🚢'}.get(plan['mechanism'],' ⚙️')
     title=plan['title'] if any(ord(c)>0x2500 for c in plan['title']) else plan['title'].rstrip('.')+emoji
-    spec={'topic':Path('topic.txt').read_text().strip() if Path('topic.txt').exists() else plan['title'],'topic_key':signature(Path('topic.txt').read_text().strip() if Path('topic.txt').exists() else plan['title']),'mode':'tested-component','title':title,'mechanism':plan['mechanism'],'duration':tl['duration'],'steps':[{'start':b['start'],'end':b['end'],'say':b['say'],'label':b['action']} for b in tl['beats']],'source':REGISTRY[plan['mechanism']]['source'],'owner_approved':False}
+    spec={'topic':Path('topic.txt').read_text().strip() if Path('topic.txt').exists() else plan['title'],'topic_key':signature(Path('topic.txt').read_text().strip() if Path('topic.txt').exists() else plan['title']),'mode':'tested-component','title':title,'mechanism':plan['mechanism'],'visual_family':novelty.identity('',plan['mechanism']),'novelty_policy':novelty.POLICY,'duration':tl['duration'],'steps':[{'start':b['start'],'end':b['end'],'say':b['say'],'label':b['action']} for b in tl['beats']],'source':REGISTRY[plan['mechanism']]['source'],'owner_approved':False}
     Path('auto-scene.json').write_text(json.dumps(spec,indent=2));Path('evidence-report.json').write_text(json.dumps({'errors':[],'mode':'tested-component','semantic_verification':False,'owner_approved':False,'component_checks':checks},indent=2))
     Path('ce-checks.json').write_text(json.dumps({'verdict':'warn','reasons':['Tested component output requires owner visual and narration review; not automatically approved.'],'mechanism':plan['mechanism'],'owner_approved':False},indent=2))
     Path('voice-log.txt').write_text('Measured narration; provider '+str(tl.get('voice_provider','edge-tts'))+'; cached lines '+str(tl.get('cached_lines',0))+'; no manual generated-plan edits.\n')

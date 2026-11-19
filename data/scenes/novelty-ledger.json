@@ -1,0 +1,571 @@
+[
+  {
+    "topic": "how a dam holds back a river and makes a lake",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "River and dam"
+  },
+  {
+    "topic": "how stitches close a deep cut in your skin",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "How stitches close a cut"
+  },
+  {
+    "topic": "why water towers stand so tall",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "Why Water Towers Stand So Tall \ud83d\uddfc"
+  },
+  {
+    "topic": "how a hydroelectric dam turns falling water into electricity",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "How A Dam Turns Water Into Power \u26a1"
+  },
+  {
+    "topic": "how a well pump brings water up from deep underground",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "How a Well Pump Lifts Water \ud83d\udeb0",
+    "visual_family": "piston_pump"
+  },
+  {
+    "topic": "how bees turn flowers into honey",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "How Bees Turn Flowers Into Honey \ud83c\udf6f"
+  },
+  {
+    "topic": "Why do corn kernels explode into fluffy popcorn when heated?",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "Why Corn Pops Into Fluffy Snack \ud83c\udf7f"
+  },
+  {
+    "topic": "How does a refrigerator cool food using a compressor?",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "How a Fridge Freezes Food \u2744\ufe0f"
+  },
+  {
+    "topic": "How does a toaster turn bread into toast?",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "Why a Toaster Makes Toast \ud83c\udf5e"
+  },
+  {
+    "topic": "How a car's automatic transmission shifts gears smoothly",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1"
+  },
+  {
+    "topic": "How does a LED light emit bright colors from a tiny chip?",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "How LED chips paint bright colors \ud83c\udf08"
+  },
+  {
+    "topic": "How does a wind turbine turn wind into electricity?",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "How Wind Powers Your Home \u26a1",
+    "visual_family": "rotary_generator"
+  },
+  {
+    "topic": "How Wind Powers Home \u26a1",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "How Wind Powers Home \u26a1",
+    "visual_family": "rotary_generator"
+  },
+  {
+    "topic": "How a CD player reads data using a laser",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "How a tiny laser reads music \ud83c\udfb6"
+  },
+  {
+    "topic": "Why does a soccer ball curve when kicked with spin?",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1"
+  },
+  {
+    "topic": "Why does a rainbow appear when sunlight passes through a raindrop?",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "Why Rainbows Shine From Raindrops \ud83c\udf08"
+  },
+  {
+    "topic": "How does a chameleon change its color?",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1"
+  },
+  {
+    "topic": "Why does a comet develop a glowing tail when near the Sun?",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1"
+  },
+  {
+    "topic": "How does a single snowflake get its intricate shape?",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1"
+  },
+  {
+    "topic": "How does the moon\u2019s pull create ocean tides?",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1"
+  },
+  {
+    "topic": "How does the heart pump blood throughout the body?",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "visual_family": "piston_pump"
+  },
+  {
+    "topic": "How does a suspension bridge distribute weight through its cables?",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "visual_family": "bascule_bridge"
+  },
+  {
+    "topic": "How does a kinetic energy recovery system capture braking energy?",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "How a KERS captures braking energy \ud83d\ude97"
+  },
+  {
+    "topic": "How does a gasoline car engine turn fuel into motion?",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "How a gasoline engine creates motion \ud83d\ude97"
+  },
+  {
+    "topic": "How a car engine starts",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "How a Car Engine Starts \ud83d\ude97"
+  },
+  {
+    "topic": "How a car engine starts 2026-11-15T07:41:33",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "How a Car Engine Starts \ud83d\ude97"
+  },
+  {
+    "topic": "How your heart pumps blood 2026-11-15T13:23:41",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "How Your Heart Pumps Blood \u2764\ufe0f"
+  },
+  {
+    "topic": "How a volcano erupts 2026-11-15T15:42:49",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "How Volcanoes Erupt Without Lava \ud83c\udf0b"
+  },
+  {
+    "topic": "How lightning forms in a storm 2026-11-15T16:48:57",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "How Lightning Forms in Storm \u26a1"
+  },
+  {
+    "topic": "How a bee makes honey 2026-11-15T22:33:58",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "How Bees Turn Nectar Into Honey \ud83c\udf6f"
+  },
+  {
+    "topic": "How a bee makes honey 2026-11-15T23:13:41",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "How Bees Turn Nectar Into Honey \ud83c\udf6f"
+  },
+  {
+    "topic": "auto 2026-11-16T01:49:27",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "How a Car Engine Starts \ud83d\ude97"
+  },
+  {
+    "topic": "Why does a tuned mass damper sway to calm skyscraper motion?",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1"
+  },
+  {
+    "topic": "How a solar panel converts sunlight into electricity",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "How Solar Panels Turn Sunlight Into Power \u26a1",
+    "visual_family": "photovoltaic_cell"
+  },
+  {
+    "topic": "How a photovoltaic cell converts sunlight into electricity",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "How a Solar Cell Turns Sunlight Into Electricity",
+    "visual_family": "photovoltaic_cell"
+  },
+  {
+    "topic": "Why direct-drive wind turbines need no gearbox",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "Why Direct\u2011Drive Turbines Skip Gearboxes Efficiently \ud83d\udca8",
+    "visual_family": "rotary_generator"
+  },
+  {
+    "topic": "Why photovoltaic cells use anti\u2011reflective coatings",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "visual_family": "photovoltaic_cell"
+  },
+  {
+    "topic": "Why a check valve prevents backflow in a piston pump",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "visual_family": "piston_pump"
+  },
+  {
+    "topic": "Why a bascule bridge uses counterweights to balance the moving leaf",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "visual_family": "bascule_bridge"
+  },
+  {
+    "topic": "Why a bascule bridge uses a trunnion pivot for smooth lifting",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "Why a Trunnion Pivot Enables Smooth Bridge Lifting \ud83d\udea2",
+    "visual_family": "bascule_bridge"
+  },
+  {
+    "topic": "How the trunnion bearing reduces friction during a bascule bridge lift",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "visual_family": "bascule_bridge"
+  },
+  {
+    "topic": "Why the road barriers close before the bridge begins to lift",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "visual_family": "bascule_bridge"
+  },
+  {
+    "topic": "How a Fridge Freezes Food \u2744\ufe0f",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "How a Fridge Freezes Food \u2744\ufe0f",
+    "tag": "ce-20261113-1422"
+  },
+  {
+    "topic": "Why a Toaster Makes Toast \ud83c\udf5e",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "Why a Toaster Makes Toast \ud83c\udf5e",
+    "tag": "ce-20261113-1846"
+  },
+  {
+    "topic": "How Wind Powers Your Home \u26a1",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "How Wind Powers Your Home \u26a1",
+    "visual_family": "rotary_generator",
+    "tag": "ce-20261113-1956"
+  },
+  {
+    "topic": "How a tiny laser reads music \ud83c\udfb6",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "How a tiny laser reads music \ud83c\udfb6",
+    "tag": "ce-20261113-2054"
+  },
+  {
+    "topic": "Why Rainbows Shine From Raindrops \ud83c\udf08",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "Why Rainbows Shine From Raindrops \ud83c\udf08",
+    "tag": "ce-20261113-2105"
+  },
+  {
+    "topic": "How a KERS captures braking energy \ud83d\ude97",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "How a KERS captures braking energy \ud83d\ude97",
+    "tag": "ce-20261114-1124"
+  },
+  {
+    "topic": "How a gasoline engine creates motion \ud83d\ude97",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "How a gasoline engine creates motion \ud83d\ude97",
+    "tag": "ce-20261114-1514"
+  },
+  {
+    "topic": "How a Car Engine Starts \ud83d\ude97",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "How a Car Engine Starts \ud83d\ude97",
+    "tag": "ce-20261114-1535"
+  },
+  {
+    "topic": "How an Engine Starts \ud83d\ude97",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "How an Engine Starts \ud83d\ude97",
+    "tag": "ce-20261115-0348"
+  },
+  {
+    "topic": "How a Car Engine Starts \ud83d\udd27",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "How a Car Engine Starts \ud83d\udd27",
+    "tag": "ce-20261115-0740"
+  },
+  {
+    "topic": "How Your Heart Pumps Blood \u2764\ufe0f",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "How Your Heart Pumps Blood \u2764\ufe0f",
+    "tag": "ce-20261115-1540"
+  },
+  {
+    "topic": "How Volcanoes Erupt Without Lava \ud83c\udf0b",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "How Volcanoes Erupt Without Lava \ud83c\udf0b",
+    "tag": "ce-20261115-1623"
+  },
+  {
+    "topic": "How Lightning Forms in Storm \u26a1",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "How Lightning Forms in Storm \u26a1",
+    "tag": "ce-20261115-1830"
+  },
+  {
+    "topic": "How Bees Turn Nectar Into Honey \ud83c\udf6f",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "How Bees Turn Nectar Into Honey \ud83c\udf6f",
+    "tag": "ce-20261115-2312"
+  },
+  {
+    "topic": "How Solar Panels Turn Sunlight Into Power \u26a1",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "How Solar Panels Turn Sunlight Into Power \u26a1",
+    "visual_family": "photovoltaic_cell",
+    "tag": "ce-20261116-1727"
+  },
+  {
+    "topic": "How a direct\u2011drive wind turbine turns moving air into electricity",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "How a direct\u2011drive wind turbine turns moving air into electricity",
+    "visual_family": "rotary_generator",
+    "tag": "ce-20261117-0233-p1"
+  },
+  {
+    "topic": "How a Reciprocating Piston Pump Moves Water",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "How a Reciprocating Piston Pump Moves Water",
+    "visual_family": "piston_pump",
+    "tag": "ce-20261117-0233-p2"
+  },
+  {
+    "topic": "How Sunlight Becomes Electrical Power in Panels",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "How Sunlight Becomes Electrical Power in Panels",
+    "tag": "ce-20261117-0234-p3"
+  },
+  {
+    "topic": "Why a Bascule Drawbridge Lifts for Ships",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "Why a Bascule Drawbridge Lifts for Ships",
+    "visual_family": "bascule_bridge",
+    "tag": "ce-20261117-0234-p4"
+  },
+  {
+    "topic": "How a wind turbine creates electricity from spinning magnets \ud83c\udf2c\ufe0f",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "How a wind turbine creates electricity from spinning magnets \ud83c\udf2c\ufe0f",
+    "visual_family": "rotary_generator",
+    "tag": "ce-20261117-0247-p1"
+  },
+  {
+    "topic": "How a Solar Cell Turns Sunlight Into Electricity \u2600\ufe0f",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "How a Solar Cell Turns Sunlight Into Electricity \u2600\ufe0f",
+    "visual_family": "photovoltaic_cell",
+    "tag": "ce-20261117-0306"
+  },
+  {
+    "topic": "Why Direct\u2011Drive Turbines Skip Gearboxes Efficiently \ud83d\udca8",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "Why Direct\u2011Drive Turbines Skip Gearboxes Efficiently \ud83d\udca8",
+    "visual_family": "rotary_generator",
+    "tag": "ce-20261117-0312"
+  },
+  {
+    "topic": "Why Direct\u2011Drive Needs No Gearbox \ud83d\udca8",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "Why Direct\u2011Drive Needs No Gearbox \ud83d\udca8",
+    "tag": "ce-20261117-0857-cinema-44051234755"
+  },
+  {
+    "topic": "Why Direct-Drive Needs No Gearbox \ud83d\udca8",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "Why Direct-Drive Needs No Gearbox \ud83d\udca8",
+    "tag": "ce-20261117-0926-cinema-44055594754"
+  },
+  {
+    "topic": "Why Turning a Handle Lights a Lamp \ud83d\udca8",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "Why Turning a Handle Lights a Lamp \ud83d\udca8",
+    "visual_family": "rotary_generator",
+    "tag": "ce-20261117-1034-cinema-44066025188"
+  },
+  {
+    "topic": "How Turning a Handle Lights a Lamp \ud83d\udca1",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "How Turning a Handle Lights a Lamp \ud83d\udca1",
+    "visual_family": "rotary_generator",
+    "tag": "ce-20261117-1053-cinema-44068968307"
+  },
+  {
+    "topic": "Why Hydraulic Lifts Trade Travel \ud83c\udfd7\ufe0f",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "Why Hydraulic Lifts Trade Travel \ud83c\udfd7\ufe0f",
+    "visual_family": "science_diagram",
+    "tag": "ce-20261117-1726-cinema-44136986640"
+  },
+  {
+    "topic": "How Machines Work From the Inside \ud83d\udd27",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "How Machines Work From the Inside \ud83d\udd27",
+    "tag": "ce-long-20261117-1921"
+  },
+  {
+    "topic": "Why a Seesaw Lifts With Less Force \u2696\ufe0f",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "Why a Seesaw Lifts With Less Force \u2696\ufe0f",
+    "visual_family": "science_diagram",
+    "tag": "ce-20261117-2028-cinema-44169681052"
+  },
+  {
+    "topic": "Why Microwaves Heat Food Instantly \ud83c\udf72",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "Why Microwaves Heat Food Instantly \ud83c\udf72",
+    "visual_family": "science_diagram",
+    "tag": "ce-20261113-1850"
+  },
+  {
+    "topic": "Why Drawbridges Lift for Ships \ud83d\udea2",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "Why Drawbridges Lift for Ships \ud83d\udea2",
+    "tag": "ce-20261116-0656"
+  },
+  {
+    "topic": "Why Hydraulic Lift Raises Heavy Loads \ud83c\udfd7\ufe0f",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "Why Hydraulic Lift Raises Heavy Loads \ud83c\udfd7\ufe0f",
+    "visual_family": "science_diagram",
+    "tag": "ce-20261117-2315-cinema-44197813889"
+  },
+  {
+    "topic": "Why Thermal Contact Matters \ud83c\udf21\ufe0f",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "Why Thermal Contact Matters \ud83c\udf21\ufe0f",
+    "visual_family": "science_diagram",
+    "tag": "ce-20261118-0312-cinema-44228814968"
+  },
+  {
+    "topic": "Why does reversing the pinion rotation reverse the linear travel direction of the rack?",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "How Pinion Rotation Reverses Rack Travel \u2699\ufe0f",
+    "visual_family": "mechanism_bench",
+    "tag": "ce-long-20261118-0831"
+  },
+  {
+    "topic": "Why does the travel distance of a rack-and-pinion system change when the pinion diameter is increased?",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "visual_family": "mechanism_bench"
+  },
+  {
+    "topic": "Why hydraulic lift can raise heavy loads",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "visual_family": "science_diagram"
+  },
+  {
+    "topic": "Why resistor circuit current changes with voltage",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "visual_family": "science_diagram"
+  },
+  {
+    "topic": "Why does a lead screw convert rotational motion into precise linear travel in CNC machines?",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "visual_family": "mechanism_bench"
+  },
+  {
+    "topic": "Why thermal contact matters in heat transfer between touching objects",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "visual_family": "science_diagram"
+  },
+  {
+    "topic": "Why does the follower height vary sinusoidally in a fixed\u2011eccentricity circular cam?",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "visual_family": "mechanism_bench"
+  },
+  {
+    "topic": "Why does increasing the length of the rack not change the linear travel per pinion rotation?",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "visual_family": "mechanism_bench"
+  },
+  {
+    "topic": "Why does the linear travel per rotation of a lead screw remain constant regardless of screw length?",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "visual_family": "mechanism_bench"
+  },
+  {
+    "topic": "Why a Check Valve Prevents Backflow \ud83d\udca7",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "Why a Check Valve Prevents Backflow \ud83d\udca7",
+    "tag": "ce-20261118-1607"
+  },
+  {
+    "topic": "Why a Bascule Bridge Uses Counterweights Effectively \ud83d\udea2",
+    "state": "historical",
+    "policy": "original-idea-and-visuals-v1",
+    "title": "Why a Bascule Bridge Uses Counterweights Effectively \ud83d\udea2",
+    "visual_family": "bascule_bridge",
+    "tag": "ce-20261119-0327"
+  }
+]

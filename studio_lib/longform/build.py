@@ -4,6 +4,7 @@ from studio_lib.cinema.topic_memory import prompt_history
 import argparse,asyncio,base64,json,math,os,subprocess,time
 from pathlib import Path
 from studio_lib.providers import call
+from studio_lib import novelty
 from studio_lib.storytelling import WRITING_RULES as STORY_RULES
 from studio_lib.quality_gate import seal
 from studio_lib.topic_guard import duplicate,signature
@@ -22,7 +23,10 @@ def select(out):
   rows+=data
   if path=='data/scenes/videos.json':created=data
  owned=[r for r in rows if str(r.get('owner'))==str(os.environ['GITHUB_RUN_ID']) and r.get('format')=='original_full']
- if owned:return {'topic':owned[-1]['topic'],'mechanism':owned[-1]['mechanism']}
+ if owned:
+  selected={'topic':owned[-1]['topic'],'mechanism':owned[-1]['mechanism']}
+  novelty.require_new(selected['topic'],selected['mechanism'])
+  return selected
  resume=Path('publish/long.resume.json')
  if resume.exists():
   config=json.loads(resume.read_text());source=api('actions/runs/'+str(config['run_id']))
@@ -31,11 +35,10 @@ def select(out):
   if len(original)!=1:raise ValueError('Missing original automatic full-video reservation')
   selected={'topic':original[0]['topic'],'mechanism':original[0]['mechanism']}
   (out/'resume-provenance.json').write_text(json.dumps({'repair_of_run':config['run_id'],'selected_by_system':True,'new_topic_count':0,**selected},indent=2))
+  novelty.require_new(selected['topic'],selected['mechanism'])
   return selected
- available={k:v for k,v in SOURCES.items() if not any(r.get('mechanism')==k for r in created)}
- # Production reuses tested components for genuinely different concepts;
- # duplicate topic checks below still cover the complete durable history.
- if os.environ.get('GITHUB_REF_NAME')=='main':available=dict(SOURCES)
+ rows+=novelty.records()
+ available=novelty.unused(SOURCES,rows,os.environ.get('GITHUB_RUN_ID'))
  if not available:raise ValueError('No uncovered full-format mechanism remains; do not repeat')
  rejected=[]
  for i in range(4):
@@ -43,7 +46,7 @@ def select(out):
    'The system chooses the subject. Return {"topic":"specific How/Why question","mechanism":"exact supported id"}. Use only these actual supported scopes, never claim an entire factory or vehicle. No reworded repeat. SCOPES: '+json.dumps(available)+' FULL HISTORY: '+json.dumps(prompt_history(rows))+' REJECTED: '+json.dumps(rejected),max_tokens=700,temperature=.5)
   (out/f'topic-selection-{i}.json').write_text(json.dumps(candidate,indent=2))
   topic=candidate.get('topic','');mechanism=candidate.get('mechanism')
-  reason=duplicate(topic,rows)
+  reason=novelty.reason(topic,mechanism,rows,os.environ.get('GITHUB_RUN_ID'))
   if mechanism in SOURCES and unsupported_comparison(topic,mechanism):reason='This topic requires geometry variants not shown by the fixed mechanism; choose a topic within the actual scope'
   if mechanism not in available or reason:rejected.append(reason or 'Unsupported scope');continue
   own=str(os.environ['GITHUB_RUN_ID'])
@@ -96,6 +99,7 @@ def plan(out):
 
 def run(out):
  out=Path(out);out.mkdir(parents=True,exist_ok=True);started=time.monotonic();p=plan(out)
+ novelty.reserve_new(p['topic'],p['mechanism'])
  # Same voice delivery and measured word timing as shorts; full format has its own duration range.
  print('CE_STAGE=voice',flush=True)
  tl=asyncio.run(voice(p,out,duration_range=(120,300)));require_media(tl['duration'],WIDTH,HEIGHT)
@@ -111,6 +115,7 @@ def run(out):
  finally:proc.stdin.close()
  if proc.wait():raise RuntimeError('Landscape render failed')
  subprocess.run(['ffmpeg','-v','error','-y','-i',str(out/'silent.mp4'),'-i',str(out/'mix.wav'),'-c:v','copy','-c:a','aac','-b:a','160k',*mastering_args(),'-t',str(tl['duration']),'-movflags','+faststart',str(out/'video.mp4')],check=True)
+ novelty.record_created(p['topic'],p['mechanism'],out/'video.mp4')
  measured=json.loads(subprocess.check_output(['ffprobe','-v','error','-show_streams','-show_format','-of','json',str(out/'video.mp4')]))
  stream=next(s for s in measured['streams'] if s['codec_type']=='video');require_media(float(measured['format']['duration']),stream['width'],stream['height'])
  subprocess.run(['ffmpeg','-v','error','-i',str(out/'video.mp4'),'-f','null','-'],check=True)

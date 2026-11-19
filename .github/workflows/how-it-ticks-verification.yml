@@ -44,3 +44,6 @@ jobs:
       - run: python -m unittest discover -s tests/cinema -v
       - run: python -m unittest discover -s tests/recovery -v
       - run: python -m unittest discover -s tests/studio -v
+
+      - name: Audit permanent originality policy without generating media
+        run: python -m studio_lib.novelty --audit

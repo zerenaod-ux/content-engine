@@ -5,7 +5,8 @@ class AutomaticTopicTests(unittest.TestCase):
         rows=[{'title':'Why a Seesaw Lifts With Less Force'}]
         self.assertTrue(candidate_valid({'topic':'How a lever raises loads','mechanism':'lever_balance'},rows))
         self.assertTrue(candidate_valid({'topic':'How a nuclear reactor works','mechanism':'resistive_circuit'},[]))
-        self.assertEqual(candidate_valid({'topic':'How a resistor circuit carries current','mechanism':'resistive_circuit'},rows),'')
+        self.assertTrue(candidate_valid({'topic':'How a resistor circuit carries current','mechanism':'resistive_circuit'},rows))
+        self.assertEqual(candidate_valid({'topic':'How a resistor circuit carries current','mechanism':'resistive_circuit'},[]),'')
 
     def test_plural_past_hydraulic_title_blocks_a_reworded_hydraulic_topic(self):
         rows=[{'title':'Why Hydraulic Lifts Trade Travel'}]

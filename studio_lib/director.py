@@ -9,6 +9,7 @@ from pathlib import Path
 import numpy as np
 from PIL import Image,ImageDraw
 from studio_lib.providers import call
+from studio_lib import novelty
 from studio_lib import narration_timing
 from studio_lib.storytelling import WRITING_RULES as STORY_RULES
 from studio_lib.mesh import Scene,ease,ramp
@@ -263,6 +264,7 @@ def verify_component(plan,tl,out):
     if errors:raise ValueError('; '.join(errors))
 def run(topic,out):
     require_supported(topic)
+    novelty.reserve_new(topic)
     out=Path(out);out.mkdir(parents=True,exist_ok=True);start=time.monotonic()
     cp=Checkpoint(topic,validator=validate,namespace='tested-library-spoken-v1');saved=cp.load()
     def contract_version(plan):return hashlib.sha256((narration_timing.VERSION+json.dumps(REGISTRY[plan['mechanism']],sort_keys=True)).encode()).hexdigest()
@@ -318,6 +320,7 @@ def run(topic,out):
         cached=Path('.ce-cache/studio-renders')/(cp.key+'.mp4');cached.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(out/'silent.mp4',cached)
     save('rendered',plan,timeline=tl,render_signature=render_sig,silent_path=str(cached),silent_sha256=hashlib.sha256(cached.read_bytes()).hexdigest())
     assemble(spec,tl,out)
+    novelty.record_created(topic,plan['mechanism'],out/'video.mp4')
     require_video_duration(out/'video.mp4')
     from studio_lib.daily_quality import verify as verify_output
     print('CE_STAGE=audio',flush=True)
