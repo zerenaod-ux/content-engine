@@ -1,0 +1,24 @@
+name: Deliver inspected daily correction
+on:
+  push:
+    paths: ['publish/daily-correction-delivery.json']
+permissions:
+  contents: write
+  issues: write
+concurrency:
+  group: daily-correction-delivery
+  cancel-in-progress: false
+jobs:
+  delivery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: main}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: python -m unittest discover -s tests/delivery -q
+      - name: Preserve owner decision and update the existing review media
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python deliver_daily_correction.py
