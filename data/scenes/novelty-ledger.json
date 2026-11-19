@@ -567,5 +567,13 @@
     "title": "Why a Bascule Bridge Uses Counterweights Effectively \ud83d\udea2",
     "visual_family": "bascule_bridge",
     "tag": "ce-20261119-0327"
+  },
+  {
+    "topic": "How the iris aperture controls exposure brightness",
+    "visual_family": "optical_iris",
+    "owner": "44575729538",
+    "state": "reserved",
+    "policy": "original-idea-and-visuals-v1",
+    "mechanism": "camera_iris"
   }
 ]
