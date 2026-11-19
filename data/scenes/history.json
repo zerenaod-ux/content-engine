@@ -823,5 +823,17 @@
     "category": "",
     "record_run": "44611900211",
     "record_attempt": "1"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "",
+    "date": "2026-11-19",
+    "topic": "Why a three\u2011wheel combination padlock only releases when all wheels align",
+    "title": "Why a Three\u2011Wheel Padlock Only Releases \u2699\ufe0f",
+    "subject": "combination_lock",
+    "keywords": [],
+    "category": "tested mechanism",
+    "record_run": "44626696622",
+    "record_attempt": "1"
   }
 ]
