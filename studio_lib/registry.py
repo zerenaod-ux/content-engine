@@ -89,3 +89,45 @@ REGISTRY.update({
   'source':'https://patents.google.com/patent/US5095724A/en',
   'mechanism_source':'https://patents.google.com/patent/GB2227515A/en'}
 })
+
+REGISTRY.update({
+ 'electric_relay':{'description':'Complete electromagnetic relay with isolated coil-control and contact/load circuits, hinged armature, return spring, real contact buttons and test lamp; not a generator, transistor, motor or mains wiring tutorial',
+  'actions':['relay','cutaway','energize','attract','closed','release','off','payoff'],
+  'facts':{
+   'relay':'The whole connected relay module is shown with separate control and load supplies and a dark test lamp. The control switch is open and the armature is held up. Introduce a question about a small control signal operating a separate circuit. No action starts yet.',
+   'cutaway':'A simplified cutaway lifts the relay cover, exposing a copper coil around a fixed iron core, a hinged armature, a return spring and two separated contact buttons. All are held in the unpowered pose. Neither supply is shared through a direct connection between control and load.',
+   'energize':'The control switch closes and current builds in the coil, creating an illustrated magnetic field around the iron core. Field markers are diagrams, not visible blue objects. Actuation is enlarged and slowed so its sequence is readable. The armature remains up until the next attraction step; no lamp power yet.',
+   'attract':'The increasing electromagnetic attraction draws the rigid armature down around its fixed hinge against the return spring. Its attached moving contact approaches and finally touches the fixed contact, completing the separately supplied load circuit. The test lamp lights only when the contacts touch. The coil does not generate the load power.',
+   'closed':'The energized coil, attracted armature and touching contacts are already HELD, and the test lamp is already lit. Explain the maintained closed load path and electrical isolation; do not announce another contact closure or armature movement.',
+   'release':'The control switch opens, coil current and its illustrated magnetic field decrease, and the return spring pivots the armature up. Contacts separate and the test lamp goes dark. These are linked changes in the same return stroke, not a second power source.',
+   'off':'Control switch, raised armature and separated contacts are HELD open; the coil and lamp are already off. The return spring maintains the rest position. No new spring return or contact opening occurs here.',
+   'payoff':'The whole relay cover returns while control and load remain off and the contacts remain separated. Explain that an electromagnet mechanically controls an isolated circuit. No new actuation, battery exchange or automatic restart is shown.'},
+  'source':'https://www.ia.omron.com/data_pdf/guide/36/generalrelay_tg_e_3_1_1%28principles%29.pdf',
+  'mechanism_source':'https://www.omron.com/global/en/technology/omrontechnics/vol50/010.html'},
+ 'snap_thermostat':{'description':'Complete automatic-reset snap-disc thermostat with a bimetal dome, actuator pin, hinged contact strip, fixed contact and separately supplied test lamp; enlarged slowed illustration, not a full appliance or digital sensor',
+  'actions':['thermostat','cutaway','heat','snap','open','cool','reset','payoff'],
+  'facts':{
+   'thermostat':'The whole round thermostat housing, two terminals, supply and lit test lamp are shown. It is held cool with its contacts closed. Introduce a useful question about heat switching a circuit off without electronics. Do not claim to show an entire iron, oven, room or boiler.',
+   'cutaway':'A simplified cutaway lifts the metal shell and exposes a shallow bimetal disc, a vertical insulating actuator pin and the moving and fixed contacts. The disc is cool and the contacts remain held closed. No snap yet.',
+   'heat':'Illustrative thermal markers transfer heat toward the disc. Its two bonded metals respond differently to warming. The temperature condition increases while the disc retains its initial curved shape until its snap threshold; do not describe a gradual contact opening or an exact measured temperature.',
+   'snap':'At its illustrative hot threshold the bimetal disc changes curvature, raising the actuator pin. That pin lifts the contact strip, separating the two contacts and interrupting the lamp circuit. The test lamp switches off only as the contacts separate. Motion is enlarged and slowed to show the parts; no glowing metal or fire.',
+   'open':'The hot disc, raised pin and separated contacts are HELD, and the lamp is already dark. Explain the interrupted electrical path without announcing a second opening or another disc movement.',
+   'cool':'Illustrative heat markers leave the disc as the temperature condition falls. The disc remains in its hot curvature and the contacts remain open until the lower reset condition is reached in the following beat. This is an automatic-reset model, not a manual-reset safety cutout.',
+   'reset':'At the lower reset condition the disc snaps back, the pin lowers and the contact strip returns to touch the fixed contact. The lamp lights again only when the contact gap reaches zero. Do not say heat is converted into free electricity.',
+   'payoff':'The shell returns around the cool, already reset thermostat and its already lit lamp. Explain temperature-controlled switching. No further heating cycle, new snap or exact temperature calibration is shown.'},
+  'source':'https://www.sensience.com/bimetal-disc-thermostats/',
+  'mechanism_source':'https://www.sensience.com/wp-content/uploads/2022/12/Bimetal_Catalog.pdf'},
+ 'clothespin':{'description':'Complete wooden spring clothespin with two rigid shaped jaws, fixed fulcrum, exposed preloaded torsion spring and a fabric fold; not a seesaw bench, spring-energy generator or clothesline-wind simulation',
+  'actions':['peg','spring','squeeze','open','insert','release','grip','payoff'],
+  'facts':{
+   'peg':'The whole two-piece wooden clothespin is held closed with its exposed coil spring visible. Introduce a concrete question about squeezing the handles to open the opposite jaws or about holding fabric. No hands, clothesline or wind is shown.',
+   'spring':'A closer view identifies the already exposed torsion spring around the fulcrum, its two legs bearing on the wooden members. The jaws and handles remain still. This object has no hidden shell to open; do not invent a cutaway or disassembly.',
+   'squeeze':'Illustrated input-force arrows press the handles together. Both rigid wooden members rotate in opposite directions about the same fulcrum, widening the jaw gap at their other ends. The spring winds further and stores elastic energy supplied by the squeezing action. No real fingers or motor are depicted.',
+   'open':'Handles, opened jaws and wound spring are already HELD under the maintained input. Explain that opposite ends of the two rigid levers move oppositely around their common fulcrum; do not announce another opening or claim the wood bends.',
+   'insert':'A blue fabric fold slides visibly into the already open jaw gap. The jaws remain held open during insertion. No rope or clothesline is present and the fabric is not yet gripped.',
+   'release':'The squeezing input is removed. The preloaded spring unwinds partway and rotates the wooden members back, moving the jaws inward until they contact the fabric. They stop at the fabric thickness, rather than passing through it or closing to zero.',
+   'grip':'The jaws and fabric are HELD at contact. Remaining spring preload maintains a clamping force and friction resists fabric slipping. No fresh jaw movement, cloth travel, measured force value or guaranteed load rating is shown.',
+   'payoff':'A whole-object view holds the already clamped fabric. Explain that input opens the jaws against stored spring energy and release maintains the grip. Do not announce another squeeze, release, spring motion or fabric insertion.'},
+  'source':'https://patents.google.com/patent/DE29803034U1/en',
+  'mechanism_source':'https://patents.google.com/patent/US2748437A/en'}
+})

@@ -90,3 +90,8 @@ The existing daily narration retry stopped at a shared topic-ledger git merge co
 Before further media requests, inspection of the retained candidate found that its anti-reflective solar-coating topic is not shown by the existing photovoltaic component. The cached script described unrendered coating and reflected-light effects. That candidate is explicitly held with no automatic retry, rather than delivered or manually substituted. Its original reservation and script are retained. Known unsupported detail checks now run in automatic selection, explicit preparation/build and cached/generated plan validation; the system can choose another supported concept on a fresh scheduled run. This does not add the missing optical component or prove arbitrary-topic coverage.
 
 The first cloud verification of these scope guards was cancelled during an unbounded dependency fetch, before tests. Daily/full production and code verification now reuse installed FFmpeg/fonts and bound missing-dependency fetches. The latest cloud rerun is pending at this update; all 137 local format, cinematic, recovery and studio checks pass. The supported full-video proof remains in Studio awaiting owner review; no owner decisions or publishing settings changed.
+
+
+## 2026-11-19 visual quality and daily reliability (staged)
+Native 1080p daily rendering, three new causal assemblies, bounded missing-slot checks and identity-checked retention collection are implemented. Cloud verification and a fresh automatic video are pending. See [the detailed verification record](VISUAL-QUALITY-AND-DAILY-RELIABILITY.md). Existing media, approval choices and Doodles generation are preserved.
+

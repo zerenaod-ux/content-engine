@@ -1,0 +1,6 @@
+{
+  "enabled": false,
+  "daily_target": 3,
+  "timezone": "America/Chicago",
+  "note": "Catch-up is staged pending cloud quality proof. Approval and publishing are separate."
+}

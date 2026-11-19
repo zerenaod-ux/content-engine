@@ -17,5 +17,10 @@ def verify(plan,timeline,out,audit):
  review(plan,timeline,out)
  media=json.loads(subprocess.check_output(['ffprobe','-v','error','-show_streams','-show_format','-of','json',str(out/'video.mp4')]))
  track=next(s for s in media['streams'] if s['codec_type']=='video')
+ if plan.get('render_policy'):
+  from studio_lib.visual_quality import POLICY,WIDTH,HEIGHT
+  errors=[] if plan['render_policy']==POLICY and (track['width'],track['height'])==(WIDTH,HEIGHT) else ['Encoded video does not match the native studio finish']
+  (out/'render-quality-checks.json').write_text(json.dumps({'policy':POLICY,'width':track['width'],'height':track['height'],'errors':errors,'scope':'Native geometry resolution, antialiasing and encoded dimensions; not an aesthetic score'},indent=2))
+  if errors:raise ValueError(str(errors))
  seal(out,'short',{'duration':float(media['format']['duration']),'width':track['width'],'height':track['height']})
  return require_seal(out,'short')

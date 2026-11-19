@@ -14,6 +14,10 @@ on:
       topic:
         description: 'Topic to explain, or "auto" to let the system think of a new one'
         default: 'auto'
+      automatic_slot:
+        description: 'Internal bounded catch-up request'
+        type: boolean
+        default: false
   push:
     paths: ['publish/run.trigger']
 permissions:
@@ -33,8 +37,16 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - name: Check scheduled daily output and fresh visual capacity
+        id: capacity
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CE_AUTOMATIC_SLOT: ${{ github.event.inputs.automatic_slot }}
+        run: python -m studio_lib.factory_slots admit
       - run: pip install --quiet numpy pillow edge-tts faster-whisper kokoro-onnx==0.6.1
+        if: steps.capacity.outputs.should_build == 'true'
       - name: Verify runner media tools and font before any generation
+        if: steps.capacity.outputs.should_build == 'true'
         run: |
           if ! command -v ffmpeg >/dev/null || ! command -v ffprobe >/dev/null; then
             pip install --quiet static-ffmpeg==3.0
@@ -56,6 +68,7 @@ jobs:
           ffprobe -version | head -n 1
           python -c "from studio_lib.render import FONT; assert FONT is not None"
       - name: Restore accepted stages and narration
+        if: steps.capacity.outputs.should_build == 'true'
         uses: actions/cache/restore@v4
         with:
           path: .ce-cache
@@ -63,6 +76,7 @@ jobs:
           restore-keys: |
             ce-v1-${{ runner.os }}-${{ github.ref_name }}-
       - name: Select and reserve a new supported topic before media generation
+        if: steps.capacity.outputs.should_build == 'true'
         id: production
         env:
           GH_TOKEN: ${{ github.token }}
@@ -84,10 +98,12 @@ jobs:
           python3 -m studio_lib.recovery run --kind daily-short --success-stage planning -- python3 -m studio_lib.production --prepare-only --topic-file topic.txt --out scene-factory.mp4
           python3 -m studio_lib.recovery run --kind daily-short -- python3 -m studio_lib.production --topic-file topic.txt --out scene-factory.mp4
       - name: Verify the tested-component review contract
+        if: steps.capacity.outputs.should_build == 'true'
         run: |
           python3 -c "import json;from pathlib import Path;assert Path('scene-factory.mp4').is_file();assert json.load(open('ce-checks.json'))['verdict']=='warn';assert json.load(open('auto-scene.json'))['mode']=='tested-component'"
           echo 'Tested component built; owner review required; no automatic publishing' > render-log.txt
       - name: Save the video in the How It Ticks folder and show it in the Review tab
+        if: steps.capacity.outputs.should_build == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
@@ -120,14 +136,14 @@ jobs:
           gh issue create --title "How It Ticks: $TITLE" --label scene-review --label "checks-$V" --body-file body.txt
           [ -n "$NTFY_TOPIC" ] && curl -s -H "Title: How It Ticks: new video" -H "Click: https://zerenaod-ux.github.io/shelfmade-dashboard/app/#review" -d "$TITLE (not posted) is ready to watch in the app." "https://ntfy.sh/$NTFY_TOPIC" > /dev/null || true
       - name: Remember this angle and retain failed-attempt diagnostics
-        if: always()
+        if: always() && steps.capacity.outputs.should_build == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           if [ -f scene-factory.mp4 ]; then python3 scene_lib/ideas.py record auto-scene.json; elif [ -f idea.json ] || [ -f writer-log.txt ]; then python3 scene_lib/ideas.py record auto-scene.json failed; else exit 0; fi
           python3 -m studio_lib.durable_topics save-records
       - name: Attach to release
-        if: always()
+        if: always() && steps.capacity.outputs.should_build == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -136,13 +152,13 @@ jobs:
           DIAGNOSTICS="ce-diagnostics-${{ github.run_id }}-${{ github.run_attempt }}"
           gh release create "$DIAGNOSTICS" "${files[@]}" --title "Scene factory diagnostics (not posted)" --notes "Diagnostic evidence for this run; previous releases are preserved." --prerelease
       - name: Save reusable stages even after failure
-        if: always()
+        if: always() && steps.capacity.outputs.should_build == 'true'
         uses: actions/cache/save@v4
         with:
           path: .ce-cache
           key: ce-v1-${{ runner.os }}-${{ github.ref_name }}-${{ github.run_id }}-${{ github.run_attempt }}
       - name: Preserve repair evidence and measurements
-        if: always()
+        if: always() && steps.capacity.outputs.should_build == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: repair-evidence-${{ github.run_id }}-${{ github.run_attempt }}
@@ -159,7 +175,7 @@ jobs:
             fr/evidence/
           retention-days: 14
       - name: Confirm Studio delivery in the shared status feed
-        if: success()
+        if: success() && steps.capacity.outputs.should_build == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: python -m studio_lib.recovery stage --kind daily-short --stage delivered

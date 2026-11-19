@@ -10,7 +10,7 @@ on:
     branches: [main]
     paths: [.github/workflows/ce-recovery.yml]
 permissions:
-  contents: read
+  contents: write
   actions: write
 concurrency:
   group: how-it-ticks-recovery
@@ -27,4 +27,6 @@ jobs:
       - name: Resume only eligible temporary failures, never approved publishing
         env:
           GH_TOKEN: ${{ github.token }}
-        run: python -m studio_lib.recovery watch
+        run: |
+          python -m studio_lib.recovery watch
+          python -m studio_lib.factory_slots watch

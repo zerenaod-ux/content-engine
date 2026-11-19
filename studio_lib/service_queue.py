@@ -19,7 +19,9 @@ def transition(state,service,owner,priority,now,ttl=180):
 
 def github(path,method='GET',body=None):
  req=urllib.request.Request('https://api.github.com/repos/'+os.environ.get('GITHUB_REPOSITORY','zerenaod-ux/content-engine')+'/'+path,method=method,data=json.dumps(body).encode() if body is not None else None,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json','Content-Type':'application/json'})
- with urllib.request.urlopen(req,timeout=30) as r:return json.load(r)
+ with urllib.request.urlopen(req,timeout=30) as r:
+  raw=r.read()
+  return json.loads(raw) if raw else {}
 
 def read_document(path,default):
  import base64

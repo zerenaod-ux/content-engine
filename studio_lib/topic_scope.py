@@ -12,7 +12,13 @@ def scope_error(topic,mechanism=None):
         elif re.search(r'wind|turbine',text):mechanism='wind_turbine'
         elif re.search(r'pump',text):mechanism='piston_pump'
         elif re.search(r'bridge',text):mechanism='bascule_bridge'
+        elif re.search(r'relay',text):mechanism='electric_relay'
+        elif re.search(r'thermostat|bimetal|snap.disc',text):mechanism='snap_thermostat'
+        elif re.search(r'clothespin|clothes.peg',text):mechanism='clothespin'
     patterns={
+      'electric_relay':r'solid.state|latching|reed relay|contactor|arc suppression|flyback|transistor',
+      'snap_thermostat':r'digital|microprocessor|refrigerant|wax|manual.reset|melt|thermal fuse',
+      'clothespin':r'clothesline tension|plastic hinge|wind load|centrifugal',
       'float_valve':r'toilet flush|steam trap|pilot.operated|diaphragm|solenoid|pump efficiency|water hammer',
       'combination_lock':r'pick(?:ing)?|bypass|decode|crack|keyhole|keyed|single.dial|safe lock|reset combination',
       'camera_iris':r'autofocus|depth.of.field|bokeh|refraction|image inversion|f.number calculation|shutter mechanism',

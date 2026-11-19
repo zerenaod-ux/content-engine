@@ -272,3 +272,7 @@ The first cloud verification of these scope guards was cancelled during an unbou
 Future generated explanations use a shared [causal visual storytelling policy](docs/CAUSAL-VISUAL-STORYTELLING.md): concrete problem, supported solution, visible consequence and payoff. Wording stays original. Every narrated physical action must match the supplied visible action for that beat; camera movement alone is not mechanism evidence. The rule is connected to daily component, cinematic, original full-format and experimental scene writers. This authoring change does not claim a new rendered quality pass.
 
 Daily How It Ticks transition timing and whole-object framing are implemented in the [spoken-action update](docs/SPOKEN-ACTION-TIMING.md). Real media verification remains pending; this is not a new video quality pass or arbitrary-topic support.
+
+
+## 2026-11-19 native visual quality work (staged)
+Native 1080p daily finish, three new physical assemblies, bounded missing-slot reconciliation and identity-checked retention collection are implemented locally. See [the implementation and verification record](docs/VISUAL-QUALITY-AND-DAILY-RELIABILITY.md). Cloud proof and delivery are pending; no existing video is recreated, no automatic approval is enabled, and Doodles generation is untouched.

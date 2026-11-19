@@ -1,0 +1,29 @@
+name: How It Ticks audience retention (read only)
+on:
+  schedule:
+    - cron: '40 13 * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [.github/workflows/ce-audience.yml]
+permissions:
+  contents: write
+concurrency:
+  group: how-it-ticks-audience
+  cancel-in-progress: false
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: main, fetch-depth: 1}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - name: Verify channel identity and collect delayed retention
+        env:
+          GH_TOKEN: ${{ github.token }}
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN_HOWITTICKS: ${{ secrets.YT_REFRESH_TOKEN_HOWITTICKS }}
+        run: python -m studio_lib.audience

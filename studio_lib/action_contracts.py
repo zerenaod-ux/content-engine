@@ -16,6 +16,24 @@ CONTRACTS={
   'visible':[(2,'wheels'),(5,'gates'),(5,'bar'),(5,'spring'),(6,'shackle')]},
 }
 
+CONTRACTS.update({
+ 'electric_relay':{
+  'subjects':[r'relay|circuit|signal|coil',r'cutaway',r'switch|coil|current',r'armature|contact|attraction',r'contact|coil|circuit|lamp',r'switch|spring|coil',r'contact|spring|coil|lamp',r'relay|circuit|electromagnet'],
+  'moves':{1:{'cut':1},2:{'current':1,'switch':1},3:{'angle':-1,'gap':-1,'powered':1},5:{'angle':1,'gap':1,'powered':-1},7:{'cut':-1}},
+  'holds':{0:['angle','current','powered'],1:['angle','current','powered'],2:['angle','powered'],4:['angle','current','powered'],6:['angle','current','powered'],7:['angle','current','powered']},
+  'visible':[(2,'coil'),(2,'field'),(3,'armature'),(3,'core'),(5,'spring'),(4,'load')]},
+ 'snap_thermostat':{
+  'subjects':[r'thermostat|heat|temperature|switch',r'cutaway',r'heat|temperature|metal|disc',r'disc|pin|contact',r'contact|disc|circuit|lamp',r'heat|cool|temperature',r'disc|pin|contact|reset',r'thermostat|temperature|switch|circuit'],
+  'moves':{1:{'cut':1},2:{'temperature':1},3:{'hot':1,'pin_top':1,'gap':1,'powered':-1},5:{'temperature':-1},6:{'hot':-1,'pin_top':-1,'gap':-1,'powered':1},7:{'cut':-1}},
+  'holds':{0:['hot','gap','powered'],1:['hot','gap','powered'],2:['hot','gap','powered'],4:['hot','gap','powered'],5:['hot','gap','powered'],7:['hot','gap','powered']},
+  'visible':[(3,'disc'),(3,'pin'),(3,'contacts'),(2,'heat'),(7,'current')]},
+ 'clothespin':{
+  'subjects':[r'peg|clothespin|handle|jaw|fabric',r'spring|fulcrum|coil',r'handle|input|squeeze',r'jaw|spring|handle',r'fabric|cloth|fold',r'spring|input|jaw|release',r'fabric|jaw|spring|grip',r'peg|clothespin|spring|grip|fabric'],
+  'moves':{2:{'angle':1,'gap':1,'spring_twist':1},4:{'cloth_x':-1,'inserted':1},5:{'angle':-1,'gap':-1,'spring_twist':-1}},
+  'holds':{0:['angle','gap','spring_twist'],1:['angle','gap','spring_twist'],3:['angle','gap','spring_twist'],4:['angle','gap','spring_twist'],6:['angle','gap','spring_twist','cloth_x'],7:['angle','gap','spring_twist','cloth_x']},
+  'visible':[(2,'jaws'),(2,'spring'),(2,'input'),(4,'cloth')]}
+})
+
 def narration_errors(plan):
  kind=plan.get('mechanism');contract=CONTRACTS.get(kind);errors=[]
  if not contract:return errors
@@ -31,11 +49,22 @@ def narration_errors(plan):
    if i in (4,7) and re.search(r'\b(float|ball|water|level|washer|inlet|valve)\s+(rises|falls|opens|closes|moves|refills|returns|starts)\b',text):errors.append(f'beat {i}: water, float and inlet are already held; do not announce another movement')
    if re.search(r'\b(float|ball)\s+(plugs|seals|blocks)\s+(the\s+)?(inlet|pipe|seat)\b',text):errors.append(f'beat {i}: the washer seals the inlet; the floating ball does not plug it')
    if i in (0,1) and re.search(r'\b(water|float|ball|level)\s+(rises|falls|starts|fills)\b',text):errors.append(f'beat {i}: the low-water pose is held until the fill beat')
-  else:
+  elif kind=='combination_lock':
    if i==5 and not re.search(r'\b(held|holds?|holding|still|stays?|remains?|rests?|resting|seated|already)\b',text):errors.append(f'beat {i}: the locking bar is already seated; explain that held state')
    if i==5 and re.search(r'\b(bar|fence|tab)\s+(drops|falls|descends|moves|slides|settles)\b',text):errors.append(f'beat {i}: the bar is already seated; describe its held clearance, not another drop')
    if i in (0,1,2,3,4,5,7) and re.search(r'\b(shackle|loop)\s+(lifts|rises|opens|jumps|springs|moves|returns)\b',text):errors.append(f'beat {i}: only the pull beat lifts the shackle; all other beats hold it')
    if re.search(r'\b(hand|motor|battery|key)\s+(turns|spins|drives|opens|powers)\b',text):errors.append(f'beat {i}: no hand, motor, key or battery is depicted')
+  elif kind=='electric_relay':
+   if i in (1,2,4,6,7) and re.search(r'\barmature\s+(moves|pivots|lowers|rises|descends|returns|turns)\b',text):errors.append(f'beat {i}: the armature is held in this phase; do not announce another stroke')
+   if i in (4,6,7) and re.search(r'\bcontacts?\s+(open|opens|close|closes|separate|separates|touch|touches)\b',text):errors.append(f'beat {i}: contacts are already held in their documented state')
+   if re.search(r'\bcoil\s+(creates|generates|supplies)\s+(?:the\s+)?load (?:power|energy)\b',text):errors.append(f'beat {i}: the separate load supply provides its energy')
+  elif kind=='snap_thermostat':
+   if i in (1,2,4,5,7) and re.search(r'\b(disc|pin|contact)\s+(snaps|moves|rises|lowers|bends|opens|closes|returns)\b',text):errors.append(f'beat {i}: the mechanism is held until its assigned snap/reset phase')
+   if re.search(r'\b(melts|melting|burns|fire|digital processor)\b',text):errors.append(f'beat {i}: no melting, fire or digital controller is depicted')
+  elif kind=='clothespin':
+   if i in (1,3,4,6,7) and re.search(r'\bjaws?\s+(open|opens|close|closes|move|moves|rotate|rotates)\b',text):errors.append(f'beat {i}: the jaws are held; no extra movement occurs here')
+   if re.search(r'\bwood\s+(bends|flexes|stretches)\b',text):errors.append(f'beat {i}: the wooden members rotate rigidly; only the metal spring elastically deforms')
+   if re.search(r'\b(hand|finger|motor)\s+(pushes|squeezes|turns|drives)\b',text):errors.append(f'beat {i}: input is shown with labeled arrows, not a hand or motor')
  return errors
 
 def channels(state):
@@ -65,7 +94,13 @@ def verify_motion(kind,module,tl,out,plan=None):
    if kind=='float_valve':
     if p['gap']<-1e-7 or (p['gap']<1e-7 and p['flow']>1e-6):errors.append('Water crosses a closed inlet')
     if abs(np.linalg.norm(np.array(p['float_center'])-module.PIVOT)-module.ARM)>1e-6:errors.append('Float rod stretched or disconnected')
-   else:
+   elif kind=='electric_relay':
+    if p['powered'] and (p['gap']>.003 or p['current']<=0):errors.append('Relay load powered without energized touching contacts')
+   elif kind=='snap_thermostat':
+    if p['powered'] and p['gap']>.001:errors.append('Thermostat lamp powered across an open gap')
+   elif kind=='clothespin':
+    if p['beat']>=5 and p['gap']<module.THICKNESS-1e-6:errors.append('Jaws passed through the inserted fabric')
+   elif kind=='combination_lock':
     if p['shackle']>0 and p['free']<.999:errors.append('Shackle lifted before all gates and locking tab cleared')
     if p['bar_z']<module.BAR_HIGH-1e-5 and not module.aligned(p['angles']):errors.append('Locking bar crossed an unaligned wheel rim')
  result={'plan_sha256':fingerprint(plan),'timeline_sha256':fingerprint(tl),'contract':'component-causal-motion-v1','mechanism':kind,'errors':sorted(set(errors)),'measurements':rows,'scope':'Measured timeline linked to actual renderer state; pixel visibility is checked separately'}

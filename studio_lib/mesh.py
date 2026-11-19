@@ -14,8 +14,9 @@ def unit(a): return a/np.linalg.norm(a)
 
 class Scene:
     """A tiny perspective mesh renderer; all assets remain local and reusable."""
-    def __init__(self,t,zoom,target,azimuth,elevation=10):
+    def __init__(self,t,zoom,target,azimuth,elevation=10,raster_scale=1,lighting=False):
         self.t=t; self.faces=[]; self.lines=[]; self.gear_marks=[]
+        self.raster_scale=raster_scale;self.lighting=lighting;self.world_faces=[]
         self.target=np.array(target,dtype=float)
         self.eye=self.target+np.array([math.sin(azimuth)*16,-math.cos(azimuth)*16,elevation])/zoom
         self.forward=unit(self.target-self.eye)
@@ -34,6 +35,10 @@ class Scene:
                 if (da>=.2)!=(db>=.2):clipped.append(a+(b-a)*((.2-da)/(db-da)))
             if len(clipped)<3:return
             p=np.array(clipped)
+        if self.lighting:
+            from studio_lib.visual_quality import lit_color
+            color=lit_color(p,color,self.eye)
+            self.world_faces.append(p.copy())
         q,dep=self.project(p)
         self.faces.append((float(dep.mean()),[tuple(x) for x in q],color))
     def box(self,center,size,color,transform=None):
@@ -72,9 +77,10 @@ class Scene:
         self.gear_marks.append(((x,y-.21,z),r,marked))
     def paint(self,im):
         d=ImageDraw.Draw(im)
-        for _,p,c in sorted(self.faces,key=lambda x:-x[0]):d.polygon(p,fill=c)
+        for _,p,c in sorted(self.faces,key=lambda x:-x[0]):d.polygon([tuple(v*self.raster_scale for v in point) for point in p],fill=c)
         for (x,y,z),r,a in self.gear_marks:
             q,_=self.project([(x+r*.38*math.cos(a),y,z+r*.38*math.sin(a)),(x+r*.79*math.cos(a),y,z+r*.79*math.sin(a))])
-            d.line([tuple(v) for v in q],fill=(255,247,207),width=5 if r>.4 else 4)
-            px,py=q[-1];d.ellipse((px-3,py-3,px+3,py+3),fill=(255,247,207))
+            q=q*self.raster_scale
+            d.line([tuple(v) for v in q],fill=(255,247,207),width=(5 if r>.4 else 4)*self.raster_scale)
+            px,py=q[-1];radius=3*self.raster_scale;d.ellipse((px-radius,py-radius,px+radius,py+radius),fill=(255,247,207))
     def point(self,p):return tuple(self.project([p])[0][0])

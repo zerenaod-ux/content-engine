@@ -8,6 +8,7 @@ def evidence_names(root,kind):
     names=list(FILES)+[plan_name]
     if (root/plan_name).is_file():
         plan=json.loads((root/plan_name).read_text())
+        if plan.get('render_policy'):names.append('render-quality-checks.json')
         if plan.get('motion_policy')=='spoken-action-v1':
             names+=['timeline.json','spoken-action-timing.json','component-checks.json']
             if plan.get('mechanism')!='bascule_bridge':names.append('overview-checks.json')
@@ -38,6 +39,12 @@ def check_evidence(root,kind):
     plan_name='accepted-plan.json' if kind=='original_full' else 'plan.json'
     if (root/plan_name).is_file():
         plan=json.loads((root/plan_name).read_text())
+        if plan.get('render_policy'):
+            try:
+                from studio_lib.visual_quality import POLICY,WIDTH,HEIGHT
+                finish=json.loads((root/'render-quality-checks.json').read_text())
+                if plan['render_policy']!=POLICY or finish.get('policy')!=POLICY or finish.get('errors')!=[] or (finish.get('width'),finish.get('height'))!=(WIDTH,HEIGHT):errors.append('Native visual finish evidence failed')
+            except (OSError,ValueError):errors.append('Native visual finish evidence missing')
         if plan.get('motion_policy')=='spoken-action-v1':
             try:
                 from studio_lib.narration_timing import require_bound
@@ -66,6 +73,8 @@ def seal(root,kind,media):
     if not math.isfinite(duration) or not bounds[0]<=duration<=bounds[1]:errors.append('Encoded duration outside format range')
     if kind=='original_full' and width*9!=height*16:errors.append('Full video is not native landscape')
     if kind=='short' and height<=width:errors.append('Short video is not portrait')
+    plan_path=root/('accepted-plan.json' if kind=='original_full' else 'plan.json')
+    if plan_path.is_file() and json.loads(plan_path.read_text()).get('render_policy') and (width,height)!=(1080,1920):errors.append('Native studio finish requires encoded 1080 by 1920')
     if errors:raise ValueError('Complete-output gate rejected: '+str(errors))
     names=evidence_names(root,kind)
     if not all((root/name).is_file() for name in names):raise ValueError('Generated plan evidence missing')

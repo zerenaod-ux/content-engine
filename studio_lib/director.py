@@ -18,9 +18,9 @@ from studio_lib.render import BG,FONT,TITLE
 from studio_lib.audio import narrate,assemble
 from studio_lib.checkpoints import Checkpoint
 from studio_lib.registry import REGISTRY
-from studio_lib import solar,pump,wind,iris,float_valve,combination_lock
-from studio_lib import action_contracts
-COMPONENTS={'photovoltaic_cell':solar,'piston_pump':pump,'wind_turbine':wind,'camera_iris':iris,'float_valve':float_valve,'combination_lock':combination_lock}
+from studio_lib import solar,pump,wind,iris,float_valve,combination_lock,electric_relay,snap_thermostat,clothespin
+from studio_lib import action_contracts,visual_quality
+COMPONENTS={'photovoltaic_cell':solar,'piston_pump':pump,'wind_turbine':wind,'camera_iris':iris,'float_valve':float_valve,'combination_lock':combination_lock,'electric_relay':electric_relay,'snap_thermostat':snap_thermostat,'clothespin':clothespin}
 from studio_lib.topic_scope import scope_error,require_supported
 
 # The engine owns the safe action order. The model may choose narration,
@@ -106,7 +106,7 @@ def repair_causal_sections(plan,issues,diagnostic=None):
         indices.update(available[:4])
     indices=sorted(i for i in indices if 0<=i<8)[:4]
     if not indices:return None
-    request={'issues':issues,'sections':[{'index':i,'action':beats[i]['action'],'target_words':20 if global_issues else 18,'state_only':(plan['mechanism']=='float_valve' and i in (4,7)) or (plan['mechanism']=='combination_lock' and i in (5,7)),'facts':REGISTRY[plan['mechanism']]['facts'][beats[i]['action']]} for i in indices]}
+    request={'issues':issues,'sections':[{'index':i,'action':beats[i]['action'],'target_words':20 if global_issues else 18,'state_only':i>0 and beats[i]['action']!='cutaway' and i in action_contracts.CONTRACTS[plan['mechanism']]['holds'] and not any(key!='cut' for key in action_contracts.CONTRACTS[plan['mechanism']]['moves'].get(i,{})),'facts':REGISTRY[plan['mechanism']]['facts'][beats[i]['action']]} for i in indices]}
     answer=call('Repair only these requested narration sections with fresh everyday words. Return JSON {"sections":[{"index":integer,"say":"9-23 words"}]}. Aim for target_words with factual substance, never padding or copied production directions. Preserve the action and facts. The first section, if index zero, is a concrete question ending with ?. Keep all accepted sections untouched. For a state_only section describe what is ALREADY held, seated, resting or remaining in position. Never retell how it moved there: no rising, lifting, pivoting, sealing or new closure. Write a fresh sentence from the verified snapshot; the rejected sentence is deliberately omitted. '+STORY_RULES,json.dumps(request),max_tokens=1600,temperature=.25)
     if diagnostic is not None:Path(diagnostic).write_text(json.dumps({'request':request,'response':answer},indent=2))
     result=json.loads(json.dumps(plan));seen=set()
@@ -231,17 +231,18 @@ def component_picture(t,tl,plan,hidden=()):
     mechanism=plan['mechanism'];module=COMPONENTS[mechanism]
     zoom,target,az=component_camera(t,tl,plan)
     base_bg=module.background() if hasattr(module,'background') else BG
+    scale=visual_quality.SAMPLE_SCALE;base_bg=base_bg.resize((720*scale,1280*scale),Image.Resampling.BICUBIC)
     dark=getattr(module,'DARK',mechanism=='camera_iris')
     height=module.elevation(t,tl) if hasattr(module,'elevation') else 10
-    im=base_bg.copy();ground=Scene(t,zoom,target,az,elevation=height);s=Scene(t,zoom,target,az,elevation=height)
+    im=base_bg.copy();ground=Scene(t,zoom,target,az,elevation=height,raster_scale=scale,lighting=True);s=Scene(t,zoom,target,az,elevation=height,raster_scale=scale,lighting=True)
     floor=getattr(module,'FLOOR',.35 if mechanism=='camera_iris' else -.1)
     ground.face([[-1000,-1000,floor],[1000,-1000,floor],[1000,1000,floor],[-1000,1000,floor]],getattr(module,'GROUND',(28,33,40) if mechanism=='camera_iris' else (218,229,224)));ground.paint(im)
-    module.draw(s,t,tl,hidden);s.paint(im)
-    mask=Image.new('L',(720,1280));md=ImageDraw.Draw(mask)
-    for y in range(300):md.line((0,y,720,y),fill=255 if y<245 else int(255*(300-y)/55))
-    im.paste(base_bg,(0,0),mask);d=ImageDraw.Draw(im);d.text((42,65),'HOW IT TICKS',font=FONT,fill=(225,231,230) if dark else (31,77,89))
+    module.draw(s,t,tl,hidden);visual_quality.shadow(s,im,floor);s.paint(im)
+    mask=Image.new('L',im.size);md=ImageDraw.Draw(mask)
+    for y in range(300*scale):md.line((0,y,720*scale,y),fill=255 if y<245*scale else int(255*(300*scale-y)/(55*scale)))
+    im.paste(base_bg,(0,0),mask);d=ImageDraw.Draw(im);d.text((42*scale,65*scale),'HOW IT TICKS',font=visual_quality.font(FONT),fill=(225,231,230) if dark else (31,77,89))
     import textwrap
-    for j,line in enumerate(textwrap.wrap(plan['hook'],26)[:3]):d.text((42,125+j*55),line,font=TITLE,fill=(242,231,208) if dark else (30,65,78))
+    for j,line in enumerate(textwrap.wrap(plan['hook'],26)[:3]):d.text((42*scale,(125+j*55)*scale),line,font=visual_quality.font(TITLE),fill=(242,231,208) if dark else (30,65,78))
     beat=min(7,next((j for j,b in enumerate(tl['beats']) if t<b['end']),7))
     label=None
     if mechanism=='wind_turbine' and beat==5:label='Magnetic field · illustration'
@@ -249,9 +250,12 @@ def component_picture(t,tl,plan,hidden=()):
     if mechanism=='camera_iris' and 1<=beat<=5:label='Light paths · illustration'
     if mechanism=='camera_iris' and beat==6:label='Fixed-setting exposure illustration'
     if mechanism=='float_valve' and 2<=beat<=6:label='Water flow · illustration'
-    if label:d.text((42,1120),label,font=FONT,fill=(225,231,230) if dark else (31,77,89))
-    d.line((42,1195,678,1195),fill=(170,200,200),width=3);d.line((42,1195,42+636*t/tl['duration'],1195),fill=(221,102,57),width=3)
-    return im
+    if mechanism=='electric_relay' and 2<=beat<=5:label='Magnetic field · slowed illustration'
+    if mechanism=='snap_thermostat' and 2<=beat<=6:label='Thermal action · slowed illustration'
+    if mechanism=='clothespin' and beat in (2,3,4):label='Input force · illustration'
+    if label:d.text((42*scale,1120*scale),label,font=visual_quality.font(FONT),fill=(225,231,230) if dark else (31,77,89))
+    d.line((42*scale,1195*scale,678*scale,1195*scale),fill=(170,200,200),width=3*scale);d.line((42*scale,1195*scale,(42+636*t/tl['duration'])*scale,1195*scale),fill=(221,102,57),width=3*scale)
+    return visual_quality.finish(im)
 def verify(plan,tl,out):
     if plan['mechanism']!='bascule_bridge':return verify_component(plan,tl,out)
     errors=[];roads=sorted([(x-n/2,x+n/2) for x,n in APPROACHES]+[(-5.2,2.8)])
@@ -358,6 +362,7 @@ def run(topic,out,mechanism=None):
     story_issues=story_errors(plan)
     (out/'story-checks.json').write_text(json.dumps({'policy':STORY_VERSION,'plan_sha256':action_contracts.fingerprint(plan),'errors':story_issues,'scope':'Concrete opening, causal wording, distinct narration and component-owned held-state claims; not an acting-quality score'},indent=2))
     if story_issues:raise ValueError('Causal story contract failed: '+str(story_issues))
+    if plan['mechanism']!='bascule_bridge':plan['render_policy']=visual_quality.POLICY
     (out/'director-plan.json').write_text(json.dumps(plan,indent=2))
     # Voice measurements drive action durations; no authored narration is read.
     spec={'title':plan['title'],'beats':[dict(b,seconds=3.5) for b in plan['beats']]}
@@ -374,12 +379,13 @@ def run(topic,out,mechanism=None):
     print('CE_STAGE=render',flush=True)
     render_start=time.monotonic();render_hit=False
     root=Path(__file__).resolve().parent
-    render_sig=hashlib.sha256(b''.join((root/p).read_bytes() for p in ['director.py','narration_timing.py','mechanisms.py','mesh.py','solar.py','pump.py','wind.py','iris.py','float_valve.py','combination_lock.py','solid_parts.py','action_contracts.py','registry.py'])+json.dumps(tl,sort_keys=True).encode()).hexdigest()
+    render_sig=hashlib.sha256(b''.join((root/p).read_bytes() for p in ['director.py','narration_timing.py','mechanisms.py','mesh.py','solar.py','pump.py','wind.py','iris.py','float_valve.py','combination_lock.py','solid_parts.py','electric_relay.py','snap_thermostat.py','clothespin.py','action_contracts.py','visual_quality.py','registry.py'])+json.dumps(tl,sort_keys=True).encode()).hexdigest()
     cached=Path(fields.get('silent_path','/nonexistent'))
     if fields.get('render_signature')==render_sig and cached.is_file() and hashlib.sha256(cached.read_bytes()).hexdigest()==fields.get('silent_sha256'):
         shutil.copyfile(cached,out/'silent.mp4');render_hit=True
     else:
-        p=subprocess.Popen(['ffmpeg','-v','error','-y','-f','rawvideo','-pixel_format','rgb24','-video_size','720x1280','-framerate','30','-i','-','-an','-c:v','libx264','-preset','veryfast','-crf','18','-pix_fmt','yuv420p',str(out/'silent.mp4')],stdin=subprocess.PIPE)
+        width,height=picture(0,tl,plan).size
+        p=subprocess.Popen(['ffmpeg','-v','error','-y','-f','rawvideo','-pixel_format','rgb24','-video_size',f'{width}x{height}','-framerate','30','-i','-','-an','-c:v','libx264','-preset','veryfast','-crf','17','-pix_fmt','yuv420p',str(out/'silent.mp4')],stdin=subprocess.PIPE)
         n=math.ceil(tl['duration']*30)
         for i in range(n):
             p.stdin.write(picture(i/30,tl,plan).tobytes())
@@ -395,7 +401,7 @@ def run(topic,out,mechanism=None):
     print('CE_STAGE=audio',flush=True)
     verify_output(plan,tl,out,critique)
     subprocess.run(['ffmpeg','-v','error','-i',str(out/'video.mp4'),'-f','null','-'],check=True)
-    result={'status':'component_rendered_editorial_pending','topic':topic,'mechanism':plan['mechanism'],'automatic_narration':True,'tested_geometry_component':True,'manual_generated_plan_edits':False,'arbitrary_topic_support':False,'supported_mechanisms':list(REGISTRY),'owner_approved':False,'director_checkpoint_reused':reused,'render_cache_hit':render_hit,'duration':tl['duration'],'wall_seconds':time.monotonic()-start,'render_seconds':time.monotonic()-render_start}
+    result={'status':'component_rendered_editorial_pending','topic':topic,'mechanism':plan['mechanism'],'automatic_narration':True,'tested_geometry_component':True,'manual_generated_plan_edits':False,'arbitrary_topic_support':False,'supported_mechanisms':list(REGISTRY),'owner_approved':False,'director_checkpoint_reused':reused,'render_cache_hit':render_hit,'visual_quality':visual_quality.POLICY if plan['mechanism']!='bascule_bridge' else 'legacy','duration':tl['duration'],'wall_seconds':time.monotonic()-start,'render_seconds':time.monotonic()-render_start}
     (out/'result.json').write_text(json.dumps(result,indent=2));print(json.dumps(result),flush=True)
 def main():
     p=argparse.ArgumentParser();p.add_argument('--topic',required=True);p.add_argument('--out',required=True);a=p.parse_args();run(a.topic,a.out)

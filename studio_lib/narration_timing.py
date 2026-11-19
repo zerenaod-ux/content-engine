@@ -15,6 +15,9 @@ from pathlib import Path
 VERSION = 'spoken-action-v1'
 ALIGNMENT_REVISION = 'causal-component-actions-v3'
 TRANSITIONS = {
+    'electric_relay':{'cutaway','energize','attract','release','payoff'},
+    'snap_thermostat':{'cutaway','heat','snap','cool','reset','payoff'},
+    'clothespin':{'squeeze','insert','release'},
     'float_valve':{'cutaway','fill','throttle','draw','refill','payoff'},
     'combination_lock':{'cutaway','first','second','third','pull','payoff'},
     'camera_iris': {'cutaway','close','open','payoff'},
@@ -24,6 +27,9 @@ TRANSITIONS = {
     'wind_turbine': {'shaft', 'load', 'payoff'},
 }
 ANCHORS = {
+    'electric_relay':{'cutaway':r'cutaway','energize':r'switch|current|coil','attract':r'armature|attraction|electromagnet','release':r'switch|current|spring','payoff':r'relay|coil|circuit|electromagnet'},
+    'snap_thermostat':{'cutaway':r'cutaway','heat':r'heat|disc|warming|temperature','snap':r'disc|bimetal|snap','cool':r'heat|cool|temperature','reset':r'disc|snap|reset','payoff':r'thermostat|temperature|switch|circuit'},
+    'clothespin':{'squeeze':r'handles|squeeze|input','insert':r'fabric|cloth|fold','release':r'input|release|spring|squeeze'},
     'float_valve':{'cutaway':r'cutaway','fill':r'water|float|ball|level','throttle':r'float|ball|washer|valve|stem|seat','draw':r'outlet|drain|draw.off|tap','refill':r'draw.off\s+valve\s+(?:shut\w*|clos\w*)|outlet\s+(?:shut\w*|clos\w*)|outlet|drain|water|refill|float','payoff':r'tank|float|level|inlet|water'},
     'combination_lock':{'cutaway':r'cutaway','first':r'first wheel|first dial','second':r'second wheel|second dial','third':r'third wheel|last wheel|third dial|last dial','pull':r'shackle|loop|pull','payoff':r'padlock|lock|shackle|gates|wheels|bar'},
     'camera_iris': {'cutaway':r'cutaway', 'close':r'(?:ring|blades|iris|opening|aperture)[^.!?;,]{0,30}?\b(?:turn\w*|pivot\w*|rotat\w*|clos\w*|narrow\w*|shrink\w*)', 'open':r'(?:ring|blades|iris|opening|aperture)[^.!?;,]{0,30}?\b(?:revers\w*|open\w*|widen\w*|pivot\w*|rotat\w*)', 'payoff':r'camera|aperture|opening|iris|cover|shell'},
@@ -202,7 +208,7 @@ def bind(plan, timeline, out, transcribe=None):
             # action inside this beat and leave cameras on their original clock.
             start=max(beat['start'],spoken_start-.35)
             end=min(beat['end'],beat['start']+.08+float(beat['voice_duration'])+.05)
-            if plan.get('mechanism') in ('camera_iris','float_valve','combination_lock') and planned['action']=='cutaway':end=min(beat['end'],max(spoken_end+.1,start+.9))
+            if plan.get('mechanism') in ('camera_iris','float_valve','combination_lock','electric_relay','snap_thermostat') and planned['action']=='cutaway':end=min(beat['end'],max(spoken_end+.1,start+.9))
             if end-start<.35:raise ValueError('Speech cue leaves no safe action interval')
             row={'key':key,'beat':i,'action':planned['action'],'phrase':planned['motion_cue'],
                  'audio_sha256':audio_hash,'spoken_start':spoken_start,'spoken_end':spoken_end,
