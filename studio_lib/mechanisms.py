@@ -10,16 +10,18 @@ def leaf_transform(angle):
         return np.column_stack([-2.8+x*c-z*s,p[:,1],2.5+x*s+z*c])
     return tx
 
-def bridge(scene,angle,cut,gate,carx):
+def bridge(scene,angle,cut,gate,carx,hidden=()):
     s=scene; tx=leaf_transform(angle)
     # masonry quays and the two fixed approaches
     for x,length in APPROACHES:
         s.box((x,0,.05),(6.4,5.5,.35),(196,207,204))
         for y in [-1.05,1.05]:
+            if x<0 and y<0 and cut>.6:continue
             # expose the near chamber wall, not just its thin decorative shell
             s.box((x,y,1.15),(length,.36,2.2),(182,195,198))
         # Short road tiles prevent a long painter-sorted face covering the car.
         for xx in np.arange(x-length/2,x+length/2,.4):
+            if cut>.6 and -5.2<xx<-2.8:continue
             width=min(.4,x+length/2-xx)
             s.box((xx+width/2,0,2.47),(width,2.3,.24),(87,106,113))
         for xx in np.arange(x-length/2+.2,x+length/2,.58):
@@ -36,7 +38,9 @@ def bridge(scene,angle,cut,gate,carx):
     # one rigid rotating assembly: roadway, underdeck girders, short heel, weight
     for xx in np.arange(-2.4,5.6,.4):s.box((xx+.2,0,0),(.4,2.0,.18),(67,89,99),tx)
     for y in [-.95,.95]:
-        s.box((1.6,y,-.27),(8.0,.16,.50),(220,102,57),tx)
+        if y<0 and cut>.6:
+            s.box((2.8,y,-.27),(5.6,.16,.50),(220,102,57),tx)
+        else:s.box((1.6,y,-.27),(8.0,.16,.50),(220,102,57),tx)
         for x in np.arange(-2.3,5.5,.48):
             s.box((x,y,-.27),(.065,.19,.48),(244,149,85),tx)
             s.box((x,y,.35),(.035,.035,.62),(225,225,204),tx)
@@ -44,8 +48,9 @@ def bridge(scene,angle,cut,gate,carx):
     for x in np.arange(-2.3,5.6,.55):
         s.box((x,0,.10),(.29,.055,.015),(248,220,136),tx)
         s.box((x,0,-.38),(.08,1.85,.10),(168,73,43),tx)
-    s.box((-1.6,0,-.5),(1.10,1.65,1.0),(210,190,141),tx)
-    for x in [-1.95,-1.6,-1.25]:s.box((x,0,-.5),(.025,1.69,1.02),(151,137,107),tx)
+    if 'counterweight' not in hidden:
+        s.box((-1.6,0,-.5),(1.10,1.65,1.0),(210,190,141),tx)
+        for x in [-1.95,-1.6,-1.25]:s.box((x,0,-.5),(.025,1.69,1.02),(151,137,107),tx)
     s.cylinder((-2.8,0,2.5),.18,2.45,(231,191,105))
     # seating receiver and a sliding span-lock pin at the far end
     s.box((2.95,-.82,2.28),(.42,.28,.24),(51,73,84))

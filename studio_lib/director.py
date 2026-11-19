@@ -55,6 +55,7 @@ def validate(plan):
         if mechanism=='piston_pump' and re.search(r'\b(upward|upwards|downward|downwards|vertically)\b',text):e.append(f'beat {i}: this pump piston moves horizontally; do not describe vertical travel')
         if mechanism=='piston_pump' and re.search(r'\b(steady|constant|continuous|uninterrupted|smooth)\s+(water|flow|discharge|stream)|\b(water|flow|discharge|stream)\s+(is|stays|remains)\s+(steady|constant|continuous|uninterrupted)',text) and not re.search(r'\b(not|never|no)\b.{0,18}\b(steady|constant|continuous|uninterrupted|smooth)\b',text):e.append(f'beat {i}: single-acting discharge is pulsating; no smoothing reservoir is shown')
         if re.search(r'\b([a-z]+)\s+\1\b',text) or re.search(r'permanent[\s\-\u2011]+magnet[\s\-\u2011]+magnets',text):e.append(f'beat {i}: remove accidentally repeated words or redundant magnet wording')
+        if re.search(r'\b(today clearly|safely now|firmly still|smoothly efficiently|smoothly for all|smoothly again|significantly during operation)\b',text):e.append(f'beat {i}: replace filler added to reach a word quota with a concrete explanatory fact')
         if b.get('camera') not in ('wide','mechanism','follow'):e.append(f'beat {i}: unsupported camera')
     words=sum(len(b['say'].split()) for b in beats if isinstance(b,dict) and isinstance(b.get('say'),str))
     if not 140<=words<=176:e.append('total narration needs 140-176 words')
@@ -114,8 +115,11 @@ def pose(t,tl):
     if i==7:gate=1-ramp(u,.30,.65)
     close=ramp(t,beats[2]['start']-.8,beats[2]['start']+1.2)*(1-ramp(t,beats[5]['start']-.8,beats[5]['start']+1.2))
     detail=ramp(t,beats[4]['start']-.4,beats[4]['start']+1.2)*(1-ramp(t,beats[4]['end']-1.5,beats[4]['end']+.3))
+    balance_view=ramp(t,beats[3]['start']-.4,beats[3]['start']+1.0)*(1-ramp(t,beats[3]['end']-.8,beats[4]['start']+.3))
     zoom=(1.05*(1-close)+1.85*close)*(1-detail)+2.65*detail
     target=np.array([-2.2*close,0,1.6+.65*close])*(1-detail)+np.array([-3.1,-.55,2.3])*detail
+    target=target*(1-balance_view)+np.array([-3.6,0,1.8])*balance_view
+    zoom=zoom*(1-balance_view)+2.2*balance_view
     shipy=-6
     if i==5:shipy=-6+12*ease(u)
     elif i>=6:shipy=6+2*ease((t-beats[5]['end'])/(tl['duration']-beats[5]['end']))
@@ -138,7 +142,7 @@ def picture(t,tl,plan,hidden=()):
     for k in range(35):
         x=math.sin(k*12.3)*10;y=((k*.91+t*.06)%22)-10
         water.face([[x,y,0],[x+.35,y,0],[x+.42,y+.02,0],[x+.07,y+.02,0]],(104,186,190))
-    water.paint(im);bridge(s,st['angle'],st['close'],st['gate'],st['carx'])
+    water.paint(im);bridge(s,st['angle'],st['close'],st['gate'],st['carx'],hidden)
     if 'ship' not in hidden:boat(s,st['shipy'])
     s.paint(im);mask=Image.new('L',(720,1280));d=ImageDraw.Draw(mask)
     for y in range(300):d.line((0,y,720,y),fill=255 if y<245 else int(255*(300-y)/55))
@@ -184,6 +188,10 @@ def verify(plan,tl,out):
     for t in np.linspace(tl['beats'][5]['end']-.1,tl['duration']-.1,6):
         a=np.array(picture(t,tl,plan)).astype(int);b=np.array(picture(t,tl,plan,hidden=('ship',))).astype(int)
         if np.count_nonzero(np.max(abs(a-b),axis=2)>22)<100:errors.append('ship invisible after passage')
+    for u in (.15,.5,.85):
+        beat=tl['beats'][3];t=beat['start']+(beat['end']-beat['start'])*u
+        a=np.array(picture(t,tl,plan)).astype(int);b=np.array(picture(t,tl,plan,hidden=('counterweight',))).astype(int)
+        if np.count_nonzero(np.max(abs(a-b),axis=2)>22)<1500:errors.append('essential counterweight is obscured during its explanation')
     sheet=Image.new('RGB',(1440,1280))
     for i,b in enumerate(tl['beats']):sheet.paste(picture((b['start']+b['end'])/2,tl,plan).resize((360,640)),((i%4)*360,(i//4)*640))
     sheet.save(out/'contact.jpg');(out/'component-checks.json').write_text(json.dumps({'errors':errors,'owner_approved':False,'scope':'tested bascule bridge only'},indent=2))
