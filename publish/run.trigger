@@ -1,3 +1,3 @@
-resume 44363993361
-cpu-voice-proof
-Same accepted automatic topic; prefer native runner tools and avoid apt/source-downloader outages. 2026-11-18 evening recovery 2
+auto
+spoken-action-proof
+Owner-authorized new system-selected topic using causal storytelling, measured action cues, whole-object context and supported interior closeups. No manual generated-script or video edits. Keep approval manual.
