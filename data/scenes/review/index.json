@@ -604,7 +604,20 @@
    "ready_for_future_publish": false,
    "record": "delete/ce-20261119-0839/44521931451-1.json",
    "history": []
+  },
+  {
+   "tag": "ce-20261119-1338",
+   "title": "Why the bridge barriers close first 🚢",
+   "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@9572a8cb77d214de6e6e5db5fc756217e46f1375/videos/ce-20261119-1338.mp4",
+   "folder": "delete",
+   "issue_number": 58,
+   "issue_url": "https://github.com/zerenaod-ux/content-engine/issues/58",
+   "reviewed_at": "2026-11-19T13:50:52.687855+00:00",
+   "publishing_enabled": false,
+   "ready_for_future_publish": false,
+   "record": "delete/ce-20261119-1338/44537445814-1.json",
+   "history": []
   }
  ],
- "updated_at": "2026-11-19T12:14:07.264804+00:00"
+ "updated_at": "2026-11-19T13:50:52.687855+00:00"
 }
