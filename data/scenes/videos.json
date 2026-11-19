@@ -371,5 +371,15 @@
     "topic_key": "backflow check piston prevents pump valve",
     "record_run": "44343065385",
     "record_attempt": "1"
+  },
+  {
+    "date": "2026-11-19",
+    "tag": "ce-20261119-0327",
+    "title": "Why a Bascule Bridge Uses Counterweights Effectively \ud83d\udea2",
+    "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@cee93d864600e897dc2a03d2d50330e750863449/videos/ce-20261119-0327.mp4",
+    "topic": "Why a bascule bridge uses counterweights to balance the moving leaf",
+    "topic_key": "balance bascule bridge counterweights leaf moving uses",
+    "record_run": "44451131400",
+    "record_attempt": "1"
   }
 ]
