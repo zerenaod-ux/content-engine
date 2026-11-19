@@ -11,6 +11,7 @@ def evidence_names(root,kind):
         if plan.get('motion_policy')=='spoken-action-v1':
             names+=['timeline.json','spoken-action-timing.json','component-checks.json']
             if plan.get('mechanism')!='bascule_bridge':names.append('overview-checks.json')
+        if plan.get('story_policy')=='causal-visible-explanation-v2':names+=['story-checks.json','causal-motion-checks.json']
     return names
 
 def file_hash(path):
@@ -47,6 +48,15 @@ def check_evidence(root,kind):
                     samples=json.loads((root/'overview-checks.json').read_text()).get('samples',[])
                     if len(samples)!=4 or any(s.get('errors')!=[] for s in samples):errors.append('Whole-object framing evidence failed')
             except (OSError,ValueError,KeyError,TypeError) as e:errors.append('Spoken-action evidence unavailable or invalid: '+str(e))
+        if plan.get('story_policy')=='causal-visible-explanation-v2':
+            for name in ('story-checks.json','causal-motion-checks.json'):
+                try:
+                    data=json.loads((root/name).read_text())
+                    if data.get('errors')!=[]:errors.append('Causal evidence failed: '+name)
+                    from studio_lib.action_contracts import evidence_errors,fingerprint
+                    if name=='causal-motion-checks.json':errors+=evidence_errors(data,plan,json.loads((root/'timeline.json').read_text()))
+                    elif data.get('plan_sha256')!=fingerprint(plan):errors.append('Story evidence belongs to a different plan')
+                except (OSError,ValueError):errors.append('Required causal evidence missing or malformed: '+name)
     return errors
 
 def seal(root,kind,media):

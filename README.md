@@ -1,5 +1,7 @@
 # How It Ticks (formerly "Content Engine")
 
+**New capability work (November 19):** two original visual families—tank float control and a three-wheel gated padlock—are implemented with causal story checks, exact-timeline movement/held-state evidence and targeted model repair. Local checks pass; cloud verification and the first automatic new-video proof remain pending. The fixed narrator, no-repeat ledger and manual publishing approval remain in force. [Scope and evidence](docs/CAUSAL-CAPABILITY-EXPANSION.md).
+
 **Narrator update (November 19):** future How It Ticks shorts and full videos use one fixed stock narrator (`am_fenrir`) with varied delivery pacing. Retries keep that identity instead of switching speakers. Existing videos remain unchanged. [Policy and verification](docs/NARRATOR-POLICY.md).
 
 **Latest optical proof:** new 49.4-second system-generated camera-iris video reached Studio card 59. Media checks passed, but final-line motion wording has an inspection warning; it is not an unconditional quality pass. The future-script guard is fixed; no duplicate or replacement will be made. See [scope, checks and limits](docs/OPTICAL-IRIS.md).

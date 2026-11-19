@@ -1,5 +1,7 @@
 # Implementation handover — 2026-11-13
 
+**New capability work (November 19):** two original visual families—tank float control and a three-wheel gated padlock—are implemented with causal story checks, exact-timeline movement/held-state evidence and targeted model repair. Local checks pass; cloud verification and the first automatic new-video proof remain pending. The fixed narrator, no-repeat ledger and manual publishing approval remain in force. [Scope and evidence](CAUSAL-CAPABILITY-EXPANSION.md).
+
 Work folder: `/Users/naodmengis/work/content-engine-improvement`. Isolated clone of Content Engine, branch `improve-evidence-pipeline`, starting main `da2c1f9`. No AGENTS.md found in repo/ancestors. No edits to the other three systems, shared phone app or social accounts. No secrets downloaded. Current implementation is not merged.
 
 ## Evidence retained locally

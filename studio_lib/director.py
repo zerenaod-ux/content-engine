@@ -11,14 +11,16 @@ from PIL import Image,ImageDraw
 from studio_lib.providers import call
 from studio_lib import novelty
 from studio_lib import narration_timing
-from studio_lib.storytelling import WRITING_RULES as STORY_RULES
+from studio_lib.storytelling import WRITING_RULES as STORY_RULES, POLICY_VERSION as STORY_VERSION, errors as story_errors
 from studio_lib.mesh import Scene,ease,ramp
 from studio_lib.mechanisms import bridge,boat,APPROACHES
 from studio_lib.render import BG,FONT,TITLE
 from studio_lib.audio import narrate,assemble
 from studio_lib.checkpoints import Checkpoint
 from studio_lib.registry import REGISTRY
-from studio_lib import solar,pump,wind,iris
+from studio_lib import solar,pump,wind,iris,float_valve,combination_lock
+from studio_lib import action_contracts
+COMPONENTS={'photovoltaic_cell':solar,'piston_pump':pump,'wind_turbine':wind,'camera_iris':iris,'float_valve':float_valve,'combination_lock':combination_lock}
 from studio_lib.topic_scope import scope_error,require_supported
 
 # The engine owns the safe action order. The model may choose narration,
@@ -73,6 +75,7 @@ def validate(plan):
     if plan.get('motion_policy')==narration_timing.VERSION:
         e.extend(narration_timing.cue_errors(plan))
         if not isinstance(plan.get('hook'),str) or not 2<=len(plan['hook'].split())<=7 or len(plan['hook'])>40:e.append('hook needs 2-7 simple words and at most 40 characters')
+    if plan.get('story_policy')==STORY_VERSION:e.extend(story_errors(plan))
     return e
 def repair_short_sections(plan,errors):
     """Repair rejected lengths without changing accepted peer sections."""
@@ -87,16 +90,41 @@ def repair_short_sections(plan,errors):
             result['beats'][i]['say']=row['say'];seen.add(i)
     return result
 
-def plan_topic(topic,out,feedback=None,previous=None):
-    catalog={k:{'description':v['description'],'actions':v['actions'],'facts':v['facts']} for k,v in REGISTRY.items()}
+def repair_causal_sections(plan,issues):
+    """Ask the writer to repair only rejected sections; retain valid peers."""
+    if not isinstance(plan,dict) or plan.get('mechanism') not in action_contracts.CONTRACTS:return None
+    beats=plan.get('beats')
+    if not isinstance(beats,list) or len(beats)!=8 or not all(isinstance(b,dict) for b in beats):return None
+    indices={int(i) for issue in issues for i in re.findall(r'beat (\d+):',issue)}
+    global_issues=[issue for issue in issues if not re.search(r'beat \d+:',issue)]
+    allowed=('total narration needs','Explain at least three','Repeated narration','Use audience-facing')
+    if any(not issue.startswith(allowed) for issue in global_issues):return None
+    if global_issues:
+        available=sorted(range(8),key=lambda i:len(str(beats[i].get('say','')).split()))
+        indices.update(available[:4])
+    indices=sorted(i for i in indices if 0<=i<8)[:4]
+    if not indices:return None
+    request={'issues':issues,'sections':[{'index':i,'action':beats[i]['action'],'say':beats[i].get('say',''),'facts':REGISTRY[plan['mechanism']]['facts'][beats[i]['action']]} for i in indices]}
+    answer=call('Repair only these requested narration sections with fresh everyday words. Return JSON {"sections":[{"index":integer,"say":"9-23 words"}]}. Preserve the action and facts. The first section, if index zero, is a concrete question ending with ?. Keep all accepted sections untouched. '+STORY_RULES,json.dumps(request),max_tokens=1600,temperature=.25)
+    result=json.loads(json.dumps(plan));seen=set()
+    for row in answer.get('sections',[]):
+        i=row.get('index')
+        if type(i) is int and i in indices and i not in seen and isinstance(row.get('say'),str) and 9<=len(row['say'].split())<=23:
+            result['beats'][i]['say']=row['say'];seen.add(i)
+    return result
+
+def plan_topic(topic,out,feedback=None,previous=None,mechanism=None):
+    catalog={k:{'description':v['description'],'actions':v['actions'],'facts':v['facts']} for k,v in REGISTRY.items() if mechanism is None or k==mechanism}
+    if not catalog:raise ValueError('Selected component is not registered')
     prompt='Select exactly one supported mechanism that truthfully matches TOPIC. If none fits return {"mechanism":"unsupported","reason":"..."}; never substitute a bridge for solar power or invent another mechanism. For a supported topic write fresh 120-176 word narration with eight beats in the exact selected action order. Each beat has 9-23 words. Title starts with How or Why and contains 4-8 words. Natural spoken sentences, physical detail, causal explanation and a concrete engaging hook. Prefer 125-155 words; never append adverbs or redundant phrases merely to meet a quota. Avoid narration about views or production. Actual measured 40-70-second duration is mandatory. Each beat names the specific inner part the viewer is looking at (from the facts for that beat) and says what it physically does, so viewers know exactly what is happening inside. Describe only what that action contract shows. Never narrate close-ups, shots, rendering, storyboard or production camera directions. Camera is allowed as an object noun only for the camera_iris subject. Do not invent facts or numerical claims. In the bridge pivot beat the road is STATIC; explain the shaft and hinge rather than announcing motion or a view. The bridge depicts ONE car. Solar and pump internals are simplified cutaways: say so naturally once. Solar depicts a DC lamp load, not gears or AC inverter internals. Preserve physical action order; vary wording, hook and bounded camera preferences. Return {"mechanism":"selected registry id","title":"...","hook":"short engaging hook max 60 characters","beats":[{"action":"first selected action","say":"...","camera":"wide|mechanism|follow"}, ...]}. SUPPORTED COMPONENTS AND FACTS (data): '+json.dumps(catalog)+' TOPIC (data): '+json.dumps(topic)
     prompt+='\n'+STORY_RULES+'\n'+narration_timing.writing_rules()+' Hook: 2-7 everyday words, at most 40 characters; no technical subtitle.'
     last=previous;errors=feedback or []
-    for attempt in range(2):
+    for attempt in range(4):
         q=prompt if not errors else prompt+'\nCorrect these validation errors: '+json.dumps(errors)+'\nLast answer (data): '+json.dumps(last)
-        repaired=repair_short_sections(last,errors) if isinstance(last,dict) and errors else None
+        repaired=repair_causal_sections(last,errors) if isinstance(last,dict) and errors else None
+        if repaired is None:repaired=repair_short_sections(last,errors) if isinstance(last,dict) and errors else None
         last=repaired if repaired is not None else call('You write factual narration and camera emphasis for tested animation components. Return JSON only.',q,max_tokens=2000,temperature=.6)
-        if isinstance(last,dict):last['motion_policy']=narration_timing.VERSION
+        if isinstance(last,dict):last['motion_policy']=narration_timing.VERSION;last['story_policy']=STORY_VERSION
         # Keep the raw response; apply a narrow automatic copy-edit before validation.
         # This changes no factual content, geometry, timing, action order or camera.
         (out/f'director-attempt-{attempt}.json').write_text(json.dumps(last,indent=2))
@@ -169,7 +197,7 @@ def picture(t,tl,plan,hidden=()):
     d.line((42,1195,678,1195),fill=(170,200,200),width=3);d.line((42,1195,42+636*t/tl['duration'],1195),fill=(221,102,57),width=3)
     return im
 def component_camera(t,tl,plan):
-    mechanism=plan['mechanism'];module={'photovoltaic_cell':solar,'piston_pump':pump,'wind_turbine':wind,'camera_iris':iris}[mechanism]
+    mechanism=plan['mechanism'];module=COMPONENTS[mechanism]
     beats=tl['beats'];i=min(7,next((i for i,b in enumerate(beats) if t<b['end']),7));b=beats[i];u=(t-b['start'])/(b['end']-b['start'])
     previous=beats[max(0,i-1)].get('camera','wide');mode=b.get('camera','wide')
     pref={'wide':0.0,'mechanism':1.0,'follow':.45}
@@ -188,26 +216,28 @@ def component_camera(t,tl,plan):
     return zoom,target,az
 
 def component_picture(t,tl,plan,hidden=()):
-    mechanism=plan['mechanism'];module={'photovoltaic_cell':solar,'piston_pump':pump,'wind_turbine':wind,'camera_iris':iris}[mechanism]
+    mechanism=plan['mechanism'];module=COMPONENTS[mechanism]
     zoom,target,az=component_camera(t,tl,plan)
-    base_bg=iris.background() if mechanism=='camera_iris' else BG
+    base_bg=module.background() if hasattr(module,'background') else BG
+    dark=getattr(module,'DARK',mechanism=='camera_iris')
     height=module.elevation(t,tl) if hasattr(module,'elevation') else 10
     im=base_bg.copy();ground=Scene(t,zoom,target,az,elevation=height);s=Scene(t,zoom,target,az,elevation=height)
-    floor=.35 if mechanism=='camera_iris' else -.1
-    ground.face([[-1000,-1000,floor],[1000,-1000,floor],[1000,1000,floor],[-1000,1000,floor]],(28,33,40) if mechanism=='camera_iris' else (218,229,224));ground.paint(im)
+    floor=getattr(module,'FLOOR',.35 if mechanism=='camera_iris' else -.1)
+    ground.face([[-1000,-1000,floor],[1000,-1000,floor],[1000,1000,floor],[-1000,1000,floor]],getattr(module,'GROUND',(28,33,40) if mechanism=='camera_iris' else (218,229,224)));ground.paint(im)
     module.draw(s,t,tl,hidden);s.paint(im)
     mask=Image.new('L',(720,1280));md=ImageDraw.Draw(mask)
     for y in range(300):md.line((0,y,720,y),fill=255 if y<245 else int(255*(300-y)/55))
-    im.paste(base_bg,(0,0),mask);d=ImageDraw.Draw(im);d.text((42,65),'HOW IT TICKS',font=FONT,fill=(225,231,230) if mechanism=='camera_iris' else (31,77,89))
+    im.paste(base_bg,(0,0),mask);d=ImageDraw.Draw(im);d.text((42,65),'HOW IT TICKS',font=FONT,fill=(225,231,230) if dark else (31,77,89))
     import textwrap
-    for j,line in enumerate(textwrap.wrap(plan['hook'],26)[:3]):d.text((42,125+j*55),line,font=TITLE,fill=(242,231,208) if mechanism=='camera_iris' else (30,65,78))
+    for j,line in enumerate(textwrap.wrap(plan['hook'],26)[:3]):d.text((42,125+j*55),line,font=TITLE,fill=(242,231,208) if dark else (30,65,78))
     beat=min(7,next((j for j,b in enumerate(tl['beats']) if t<b['end']),7))
     label=None
     if mechanism=='wind_turbine' and beat==5:label='Magnetic field · illustration'
     if mechanism=='photovoltaic_cell' and 2<=beat<=6:label='Charge carriers · illustration'
     if mechanism=='camera_iris' and 1<=beat<=5:label='Light paths · illustration'
     if mechanism=='camera_iris' and beat==6:label='Fixed-setting exposure illustration'
-    if label:d.text((42,1120),label,font=FONT,fill=(225,231,230) if mechanism=='camera_iris' else (31,77,89))
+    if mechanism=='float_valve' and 2<=beat<=6:label='Water flow · illustration'
+    if label:d.text((42,1120),label,font=FONT,fill=(225,231,230) if dark else (31,77,89))
     d.line((42,1195,678,1195),fill=(170,200,200),width=3);d.line((42,1195,42+636*t/tl['duration'],1195),fill=(221,102,57),width=3)
     return im
 def verify(plan,tl,out):
@@ -229,7 +259,7 @@ def verify(plan,tl,out):
     sheet.save(out/'contact.jpg');(out/'component-checks.json').write_text(json.dumps({'errors':errors,'owner_approved':False,'scope':'tested bascule bridge only'},indent=2))
     if errors:raise ValueError('; '.join(errors))
 def verify_overview(plan,tl,out):
-    module={'photovoltaic_cell':solar,'piston_pump':pump,'wind_turbine':wind,'camera_iris':iris}[plan['mechanism']]
+    module=COMPONENTS[plan['mechanism']]
     samples=[]
     for i,fraction in [(0,.05),(0,.5),(0,.95),(7,.95)]:
         beat=tl['beats'][i];t=beat['start']+(beat['end']-beat['start'])*fraction
@@ -247,7 +277,10 @@ def verify_overview(plan,tl,out):
 def verify_component(plan,tl,out):
     errors=verify_overview(plan,tl,out) if tl.get('motion_policy') else []
     mechanism=plan['mechanism'];measure=[]
-    if mechanism=='piston_pump':
+    if mechanism in action_contracts.CONTRACTS:
+        errors+=action_contracts.verify_motion(mechanism,COMPONENTS[mechanism],tl,out,plan=plan)
+        evidence=action_contracts.CONTRACTS[mechanism]['visible']
+    elif mechanism=='piston_pump':
         intake_start=tl['beats'][2].get('motion_window',[tl['beats'][2]['start']])[0]
         delivery_start=tl['beats'][4].get('motion_window',[tl['beats'][4]['start']])[0]
         for t in np.linspace(intake_start+.001,tl['beats'][3]['end']-.001,25):
@@ -282,8 +315,9 @@ def run(topic,out,mechanism=None):
     reserved_family=novelty.reserve_new(topic,mechanism)
     out=Path(out);out.mkdir(parents=True,exist_ok=True);start=time.monotonic()
     cp=Checkpoint(topic,validator=validate,namespace='tested-library-spoken-v1');saved=cp.load()
-    def contract_version(plan):return hashlib.sha256((narration_timing.VERSION+json.dumps(REGISTRY[plan['mechanism']],sort_keys=True)).encode()).hexdigest()
+    def contract_version(plan):return hashlib.sha256((narration_timing.VERSION+STORY_VERSION+json.dumps(REGISTRY[plan['mechanism']],sort_keys=True)).encode()).hexdigest()
     def save(stage,scene,**fields):return cp.save(stage,scene,contract_version=contract_version(scene),**fields)
+    if saved and saved['scene'].get('story_policy')!=STORY_VERSION:saved=save('needs_repair',saved['scene'],errors=['Upgrade the accepted narration to the current causal story policy; preserve the original topic and physical facts'])
     if saved and saved.get('contract_version')!=contract_version(saved['scene']):saved=save('needs_audit',saved['scene'],timeline=saved.get('timeline'))
     reused=bool(saved)
     if saved:
@@ -293,9 +327,9 @@ def run(topic,out,mechanism=None):
             saved=save('needs_audit',plan,**prior)
         print('resume generated director plan without rewriting its narration',flush=True)
     else:
-        plan=plan_topic(topic,out);saved=save('needs_audit',plan)
+        plan=plan_topic(topic,out,mechanism=mechanism);saved=save('needs_audit',plan)
     if saved['stage']=='needs_repair':
-        plan=plan_topic(topic,out,saved['errors'],plan);saved=save('needs_audit',plan)
+        plan=plan_topic(topic,out,saved['errors'],plan,mechanism=mechanism);saved=save('needs_audit',plan)
     if saved['stage']=='needs_audit':
         for review_attempt in range(2):
             errors=critique(plan,out)
@@ -304,8 +338,11 @@ def run(topic,out,mechanism=None):
                 saved=save('checked_scene',plan,**prior);break
             save('needs_repair',plan,errors=errors)
             if review_attempt:raise ValueError('automatic narration repair still contradicts supplied facts')
-            plan=plan_topic(topic,out,errors,plan);saved=save('needs_audit',plan)
+            plan=plan_topic(topic,out,errors,plan,mechanism=mechanism);saved=save('needs_audit',plan)
     if novelty.identity(topic,plan['mechanism'])!=reserved_family:raise ValueError('Planner changed the reserved visual family; no media allowed')
+    story_issues=story_errors(plan)
+    (out/'story-checks.json').write_text(json.dumps({'policy':STORY_VERSION,'plan_sha256':action_contracts.fingerprint(plan),'errors':story_issues,'scope':'Concrete opening, causal wording, distinct narration and component-owned held-state claims; not an acting-quality score'},indent=2))
+    if story_issues:raise ValueError('Causal story contract failed: '+str(story_issues))
     (out/'director-plan.json').write_text(json.dumps(plan,indent=2))
     # Voice measurements drive action durations; no authored narration is read.
     spec={'title':plan['title'],'beats':[dict(b,seconds=6) for b in plan['beats']]}
@@ -322,7 +359,7 @@ def run(topic,out,mechanism=None):
     print('CE_STAGE=render',flush=True)
     render_start=time.monotonic();render_hit=False
     root=Path(__file__).resolve().parent
-    render_sig=hashlib.sha256(b''.join((root/p).read_bytes() for p in ['director.py','narration_timing.py','mechanisms.py','mesh.py','solar.py','pump.py','wind.py','iris.py','registry.py'])+json.dumps(tl,sort_keys=True).encode()).hexdigest()
+    render_sig=hashlib.sha256(b''.join((root/p).read_bytes() for p in ['director.py','narration_timing.py','mechanisms.py','mesh.py','solar.py','pump.py','wind.py','iris.py','float_valve.py','combination_lock.py','solid_parts.py','action_contracts.py','registry.py'])+json.dumps(tl,sort_keys=True).encode()).hexdigest()
     cached=Path(fields.get('silent_path','/nonexistent'))
     if fields.get('render_signature')==render_sig and cached.is_file() and hashlib.sha256(cached.read_bytes()).hexdigest()==fields.get('silent_sha256'):
         shutil.copyfile(cached,out/'silent.mp4');render_hit=True

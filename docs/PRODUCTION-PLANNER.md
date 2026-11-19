@@ -1,5 +1,7 @@
 # Production planner — current contract and evidence
 
+**New capability work (November 19):** two original visual families—tank float control and a three-wheel gated padlock—are implemented with causal story checks, exact-timeline movement/held-state evidence and targeted model repair. Local checks pass; cloud verification and the first automatic new-video proof remain pending. The fixed narrator, no-repeat ledger and manual publishing approval remain in force. [Scope and evidence](CAUSAL-CAPABILITY-EXPANSION.md).
+
 ## Latest verified state — November 18
 
 - The independent GitHub CPU voice fallback produced the 52.536-second short **Why a Check Valve Prevents Backflow**, automatically delivered to open Studio review card 55. Encoded audio passed (-16.95 LUFS, -3.07 dB true peak, 1.41% ASR word error). No human listening or final creative approval is claimed.

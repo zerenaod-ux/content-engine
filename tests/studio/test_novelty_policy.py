@@ -2,6 +2,7 @@ import json,os,tempfile,unittest
 from pathlib import Path
 from unittest.mock import patch
 from studio_lib import novelty
+from studio_lib.registry import REGISTRY
 from studio_lib.production import choose_topic
 
 class NoveltyPolicyTests(unittest.TestCase):
@@ -49,7 +50,7 @@ class NoveltyPolicyTests(unittest.TestCase):
    self.assertTrue(novelty.reason('Why solar contacts collect charge','photovoltaic_cell',novelty.records(root)))
 
  def test_exhausted_library_holds_before_any_model_request(self):
-  rows=[{'mechanism':key,'state':'created'} for key in ('bascule_bridge','photovoltaic_cell','piston_pump','wind_turbine','camera_iris')]
+  rows=[{'mechanism':key,'state':'created'} for key in REGISTRY]
   with tempfile.TemporaryDirectory() as root:
    base=Path(root);(base/'history.json').write_text('[]');(base/'videos.json').write_text('[]')
    with patch('studio_lib.production.novelty.records',return_value=rows),patch('studio_lib.production.call') as model:

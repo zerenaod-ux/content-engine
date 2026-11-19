@@ -2,10 +2,10 @@
 
 This is an authoring contract, not evidence that finished pixels were inspected.
 """
-POLICY_VERSION = 'causal-visible-explanation-v1'
+POLICY_VERSION = 'causal-visible-explanation-v2'
 WRITING_RULES = """
 EXPLANATION STYLE: Build one connected causal story, not a parts catalogue.
-Open with a concrete problem, surprising result or useful question. Show what
+The first spoken beat must be one concrete problem or useful question ending with a question mark. Do not open by saying an object sits on a table. Explain at least three distinct causal links using natural varied language, rather than listing components. Show what
 prevents the result, introduce the supported mechanism that addresses it, explain
 its visible action and consequence, then connect the next supported step to a
 clear final payoff. Make each step answer why the previous step matters.
@@ -29,3 +29,20 @@ effects from visible physical objects. Preserve factual limits and no-free-energ
 rules. Prefer a concise supported explanation over narration padded to fill time.
 Do not promise that these writing instructions alone verify rendered motion.
 """.strip()
+
+# This is a bounded authoring gate; component kinematics and pixel checks remain
+# independent evidence, rather than treating these writing checks as a render.
+def errors(plan):
+ import re
+ from studio_lib.action_contracts import narration_errors
+ result=[];beats=plan.get('beats',[])
+ if len(beats)!=8:return ['A causal short needs its eight supported actions']
+ lines=[b.get('say','') for b in beats]
+ if not isinstance(lines[0],str) or not lines[0].strip().endswith('?'):result.append('beat 0: open with one concrete problem or useful question ending with ?')
+ if any(re.search(r'\b(recognizable|authored engineering fixture|this controlled test)\b',str(line),re.I) for line in lines):result.append('Use audience-facing explanation, not fixture or production descriptions')
+ links=sum(bool(re.search(r'\b(so|because|as|when|until|if|while|therefore|instead|once|allows?|prevents?|means|lets|keeps|causes?|makes|releases?|controls?)\b',str(line),re.I)) for line in lines[1:])
+ if links<3:result.append('Explain at least three visible cause-and-effect links; do not list parts')
+ normalized=[re.sub(r'\W+',' ',str(line).lower()).strip() for line in lines]
+ if len(set(normalized))!=len(normalized):result.append('Repeated narration does not advance the explanation')
+ result.extend(narration_errors(plan))
+ return result

@@ -58,3 +58,34 @@ REGISTRY['camera_iris']={
   'payoff':'Return to the same complete camera as the cutaway covers return. The iris stays open. Resolve how the coordinated blades regulate light. Do not say a new closing cycle or shutter action begins.'},
  'source':'https://www.nikonusa.com/learn-and-explore/c/tips-and-techniques/a-basic-look-at-the-basics-of-exposure',
  'mechanism_source':'https://patents.google.com/patent/US3132576A/en'}
+
+REGISTRY.update({
+ 'float_valve':{
+  'description':'Complete storage tank with a direct-acting ball float, rigid pivoted arm, inlet washer/seat and separate draw-off valve; not a toilet flush, steam trap or electrically controlled pump',
+  'actions':['tank','cutaway','fill','throttle','hold','draw','refill','payoff'],
+  'facts':{
+   'tank':'Show the whole connected storage tank, inlet pipe and draw-off outlet. Introduce a simple question about stopping a tank from overfilling without electronic sensing. Water and the low float are HELD for context; do not say they start rising or filling yet.',
+   'cutaway':'A simplified cutaway lifts the front and lid to reveal the low floating ball, a rigid arm on a fixed pivot, and inlet valve washer under its seat. Name the simplified cutaway naturally. Water and the float are still held low; filling starts only in the next beat. No invisible electronics.',
+   'fill':'Inlet water markers begin flowing and the water level rises. Buoyancy raises the partly submerged float, rotating its rigid arm around a fixed pivot. The rod length stays constant. Markers represent flow, not a measured flow rate; time is compressed.',
+   'throttle':'As water rises toward the upper level, the float rises further. The same pivoted arm lifts a guided valve stem and rubber washer toward a fixed inlet seat, shrinking its gap and reducing incoming flow. The washer meets the seat at the end and inlet flow stops; the rising ball does NOT itself plug the pipe.',
+   'hold':'High water, float, arm and seated washer are HELD. The inlet gap is closed and no inlet markers cross the seat. Explain the consequence: buoyancy communicated through the lever shuts the inlet, rather than a timer or electronics. Do not announce a new rise, closure, or opening.',
+   'draw':'The separate draw-off outlet opens, THEN stored water falls; the float descends with it and the arm releases the inlet washer. Incoming water resumes as its seat gap reopens, while draw-off demand is larger so the net stored level falls. No water disappears magically and no suction pump is shown.',
+   'refill':'The draw-off valve closes first. Inlet flow refills the tank, raising the floating ball and turning the same arm. At the upper level its washer is seated again and filling stops. This is automatic level feedback, not water creation or electricity generation.',
+   'payoff':'Return to the whole tank. High water, the raised float and the closed inlet are already HELD; only the cutaway covers return. State the payoff of automatic level control without announcing another float rise, valve movement or fresh filling cycle.'},
+  'source':'https://www.boiswood.co.uk/content/uploads/brochure/mankenberg-nv71-tank-float-valve.pdf',
+  'mechanism_source':'https://tectul.com/en/conduccion-de-fluidos/valvulas/ficha-tecnica-valvula-flotador-bronce'},
+ 'combination_lock':{
+  'description':'Recognizable three-wheel padlock with a simplified exposed gate-and-fence mechanism, spring-guided locking bar and lifting shackle; not a real model, bypass technique, key lock or single-dial safe',
+  'actions':['lock','cutaway','first','second','third','release','pull','payoff'],
+  'facts':{
+   'lock':'Show the complete padlock and closed U-shaped shackle with three scrambled wheels. Ask why the shackle stays locked until all three wheels line up. The shackle and wheels are HELD; no opening or rotating begins yet. No keyhole, key, electricity or pulling hand is shown.',
+   'cutaway':'A simplified cutaway lifts the housing panels to expose three separate wheels around a fixed horizontal axle, their real rim notches called gates, and one spring-guided locking bar spanning all three. Name the simplified cutaway once. All wheels and the shackle remain still here.',
+   'first':'Only the FIRST wheel turns toward its aligned position, bringing its notch upward under the bar. The second and third wheels stay scrambled, so their solid rims still block the bar and the shackle stays closed. Manual input is implied; do not invent a hand or motor.',
+   'second':'Only the SECOND wheel turns into alignment. The first is held aligned; the third wheel still presents its solid rim, preventing the bar from descending. One or two aligned gates are not enough; no opening yet.',
+   'third':'The THIRD wheel turns until all three gates line up. ONLY when the last gate provides clearance can the spring-guided locking bar settle into the notches, moving its attached locking tab clear of the short shackle leg. The shackle is still down; it does not automatically jump open.',
+   'release':'All wheels are HELD aligned and the locking bar is ALREADY seated in their gates. Its tab is already clear of the shackle notch. Explain why the three aligned gaps permit release, without announcing a new bar drop, wheel rotation or shackle lift.',
+   'pull':'An external pull lifts the U-shaped shackle AFTER the bar is clear. The long leg stays captured in the housing and the short leg clears its socket. Wheels and bar remain aligned and held; no unlocking without the correct positions, no automatic spring ejection and no rotation of the shackle.',
+   'payoff':'Return to the whole padlock with its shackle already raised. Wheels, bar and shackle are HELD in their final positions; only the housing panels return. Explain the payoff: a single bar can pass only when all three wheel gaps align. Do not claim another opening, reset or scrambling sequence.'},
+  'source':'https://patents.google.com/patent/US5095724A/en',
+  'mechanism_source':'https://patents.google.com/patent/GB2227515A/en'}
+})

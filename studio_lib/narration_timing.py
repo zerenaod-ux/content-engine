@@ -13,8 +13,10 @@ import sys
 from pathlib import Path
 
 VERSION = 'spoken-action-v1'
-ALIGNMENT_REVISION = 'phrase-through-sentence-v2'
+ALIGNMENT_REVISION = 'causal-component-actions-v3'
 TRANSITIONS = {
+    'float_valve':{'cutaway','fill','throttle','draw','refill','payoff'},
+    'combination_lock':{'cutaway','first','second','third','pull','payoff'},
     'camera_iris': {'cutaway','close','open','payoff'},
     'bascule_bridge': {'stop', 'balance', 'pass', 'lower', 'resume'},
     'photovoltaic_cell': {'absorb', 'circuit', 'payoff'},
@@ -22,6 +24,8 @@ TRANSITIONS = {
     'wind_turbine': {'shaft', 'load', 'payoff'},
 }
 ANCHORS = {
+    'float_valve':{'cutaway':r'cutaway','fill':r'water|float|ball|level','throttle':r'float|ball|washer|valve|stem|seat','draw':r'outlet|drain|draw.off|tap','refill':r'outlet|drain|water|refill|float','payoff':r'tank|float|level|inlet|water'},
+    'combination_lock':{'cutaway':r'cutaway','first':r'first wheel|first dial','second':r'second wheel|second dial','third':r'third wheel|last wheel|third dial|last dial','pull':r'shackle|loop|pull','payoff':r'padlock|lock|shackle|gates|wheels|bar'},
     'camera_iris': {'cutaway':r'cutaway', 'close':r'(?:ring|blades|iris|opening|aperture)[^.!?;,]{0,30}?\b(?:turn\w*|pivot\w*|rotat\w*|clos\w*|narrow\w*|shrink\w*)', 'open':r'(?:ring|blades|iris|opening|aperture)[^.!?;,]{0,30}?\b(?:revers\w*|open\w*|widen\w*|pivot\w*|rotat\w*)', 'payoff':r'camera|aperture|opening|iris|cover|shell'},
     'bascule_bridge': {
         'stop': r'(?:barriers?|gates?)[^.!?;,]{0,28}?\b(?:clos\w*|lower\w*|shut\w*)',
@@ -120,10 +124,17 @@ def normalize_cues(plan):
         selected=[i for i,w in enumerate(words) if w.end()>match.start() and w.start()<match.end()]
         if not selected:continue
         first,last=min(selected),max(selected)
-        if first==last:
-            if first>0:first-=1
-            elif last+1<len(words):last+=1
-        if 2<=last-first+1<=10:beat['motion_cue']=say[words[first].start():words[last].end()]
+        # Find a short unique window containing the actual subject/action.
+        # Every candidate is copied verbatim; no spoken words are synthesized.
+        chosen=None
+        for size in range(max(2,last-first+1),11):
+            starts=range(max(0,last-size+1),min(first,len(words)-size)+1)
+            candidates=[]
+            for start in starts:
+                end=start+size-1;phrase=say[words[start].start():words[end].end()]
+                if len(locations(tokens(say),tokens(phrase)))==1:candidates.append((abs(start-first),phrase))
+            if candidates:chosen=min(candidates,key=lambda c:c[0])[1];break
+        if chosen:beat['motion_cue']=chosen
     return result
 
 def progress(t, beat):
@@ -191,7 +202,7 @@ def bind(plan, timeline, out, transcribe=None):
             # action inside this beat and leave cameras on their original clock.
             start=max(beat['start'],spoken_start-.35)
             end=min(beat['end'],beat['start']+.08+float(beat['voice_duration'])+.05)
-            if plan.get('mechanism')=='camera_iris' and planned['action']=='cutaway':end=min(beat['end'],max(spoken_end+.1,start+.9))
+            if plan.get('mechanism') in ('camera_iris','float_valve','combination_lock') and planned['action']=='cutaway':end=min(beat['end'],max(spoken_end+.1,start+.9))
             if end-start<.35:raise ValueError('Speech cue leaves no safe action interval')
             row={'key':key,'beat':i,'action':planned['action'],'phrase':planned['motion_cue'],
                  'audio_sha256':audio_hash,'spoken_start':spoken_start,'spoken_end':spoken_end,

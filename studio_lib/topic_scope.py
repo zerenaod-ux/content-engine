@@ -13,6 +13,8 @@ def scope_error(topic,mechanism=None):
         elif re.search(r'pump',text):mechanism='piston_pump'
         elif re.search(r'bridge',text):mechanism='bascule_bridge'
     patterns={
+      'float_valve':r'toilet flush|steam trap|pilot.operated|diaphragm|solenoid|pump efficiency|water hammer',
+      'combination_lock':r'pick(?:ing)?|bypass|decode|crack|keyhole|keyed|single.dial|safe lock|reset combination',
       'camera_iris':r'autofocus|depth.of.field|bokeh|refraction|image inversion|f.number calculation|shutter mechanism',
       'photovoltaic_cell':r'anti.{0,3}reflect|coatings?|inverter|doping|band.{0,2}gap|solar thermal',
       'wind_turbine':r'blade.{0,15}pitch|pitch.{0,15}blade|yaw|feather|inverter|transformer',
