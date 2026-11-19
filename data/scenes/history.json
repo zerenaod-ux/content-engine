@@ -721,5 +721,18 @@
     "failed": true,
     "record_run": "44532230515",
     "record_attempt": "1"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "tested component rejected: Measured audio did not uniquely contain action cue in beat 3; hold before rendering\n",
+    "date": "2026-11-19",
+    "topic": "Why the road barriers close before the bridge begins to lift",
+    "title": "",
+    "subject": "bascule_bridge",
+    "keywords": [],
+    "category": "tested mechanism",
+    "failed": true,
+    "record_run": "44533440191",
+    "record_attempt": "1"
   }
 ]
