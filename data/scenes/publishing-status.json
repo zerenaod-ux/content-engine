@@ -1,27 +1,27 @@
 {
-  "checked_at": "2026-11-18T20:39:21.017228+00:00",
+  "checked_at": "2026-11-19T01:22:45.428615+00:00",
   "read_only": true,
   "complete": true,
   "platforms": {
     "youtube": {
       "returned_posts": 5,
       "statuses": {
-        "scheduled": 2,
-        "sent": 3
+        "scheduled": 1,
+        "sent": 4
       }
     },
     "instagram": {
       "returned_posts": 5,
       "statuses": {
-        "scheduled": 3,
-        "sent": 2
+        "scheduled": 2,
+        "sent": 3
       }
     },
     "tiktok": {
       "returned_posts": 5,
       "statuses": {
-        "scheduled": 3,
-        "sent": 2
+        "scheduled": 2,
+        "sent": 3
       }
     }
   },
@@ -86,13 +86,13 @@
         ],
         "instagram": [
           {
-            "status": "scheduled",
+            "status": "sent",
             "due": "2026-11-19T01:00:00.000Z"
           }
         ],
         "tiktok": [
           {
-            "status": "scheduled",
+            "status": "sent",
             "due": "2026-11-19T00:00:00.000Z"
           }
         ]
@@ -152,7 +152,7 @@
       "platforms": {
         "youtube": [
           {
-            "status": "scheduled",
+            "status": "sent",
             "due": "2026-11-18T22:30:00.000Z"
           }
         ],
@@ -214,22 +214,22 @@
     "available": true,
     "platforms": {
       "youtube": {
-        "views": 1389.0,
-        "reactions": 29.0,
-        "reported_posts": 3,
-        "source_updated_at": "2026-11-18T00:35:09.869Z"
+        "views": 2464.0,
+        "reactions": 38.0,
+        "reported_posts": 4,
+        "source_updated_at": "2026-11-19T00:26:23.848Z"
       },
       "instagram": {
-        "views": null,
-        "reactions": null,
-        "reported_posts": 2,
-        "source_updated_at": "2026-11-17T17:27:46.114Z"
+        "views": 265.0,
+        "reactions": 3.0,
+        "reported_posts": 3,
+        "source_updated_at": "2026-11-17T20:24:56.448Z"
       },
       "tiktok": {
-        "views": 0.0,
-        "reactions": 0.0,
-        "reported_posts": 2,
-        "source_updated_at": "2026-11-17T17:27:47.311Z"
+        "views": 754.0,
+        "reactions": 62.0,
+        "reported_posts": 3,
+        "source_updated_at": "2026-11-17T20:24:59.093Z"
       }
     },
     "scope": "recent 20 published posts",
