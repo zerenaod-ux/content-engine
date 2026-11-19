@@ -4,6 +4,7 @@ from studio_lib.cinema.topic_memory import prompt_history
 import argparse,asyncio,base64,json,math,os,subprocess,time
 from pathlib import Path
 from studio_lib.providers import call
+from studio_lib.storytelling import WRITING_RULES as STORY_RULES
 from studio_lib.quality_gate import seal
 from studio_lib.topic_guard import duplicate,signature
 from studio_lib.cinema.auto_topic import api,read
@@ -79,7 +80,7 @@ def plan(out):
   if result is not None and rejected and all('chapter needs' in e.lower() or 'narration must total' in e.lower() or 'title must' in e.lower() or 'hook needs' in e.lower() or e.startswith('Section ') for e in rejected):
    result=repair_metadata(result,out,attempt)
    result=repair_sections(result,out,attempt,issues=rejected)
-  else:result=call('Write one original factual continuous explainer. Return JSON only.',
+  else:result=call('Write one original factual continuous explainer. Return JSON only. '+STORY_RULES,
    'One subject only. Native long format, not assembled shorts. Return {"topic":exact topic,"mechanism":exact id,"title":"How/Why 4-8 words","hook":"2-7 simple words max 40 characters","beats":[{"action":"exact action","say":"25-45 spoken words","camera":"wide|engagement|output"}]}. Exactly sixteen actions in order: '+json.dumps(ACTIONS)+'. Total 430-650 words. First spoken beat ends with ?. Energetic natural delivery, short clauses, concrete cause and effect. No spoken camera directions, padding, horror framing, invented parts or numerical performance. Do not describe an unshown force sensor or invisible force as a literal object. Facts/source and visible action contract: '+json.dumps({'selected':selected,'source':SOURCES[selected['mechanism']],'actions':mechanism_facts(selected['mechanism'])})+' PREVIOUS ERRORS: '+json.dumps(rejected),max_tokens=3600,temperature=.35)
   (out/f'raw-plan-{attempt}.json').write_text(json.dumps(result,indent=2));draft.write_text(json.dumps(result,indent=2));rejected=errors(result)
   if result.get('topic')!=selected['topic'] or result.get('mechanism')!=selected['mechanism']:rejected.append('Preserve selected topic and mechanism')

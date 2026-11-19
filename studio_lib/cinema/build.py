@@ -6,6 +6,7 @@ import numpy as np
 import edge_tts
 from studio_lib.director import validate,normalize_narration
 from studio_lib.providers import call
+from studio_lib.storytelling import WRITING_RULES as STORY_RULES
 from studio_lib.registry import REGISTRY
 from studio_lib.cinema.presentation import illustration_labels
 from studio_lib.quality_gate import seal
@@ -149,6 +150,7 @@ def generate(topic,out):
         prompt=('Create an original explanation of this bench-mounted hand-cranked generator. Return JSON with mechanism=hand_generator, title starting How/Why (4-8 words), hook (at most 7 simple words and 40 characters), and eight beats in EXACT contract action order. Each beat has action, say (9-23 words), camera=wide|mechanism|follow. Total 140-176 words. Open with a direct question about turning a handle into light; end first beat with ?. Use direct conversational phrasing, causal links and concrete visible actions, not production instructions. No visible person is present. No wind, turbine or blades. Switch stays open until load: before then say voltage, never claim current flows. Original words, no copied creator script. CONTRACT: '+json.dumps(brief)+' TOPIC: '+json.dumps(topic))
     if component in SPECS:
         prompt=('Create an original factual explanation of TOPIC using only this exact simplified diagram. Return JSON with mechanism='+component+', title starting How/Why (4-8 words), hook at most 7 simple words and 40 characters, and eight beats in EXACT contract order. Each beat has action, say (9-23 words), camera=wide|mechanism|follow. Total 140-176 words. Open with a question. Explain the simplification naturally. Do not claim a complete real device, real-time simulation or unsupported process. CONTRACT: '+json.dumps(brief)+' TOPIC: '+json.dumps(topic))
+    prompt+='\n'+STORY_RULES
     prompt+=' Write each beat with 20-22 words when possible, targeting 160-176 words overall. DELIVERY: '+WRITING_RULES
     errors=[];previous=None
     for n in range(4):

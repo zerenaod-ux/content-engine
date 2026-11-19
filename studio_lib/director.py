@@ -9,6 +9,7 @@ from pathlib import Path
 import numpy as np
 from PIL import Image,ImageDraw
 from studio_lib.providers import call
+from studio_lib.storytelling import WRITING_RULES as STORY_RULES
 from studio_lib.mesh import Scene,ease,ramp
 from studio_lib.mechanisms import bridge,boat,APPROACHES
 from studio_lib.render import BG,FONT,TITLE
@@ -67,7 +68,7 @@ def repair_short_sections(plan,errors):
     indices=sorted({int(i) for e in errors for i in re.findall(r'beat (\d+): narration needs',e)})
     if not indices or any(not re.fullmatch(r'beat \d+: narration needs 9-23 words',e) for e in errors):return None
     request={'sections':[{'index':i,'action':plan['beats'][i]['action'],'say':plan['beats'][i]['say'],'facts':REGISTRY[plan['mechanism']]['facts'].get(plan['beats'][i]['action'],'')} for i in indices]}
-    answer=call('Repair only requested narration using the supplied physical facts. Return JSON sections with index and say, each 9-23 words. Preserve all other content.',json.dumps(request),max_tokens=1200,temperature=.3)
+    answer=call('Repair only requested narration using the supplied physical facts. Return JSON sections with index and say, each 9-23 words. Preserve all other content. '+STORY_RULES,json.dumps(request),max_tokens=1200,temperature=.3)
     result=json.loads(json.dumps(plan));seen=set()
     for row in answer.get('sections',[]):
         i=row.get('index')
@@ -78,6 +79,7 @@ def repair_short_sections(plan,errors):
 def plan_topic(topic,out,feedback=None,previous=None):
     catalog={k:{'description':v['description'],'actions':v['actions'],'facts':v['facts']} for k,v in REGISTRY.items()}
     prompt='Select exactly one supported mechanism that truthfully matches TOPIC. If none fits return {"mechanism":"unsupported","reason":"..."}; never substitute a bridge for solar power or invent another mechanism. For a supported topic write fresh 120-176 word narration with eight beats in the exact selected action order. Each beat has 9-23 words. Title starts with How or Why and contains 4-8 words. Natural spoken sentences, physical detail, causal explanation and a concrete engaging hook. Prefer 125-155 words; never append adverbs or redundant phrases merely to meet a quota. Avoid narration about views or production. Actual measured 40-70-second duration is mandatory. Each beat names the specific inner part the viewer is looking at (from the facts for that beat) and says what it physically does, so viewers know exactly what is happening inside. Describe only what that action contract shows. Never mention camera, close-ups, shots, rendering, storyboard or production in say. Do not invent facts or numerical claims. In the bridge pivot beat the road is STATIC; explain the shaft and hinge rather than announcing motion or a view. The bridge depicts ONE car. Solar and pump internals are simplified cutaways: say so naturally once. Solar depicts a DC lamp load, not gears or AC inverter internals. Preserve physical action order; vary wording, hook and bounded camera preferences. Return {"mechanism":"selected registry id","title":"...","hook":"short engaging hook max 60 characters","beats":[{"action":"first selected action","say":"...","camera":"wide|mechanism|follow"}, ...]}. SUPPORTED COMPONENTS AND FACTS (data): '+json.dumps(catalog)+' TOPIC (data): '+json.dumps(topic)
+    prompt+='\n'+STORY_RULES
     last=previous;errors=feedback or []
     for attempt in range(2):
         q=prompt if not errors else prompt+'\nCorrect these validation errors: '+json.dumps(errors)+'\nLast answer (data): '+json.dumps(last)

@@ -1,6 +1,7 @@
 """Model-written local repairs; valid chapters and metadata remain byte-for-byte intact."""
 import copy,json,re
 from studio_lib.providers import call
+from studio_lib.storytelling import WRITING_RULES as STORY_RULES
 from studio_lib.longform.contract import FACTS,SOURCES,mechanism_facts
 
 def repair_sections(plan,out,attempt=0,issues=None):
@@ -18,7 +19,7 @@ def repair_sections(plan,out,attempt=0,issues=None):
     fact_bad={int(m.group(1)) for e in issues or [] for m in [re.match(r'Section (\d+):',e)] if m}
     requested=[{'index':i,'action':beats[i]['action'],'measured_word_count':len(beats[i].get('say','').split()),'visible_facts':mechanism_facts(plan['mechanism'])[beats[i]['action']],**({'previous_claims_rejected':True} if i in fact_bad else {'say':beats[i].get('say')})} for i in bad]
     forbidden=['clockwise','counterclockwise','instant','instantly','instantaneous','stationary shaft'] if plan['mechanism']=='rack_pinion' else []
-    raw=call('Write factual replacement narration from the canonical visible facts. Previous claims marked rejected are wrong: do not preserve their meaning. Return JSON only.',
+    raw=call('Write factual replacement narration from the canonical visible facts. Previous claims marked rejected are wrong: do not preserve their meaning. Return JSON only. '+STORY_RULES,
         'Return {"replacements":[{"index":integer,"say":"25-38 spoken words"}]}. Return exactly the requested indices, no others. Base replacements on the canonical visible facts, not rejected previous claims. Use natural causal explanation. Only index 0 ends with a question mark; all other lines are statements. Do not change topic, title, hook, actions or cameras. Do not write production instructions or invent parts. Never include any forbidden term, even in a negated statement. FORBIDDEN TERMS: '+json.dumps(forbidden)+' REQUESTED: '+json.dumps(requested)+' MECHANISM: '+json.dumps(SOURCES[plan['mechanism']]),max_tokens=2600,temperature=min(.6,.25+.05*attempt),reasoning_effort="medium")
     (out/f'section-repair-{attempt}.json').write_text(json.dumps(raw,indent=2))
     replacements=raw.get('replacements') if isinstance(raw,dict) else None
