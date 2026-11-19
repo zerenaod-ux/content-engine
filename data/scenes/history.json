@@ -708,5 +708,18 @@
     "category": "tested mechanism",
     "record_run": "44488879657",
     "record_attempt": "1"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "tested component rejected: director rejected: beat 7: motion_cue must occur exactly once in its narration\n",
+    "date": "2026-11-19",
+    "topic": "How the trunnion bearing reduces friction during a bascule bridge lift",
+    "title": "",
+    "subject": "bascule_bridge",
+    "keywords": [],
+    "category": "tested mechanism",
+    "failed": true,
+    "record_run": "44532230515",
+    "record_attempt": "1"
   }
 ]
