@@ -1,0 +1,54 @@
+name: Verify native delivery without regenerating media
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [.github/workflows/ce-native-delivery-proof.yml]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: main, fetch-depth: 1}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - name: Provide media inspection tools
+        run: |
+          if ! command -v ffmpeg >/dev/null || ! command -v ffprobe >/dev/null; then
+            pip install --quiet static-ffmpeg==3.0
+            python - <<'PY'
+          import os
+          from pathlib import Path
+          from static_ffmpeg import run
+          a,b=run.get_or_fetch_platform_executables_else_raise()
+          folder=Path(os.environ['RUNNER_TEMP'])/'media-bin';folder.mkdir(exist_ok=True)
+          for name,path in [('ffmpeg',a),('ffprobe',b)]:
+              (folder/name).symlink_to(path)
+          with open(os.environ['GITHUB_PATH'],'a') as f:f.write(str(folder)+'\n')
+          PY
+          fi
+      - name: Read the immutable original proof (no generation, review or publishing)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: gh release download ce-20261119-2225 --pattern ce-20261119-2225.mp4 --dir "$RUNNER_TEMP/native-original"
+      - name: Verify the actual production source passes unchanged
+        run: |
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          from studio_lib.phone_media import prepare
+          root=Path(os.environ['RUNNER_TEMP'])
+          r=prepare(root/'native-original/ce-20261119-2225.mp4',root/'native-phone-proof.mp4')
+          assert r['source_sha256']=='5397fb1cb8a2d3f34d8d8f2b8f302de85fb2e33031e475291e0b94f1d70408be'
+          assert r['original_preserved'] and r['source_sha256']==r['delivered_sha256']
+          Path('native-delivery-proof.json').write_text(json.dumps(r,indent=2))
+          print(json.dumps(r))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: native-delivery-proof
+          path: native-delivery-proof.json
