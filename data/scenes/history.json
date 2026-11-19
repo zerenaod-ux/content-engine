@@ -684,5 +684,17 @@
     "failed": true,
     "record_run": "44363993361",
     "record_attempt": "1"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "",
+    "date": "2026-11-19",
+    "topic": "Why a bascule bridge uses counterweights to balance the moving leaf",
+    "title": "Why a Bascule Bridge Uses Counterweights Effectively \ud83d\udea2",
+    "subject": "",
+    "keywords": [],
+    "category": "",
+    "record_run": "44451131400",
+    "record_attempt": "1"
   }
 ]
