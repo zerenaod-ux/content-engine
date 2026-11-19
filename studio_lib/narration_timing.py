@@ -22,7 +22,7 @@ TRANSITIONS = {
     'wind_turbine': {'shaft', 'load', 'payoff'},
 }
 ANCHORS = {
-    'camera_iris': {'cutaway':r'cutaway', 'close':r'(?:ring|blades|iris|opening|aperture)[^.!?;,]{0,30}?\b(?:turn\w*|pivot\w*|rotat\w*|clos\w*|narrow\w*|shrink\w*)', 'open':r'(?:ring|blades|iris|opening|aperture)[^.!?;,]{0,30}?\b(?:revers\w*|open\w*|widen\w*|pivot\w*|rotat\w*)', 'payoff':r'camera|aperture|opening'},
+    'camera_iris': {'cutaway':r'cutaway', 'close':r'(?:ring|blades|iris|opening|aperture)[^.!?;,]{0,30}?\b(?:turn\w*|pivot\w*|rotat\w*|clos\w*|narrow\w*|shrink\w*)', 'open':r'(?:ring|blades|iris|opening|aperture)[^.!?;,]{0,30}?\b(?:revers\w*|open\w*|widen\w*|pivot\w*|rotat\w*)', 'payoff':r'camera|aperture|opening|iris|cover|shell'},
     'bascule_bridge': {
         'stop': r'(?:barriers?|gates?)[^.!?;,]{0,28}?\b(?:clos\w*|lower\w*|shut\w*)',
         'balance': r'(?:road|span|bridge)[^.!?;,]{0,24}?\b(?:ris\w*|lift\w*|rais\w*)|counterweight[^.!?;,]{0,24}?\b(?:swing\w*|descend\w*|drop\w*)',

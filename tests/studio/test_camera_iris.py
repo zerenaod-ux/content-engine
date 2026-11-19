@@ -29,6 +29,12 @@ class CameraIrisTests(unittest.TestCase):
   self.assertAlmostEqual(iris.state(37,tl)['angle'],iris.OPEN_ANGLE)
   self.assertLess(iris.state(25,tl)['brightness'],iris.state(37,tl)['brightness'])
   self.assertAlmostEqual(iris.state(47.999,tl)['angle'],iris.OPEN_ANGLE)
+ def test_final_iris_hold_uses_existing_spoken_words(self):
+  from studio_lib.narration_timing import normalize_cues,cue_errors
+  plan={'mechanism':'camera_iris','beats':[{'action':'payoff','say':'Finally the iris stays open, showing how coordinated blades control the light.','motion_cue':'iris stays open'}]}
+  fixed=normalize_cues(plan)
+  self.assertEqual(fixed['beats'][0]['say'],plan['beats'][0]['say'])
+  self.assertEqual(cue_errors(fixed),[])
  def test_new_family_does_not_unblock_old_families(self):
   self.assertEqual(novelty.identity('', 'camera_iris'),'optical_iris')
   self.assertEqual(novelty.identity('How a camera aperture controls light'),'optical_iris')

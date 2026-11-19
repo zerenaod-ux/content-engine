@@ -115,7 +115,8 @@ def reserve_new(topic,mechanism=None):
  if os.environ.get('GITHUB_ACTIONS')!='true' or not os.environ.get('GH_TOKEN'):
   raise ValueError('Production novelty reservation requires the cloud job')
  from studio_lib.service_queue import read_document,write_document
- owner=os.environ['GITHUB_RUN_ID']
+ from studio_lib.durable_topics import reservation_owner
+ owner=reservation_owner(topic)
  for attempt in range(6):
   ledger,sha=read_document(MEMORY,None)
   if not isinstance(ledger,list) or not ledger:raise ValueError('Permanent novelty ledger unavailable or emptied')
@@ -135,8 +136,9 @@ def record_created(topic,mechanism,path):
  if os.environ.get('GITHUB_ACTIONS')!='true' or not os.environ.get('GH_TOKEN'):
   raise ValueError('Production novelty records must be saved by the cloud job')
  from studio_lib.service_queue import read_document,write_document
+ from studio_lib.durable_topics import reservation_owner
  row={'topic':topic,'mechanism':mechanism,'visual_family':identity(topic,mechanism),
-      'state':'created','owner':os.environ['GITHUB_RUN_ID'],'policy':POLICY,
+      'state':'created','owner':reservation_owner(topic),'encoded_run':os.environ['GITHUB_RUN_ID'],'policy':POLICY,
       'media_sha256':hashlib.sha256(Path(path).read_bytes()).hexdigest()}
  for attempt in range(6):
   ledger,sha=read_document(MEMORY,None)

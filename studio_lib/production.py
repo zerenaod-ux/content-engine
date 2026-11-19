@@ -30,7 +30,7 @@ def choose_topic(history_path=Path('data/scenes/history.json')):
     raise ValueError('No non-repeating supported topic survived the full-history checks')
 
 def selected_mechanism(topic):
-    owner=os.environ.get('GITHUB_RUN_ID')
+    owner=durable.reservation_owner(topic)
     if not owner:return None
     p=Path('idea.json')
     if p.exists():
