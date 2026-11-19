@@ -40,7 +40,7 @@ def errors(plan):
  lines=[b.get('say','') for b in beats]
  if not isinstance(lines[0],str) or not lines[0].strip().endswith('?'):result.append('beat 0: open with one concrete problem or useful question ending with ?')
  if any(re.search(r'\b(recognizable|authored engineering fixture|this controlled test)\b',str(line),re.I) for line in lines):result.append('Use audience-facing explanation, not fixture or production descriptions')
- links=sum(bool(re.search(r'\b(so|because|as|when|until|if|while|therefore|instead|once|allows?|prevents?|means|lets|keeps|causes?|makes|releases?|controls?)\b',str(line),re.I)) for line in lines[1:])
+ links=sum(bool(re.search(r'\b(so|because|as|when|until|if|while|therefore|instead|once|allows?|prevents?|means|lets|keeps|causes?|makes|releases?|controls?|lifts?|raises?|lowers?|pushes|pulls?|drives?|turns?|rotates?|reduces?|blocks?|stops?|opens?|closes?|connects?|aligns?|forces?|passes|reopening|pivoting|raising|turning|guiding|shrinking|reducing|lifting|lowering|rotating|pushing|pulling|closing|opening|blocking|freeing|letting|allowing|keeping)\b',str(line),re.I)) for line in lines[1:])
  if links<3:result.append('Explain at least three visible cause-and-effect links; do not list parts')
  normalized=[re.sub(r'\W+',' ',str(line).lower()).strip() for line in lines]
  if len(set(normalized))!=len(normalized):result.append('Repeated narration does not advance the explanation')

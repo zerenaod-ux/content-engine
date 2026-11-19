@@ -122,3 +122,40 @@ class CausalEvidenceTests(unittest.TestCase):
    report=json.loads(Path(d,'causal-motion-checks.json').read_text())
    row=next(row for row in report['measurements'] if row.get('channel')=='level' and 'delta' in row);row['delta']=-abs(row['delta'])
    self.assertIn('Measured causal action is absent or reversed',action_contracts.evidence_errors(report,plan,tl))
+
+class StoryWordingRegressionTests(unittest.TestCase):
+ def test_active_causal_clauses_are_not_mistaken_for_a_parts_list(self):
+  plan,_=fixture('float_valve')
+  lines=['What stops this tank before its water spills over?',
+         'A simplified cutaway reveals the low float and a rigid pivoted arm.',
+         'Incoming water lifts the floating ball, rotating its arm around a fixed pivot.',
+         'The rising arm pushes the washer toward its seat until the inlet stops flowing.',
+         'The washer stays seated, so the high water level remains held.',
+         'Opening the separate outlet lowers the water, releasing the washer and reopening the inlet.',
+         'The outlet closes and inlet flow raises the float to shut the valve again.',
+         'The tank stays full while this mechanical feedback keeps its inlet closed.']
+  for b,line in zip(plan['beats'],lines):b['say']=line
+  self.assertEqual(storytelling.errors(plan),[])
+ def test_open_tank_is_not_given_an_unshown_burst_scenario(self):
+  plan,_=fixture('float_valve');plan['beats'][0]['say']='What prevents this open tank from bursting as the water rises?'
+  self.assertTrue(any('burst or explosion' in e for e in action_contracts.narration_errors(plan)))
+ def test_held_beat_requires_a_held_explanation(self):
+  plan,_=fixture('float_valve');plan['beats'][4]['say']='High water lifts the float, pivoting the arm to press the washer shut, sealing the inlet.'
+  self.assertTrue(any('already held' in e for e in action_contracts.narration_errors(plan)))
+
+class DraftRecoveryTests(unittest.TestCase):
+ def test_rejected_draft_is_persisted_for_later_targeted_repair(self):
+  import os
+  from studio_lib.director import plan_topic,validate
+  from studio_lib.checkpoints import Checkpoint
+  plan,_=fixture('float_valve');plan.update(title='How This Tank Controls Its Level',hook='Why does the water stop?')
+  original=Path.cwd()
+  with tempfile.TemporaryDirectory() as d:
+   try:
+    os.chdir(d);out=Path('attempt');out.mkdir()
+    with patch('studio_lib.director.call',return_value=plan):
+     with self.assertRaisesRegex(ValueError,'director rejected'):plan_topic('An engineering draft recovery fixture',out,mechanism='float_valve')
+    saved=Checkpoint('An engineering draft recovery fixture',validator=validate,namespace='tested-library-spoken-v1').load()
+    self.assertEqual(saved['stage'],'needs_repair');self.assertEqual(saved['repair_kind'],'validation')
+    self.assertEqual(saved['scene']['beats'][3]['say'],plan['beats'][3]['say'])
+   finally:os.chdir(original)

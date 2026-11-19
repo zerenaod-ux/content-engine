@@ -9,23 +9,36 @@ from studio_lib.audio_mastering import mastering_args
 from studio_lib.cinema.speech import delivery,VOICE
 from studio_lib.voice_policy import PROVIDER,VERSION
 SR=24000
+def duration_speed_scale(duration,bounds,current=1.0):
+    if bounds[0]<=duration<=bounds[1]:return None
+    target=bounds[0]+2 if duration<bounds[0] else bounds[1]-2
+    scale=current*duration/target
+    if not .85<=scale<=1.15:raise ValueError('Measured narration cannot fit the duration without an unnatural delivery change')
+    return scale
+
 async def _cpu_narrate(spec,out,cache,duration_range=(40,70)):
     out=Path(out);out.mkdir(parents=True,exist_ok=True)
     request=out/'cpu-voice-request.json';report=out/'cpu-voice-report.json'
-    request.write_text(json.dumps(spec,indent=2))
-    await asyncio.to_thread(subprocess.run,[sys.executable,'-m','studio_lib.cpu_voice','--spec',str(request),'--report',str(report)],check=True,timeout=600)
-    data=json.loads(report.read_text())
-    if data.get('provider')!=PROVIDER or data.get('voice')!=VOICE or data.get('voice_policy')!=VERSION or len(data.get('lines',[]))!=len(spec['beats']):raise ValueError('CPU voice result is incomplete')
-    t=0;beats=[]
-    for b,line in zip(spec['beats'],data['lines']):
-        duration=float(subprocess.check_output(['ffprobe','-v','error','-show_entries','format=duration','-of','csv=p=0',line['voice']]))
-        if not .2<duration<90:raise ValueError('CPU narration duration is invalid')
-        if line.get('speaker')!=VOICE:raise ValueError('Narrator identity mismatch; do not switch speakers')
-        length=max(b['seconds'],duration+.08+line['delivery']['pause_after'])
-        beats.append(dict(b,start=t,end=t+length,voice=line['voice'],voice_duration=duration,delivery=line['delivery']));t+=length
-    if not duration_range[0]<=t<=duration_range[1]:raise ValueError('Measured narration outside required duration range: '+str(t))
-    timeline={'beats':beats,'duration':t,'narration_requests':0,'cached_lines':data['cached_lines'],'voice_provider':'kokoro-onnx-cpu','voice':data['voice'],'voice_policy':VERSION,'primary_audio_cache_retained':True}
-    (out/'timeline.json').write_text(json.dumps(timeline,indent=2));return timeline
+    scale=1.0
+    for attempt in range(3):
+        adjusted=dict(spec,delivery_speed_scale=scale)
+        request.write_text(json.dumps(adjusted,indent=2))
+        await asyncio.to_thread(subprocess.run,[sys.executable,'-m','studio_lib.cpu_voice','--spec',str(request),'--report',str(report)],check=True,timeout=600)
+        data=json.loads(report.read_text())
+        if data.get('provider')!=PROVIDER or data.get('voice')!=VOICE or data.get('voice_policy')!=VERSION or len(data.get('lines',[]))!=len(spec['beats']):raise ValueError('CPU voice result is incomplete')
+        t=0;beats=[]
+        for b,line in zip(spec['beats'],data['lines']):
+            duration=float(subprocess.check_output(['ffprobe','-v','error','-show_entries','format=duration','-of','csv=p=0',line['voice']]))
+            if not .2<duration<90:raise ValueError('CPU narration duration is invalid')
+            if line.get('speaker')!=VOICE:raise ValueError('Narrator identity mismatch; do not switch speakers')
+            length=max(b['seconds'],duration+.08+line['delivery']['pause_after'])
+            beats.append(dict(b,start=t,end=t+length,voice=line['voice'],voice_duration=duration,delivery=line['delivery']));t+=length
+        next_scale=duration_speed_scale(t,duration_range,scale)
+        if next_scale is None:
+            timeline={'beats':beats,'duration':t,'narration_requests':0,'cached_lines':data['cached_lines'],'voice_provider':PROVIDER,'voice':VOICE,'voice_policy':VERSION,'pacing_policy':'measured-pace-v1','voice_speed_scale':scale,'duration_fit_attempts':attempt+1,'primary_audio_cache_retained':True}
+            (out/'timeline.json').write_text(json.dumps(timeline,indent=2));return timeline
+        scale=next_scale
+    raise ValueError('Measured narration outside required duration after bounded same-voice adjustment')
 
 async def narrate(spec,out,cache,duration_range=(40,70)):
     # A single identity replaces provider-dependent voice switching. Cached

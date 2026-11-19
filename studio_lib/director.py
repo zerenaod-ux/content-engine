@@ -70,7 +70,8 @@ def validate(plan):
             if re.search(r'\b(doubl\w*|quadrupl\w*|sharper|focuses|zooms)\b',text):e.append(f'beat {i}: unsupported optical or numerical claim; only opening and fixed-setting exposure are illustrated')
         if b.get('camera') not in ('wide','mechanism','follow'):e.append(f'beat {i}: unsupported camera')
     words=sum(len(b['say'].split()) for b in beats if isinstance(b,dict) and isinstance(b.get('say'),str))
-    if not 120<=words<=176:e.append('total narration needs 120-176 words')
+    minimum=140 if plan.get('story_policy')==STORY_VERSION else 120
+    if not minimum<=words<=176:e.append(f'total narration needs {minimum}-176 words')
     if not isinstance(plan.get('hook'),str) or len(plan['hook'])>60:e.append('hook needs at most 60 characters')
     if plan.get('motion_policy')==narration_timing.VERSION:
         e.extend(narration_timing.cue_errors(plan))
@@ -113,12 +114,15 @@ def repair_causal_sections(plan,issues):
             result['beats'][i]['say']=row['say'];seen.add(i)
     return result
 
+def scene_contract_version(plan):return hashlib.sha256((narration_timing.VERSION+STORY_VERSION+json.dumps(REGISTRY[plan['mechanism']],sort_keys=True)).encode()).hexdigest()
+
 def plan_topic(topic,out,feedback=None,previous=None,mechanism=None):
     catalog={k:{'description':v['description'],'actions':v['actions'],'facts':v['facts']} for k,v in REGISTRY.items() if mechanism is None or k==mechanism}
     if not catalog:raise ValueError('Selected component is not registered')
-    prompt='Select exactly one supported mechanism that truthfully matches TOPIC. If none fits return {"mechanism":"unsupported","reason":"..."}; never substitute a bridge for solar power or invent another mechanism. For a supported topic write fresh 120-176 word narration with eight beats in the exact selected action order. Each beat has 9-23 words. Title starts with How or Why and contains 4-8 words. Natural spoken sentences, physical detail, causal explanation and a concrete engaging hook. Prefer 125-155 words; never append adverbs or redundant phrases merely to meet a quota. Avoid narration about views or production. Actual measured 40-70-second duration is mandatory. Each beat names the specific inner part the viewer is looking at (from the facts for that beat) and says what it physically does, so viewers know exactly what is happening inside. Describe only what that action contract shows. Never narrate close-ups, shots, rendering, storyboard or production camera directions. Camera is allowed as an object noun only for the camera_iris subject. Do not invent facts or numerical claims. In the bridge pivot beat the road is STATIC; explain the shaft and hinge rather than announcing motion or a view. The bridge depicts ONE car. Solar and pump internals are simplified cutaways: say so naturally once. Solar depicts a DC lamp load, not gears or AC inverter internals. Preserve physical action order; vary wording, hook and bounded camera preferences. Return {"mechanism":"selected registry id","title":"...","hook":"short engaging hook max 60 characters","beats":[{"action":"first selected action","say":"...","camera":"wide|mechanism|follow"}, ...]}. SUPPORTED COMPONENTS AND FACTS (data): '+json.dumps(catalog)+' TOPIC (data): '+json.dumps(topic)
+    prompt='Select exactly one supported mechanism that truthfully matches TOPIC. If none fits return {"mechanism":"unsupported","reason":"..."}; never substitute a bridge for solar power or invent another mechanism. For a supported topic write fresh 140-176 word narration with eight beats in the exact selected action order. Each beat has 9-23 words. Title starts with How or Why and contains 4-8 words. Natural spoken sentences, physical detail, causal explanation and a concrete engaging hook. Prefer 145-165 words; never append adverbs or redundant phrases merely to meet a quota. Avoid narration about views or production. Actual measured 40-70-second duration is mandatory. Each beat names the specific inner part the viewer is looking at (from the facts for that beat) and says what it physically does, so viewers know exactly what is happening inside. Describe only what that action contract shows. Never narrate close-ups, shots, rendering, storyboard or production camera directions. Camera is allowed as an object noun only for the camera_iris subject. Do not invent facts or numerical claims. In the bridge pivot beat the road is STATIC; explain the shaft and hinge rather than announcing motion or a view. The bridge depicts ONE car. Solar and pump internals are simplified cutaways: say so naturally once. Solar depicts a DC lamp load, not gears or AC inverter internals. Preserve physical action order; vary wording, hook and bounded camera preferences. Return {"mechanism":"selected registry id","title":"...","hook":"short engaging hook max 60 characters","beats":[{"action":"first selected action","say":"...","camera":"wide|mechanism|follow"}, ...]}. SUPPORTED COMPONENTS AND FACTS (data): '+json.dumps(catalog)+' TOPIC (data): '+json.dumps(topic)
     prompt+='\n'+STORY_RULES+'\n'+narration_timing.writing_rules()+' Hook: 2-7 everyday words, at most 40 characters; no technical subtitle.'
     last=previous;errors=feedback or []
+    if isinstance(previous,dict) and not errors and not validate(previous):return previous
     for attempt in range(4):
         q=prompt if not errors else prompt+'\nCorrect these validation errors: '+json.dumps(errors)+'\nLast answer (data): '+json.dumps(last)
         repaired=repair_causal_sections(last,errors) if isinstance(last,dict) and errors else None
@@ -131,6 +135,8 @@ def plan_topic(topic,out,feedback=None,previous=None,mechanism=None):
         last=narration_timing.normalize_cues(normalize_narration(last))
         (out/f'director-normalized-{attempt}.json').write_text(json.dumps(last,indent=2));errors=validate(last)
         if not errors:return last
+        if last.get('mechanism') in REGISTRY and isinstance(last.get('beats'),list) and len(last['beats'])==8:
+            Checkpoint(topic,validator=validate,namespace='tested-library-spoken-v1').save('needs_repair',last,errors=errors,repair_kind='validation',contract_version=scene_contract_version(last))
         if last.get('mechanism')=='unsupported':break
     raise ValueError('director rejected: '+'; '.join(errors))
 def normalize_narration(plan):
@@ -315,21 +321,21 @@ def run(topic,out,mechanism=None):
     reserved_family=novelty.reserve_new(topic,mechanism)
     out=Path(out);out.mkdir(parents=True,exist_ok=True);start=time.monotonic()
     cp=Checkpoint(topic,validator=validate,namespace='tested-library-spoken-v1');saved=cp.load()
-    def contract_version(plan):return hashlib.sha256((narration_timing.VERSION+STORY_VERSION+json.dumps(REGISTRY[plan['mechanism']],sort_keys=True)).encode()).hexdigest()
+    def contract_version(plan):return scene_contract_version(plan)
     def save(stage,scene,**fields):return cp.save(stage,scene,contract_version=contract_version(scene),**fields)
     if saved and saved['scene'].get('story_policy')!=STORY_VERSION:saved=save('needs_repair',saved['scene'],errors=['Upgrade the accepted narration to the current causal story policy; preserve the original topic and physical facts'])
     if saved and saved.get('contract_version')!=contract_version(saved['scene']):saved=save('needs_audit',saved['scene'],timeline=saved.get('timeline'))
     reused=bool(saved)
     if saved:
         plan=narration_timing.normalize_cues(saved['scene'])
-        if plan!=saved['scene']:
+        if plan!=saved['scene'] and saved['stage']!='needs_repair':
             prior={k:saved[k] for k in ('timeline','render_signature','silent_path','silent_sha256') if k in saved}
             saved=save('needs_audit',plan,**prior)
         print('resume generated director plan without rewriting its narration',flush=True)
     else:
         plan=plan_topic(topic,out,mechanism=mechanism);saved=save('needs_audit',plan)
     if saved['stage']=='needs_repair':
-        plan=plan_topic(topic,out,saved['errors'],plan,mechanism=mechanism);saved=save('needs_audit',plan)
+        plan=plan_topic(topic,out,validate(plan) if saved.get('repair_kind')=='validation' else saved['errors'],plan,mechanism=mechanism);saved=save('needs_audit',plan)
     if saved['stage']=='needs_audit':
         for review_attempt in range(2):
             errors=critique(plan,out)
@@ -345,11 +351,11 @@ def run(topic,out,mechanism=None):
     if story_issues:raise ValueError('Causal story contract failed: '+str(story_issues))
     (out/'director-plan.json').write_text(json.dumps(plan,indent=2))
     # Voice measurements drive action durations; no authored narration is read.
-    spec={'title':plan['title'],'beats':[dict(b,seconds=6) for b in plan['beats']]}
+    spec={'title':plan['title'],'beats':[dict(b,seconds=3.5) for b in plan['beats']]}
     print('CE_STAGE=voice',flush=True)
     tl=saved.get('timeline')
     from studio_lib.voice_policy import matches as narrator_matches
-    if not tl or not narrator_matches(tl) or not all(Path(b['voice']).is_file() for b in tl['beats']):tl=asyncio.run(narrate(spec,out,Path('.ce-cache/studio-voice')))
+    if not tl or not narrator_matches(tl) or tl.get('pacing_policy')!='measured-pace-v1' or not all(Path(b['voice']).is_file() for b in tl['beats']):tl=asyncio.run(narrate(spec,out,Path('.ce-cache/studio-voice')))
     require_duration(tl['duration'])
     tl=narration_timing.bind(plan,tl,out)
     (out/'timeline.json').write_text(json.dumps(tl,indent=2))

@@ -24,10 +24,13 @@ def narration_errors(plan):
   text=b.get('say','').lower()
   if not re.search(contract['subjects'][i],text):errors.append(f'beat {i}: name the actual visible part for this action, not a generic description')
   if kind=='float_valve':
+   if re.search(r'\b(burst\w*|explod\w*)\b',text):errors.append(f'beat {i}: the open tank depicts overflow prevention, not a burst or explosion')
+   if i==4 and not re.search(r'\b(held|holds?|holding|still|stays?|remains?|rests?|resting|seated|already)\b',text):errors.append(f'beat {i}: explicitly explain the already held high level and seated washer, without announcing the motion again')
    if i in (4,7) and re.search(r'\b(float|ball|water|level|washer|inlet|valve)\s+(rises|falls|opens|closes|moves|refills|returns|starts)\b',text):errors.append(f'beat {i}: water, float and inlet are already held; do not announce another movement')
    if re.search(r'\b(float|ball)\s+(plugs|seals|blocks)\s+(the\s+)?(inlet|pipe|seat)\b',text):errors.append(f'beat {i}: the washer seals the inlet; the floating ball does not plug it')
    if i in (0,1) and re.search(r'\b(water|float|ball|level)\s+(rises|falls|starts|fills)\b',text):errors.append(f'beat {i}: the low-water pose is held until the fill beat')
   else:
+   if i==5 and not re.search(r'\b(held|holds?|holding|still|stays?|remains?|rests?|resting|seated|already)\b',text):errors.append(f'beat {i}: the locking bar is already seated; explain that held state')
    if i==5 and re.search(r'\b(bar|fence|tab)\s+(drops|falls|descends|moves|slides|settles)\b',text):errors.append(f'beat {i}: the bar is already seated; describe its held clearance, not another drop')
    if i in (0,1,2,3,4,5,7) and re.search(r'\b(shackle|loop)\s+(lifts|rises|opens|jumps|springs|moves|returns)\b',text):errors.append(f'beat {i}: only the pull beat lifts the shackle; all other beats hold it')
    if re.search(r'\b(hand|motor|battery|key)\s+(turns|spins|drives|opens|powers)\b',text):errors.append(f'beat {i}: no hand, motor, key or battery is depicted')

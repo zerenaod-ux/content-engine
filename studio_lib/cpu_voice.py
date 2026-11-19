@@ -49,8 +49,10 @@ def render(spec,cache):
  cache=Path(cache);cache.mkdir(parents=True,exist_ok=True);model=None;lines=[];hits=0
  for i,b in enumerate(spec['beats']):
   profile=delivery(b.get('action','explain'),i,len(spec['beats']))
-  speed=max(.9,min(1.35,1+float(profile['rate'].strip('%'))/100))
-  key=hashlib.sha256(json.dumps([b['say'],VOICE,profile,VERSION,'kokoro-onnx-0.6.1-int8'],sort_keys=True).encode()).hexdigest()
+  scale=float(spec.get('delivery_speed_scale',1.0))
+  if not .85<=scale<=1.15:raise ValueError('Narrator speed adjustment exceeds its natural delivery range')
+  speed=max(.9,min(1.35,(1+float(profile['rate'].strip('%'))/100)*scale))
+  key=hashlib.sha256(json.dumps([b['say'],VOICE,profile,speed,VERSION,'kokoro-onnx-0.6.1-int8'],sort_keys=True).encode()).hexdigest()
   path=cache/(key+'.wav');meta=cache/(key+'.json')
   reused=False
   if path.exists() and meta.exists():
@@ -68,8 +70,8 @@ def render(spec,cache):
    temporary=path.with_suffix('.part.wav')
    with wave.open(str(temporary),'wb') as output:
     output.setnchannels(1);output.setsampwidth(2);output.setframerate(sr);output.writeframes((samples*32700).astype(np.int16).tobytes())
-   temporary.replace(path);meta.write_text(json.dumps({'sha256':digest(path),'provider':'kokoro-onnx','voice':VOICE,'voice_policy':VERSION,'delivery':profile}))
-  lines.append({'voice':str(path),'speaker':VOICE,'delivery':profile})
+   temporary.replace(path);meta.write_text(json.dumps({'sha256':digest(path),'provider':'kokoro-onnx','voice':VOICE,'voice_policy':VERSION,'speed':speed,'delivery':profile}))
+  lines.append({'voice':str(path),'speaker':VOICE,'speed':speed,'delivery':profile})
  return {'provider':'kokoro-onnx-cpu','voice':VOICE,'voice_policy':VERSION,'lines':lines,'cached_lines':hits,'manual_audio_edits':False}
 
 if __name__=='__main__':
