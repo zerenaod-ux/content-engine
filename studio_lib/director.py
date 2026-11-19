@@ -121,7 +121,8 @@ def pose(t,tl):
     elif i==5:angle=math.radians(72)
     elif i==6:angle=math.radians(72)*(1-ease(action_u))
     gate=0 if i==0 else (ease(action_u*1.5) if i==1 else 1)
-    if i==7:gate=1-ramp(action_u,.30,.65)
+    if i==7:
+        gate=1-ease(narration_timing.progress(t,dict(b,motion_window=b['gate_window']))) if 'gate_window' in b else 1-ramp(action_u,.30,.65)
     close=ramp(t,beats[2]['start']-.8,beats[2]['start']+1.2)*(1-ramp(t,beats[5]['start']-.8,beats[5]['start']+1.2))
     detail=ramp(t,beats[4]['start']-.4,beats[4]['start']+1.2)*(1-ramp(t,beats[4]['end']-1.5,beats[4]['end']+.3))
     balance_view=ramp(t,beats[3]['start']-.4,beats[3]['start']+1.0)*(1-ramp(t,beats[3]['end']-.8,beats[4]['start']+.3))
@@ -141,7 +142,7 @@ def pose(t,tl):
     if i==5 and mode=='follow':target[1]+=.12*shipy*ramp(u,0,.25)
     carx=-6.7
     if i==0:carx=-8.5+1.8*ease(u)
-    elif i==7:carx=-6.7+13.7*ramp(action_u,.5,1)
+    elif i==7:carx=-6.7+13.7*(ease(action_u) if 'gate_window' in b else ramp(action_u,.5,1))
     return dict(angle=angle,gate=gate,close=close,zoom=zoom,target=target,az=.45*(1-close)+.18*close,shipy=shipy,carx=carx)
 def picture(t,tl,plan,hidden=()):
     if plan['mechanism']!='bascule_bridge':return component_picture(t,tl,plan,hidden)

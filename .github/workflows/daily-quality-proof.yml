@@ -49,6 +49,10 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           CE_FORCE_CPU_VOICE: '1'
+          CE_SHARED_SERVICES: '1'
+          CE_JOB_KIND: short
+          CE_MAX_SECONDS: '480'
+          CE_MAX_REQUESTS: '12'
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
@@ -60,10 +64,17 @@ jobs:
           import json
           from pathlib import Path
           from studio_lib.director import run
+          from studio_lib.service_queue import github
+          config=json.loads(Path('publish/daily-quality-source.json').read_text())
+          source=str(config['source_run'])
+          origin=github('actions/runs/'+source)
+          assert origin.get('head_branch')=='main' and origin.get('name')=='scene-factory' and origin.get('conclusion') in ('failure','success'),'Untrusted automatic source'
           rows=json.loads(Path('data/scenes/topic-ledger.json').read_text())
-          owned=[row for row in rows if str(row.get('owner'))=='44363993361']
+          owned=[row for row in rows if str(row.get('owner'))==source]
           assert len(owned)==1,'Original automatic reservation must exist'
-          run(owned[0]['topic'],Path('corrected-daily'))
+          out=Path('corrected-daily');out.mkdir(exist_ok=True)
+          (out/'source-provenance.json').write_text(json.dumps({'source_run':source,'new_topic_count':0,'topic':owned[0]['topic'],'selected_by_system':True},indent=2))
+          run(owned[0]['topic'],out)
           PY
       - uses: actions/cache/save@v4
         if: always()

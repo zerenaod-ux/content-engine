@@ -13,6 +13,7 @@ import sys
 from pathlib import Path
 
 VERSION = 'spoken-action-v1'
+ALIGNMENT_REVISION = 'phrase-through-sentence-v2'
 TRANSITIONS = {
     'bascule_bridge': {'stop', 'balance', 'pass', 'lower', 'resume'},
     'photovoltaic_cell': {'absorb', 'circuit', 'payoff'},
@@ -166,7 +167,7 @@ def bind(plan, timeline, out, transcribe=None):
             raise ValueError('Saved speech does not match the accepted action/narration')
         if planned['action'] not in TRANSITIONS.get(plan['mechanism'],set()):continue
         voice=Path(beat['voice']);audio_hash=hashlib.sha256(voice.read_bytes()).hexdigest()
-        key=hashlib.sha256(json.dumps([VERSION,audio_hash,planned['say'],planned['motion_cue'],beat['start'],beat['end']],sort_keys=True).encode()).hexdigest()
+        key=hashlib.sha256(json.dumps([VERSION,ALIGNMENT_REVISION,audio_hash,planned['say'],planned['motion_cue'],beat['start'],beat['end']],sort_keys=True).encode()).hexdigest()
         if key in cached:
             row=cached[key]
         else:
@@ -187,14 +188,27 @@ def bind(plan, timeline, out, transcribe=None):
             # Brief lead-in exposes the part before its name; preserve the full
             # action inside this beat and leave cameras on their original clock.
             start=max(beat['start'],spoken_start-.35)
-            end=min(beat['end'],max(spoken_end+.25,start+1.2))
+            end=min(beat['end'],beat['start']+.08+float(beat['voice_duration'])+.05)
             if end-start<.35:raise ValueError('Speech cue leaves no safe action interval')
             row={'key':key,'beat':i,'action':planned['action'],'phrase':planned['motion_cue'],
                  'audio_sha256':audio_hash,'spoken_start':spoken_start,'spoken_end':spoken_end,
                  'motion_window':[start,end],'method':'Independent word timestamps from the saved voice track'}
+            if plan['mechanism']=='bascule_bridge' and planned['action']=='resume':
+                gate_match=[]
+                for j,word in enumerate(flat):
+                    if word in ('barrier','barriers','gate','gates'):
+                        for k in range(j+1,min(len(flat),j+4)):
+                            if re.match(r'ris|rais|lift|open',flat[k]):gate_match.append((j,k));break
+                if len(gate_match)!=1:raise ValueError('Final barrier reopening needs its own measured cue')
+                j,k=gate_match[0]
+                gate_start=max(beat['start'],beat['start']+.08+spans[j][0]-.2)
+                gate_end=min(beat['start']+.08+spans[k][1]+.15,start-.05)
+                if gate_end-gate_start<.3:raise ValueError('Barrier must reopen before the car starts crossing')
+                row['gate_window']=[gate_start,gate_end]
         beat['motion_window']=row['motion_window'];rows.append(row)
+        if 'gate_window' in row:beat['gate_window']=row['gate_window']
         # Persist each accepted line so an interruption does not repeat alignment.
-        report_path.write_text(json.dumps({'policy':VERSION,'cues':rows,'errors':[],
+        report_path.write_text(json.dumps({'policy':VERSION,'alignment_revision':ALIGNMENT_REVISION,'cues':rows,'errors':[],
             'scope':'Discrete action timing; continuous motion and semantic pixel verification are separate'},indent=2))
     timeline['motion_policy']=VERSION
     return timeline
@@ -206,7 +220,7 @@ def require_bound(plan,timeline,out,verify_audio=False):
     report=json.loads((Path(out)/'spoken-action-timing.json').read_text())
     expected=[i for i,b in enumerate(plan['beats']) if b['action'] in TRANSITIONS.get(plan['mechanism'],set())]
     rows=report.get('cues',[])
-    if report.get('policy')!=VERSION or report.get('errors')!=[] or [r.get('beat') for r in rows]!=expected:
+    if report.get('policy')!=VERSION or report.get('alignment_revision')!=ALIGNMENT_REVISION or report.get('errors')!=[] or [r.get('beat') for r in rows]!=expected:
         raise ValueError('Complete measured spoken-action evidence missing')
     for row in rows:
         i=row['beat'];beat=timeline['beats'][i];planned=plan['beats'][i]
@@ -215,6 +229,10 @@ def require_bound(plan,timeline,out,verify_audio=False):
         window=row['motion_window']
         if beat.get('motion_window')!=window or not beat['start']<=window[0]<window[1]<=beat['end']:
             raise ValueError('Renderer timeline does not use its measured action window')
+        if plan['mechanism']=='bascule_bridge' and planned['action']=='resume':
+            gate=row.get('gate_window',[])
+            if len(gate)!=2 or beat.get('gate_window')!=gate or not beat['start']<=gate[0]<gate[1]<window[0]:
+                raise ValueError('Final barrier/car timing order is not verified')
         if verify_audio and hashlib.sha256(Path(beat['voice']).read_bytes()).hexdigest()!=row['audio_sha256']:
             raise ValueError('Voice changed after action alignment')
     return report

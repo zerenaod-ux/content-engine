@@ -23,6 +23,7 @@ class NarrationTimingTests(unittest.TestCase):
             report=json.loads((Path(folder)/'spoken-action-timing.json').read_text())
             self.assertAlmostEqual(report['cues'][0]['spoken_start'],11.08)
             self.assertEqual(result['motion_policy'],timing.VERSION)
+            self.assertGreater(result['beats'][0]['motion_window'][1],15.)
 
     def test_missing_or_repeated_exact_phrase_holds(self):
         with tempfile.TemporaryDirectory() as folder:
@@ -90,6 +91,12 @@ class NarrationTimingTests(unittest.TestCase):
         self.assertEqual(pose(b['start']+1,tl)['angle'],0)
         self.assertGreater(pose(b['start']+3,tl)['angle'],0)
         self.assertNotEqual(pose(b['start']+.1,tl)['zoom'],pose(b['start']+1,tl)['zoom'])
+
+    def test_final_gate_reopens_before_the_car_crosses(self):
+        tl=timeline();b=tl['beats'][7];b['gate_window']=[43,44];b['motion_window']=[44.5,47.8]
+        self.assertAlmostEqual(pose(44.2,tl)['gate'],0.)
+        self.assertAlmostEqual(pose(44.2,tl)['carx'],-6.7)
+        self.assertGreater(pose(46,tl)['carx'],-6.7)
 
     def test_switch_waits_for_its_cue(self):
         tl=timeline();b=tl['beats'][5];b['motion_window']=[b['start']+2,b['end']]
