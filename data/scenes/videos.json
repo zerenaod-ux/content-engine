@@ -425,5 +425,15 @@
     "topic_key": "float overfilling stops tank valve",
     "record_run": "44611900211",
     "record_attempt": "1"
+  },
+  {
+    "date": "2026-11-19",
+    "tag": "ce-20261119-2225",
+    "title": "Why a Three\u2011Wheel Padlock Only Releases \u2699\ufe0f",
+    "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@6fcbd177342da125c5aabbcada260b6ab2371085/videos/ce-20261119-2225.mp4",
+    "topic": "Why a three\u2011wheel combination padlock only releases when all wheels align",
+    "topic_key": "align all combination only padlock releases three wheel wheels",
+    "record_run": "44626696622",
+    "record_attempt": "1"
   }
 ]
