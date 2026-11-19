@@ -2,9 +2,9 @@
   "run_id": "44611900211",
   "attempt": 1,
   "kind": "daily-short",
-  "stage": "render",
-  "label": "Rendering animation",
-  "updated_at": "2026-11-19T20:47:10.439035+00:00",
+  "stage": "audio",
+  "label": "Checking finished audio",
+  "updated_at": "2026-11-19T20:47:50.144441+00:00",
   "source_branch": "main",
   "owner_approved": false,
   "state": "running"
