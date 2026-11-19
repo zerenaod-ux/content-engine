@@ -24,7 +24,7 @@ TRANSITIONS = {
     'wind_turbine': {'shaft', 'load', 'payoff'},
 }
 ANCHORS = {
-    'float_valve':{'cutaway':r'cutaway','fill':r'water|float|ball|level','throttle':r'float|ball|washer|valve|stem|seat','draw':r'outlet|drain|draw.off|tap','refill':r'outlet|drain|water|refill|float','payoff':r'tank|float|level|inlet|water'},
+    'float_valve':{'cutaway':r'cutaway','fill':r'water|float|ball|level','throttle':r'float|ball|washer|valve|stem|seat','draw':r'outlet|drain|draw.off|tap','refill':r'draw.off\s+valve\s+(?:shut\w*|clos\w*)|outlet\s+(?:shut\w*|clos\w*)|outlet|drain|water|refill|float','payoff':r'tank|float|level|inlet|water'},
     'combination_lock':{'cutaway':r'cutaway','first':r'first wheel|first dial','second':r'second wheel|second dial','third':r'third wheel|last wheel|third dial|last dial','pull':r'shackle|loop|pull','payoff':r'padlock|lock|shackle|gates|wheels|bar'},
     'camera_iris': {'cutaway':r'cutaway', 'close':r'(?:ring|blades|iris|opening|aperture)[^.!?;,]{0,30}?\b(?:turn\w*|pivot\w*|rotat\w*|clos\w*|narrow\w*|shrink\w*)', 'open':r'(?:ring|blades|iris|opening|aperture)[^.!?;,]{0,30}?\b(?:revers\w*|open\w*|widen\w*|pivot\w*|rotat\w*)', 'payoff':r'camera|aperture|opening|iris|cover|shell'},
     'bascule_bridge': {

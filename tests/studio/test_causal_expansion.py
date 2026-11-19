@@ -98,7 +98,6 @@ class CausalGateTests(unittest.TestCase):
   self.assertEqual(fixed['beats'][0]['say'],plan['beats'][0]['say'])
   self.assertEqual(narration_timing.cue_errors(fixed),[])
 
-if __name__=='__main__':unittest.main()
 
 class CausalEvidenceTests(unittest.TestCase):
  def test_evidence_binds_to_the_measured_timeline_and_plan(self):
@@ -185,3 +184,13 @@ class RepairedTimingPointerTests(unittest.TestCase):
  def test_level_control_is_not_presented_as_pressure_regulation(self):
   plan,_=fixture('float_valve');plan['beats'][7]['say']='The tank stays full because its float keeps pressure steady.'
   self.assertTrue(any('not regulated pressure' in e for e in action_contracts.narration_errors(plan)))
+
+class FirstActuatorTimingTests(unittest.TestCase):
+ def test_refill_tracks_the_outlet_closing_clause_before_the_water_result(self):
+  plan={'mechanism':'float_valve','beats':[{'action':'refill','say':'When the draw-off valve shuts, inlet water lifts the ball and turns its rigid arm.','motion_cue':'water lifts'}]}
+  fixed=narration_timing.normalize_cues(plan)
+  self.assertEqual(fixed['beats'][0]['say'],plan['beats'][0]['say'])
+  self.assertEqual(fixed['beats'][0]['motion_cue'],'draw-off valve shuts')
+  self.assertEqual(narration_timing.cue_errors(fixed),[])
+
+if __name__=='__main__':unittest.main()

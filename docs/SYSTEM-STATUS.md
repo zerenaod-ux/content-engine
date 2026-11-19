@@ -1,5 +1,7 @@
 # How It Ticks — current verified status
 
+**Latest completed work — November 19:** two original visual families and stronger causal-story/motion gates are live. The system generated the new **49.8-second float-valve video** with the approved fixed narrator and delivered Studio card 60. Media and motion evidence pass; the card records a small refill-valve timing note. Owner approval remains manual. No old video was recreated. The combination lock is built and geometry-tested, with no production film yet. [Detailed evidence, corrections and limits](CAUSAL-CAPABILITY-EXPANSION.md).
+
 **New capability work (November 19):** two original visual families—tank float control and a three-wheel gated padlock—are implemented with causal story checks, exact-timeline movement/held-state evidence and targeted model repair. Local checks pass; cloud verification and the first automatic new-video proof remain pending. The fixed narrator, no-repeat ledger and manual publishing approval remain in force. [Scope and evidence](CAUSAL-CAPABILITY-EXPANSION.md).
 
 **Narrator update (November 19):** future How It Ticks shorts and full videos use one fixed stock narrator (`am_fenrir`) with varied delivery pacing. Retries keep that identity instead of switching speakers. Existing videos remain unchanged. [Policy and verification](NARRATOR-POLICY.md).
