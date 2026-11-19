@@ -771,5 +771,18 @@
     "category": "",
     "record_run": "44576248575",
     "record_attempt": "1"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "tested component rejected: director rejected: Explain at least three visible cause-and-effect links; do not list parts\n",
+    "date": "2026-11-19",
+    "topic": "How a float valve stops a tank from overfilling",
+    "title": "",
+    "subject": "float_valve",
+    "keywords": [],
+    "category": "tested mechanism",
+    "failed": true,
+    "record_run": "44607841613",
+    "record_attempt": "1"
   }
 ]
