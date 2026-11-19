@@ -85,5 +85,11 @@
     "topic_key": "balance bascule bridge counterweights leaf moving uses",
     "owner": "44363993361",
     "state": "reserved"
+  },
+  {
+    "topic": "Why a bascule bridge uses a trunnion pivot for smooth lifting",
+    "topic_key": "bascule bridge lifting pivot smooth trunnion uses",
+    "owner": "44488879657",
+    "state": "reserved"
   }
 ]
