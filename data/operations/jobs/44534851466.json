@@ -2,10 +2,10 @@
   "run_id": "44534851466",
   "attempt": 1,
   "kind": "daily-short",
-  "stage": "audio",
-  "label": "Checking finished audio",
-  "updated_at": "2026-11-19T13:38:01.316933+00:00",
+  "stage": "ready",
+  "label": "Rendered; Studio delivery pending",
+  "updated_at": "2026-11-19T13:38:06.811727+00:00",
   "source_branch": "main",
   "owner_approved": false,
-  "state": "running"
+  "state": "rendered"
 }
