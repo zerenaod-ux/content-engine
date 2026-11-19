@@ -784,5 +784,18 @@
     "failed": true,
     "record_run": "44607841613",
     "record_attempt": "1"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "tested component rejected: director rejected: beat 4: explicitly explain the already held high level and seated washer, without announcing the motion again\n",
+    "date": "2026-11-19",
+    "topic": "How a float valve stops a tank from overfilling",
+    "title": "",
+    "subject": "",
+    "keywords": [],
+    "category": "",
+    "failed": true,
+    "record_run": "44609483544",
+    "record_attempt": "1"
   }
 ]
