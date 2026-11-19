@@ -127,5 +127,13 @@
     "state": "reserved",
     "mechanism": "combination_lock",
     "visual_family": "gated_padlock"
+  },
+  {
+    "topic": "How a small control voltage can switch a higher\u2011voltage load using an electromagnetic relay",
+    "topic_key": "control electromagnetic higher load relay small switch using voltage",
+    "owner": "44641287581",
+    "state": "reserved",
+    "mechanism": "electric_relay",
+    "visual_family": "electromagnetic_relay"
   }
 ]
