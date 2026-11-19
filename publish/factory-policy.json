@@ -1,6 +1,6 @@
 {
-  "enabled": false,
+  "enabled": true,
   "daily_target": 3,
   "timezone": "America/Chicago",
-  "note": "Catch-up is staged pending cloud quality proof. Approval and publishing are separate."
+  "note": "Cloud checks and one original native 1080p proof passed technical delivery. Reconcile missing due outputs only; unused topic capacity is finite. Approval and publishing remain separate."
 }

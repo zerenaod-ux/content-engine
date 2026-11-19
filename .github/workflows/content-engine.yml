@@ -112,8 +112,21 @@ jobs:
           cp scene-factory.mp4 "$TAG.mp4"
           gh release create "$TAG" "$TAG.mp4" auto-scene.json evidence-report.json ce-checks.json --title "How It Ticks: $TITLE" --notes "How It Ticks video (not posted). Automatic structural and sampled visibility checks passed. Scientific accuracy and narration/visual meaning still require human review; not approved to publish." --prerelease
           # PLAYABLE_ON_PHONE: iPhone cannot play GitHub release downloads inline, so a copy goes to the gh-pages branch and the card links it through jsDelivr (free CDN, real video type).
-          # PHONE_COPY: re-encoded under the 20 MB jsDelivr limit (bigger files do not play); the URL uses the commit id so a cached refusal can never stick.
-          git clone -q --depth 1 -b gh-pages "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git" pages && mkdir -p pages/videos && ffmpeg -v error -y -i "$TAG.mp4" -c:v libx264 -preset veryfast -b:v 1800k -maxrate 2200k -bufsize 4M -c:a aac -b:a 128k -movflags +faststart "pages/videos/$TAG.mp4" && (cd pages && git add videos && git -c user.email=41898282+github-actions[bot]@users.noreply.github.com -c user.name=github-actions commit -qm "video $TAG" && git push -q) || echo "pages copy skipped"
+          # Preserve original native media whenever it fits the CDN limit; never silently create a broken URL.
+          git clone -q --depth 1 -b gh-pages "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git" pages
+          python -m studio_lib.phone_media "$TAG.mp4" "pages/videos/$TAG.mp4"
+          (
+            cd pages
+            git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+            git config user.name github-actions
+            git add videos
+            git commit -qm "video $TAG"
+            for attempt in 1 2 3; do
+              if git push -q; then exit 0; fi
+              git pull --rebase -q
+            done
+            exit 1
+          )
           SHA=$(cd pages && git rev-parse HEAD)
           URL="https://cdn.jsdelivr.net/gh/${{ github.repository }}@${SHA}/videos/$TAG.mp4"
           python3 - "$TAG" "$TITLE" "$URL" <<'PY'
@@ -172,6 +185,7 @@ jobs:
             component-output/production/video.mp4
             component-output/production/*.png
             evidence-report.json
+            phone-delivery-quality.json
             fr/evidence/
           retention-days: 14
       - name: Confirm Studio delivery in the shared status feed
