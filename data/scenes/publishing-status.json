@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-11-19T01:22:45.428615+00:00",
+  "checked_at": "2026-11-19T02:38:12.613599+00:00",
   "read_only": true,
   "complete": true,
   "platforms": {
@@ -20,7 +20,8 @@
     "tiktok": {
       "returned_posts": 5,
       "statuses": {
-        "scheduled": 2,
+        "scheduled": 1,
+        "sending": 1,
         "sent": 3
       }
     }
@@ -164,7 +165,7 @@
         ],
         "tiktok": [
           {
-            "status": "scheduled",
+            "status": "sending",
             "due": "2026-11-19T02:30:00.000Z"
           }
         ]
