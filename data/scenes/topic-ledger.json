@@ -103,5 +103,13 @@
     "topic_key": "barriers before begins bridge close lift road",
     "owner": "44533440191",
     "state": "reserved"
+  },
+  {
+    "topic": "How the iris aperture controls exposure brightness",
+    "topic_key": "aperture brightness controls exposure iris",
+    "owner": "44575729538",
+    "state": "reserved",
+    "mechanism": "camera_iris",
+    "visual_family": "optical_iris"
   }
 ]
