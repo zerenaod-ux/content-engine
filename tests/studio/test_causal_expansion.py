@@ -171,3 +171,17 @@ class SemanticRepairTests(unittest.TestCase):
   with patch('studio_lib.director.call',return_value={'sections':[]}) as writer:repair_causal_sections(plan,['beat 4: explain the held state'])
   request=json.loads(writer.call_args.args[1])
   self.assertTrue(request['sections'][0]['state_only']);self.assertNotIn('say',request['sections'][0])
+
+class RepairedTimingPointerTests(unittest.TestCase):
+ def test_valid_spoken_repair_is_not_rejected_for_its_old_timing_pointer(self):
+  from studio_lib.director import validate
+  plan,_=fixture('float_valve');plan['motion_policy']=narration_timing.VERSION
+  plan['beats'][7].update(say='Return to the whole tank; high water and closed inlet are already held.',motion_cue='tank; high')
+  new='The tank stays full while its raised float and seated washer keep the incoming water stopped.'
+  with patch('studio_lib.director.call',return_value={'sections':[{'index':7,'say':new}]}):fixed=repair_causal_sections(plan,['beat 7: do not speak visual production directions to the audience'])
+  self.assertEqual(fixed['beats'][7]['say'],new)
+  self.assertNotEqual(fixed['beats'][7]['motion_cue'],plan['beats'][7]['motion_cue'])
+  self.assertFalse(any(e.startswith('beat 7:') for e in validate(fixed)))
+ def test_level_control_is_not_presented_as_pressure_regulation(self):
+  plan,_=fixture('float_valve');plan['beats'][7]['say']='The tank stays full because its float keeps pressure steady.'
+  self.assertTrue(any('not regulated pressure' in e for e in action_contracts.narration_errors(plan)))

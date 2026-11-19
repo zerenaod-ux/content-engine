@@ -106,14 +106,15 @@ def repair_causal_sections(plan,issues,diagnostic=None):
         indices.update(available[:4])
     indices=sorted(i for i in indices if 0<=i<8)[:4]
     if not indices:return None
-    request={'issues':issues,'sections':[{'index':i,'action':beats[i]['action'],'state_only':(plan['mechanism']=='float_valve' and i in (4,7)) or (plan['mechanism']=='combination_lock' and i in (5,7)),'facts':REGISTRY[plan['mechanism']]['facts'][beats[i]['action']]} for i in indices]}
-    answer=call('Repair only these requested narration sections with fresh everyday words. Return JSON {"sections":[{"index":integer,"say":"9-23 words"}]}. Preserve the action and facts. The first section, if index zero, is a concrete question ending with ?. Keep all accepted sections untouched. For a state_only section describe what is ALREADY held, seated, resting or remaining in position. Never retell how it moved there: no rising, lifting, pivoting, sealing or new closure. Write a fresh sentence from the verified snapshot; the rejected sentence is deliberately omitted. '+STORY_RULES,json.dumps(request),max_tokens=1600,temperature=.25)
+    request={'issues':issues,'sections':[{'index':i,'action':beats[i]['action'],'target_words':20 if global_issues else 18,'state_only':(plan['mechanism']=='float_valve' and i in (4,7)) or (plan['mechanism']=='combination_lock' and i in (5,7)),'facts':REGISTRY[plan['mechanism']]['facts'][beats[i]['action']]} for i in indices]}
+    answer=call('Repair only these requested narration sections with fresh everyday words. Return JSON {"sections":[{"index":integer,"say":"9-23 words"}]}. Aim for target_words with factual substance, never padding or copied production directions. Preserve the action and facts. The first section, if index zero, is a concrete question ending with ?. Keep all accepted sections untouched. For a state_only section describe what is ALREADY held, seated, resting or remaining in position. Never retell how it moved there: no rising, lifting, pivoting, sealing or new closure. Write a fresh sentence from the verified snapshot; the rejected sentence is deliberately omitted. '+STORY_RULES,json.dumps(request),max_tokens=1600,temperature=.25)
     if diagnostic is not None:Path(diagnostic).write_text(json.dumps({'request':request,'response':answer},indent=2))
     result=json.loads(json.dumps(plan));seen=set()
     for row in answer.get('sections',[]):
         i=row.get('index')
         if type(i) is int and i in indices and i not in seen and isinstance(row.get('say'),str) and 9<=len(row['say'].split())<=23:
             candidate=json.loads(json.dumps(result));candidate['beats'][i]['say']=row['say']
+            candidate=narration_timing.normalize_cues(candidate)
             local_errors=validate(candidate)+action_contracts.narration_errors(candidate)
             if any(error.startswith(f'beat {i}:') for error in local_errors):continue
             result=candidate;seen.add(i)

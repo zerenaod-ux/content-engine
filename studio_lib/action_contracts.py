@@ -24,6 +24,7 @@ def narration_errors(plan):
   text=b.get('say','').lower()
   if not re.search(contract['subjects'][i],text):errors.append(f'beat {i}: name the actual visible part for this action, not a generic description')
   if kind=='float_valve':
+   if re.search(r'\b(keeps?|controls?|regulates?|maintains?)\s+(?:the\s+)?pressure\b|\bpressure\s+(?:steady|constant)\b',text):errors.append(f'beat {i}: the float valve controls level, not regulated pressure')
    if re.search(r'\bfloating (disc|disk)\b',text):errors.append(f'beat {i}: the visible float is a ball, not a disc')
    if re.search(r'\b(burst\w*|explod\w*)\b',text):errors.append(f'beat {i}: the open tank depicts overflow prevention, not a burst or explosion')
    if i==4 and not re.search(r'\b(held|holds?|holding|still|stays?|remains?|rests?|resting|seated|already)\b',text):errors.append(f'beat {i}: explicitly explain the already held high level and seated washer, without announcing the motion again')
