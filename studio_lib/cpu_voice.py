@@ -8,7 +8,7 @@ ASSET_BASE='https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-
 ASSETS={
  'kokoro-v1.0.int8.onnx':('ae315a79b623f244700e4afb9246c46a26066782e049ba174bf3ba433970ee9c',114119327),
  'voices-v1.0.bin':('bca610b8308e8d99f32e6fe4197e7ec01679264efed0cac9140fe9c29f1fbf7d',28214398)}
-VOICE='am_michael'
+from studio_lib.voice_policy import VOICE,VERSION
 
 def digest(path):
  h=hashlib.sha256()
@@ -50,12 +50,12 @@ def render(spec,cache):
  for i,b in enumerate(spec['beats']):
   profile=delivery(b.get('action','explain'),i,len(spec['beats']))
   speed=max(.9,min(1.35,1+float(profile['rate'].strip('%'))/100))
-  key=hashlib.sha256(json.dumps([b['say'],VOICE,speed,profile['pause_after'],'kokoro-onnx-0.6.1-int8'],sort_keys=True).encode()).hexdigest()
+  key=hashlib.sha256(json.dumps([b['say'],VOICE,profile,VERSION,'kokoro-onnx-0.6.1-int8'],sort_keys=True).encode()).hexdigest()
   path=cache/(key+'.wav');meta=cache/(key+'.json')
   reused=False
   if path.exists() and meta.exists():
    try:
-    saved=json.loads(meta.read_text());reused=saved.get('sha256')==digest(path)
+    saved=json.loads(meta.read_text());reused=saved.get('sha256')==digest(path) and saved.get('voice')==VOICE and saved.get('voice_policy')==VERSION
    except (OSError,ValueError):reused=False
   if reused:hits+=1
   else:
@@ -68,9 +68,9 @@ def render(spec,cache):
    temporary=path.with_suffix('.part.wav')
    with wave.open(str(temporary),'wb') as output:
     output.setnchannels(1);output.setsampwidth(2);output.setframerate(sr);output.writeframes((samples*32700).astype(np.int16).tobytes())
-   temporary.replace(path);meta.write_text(json.dumps({'sha256':digest(path),'provider':'kokoro-onnx','voice':VOICE,'delivery':profile}))
-  lines.append({'voice':str(path),'delivery':profile})
- return {'provider':'kokoro-onnx-cpu','voice':VOICE,'lines':lines,'cached_lines':hits,'manual_audio_edits':False}
+   temporary.replace(path);meta.write_text(json.dumps({'sha256':digest(path),'provider':'kokoro-onnx','voice':VOICE,'voice_policy':VERSION,'delivery':profile}))
+  lines.append({'voice':str(path),'speaker':VOICE,'delivery':profile})
+ return {'provider':'kokoro-onnx-cpu','voice':VOICE,'voice_policy':VERSION,'lines':lines,'cached_lines':hits,'manual_audio_edits':False}
 
 if __name__=='__main__':
  parser=argparse.ArgumentParser();parser.add_argument('--spec',required=True);parser.add_argument('--report',required=True);parser.add_argument('--cache',default='.ce-cache/cpu-voice-lines');args=parser.parse_args()

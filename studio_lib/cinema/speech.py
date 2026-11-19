@@ -3,8 +3,8 @@
 These are pacing/emphasis cues, not a claim of neural emotional-style support.
 """
 import hashlib,json
-VOICE='en-US-AndrewNeural'
-POLICY_VERSION='expressive-v1'
+from studio_lib.voice_policy import VOICE,VERSION
+POLICY_VERSION=VERSION
 WRITING_RULES=('Write energetic, natural spoken explanation: a curious opening question, '
     'a brief anticipation before the mechanism reveal, clear emphasis on the causal change, '
     'and an upbeat payoff. Use short clauses and natural punctuation without changing facts. '
@@ -12,15 +12,15 @@ WRITING_RULES=('Write energetic, natural spoken explanation: a curious opening q
 
 def delivery(action,index,total):
     if index==0:
-        tone,rate,pitch,volume,pause='curious','+22%','+6Hz','+0%',.32
+        tone,rate,pitch,volume,pause='curious','+18%','+6Hz','+0%',.28
     elif index==total-1:
-        tone,rate,pitch,volume,pause='upbeat payoff','+30%','+5Hz','+2%',.24
-    elif action in ('generator','induction','absorb','separate','pivot'):
-        tone,rate,pitch,volume,pause='focused discovery','+22%','+2Hz','+0%',.30
-    elif action in ('load','balance','pass','outlet'):
-        tone,rate,pitch,volume,pause='emphasized result','+32%','+5Hz','+2%',.22
+        tone,rate,pitch,volume,pause='upbeat payoff','+18%','+5Hz','+2%',.25
+    elif action in ('generator','induction','absorb','separate','pivot','cutaway','shaft'):
+        tone,rate,pitch,volume,pause='focused discovery','+10%','+2Hz','+0%',.24
+    elif action in ('load','balance','pass','outlet','close','open','exposure','payoff'):
+        tone,rate,pitch,volume,pause='emphasized result','+22%','+5Hz','+2%',.16
     else:
-        tone,rate,pitch,volume,pause='energetic explanation','+30%','+3Hz','+0%',.20
+        tone,rate,pitch,volume,pause='energetic explanation','+16%','+3Hz','+0%',.18
     return dict(policy=POLICY_VERSION,tone=tone,rate=rate,pitch=pitch,volume=volume,pause_after=pause)
 
 def cache_key(text,profile):

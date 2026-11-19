@@ -23,10 +23,16 @@ class CpuVoiceTests(unittest.TestCase):
   with tempfile.TemporaryDirectory() as d,patch.dict(os.environ,{'GITHUB_ACTIONS':'true'}),patch.object(cpu_voice,'engine',return_value=model) as load:
    first=cpu_voice.render(spec,d);second=cpu_voice.render(spec,d)
    self.assertEqual(load.call_count,1);self.assertEqual(second['cached_lines'],2)
-   self.assertTrue(all(x[1]['voice']=='am_michael' for x in model.calls));self.assertEqual([x[0] for x in model.calls],[b['say'] for b in spec['beats']])
+   self.assertTrue(all(x[1]['voice']=='am_fenrir' for x in model.calls));self.assertEqual([x[0] for x in model.calls],[b['say'] for b in spec['beats']])
    self.assertEqual(first['provider'],'kokoro-onnx-cpu')
- def test_primary_outage_switches_the_whole_plan_and_retains_route_for_recovery(self):
+ def test_outage_keeps_the_same_narrator_without_provider_switch(self):
   spec={'beats':[{'say':'Unit test fixture','seconds':6,'action':'question'}]}
-  with tempfile.TemporaryDirectory() as d,patch.object(audio,'_primary_narrate',new_callable=AsyncMock,side_effect=edge_tts.exceptions.NoAudioReceived('none')) as primary,patch.object(audio,'_cpu_narrate',new_callable=AsyncMock,return_value={'voice_provider':'kokoro-onnx-cpu'}) as backup:
-   a=asyncio.run(audio.narrate(spec,d,d));b=asyncio.run(audio.narrate(spec,d,d))
-   self.assertEqual(a,b);self.assertEqual(primary.call_count,1);self.assertEqual(backup.call_count,2)
+  with tempfile.TemporaryDirectory() as d,patch.object(audio,'_cpu_narrate',new_callable=AsyncMock,side_effect=[TimeoutError('temporary'),{'voice':'am_fenrir'}]) as fixed:
+   with self.assertRaises(TimeoutError):asyncio.run(audio.narrate(spec,d,d))
+   result=asyncio.run(audio.narrate(spec,d,d))
+   self.assertEqual(result['voice'],'am_fenrir');self.assertEqual(fixed.call_count,2)
+ def test_cached_timeline_requires_current_identity_and_policy(self):
+  from studio_lib.voice_policy import matches,VOICE,PROVIDER,VERSION
+  self.assertFalse(matches({'voice':'am_michael','voice_provider':PROVIDER,'voice_policy':VERSION}))
+  self.assertFalse(matches({'voice':VOICE,'voice_provider':PROVIDER,'voice_policy':'old'}))
+  self.assertTrue(matches({'voice':VOICE,'voice_provider':PROVIDER,'voice_policy':VERSION}))

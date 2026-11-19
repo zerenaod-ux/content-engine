@@ -311,7 +311,8 @@ def run(topic,out,mechanism=None):
     spec={'title':plan['title'],'beats':[dict(b,seconds=6) for b in plan['beats']]}
     print('CE_STAGE=voice',flush=True)
     tl=saved.get('timeline')
-    if not tl or not all(Path(b['voice']).is_file() for b in tl['beats']):tl=asyncio.run(narrate(spec,out,Path('.ce-cache/studio-voice')))
+    from studio_lib.voice_policy import matches as narrator_matches
+    if not tl or not narrator_matches(tl) or not all(Path(b['voice']).is_file() for b in tl['beats']):tl=asyncio.run(narrate(spec,out,Path('.ce-cache/studio-voice')))
     require_duration(tl['duration'])
     tl=narration_timing.bind(plan,tl,out)
     (out/'timeline.json').write_text(json.dumps(tl,indent=2))

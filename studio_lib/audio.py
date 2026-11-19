@@ -7,62 +7,30 @@ from studio_lib.service_queue import lease
 from studio_lib.duration import require_duration
 from studio_lib.audio_mastering import mastering_args
 from studio_lib.cinema.speech import delivery,VOICE
+from studio_lib.voice_policy import PROVIDER,VERSION
 SR=24000
-async def _primary_narrate(spec,out,cache):
-    out=Path(out);cache=Path(cache);cache.mkdir(parents=True,exist_ok=True);t=0;beats=[];calls=0;hits=0
-    for index,b in enumerate(spec['beats']):
-        profile=delivery(b.get('action','explain'),index,len(spec['beats']))
-        key=hashlib.sha256(json.dumps([b['say'],VOICE,profile],sort_keys=True).encode()).hexdigest();f=cache/(key+'.mp3')
-        legacy=cache/(hashlib.sha256(json.dumps([b['say'],VOICE,'+30%','+8Hz']).encode()).hexdigest()+'.mp3')
-        if legacy.exists() and legacy.stat().st_size>1000:f=legacy
-        if f.exists() and f.stat().st_size>1000:hits+=1
-        else:
-            for attempt in range(2):
-                calls+=1
-                try:
-                    with lease('voice'):
-                        await asyncio.wait_for(edge_tts.Communicate(b['say'],VOICE,rate=profile['rate'],pitch=profile['pitch'],volume=profile['volume']).save(str(f)),timeout=75)
-                    if f.stat().st_size<=1000:raise edge_tts.exceptions.NoAudioReceived('Incomplete audio')
-                    break
-                except (edge_tts.exceptions.NoAudioReceived,asyncio.TimeoutError):
-                    f.unlink(missing_ok=True)
-                    if attempt==1:raise
-                    await asyncio.sleep(10*2**attempt)
-        dur=float(subprocess.check_output(['ffprobe','-v','error','-show_entries','format=duration','-of','csv=p=0',str(f)]))
-        d=max(b['seconds'],dur+.35);beats.append(dict(b,start=t,end=t+d,voice=str(f),voice_duration=dur));t+=d
-    require_duration(t)
-    tl={'beats':beats,'duration':t,'narration_requests':calls,'cached_lines':hits}
-    (out/'timeline.json').write_text(json.dumps(tl,indent=2));return tl
-
-async def _cpu_narrate(spec,out,cache):
+async def _cpu_narrate(spec,out,cache,duration_range=(40,70)):
     out=Path(out);out.mkdir(parents=True,exist_ok=True)
     request=out/'cpu-voice-request.json';report=out/'cpu-voice-report.json'
     request.write_text(json.dumps(spec,indent=2))
     await asyncio.to_thread(subprocess.run,[sys.executable,'-m','studio_lib.cpu_voice','--spec',str(request),'--report',str(report)],check=True,timeout=600)
     data=json.loads(report.read_text())
-    if data.get('provider')!='kokoro-onnx-cpu' or len(data.get('lines',[]))!=len(spec['beats']):raise ValueError('CPU voice result is incomplete')
+    if data.get('provider')!=PROVIDER or data.get('voice')!=VOICE or data.get('voice_policy')!=VERSION or len(data.get('lines',[]))!=len(spec['beats']):raise ValueError('CPU voice result is incomplete')
     t=0;beats=[]
     for b,line in zip(spec['beats'],data['lines']):
         duration=float(subprocess.check_output(['ffprobe','-v','error','-show_entries','format=duration','-of','csv=p=0',line['voice']]))
         if not .2<duration<90:raise ValueError('CPU narration duration is invalid')
-        length=max(b['seconds'],duration+line['delivery']['pause_after'])
+        if line.get('speaker')!=VOICE:raise ValueError('Narrator identity mismatch; do not switch speakers')
+        length=max(b['seconds'],duration+.08+line['delivery']['pause_after'])
         beats.append(dict(b,start=t,end=t+length,voice=line['voice'],voice_duration=duration,delivery=line['delivery']));t+=length
-    require_duration(t)
-    timeline={'beats':beats,'duration':t,'narration_requests':0,'cached_lines':data['cached_lines'],'voice_provider':'kokoro-onnx-cpu','voice':data['voice'],'primary_audio_cache_retained':True}
+    if not duration_range[0]<=t<=duration_range[1]:raise ValueError('Measured narration outside required duration range: '+str(t))
+    timeline={'beats':beats,'duration':t,'narration_requests':0,'cached_lines':data['cached_lines'],'voice_provider':'kokoro-onnx-cpu','voice':data['voice'],'voice_policy':VERSION,'primary_audio_cache_retained':True}
     (out/'timeline.json').write_text(json.dumps(timeline,indent=2));return timeline
 
-async def narrate(spec,out,cache):
-    cache=Path(cache);cache.mkdir(parents=True,exist_ok=True)
-    route=cache/('route-'+hashlib.sha256(json.dumps([b['say'] for b in spec['beats']]).encode()).hexdigest()+'.json')
-    if os.environ.get('CE_FORCE_CPU_VOICE')=='1':
-        route.write_text(json.dumps({'provider':'kokoro-onnx-cpu','reason':'Owner-authorized failover proof after primary outage'}))
-    if route.exists() and json.loads(route.read_text()).get('provider')=='kokoro-onnx-cpu':
-        return await _cpu_narrate(spec,out,cache)
-    try:return await _primary_narrate(spec,out,cache)
-    except (edge_tts.exceptions.NoAudioReceived,asyncio.TimeoutError):
-        route.write_text(json.dumps({'provider':'kokoro-onnx-cpu','reason':'Primary voice returned no complete audio after bounded attempts'}))
-        print('Primary voice unavailable; resuming one consistent stock voice on the GitHub CPU',flush=True)
-        return await _cpu_narrate(spec,out,cache)
+async def narrate(spec,out,cache,duration_range=(40,70)):
+    # A single identity replaces provider-dependent voice switching. Cached
+    # older routes are intentionally ignored; an outage remains retryable.
+    return await _cpu_narrate(spec,out,cache,duration_range=duration_range)
 
 def assemble(spec,timeline,out):
     out=Path(out);T=timeline['duration'];n=int(T*SR);voice=np.zeros(n)

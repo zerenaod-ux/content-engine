@@ -173,38 +173,19 @@ def generate(topic,out):
     raise ValueError('Generated narration rejected: '+str(errors))
 
 async def voice(plan,out,duration_range=(40,70)):
-    cache=Path('.ce-cache/cinema-voice');cache.mkdir(parents=True,exist_ok=True)
-    beats=[];words=[];t=0;requests=0;hits=0
-    for i,b in enumerate(plan['beats']):
-        profile=delivery(b['action'],i,len(plan['beats']))
-        rate=profile['rate']
-        key=cache_key(b['say'],profile)
-        audio=cache/(key+'.mp3');meta=cache/(key+'.jsonl')
-        if not (audio.exists() and audio.stat().st_size>1000 and meta.exists() and meta.stat().st_size>20):
-            for attempt in range(4):
-                requests+=1
-                try:
-                    with lease('voice'):
-                        await asyncio.wait_for(edge_tts.Communicate(b['say'],VOICE,rate=rate,pitch=profile['pitch'],volume=profile['volume'],boundary='WordBoundary').save(str(audio),str(meta)),timeout=75)
-                    if audio.stat().st_size<=1000 or meta.stat().st_size<=20:
-                        raise edge_tts.exceptions.NoAudioReceived('Incomplete narration response')
-                    break
-                except (edge_tts.exceptions.NoAudioReceived,asyncio.TimeoutError):
-                    audio.unlink(missing_ok=True);meta.unlink(missing_ok=True)
-                    if attempt==3:raise
-                    await asyncio.sleep(10*2**attempt)
-        else:hits+=1
-        events=[json.loads(x) for x in meta.read_text().splitlines() if x.strip()]
-        events=[x for x in events if x['type']=='WordBoundary']
-        if not events:raise ValueError('No real word timestamps; captions must not use guessed timings')
-        d=float(subprocess.check_output(['ffprobe','-v','error','-show_entries','format=duration','-of','csv=p=0',str(audio)]))
-        length=max(3.5,d+.06+profile['pause_after'])
-        beats.append(dict(b,start=t,end=t+length,voice=str(audio),voice_duration=d,rate=rate,delivery=profile))
-        words.extend(dict(text=x['text'],start=t+.06+x['offset']/1e7,end=t+.06+(x['offset']+x['duration'])/1e7,beat=i) for x in events)
-        t+=length
-    if not duration_range[0]<=t<=duration_range[1]:raise ValueError('Measured narration outside required duration range: '+str(t))
-    tl={'mechanism':plan['mechanism'],'hook':plan.get('hook',''),'diagram':plan['mechanism'] in SPECS,'beats':beats,'duration':t,'words':words,'requests':requests,'cached_lines':hits}
-    (out/'timeline.json').write_text(json.dumps(tl,indent=2));return tl
+    from studio_lib.audio import narrate
+    from studio_lib.word_timing import measured_words
+    spec={'beats':[dict(b,seconds=3.5) for b in plan['beats']]}
+    tl=await narrate(spec,out,Path('.ce-cache/cinema-voice'),duration_range=duration_range)
+    words=[]
+    for i,b in enumerate(tl['beats']):
+        measured=measured_words(b['voice'])
+        if not measured:raise ValueError('No measured word timestamps; do not guess caption timing')
+        for w in measured:
+            if not 0<=w['start']<w['end']<=b['voice_duration']+.25:raise ValueError('Invalid measured speech timing')
+            words.append(dict(text=w['text'],start=b['start']+.06+w['start'],end=b['start']+.06+w['end'],beat=i))
+    tl.update(mechanism=plan['mechanism'],hook=plan.get('hook',''),diagram=plan['mechanism'] in SPECS,words=words,requests=0)
+    (Path(out)/'timeline.json').write_text(json.dumps(tl,indent=2));return tl
 
 def ass_time(t):
     n=round(t*100);return f'{n//360000}:{n//6000%60:02}:{n//100%60:02}.{n%100:02}'

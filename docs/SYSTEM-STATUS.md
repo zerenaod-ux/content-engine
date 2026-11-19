@@ -1,5 +1,7 @@
 # How It Ticks — current verified status
 
+**Narrator update (November 19):** future How It Ticks shorts and full videos use one fixed stock narrator (`am_fenrir`) with varied delivery pacing. Retries keep that identity instead of switching speakers. Existing videos remain unchanged. [Policy and verification](NARRATOR-POLICY.md).
+
 **Latest optical proof:** new 49.4-second system-generated camera-iris video reached Studio card 59. Media checks passed, but final-line motion wording has an inspection warning; it is not an unconditional quality pass. The future-script guard is fixed; no duplicate or replacement will be made. See [scope, checks and limits](OPTICAL-IRIS.md).
 
 **Optical iris expansion (November 19):** reusable whole-camera, internal pivoted blades/control ring, illustrative light transmission and sensor exposure are implemented. Local geometry and visibility checks pass. Cloud generation and exact video inspection are pending; no new finished video is claimed. Permanent no-repeat protection remains enforced. See [component scope and evidence](OPTICAL-IRIS.md).
