@@ -37,9 +37,9 @@
       "run_id": "44576248575",
       "attempt": 1,
       "kind": "daily-short",
-      "stage": "voice",
-      "label": "Generating narration",
-      "updated_at": "2026-11-19T17:22:34.880371+00:00",
+      "stage": "render",
+      "label": "Rendering animation",
+      "updated_at": "2026-11-19T17:23:39.464062+00:00",
       "source_branch": "main",
       "owner_approved": false,
       "state": "running"
