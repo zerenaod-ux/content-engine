@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-11-19T02:38:12.613599+00:00",
+  "checked_at": "2026-11-19T04:09:55.166147+00:00",
   "read_only": true,
   "complete": true,
   "platforms": {
@@ -13,16 +13,15 @@
     "instagram": {
       "returned_posts": 5,
       "statuses": {
-        "scheduled": 2,
-        "sent": 3
+        "scheduled": 1,
+        "sent": 4
       }
     },
     "tiktok": {
       "returned_posts": 5,
       "statuses": {
         "scheduled": 1,
-        "sending": 1,
-        "sent": 3
+        "sent": 4
       }
     }
   },
@@ -159,13 +158,13 @@
         ],
         "instagram": [
           {
-            "status": "scheduled",
+            "status": "sent",
             "due": "2026-11-19T03:00:00.000Z"
           }
         ],
         "tiktok": [
           {
-            "status": "sending",
+            "status": "sent",
             "due": "2026-11-19T02:30:00.000Z"
           }
         ]
@@ -191,6 +190,30 @@
           {
             "status": "scheduled",
             "due": "2026-11-20T00:00:00.000Z"
+          }
+        ]
+      }
+    },
+    {
+      "tag": "ce-20261119-0327",
+      "title": "Why a Bascule Bridge Uses Counterweights Effectively \ud83d\udea2",
+      "platforms": {
+        "youtube": [
+          {
+            "status": "not_found_in_buffer",
+            "prior_owner_skip": false
+          }
+        ],
+        "instagram": [
+          {
+            "status": "not_found_in_buffer",
+            "prior_owner_skip": false
+          }
+        ],
+        "tiktok": [
+          {
+            "status": "not_found_in_buffer",
+            "prior_owner_skip": false
           }
         ]
       }
@@ -223,13 +246,13 @@
       "instagram": {
         "views": 265.0,
         "reactions": 3.0,
-        "reported_posts": 3,
+        "reported_posts": 4,
         "source_updated_at": "2026-11-17T20:24:56.448Z"
       },
       "tiktok": {
         "views": 754.0,
         "reactions": 62.0,
-        "reported_posts": 3,
+        "reported_posts": 4,
         "source_updated_at": "2026-11-17T20:24:59.093Z"
       }
     },
