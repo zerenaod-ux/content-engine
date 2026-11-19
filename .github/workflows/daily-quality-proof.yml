@@ -18,10 +18,26 @@ jobs:
       - uses: actions/setup-python@v5
         with: {python-version: '3.11'}
       - run: pip install --quiet numpy pillow edge-tts faster-whisper kokoro-onnx==0.6.1
-      - name: Verify installed production tools
+      - name: Verify runner media tools and font before any generation
         run: |
-          command -v ffmpeg
-          command -v ffprobe
+          if ! command -v ffmpeg >/dev/null || ! command -v ffprobe >/dev/null; then
+            pip install --quiet static-ffmpeg==3.0
+            timeout 180 python - <<'PY'
+          import os
+          from pathlib import Path
+          from static_ffmpeg import run
+          ffmpeg,ffprobe=run.get_or_fetch_platform_executables_else_raise()
+          folder=Path(os.environ['RUNNER_TEMP'])/'verified-media-tools'
+          folder.mkdir(exist_ok=True)
+          for name,target in [('ffmpeg',ffmpeg),('ffprobe',ffprobe)]:
+              link=folder/name
+              if not link.exists():link.symlink_to(target)
+          with open(os.environ['GITHUB_PATH'],'a') as out:out.write(str(folder)+'\n')
+          PY
+            export PATH="$RUNNER_TEMP/verified-media-tools:$PATH"
+          fi
+          ffmpeg -version | head -n 1
+          ffprobe -version | head -n 1
           python -c "from studio_lib.render import FONT; assert FONT is not None"
       - uses: actions/cache/restore@v4
         with:
