@@ -1,0 +1,10 @@
+{
+  "available": false,
+  "checked_at": "2026-11-19T22:11:38.782157+00:00",
+  "handle": "@HowItTicks-p2v",
+  "source": "YouTube Analytics API",
+  "videos": [],
+  "average_view_percentage": null,
+  "note": "Connect How It Ticks YouTube with youtube.readonly and yt-analytics.readonly access; no other channel token is used.",
+  "state": "connection_required"
+}
