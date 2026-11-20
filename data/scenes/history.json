@@ -847,5 +847,19 @@
     "category": "tested mechanism",
     "record_run": "44641287581",
     "record_attempt": "1"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "tested component rejected: 'str' object has no attribute 'get'\n",
+    "date": "2026-11-20",
+    "topic": "How sliding a zipper joins fabric edges without manual stitching",
+    "title": "",
+    "subject": "zipper",
+    "keywords": [],
+    "category": "tested mechanism",
+    "failed": true,
+    "record_run": "44781456919",
+    "record_attempt": "1",
+    "owner": "44781456919"
   }
 ]
