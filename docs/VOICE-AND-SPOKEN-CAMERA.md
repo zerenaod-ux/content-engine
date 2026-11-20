@@ -9,3 +9,9 @@ Owner reports a distracting voice bed, rushed/unnatural English delivery and ins
 - Existing physical motion windows, narrative words and geometry remain unchanged. Other format camera paths are unchanged; this change does not claim universal object detection or multi-part within-sentence tracking.
 
 Validation includes regression checks for no injected soundtrack, fixed identity/moderate rates, camera continuity, held framing, and wider context endpoints. A contact sheet is an engineering fixture, not a new topic/video or production proof. Cloud audio-only audition and shared checks should pass before rollout. Owner listening remains the final voice preference check. No existing film is regenerated to obtain proof.
+
+## Measured branch evidence
+
+262 local checks passed: 140 studio, 44 recovery, 55 cinematic and 23 original full-format. The relay engineering contact sheet was rendered and visually inspected: closer internals, held detail views and wider context endpoints. This is fixture evidence, not a recreated channel video or universal framing proof.
+
+The free cloud audio-only audition [44664075274](https://github.com/zerenaod-ux/content-engine/actions/runs/44664075274) passed. Its 16.459-second WAV uses the same am_fenrir narrator and v3-clean policy for all four roles. The fixture created no topic, video or review card. Direct listening preference is still for the owner; no human-naturalness pass is claimed. Shared cloud regression run: [44664072216](https://github.com/zerenaod-ux/content-engine/actions/runs/44664072216). Production remains unchanged pending rollout of PR 63.
