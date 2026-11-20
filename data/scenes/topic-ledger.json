@@ -135,5 +135,13 @@
     "state": "reserved",
     "mechanism": "electric_relay",
     "visual_family": "electromagnetic_relay"
+  },
+  {
+    "topic": "How sliding a zipper joins fabric edges without manual stitching",
+    "topic_key": "edges fabric joins manual sliding stitching without zipper",
+    "owner": "44781456919",
+    "state": "reserved",
+    "mechanism": "zipper",
+    "visual_family": "interlocking_zipper"
   }
 ]
