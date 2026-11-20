@@ -6,13 +6,13 @@
     "11:05",
     "19:05"
   ],
-  "due_slots": 0,
+  "due_slots": 2,
   "ready_today": 0,
   "daily_target": 3,
   "unused_visuals": 5,
-  "should_build": false,
-  "reason": "Daily output target already covered",
-  "dispatches": 0,
-  "requested_at": 0,
-  "checked_at": "2026-11-20T08:32:31.012837+00:00"
+  "should_build": true,
+  "reason": "A due generation slot needs a fresh video",
+  "dispatches": 1,
+  "requested_at": 1795194900.1578786,
+  "checked_at": "2026-11-20T17:15:00.157861+00:00"
 }
