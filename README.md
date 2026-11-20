@@ -1,3 +1,7 @@
+## Voice and camera refinement — November 19
+
+Prepared clean speech-only mixing, slower fixed-speaker delivery and closer spoken-action-linked component framing for future videos. Existing finished media stays intact. Branch verification and audio audition are required before production rollout; human naturalness is not claimed from code tests. See [scope and evidence](docs/VOICE-AND-SPOKEN-CAMERA.md).
+
 # How It Ticks (formerly "Content Engine")
 
 **Latest completed work — November 19:** two original visual families and stronger causal-story/motion gates are live. The system generated the new **49.8-second float-valve video** with the approved fixed narrator and delivered Studio card 60. Media and motion evidence pass; the card records a small refill-valve timing note. Owner approval remains manual. No old video was recreated. The combination lock is built and geometry-tested, with no production film yet. [Detailed evidence, corrections and limits](docs/CAUSAL-CAPABILITY-EXPANSION.md).

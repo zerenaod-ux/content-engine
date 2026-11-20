@@ -50,12 +50,7 @@ def assemble(spec,timeline,out):
     for b in timeline['beats']:
         raw=subprocess.check_output(['ffmpeg','-v','error','-i',b['voice'],'-ar',str(SR),'-ac','1','-f','f32le','-']);x=np.frombuffer(raw,np.float32).astype(float)
         pos=int((b['start']+.08)*SR);x=x[:n-pos];voice[pos:pos+len(x)]+=x
-    voice*=.78/(abs(voice).max()+1e-9);t=np.arange(n)/SR
-    bed=np.zeros(n)
-    for k in range(int(T*1.8)):
-        pos=int(k/1.8*SR);d=min(int(.45*SR),n-pos);tt=np.arange(d)/SR;freq=[110,130.81,164.81,146.83][(k//4)%4]
-        bed[pos:pos+d]+=.025*(np.sin(2*np.pi*freq*tt)+.25*np.sin(2*np.pi*freq*2*tt))*np.exp(-tt*8)*np.minimum(1,tt*80)
-    win=1200;env=np.array([abs(voice[i:i+win]).mean() for i in range(0,n,win)]);env=np.interp(np.arange(n),np.arange(len(env))*win,env)
-    mixed=voice+bed*(1-.7*np.clip(env*10,0,1));mixed*=np.minimum(1,t*4)*np.minimum(1,(T-t)*3)
+    # Speech-only master: no generated tone, music or click beneath narration.
+    mixed=voice*.78/(abs(voice).max()+1e-9)
     with wave.open(str(out/'mix.wav'),'wb') as w:w.setnchannels(1);w.setsampwidth(2);w.setframerate(SR);w.writeframes((np.clip(mixed,-.98,.98)*32700).astype(np.int16).tobytes())
     subprocess.run(['ffmpeg','-v','error','-y','-i',str(out/'silent.mp4'),'-i',str(out/'mix.wav'),'-c:v','copy','-c:a','aac','-b:a','160k',*mastering_args(),'-t',str(T),'-movflags','+faststart',str(out/'video.mp4')],check=True)
