@@ -629,5 +629,15 @@
     "state": "reserved",
     "policy": "original-idea-and-visuals-v1",
     "mechanism": "electric_relay"
+  },
+  {
+    "topic": "How a small control voltage can switch a higher\u2011voltage load using an electromagnetic relay",
+    "mechanism": "electric_relay",
+    "visual_family": "electromagnetic_relay",
+    "state": "created",
+    "owner": "44641287581",
+    "encoded_run": "44641287581",
+    "policy": "original-idea-and-visuals-v1",
+    "media_sha256": "e4b2c816036e7ba4655b361f47c1c6be71129fbc6abcb769e8308c8a014005ec"
   }
 ]
