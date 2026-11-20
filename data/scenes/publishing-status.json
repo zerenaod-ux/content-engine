@@ -1,27 +1,27 @@
 {
-  "checked_at": "2026-11-20T03:13:12.254818+00:00",
+  "checked_at": "2026-11-20T03:14:07.480273+00:00",
   "read_only": true,
   "complete": true,
   "platforms": {
     "youtube": {
-      "returned_posts": 9,
+      "returned_posts": 10,
       "statuses": {
         "error": 1,
-        "scheduled": 3,
+        "scheduled": 4,
         "sent": 5
       }
     },
     "instagram": {
-      "returned_posts": 9,
+      "returned_posts": 10,
       "statuses": {
-        "scheduled": 3,
+        "scheduled": 4,
         "sent": 6
       }
     },
     "tiktok": {
-      "returned_posts": 9,
+      "returned_posts": 10,
       "statuses": {
-        "scheduled": 3,
+        "scheduled": 4,
         "sent": 6
       }
     }
@@ -297,20 +297,20 @@
       "platforms": {
         "youtube": [
           {
-            "status": "not_found_in_buffer",
-            "prior_owner_skip": false
+            "status": "scheduled",
+            "due": "2026-11-21T22:30:00.000Z"
           }
         ],
         "instagram": [
           {
-            "status": "not_found_in_buffer",
-            "prior_owner_skip": false
+            "status": "scheduled",
+            "due": "2026-11-22T03:00:00.000Z"
           }
         ],
         "tiktok": [
           {
-            "status": "not_found_in_buffer",
-            "prior_owner_skip": false
+            "status": "scheduled",
+            "due": "2026-11-22T02:30:00.000Z"
           }
         ]
       }
