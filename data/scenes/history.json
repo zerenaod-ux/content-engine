@@ -835,5 +835,17 @@
     "category": "tested mechanism",
     "record_run": "44626696622",
     "record_attempt": "1"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "",
+    "date": "2026-11-20",
+    "topic": "How a small control voltage can switch a higher\u2011voltage load using an electromagnetic relay",
+    "title": "How a Tiny Voltage Controls Big Power \u2699\ufe0f",
+    "subject": "electric_relay",
+    "keywords": [],
+    "category": "tested mechanism",
+    "record_run": "44641287581",
+    "record_attempt": "1"
   }
 ]
