@@ -143,5 +143,13 @@
     "state": "reserved",
     "mechanism": "zipper",
     "visual_family": "interlocking_zipper"
+  },
+  {
+    "topic": "How a Snap\u2011Thermostat Turns Off a Lamp When It Gets Hot",
+    "topic_key": "gets hot lamp off snap thermostat turn",
+    "owner": "44785760894",
+    "state": "reserved",
+    "mechanism": "snap_thermostat",
+    "visual_family": "snap_disc_switch"
   }
 ]
