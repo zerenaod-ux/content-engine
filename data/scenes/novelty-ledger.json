@@ -647,5 +647,13 @@
     "state": "reserved",
     "policy": "original-idea-and-visuals-v1",
     "mechanism": "zipper"
+  },
+  {
+    "topic": "How a Snap\u2011Thermostat Turns Off a Lamp When It Gets Hot",
+    "visual_family": "snap_disc_switch",
+    "owner": "44785760894",
+    "state": "reserved",
+    "policy": "original-idea-and-visuals-v1",
+    "mechanism": "snap_thermostat"
   }
 ]
