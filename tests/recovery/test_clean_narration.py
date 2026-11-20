@@ -8,7 +8,7 @@ from studio_lib.cinema import build,speech
 class CleanNarrationTests(unittest.TestCase):
  def test_normal_delivery_is_not_rushed_and_identity_is_fixed(self):
   from studio_lib.voice_policy import VOICE,VERSION
-  self.assertEqual(VOICE,'am_fenrir');self.assertIn('clean',VERSION)
+  self.assertEqual(VOICE,'af_heart');self.assertIn('clean',VERSION)
   for i,a in enumerate(('question','cutaway','load','explain','payoff')):
    rate=float(speech.delivery(a,i,5)['rate'].strip('%'));self.assertLessEqual(rate,6)
  def test_silent_source_does_not_gain_music_or_clicks(self):

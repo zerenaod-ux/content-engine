@@ -13,3 +13,11 @@ class EncodedPeakTests(unittest.TestCase):
    self.assertLessEqual(float(measure['input_tp']),-.8)
    self.assertGreaterEqual(float(measure['input_i']),-20)
    self.assertLessEqual(float(measure['input_i']),-12)
+
+ def test_master_removes_measurable_dc_imbalance(self):
+  with tempfile.TemporaryDirectory() as d:
+   target=Path(d)/'clean.wav'
+   subprocess.run(['ffmpeg','-v','error','-y','-f','lavfi','-i','aevalsrc=0.06+0.2*sin(2*PI*440*t):s=24000:d=2',*mastering_args(),str(target)],check=True)
+   result=subprocess.run(['ffmpeg','-hide_banner','-i',str(target),'-af','astats=reset=0','-f','null','-'],capture_output=True,text=True,check=True)
+   offsets=re.findall(r'DC offset: ([-0-9.]+)',result.stderr)
+   self.assertTrue(offsets);self.assertLess(abs(float(offsets[-1])),.001)

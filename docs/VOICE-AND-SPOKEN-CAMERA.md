@@ -17,3 +17,7 @@ Validation includes regression checks for no injected soundtrack, fixed identity
 The free cloud audio-only audition [44664075274](https://github.com/zerenaod-ux/content-engine/actions/runs/44664075274) passed. Its 16.459-second WAV uses the same am_fenrir narrator and v3-clean policy for all four roles. The fixture created no topic, video or review card. Direct listening preference is still for the owner; no human-naturalness pass is claimed. Shared cloud regression run: [44664072216](https://github.com/zerenaod-ux/content-engine/actions/runs/44664072216). Production remains unchanged pending rollout of PR 63.
 
 Owner requested alternative clearer, energetic speakers. A separate bounded audio-only fixture compares Michael, Adam and Heart with identical English text, speed, loudness and no background bed. This audition does not change the production narrator or create a channel video. Voice preference needs listening, not a numerical quality claim. The narrator-check workflow offers an explicit voice_options audition input; its default remains the fixed-narrator verification.
+
+## Owner selection
+
+The owner selected corrected Heart. The fixed identity is af_heart, with a new cache policy and the demonstrated 40 Hz cleanup in shared mastering. The selected sample measured DC offset near 0.000001 after filtering, versus 0.056700 before; this measurement is not proof of perceived naturalness. Production rollout checks are pending.

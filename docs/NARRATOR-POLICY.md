@@ -1,3 +1,9 @@
+# Current narrator: owner-selected clean Heart
+
+The owner chose the corrected Heart sample on November 19. The fixed speaker is now `af_heart` under `how-it-ticks-narrator-v4-heart-clean`. All future short, cinematic and full-format speech routes share this identity, with no provider fallback to another speaker. Shared mastering applies `highpass=f=40` before loudness/headroom processing, matching the correction demonstrated in the selected sample. Mixing contains speech only. Existing media is not recreated. Tests verify offset removal and cache identity; subjective preference comes from the owner's sample selection, not an automated human-naturalness score.
+
+Historical policy and earlier verification follows; the current selection above takes precedence.
+
 # One consistent How It Ticks narrator
 
 November 19, 2026. Owner requested a more attractive voice and the same speaker for every future video.

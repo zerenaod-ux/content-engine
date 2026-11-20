@@ -1,3 +1,7 @@
+## Owner-selected narrator — November 19
+
+The owner selected **clean Heart** after comparing audio samples. Future generation uses the fixed Heart voice, speech-only mixing and a 40 Hz cleanup filter to remove waveform offset/low-frequency rumble. Older speaker caches are rejected. Existing videos and publishing decisions remain unchanged. Rollout verification is in progress on the voice/camera change branch.
+
 ## Voice and camera refinement — November 19
 
 Prepared clean speech-only mixing, slower fixed-speaker delivery and closer spoken-action-linked component framing for future videos. Existing finished media stays intact. Branch verification and audio audition are required before production rollout; human naturalness is not claimed from code tests. See [scope and evidence](docs/VOICE-AND-SPOKEN-CAMERA.md).
