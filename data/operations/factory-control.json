@@ -9,10 +9,10 @@
   "due_slots": 2,
   "ready_today": 0,
   "daily_target": 3,
-  "unused_visuals": 5,
+  "unused_visuals": 3,
   "should_build": true,
   "reason": "A due generation slot needs a fresh video",
-  "dispatches": 1,
-  "requested_at": 1795194900.1578786,
-  "checked_at": "2026-11-20T17:15:00.157861+00:00"
+  "dispatches": 2,
+  "requested_at": 1795196630.7788882,
+  "checked_at": "2026-11-20T17:43:50.778857+00:00"
 }
