@@ -1,13 +1,13 @@
 {
-  "checked_at": "2026-11-20T20:29:15.593006+00:00",
+  "checked_at": "2026-11-20T23:15:05.978722+00:00",
   "read_only": true,
   "complete": true,
   "platforms": {
     "youtube": {
       "returned_posts": 10,
       "statuses": {
-        "error": 1,
-        "scheduled": 3,
+        "error": 2,
+        "scheduled": 2,
         "sent": 6
       }
     },
@@ -249,7 +249,7 @@
       "platforms": {
         "youtube": [
           {
-            "status": "scheduled",
+            "status": "error",
             "due": "2026-11-20T22:30:00.000Z"
           }
         ],
