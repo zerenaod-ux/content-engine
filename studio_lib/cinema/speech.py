@@ -12,15 +12,15 @@ WRITING_RULES=('Write energetic, natural spoken explanation: a curious opening q
 
 def delivery(action,index,total):
     if index==0:
-        tone,rate,pitch,volume,pause='curious','+18%','+6Hz','+0%',.28
+        tone,rate,pitch,volume,pause='curious','+4%','+6Hz','+0%',.28
     elif index==total-1:
-        tone,rate,pitch,volume,pause='upbeat payoff','+18%','+5Hz','+2%',.25
+        tone,rate,pitch,volume,pause='upbeat payoff','+4%','+5Hz','+2%',.25
     elif action in ('generator','induction','absorb','separate','pivot','cutaway','shaft'):
-        tone,rate,pitch,volume,pause='focused discovery','+10%','+2Hz','+0%',.24
+        tone,rate,pitch,volume,pause='focused discovery','+2%','+2Hz','+0%',.24
     elif action in ('load','balance','pass','outlet','close','open','exposure','payoff'):
-        tone,rate,pitch,volume,pause='emphasized result','+22%','+5Hz','+2%',.16
+        tone,rate,pitch,volume,pause='emphasized result','+6%','+5Hz','+2%',.16
     else:
-        tone,rate,pitch,volume,pause='energetic explanation','+16%','+3Hz','+0%',.18
+        tone,rate,pitch,volume,pause='energetic explanation','+3%','+3Hz','+0%',.18
     return dict(policy=POLICY_VERSION,tone=tone,rate=rate,pitch=pitch,volume=volume,pause_after=pause)
 
 def cache_key(text,profile):

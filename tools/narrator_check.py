@@ -21,7 +21,7 @@ for line in report['lines']:
  chunks.append(np.zeros(int(24000*line['delivery']['pause_after']),np.int16))
 with wave.open(str(out/'raw.wav'),'wb') as w:
  w.setnchannels(1);w.setsampwidth(2);w.setframerate(24000);w.writeframes(np.concatenate(chunks).tobytes())
-subprocess.run([shutil.which('ffmpeg') or imageio_ffmpeg.get_ffmpeg_exe(),'-v','error','-y','-i',str(out/'raw.wav'),'-af','loudnorm=I=-17:TP=-3:LRA=8','-ar','24000',str(out/'narrator.wav')],check=True)
+subprocess.run([shutil.which('ffmpeg') or imageio_ffmpeg.get_ffmpeg_exe(),'-v','error','-y','-i',str(out/'raw.wav'),'-af','highpass=f=40,loudnorm=I=-17:TP=-3:LRA=8','-ar','24000',str(out/'narrator.wav')],check=True)
 report.update(policy=VERSION,fixture_only=True,video_created=False,text=spec)
 (out/'report.json').write_text(json.dumps(report,indent=2))
 print('One fixed narrator produced all four delivery roles. No video created.')

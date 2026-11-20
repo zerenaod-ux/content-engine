@@ -216,16 +216,9 @@ def soundtrack(tl,out):
     for b in tl['beats']:
         raw=subprocess.check_output(['ffmpeg','-v','error','-i',b['voice'],'-ar',str(sr),'-ac','1','-f','f32le','-'])
         x=np.frombuffer(raw,np.float32);start=int((b['start']+.06)*sr);x=x[:n-start];v[start:start+len(x)]+=x
-    # Only a physical switch action gets a click. Camera movement is silent.
+    # The owner requested clean speech without competing music or effects.
     events=[]
-    for b in tl['beats']:
-        if b['action']=='load':
-            start=int(b['start']*sr);length=min(int(.07*sr),n-start);z=np.arange(length)/sr
-            fx[start:start+length]+=.07*np.sin(2*np.pi*1300*z)*np.exp(-z*75)
-            events.append({'action':'load','time':b['start'],'sound':'switch click'})
-    t=np.arange(n)/sr;bed=.009*(np.sin(2*np.pi*110*t)+.25*np.sin(2*np.pi*165*t))
-    envelope=np.convolve(abs(v),np.ones(1000)/1000,mode='same');duck=1-.8*np.clip(envelope*10,0,1)
-    mix=v*.8+(fx+bed)*duck;mix*=np.minimum(1,t*6)*np.minimum(1,(tl['duration']-t)*4)
+    mix=v*.8
     with wave.open(str(out/'mix.wav'),'wb') as f:
         f.setnchannels(1);f.setsampwidth(2);f.setframerate(sr);f.writeframes((np.clip(mix,-.98,.98)*32700).astype(np.int16).tobytes())
     (out/'sound-events.json').write_text(json.dumps(events,indent=2))

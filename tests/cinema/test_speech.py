@@ -12,7 +12,7 @@ class SpeechTests(unittest.TestCase):
   for field in ('pitch','volume','rate','policy','pause_after'):
    altered=dict(first);altered[field]=str(first[field])+'changed'
    self.assertNotEqual(cache_key('Same words',first),cache_key('Same words',altered))
-  self.assertEqual(VOICE,'am_fenrir')
+  self.assertEqual(VOICE,'af_heart')
  def test_all_formats_use_fixed_narrator_and_actual_word_times(self):
   plan={'mechanism':'hand_generator','beats':[{'action':'machine','say':'Why does this move?'}]}
   timeline={'voice':VOICE,'voice_provider':PROVIDER,'voice_policy':VERSION,'cached_lines':1,'duration':41,'beats':[{'start':0,'end':41,'voice_duration':40,'voice':'fixture.wav','action':'machine'}]}
