@@ -1,9 +1,9 @@
 {
   "state": "awaiting_next_unattended_delivery",
-  "checked_at": "2026-11-20T23:05:54.470683+00:00",
+  "checked_at": "2026-11-21T03:56:00.371736+00:00",
   "verified": false,
   "note": "Manual proof videos and skipped quota slots do not prove a newly generated unattended video.",
-  "next_eligible_slot": "2026-11-20T19:05:00-06:00",
+  "next_eligible_slot": "2026-11-21T03:05:00-06:00",
   "daily_target": 3,
   "completed_today": 0,
   "quota_reason": "A due generation slot needs a fresh video",
