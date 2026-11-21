@@ -37,12 +37,12 @@
       "state": "awaiting_review"
     },
     "daily-short": {
-      "run_id": "44926017498",
-      "attempt": 2,
+      "run_id": "44954974908",
+      "attempt": 1,
       "kind": "daily-short",
       "stage": "Waiting for fresh visuals",
       "label": "Waiting for fresh visuals",
-      "updated_at": "2026-11-21T17:46:34.947354+00:00",
+      "updated_at": "2026-11-21T22:06:26.998777+00:00",
       "source_branch": "main",
       "owner_approved": false,
       "state": "held_for_novelty",
