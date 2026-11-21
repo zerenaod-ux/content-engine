@@ -159,5 +159,13 @@
     "state": "reserved",
     "mechanism": "clothespin",
     "visual_family": "torsion_peg"
+  },
+  {
+    "topic": "Why the magazine spring advances the next staple after a press",
+    "topic_key": "advances after magazine next press spring staple",
+    "owner": "44901257366",
+    "state": "reserved",
+    "mechanism": "stapler",
+    "visual_family": "staple_clinching"
   }
 ]
