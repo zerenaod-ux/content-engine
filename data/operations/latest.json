@@ -37,12 +37,12 @@
       "state": "awaiting_review"
     },
     "daily-short": {
-      "run_id": "44883603997",
-      "attempt": 1,
+      "run_id": "44863574793",
+      "attempt": 2,
       "kind": "daily-short",
       "stage": "Daily target covered",
       "label": "Daily target covered",
-      "updated_at": "2026-11-21T08:10:32.415213+00:00",
+      "updated_at": "2026-11-21T08:11:09.951914+00:00",
       "source_branch": "main",
       "owner_approved": false,
       "state": "idle",
