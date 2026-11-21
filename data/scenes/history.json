@@ -875,5 +875,19 @@
     "record_run": "44785760894",
     "record_attempt": "1",
     "owner": "44785760894"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "tested component rejected: GROQ HTTP 400 Failed to validate JSON. Please adjust your prompt. See 'failed_generation' for more details. | GEMINI HTTP 404 | OPENROUTER HTTP 429 Provider returned error\n",
+    "date": "2026-11-21",
+    "topic": "Why squeezing the clothespin handles stores elastic energy in the torsion spring",
+    "title": "",
+    "subject": "clothespin",
+    "keywords": [],
+    "category": "tested mechanism",
+    "failed": true,
+    "record_run": "44863574793",
+    "record_attempt": "1",
+    "owner": "44863574793"
   }
 ]
