@@ -1,14 +1,13 @@
 {
   "run_id": "44926017498",
-  "attempt": 1,
+  "attempt": 2,
   "kind": "daily-short",
-  "stage": "Stopped",
-  "label": "Stopped",
-  "updated_at": "2026-11-21T16:43:38.822392+00:00",
+  "stage": "Waiting for fresh visuals",
+  "label": "Waiting for fresh visuals",
+  "updated_at": "2026-11-21T17:46:34.947354+00:00",
   "source_branch": "main",
   "owner_approved": false,
-  "retryable": true,
-  "next_retry_at": 1795282118.822365,
-  "reason": "Temporary service or capacity failure",
-  "state": "waiting_to_resume"
+  "state": "held_for_novelty",
+  "reason": "No unused supported visuals remain",
+  "retryable": false
 }
