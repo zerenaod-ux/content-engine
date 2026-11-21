@@ -167,5 +167,13 @@
     "state": "reserved",
     "mechanism": "stapler",
     "visual_family": "staple_clinching"
+  },
+  {
+    "topic": "Why entering at a shallow angle enables total internal reflection in a straight optical fiber",
+    "topic_key": "angle enables entering fiber internal optical reflection shallow straight total",
+    "owner": "44926017498",
+    "state": "reserved",
+    "mechanism": "optical_fiber",
+    "visual_family": "step_index_guidance"
   }
 ]
