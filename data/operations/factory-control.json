@@ -1,18 +1,18 @@
 {
-  "business_day": "2026-11-20",
+  "business_day": "2026-11-21",
   "timezone": "America/Chicago",
   "slots": [
     "03:05",
     "11:05",
     "19:05"
   ],
-  "due_slots": 3,
+  "due_slots": 0,
   "ready_today": 0,
   "daily_target": 3,
-  "unused_visuals": 3,
-  "should_build": true,
-  "reason": "A due generation slot needs a fresh video",
-  "dispatches": 4,
-  "requested_at": 1795233357.7066052,
-  "checked_at": "2026-11-21T03:55:57.706584+00:00"
+  "unused_visuals": 2,
+  "should_build": false,
+  "reason": "A generation run is already active",
+  "dispatches": 0,
+  "requested_at": 0,
+  "checked_at": "2026-11-21T08:11:02.410914+00:00"
 }
