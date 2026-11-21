@@ -671,5 +671,13 @@
     "state": "reserved",
     "policy": "original-idea-and-visuals-v1",
     "mechanism": "stapler"
+  },
+  {
+    "topic": "Why entering at a shallow angle enables total internal reflection in a straight optical fiber",
+    "visual_family": "step_index_guidance",
+    "owner": "44926017498",
+    "state": "reserved",
+    "policy": "original-idea-and-visuals-v1",
+    "mechanism": "optical_fiber"
   }
 ]
