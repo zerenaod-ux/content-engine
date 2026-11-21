@@ -655,5 +655,13 @@
     "state": "reserved",
     "policy": "original-idea-and-visuals-v1",
     "mechanism": "snap_thermostat"
+  },
+  {
+    "topic": "Why squeezing the clothespin handles stores elastic energy in the torsion spring",
+    "visual_family": "torsion_peg",
+    "owner": "44863574793",
+    "state": "reserved",
+    "policy": "original-idea-and-visuals-v1",
+    "mechanism": "clothespin"
   }
 ]
