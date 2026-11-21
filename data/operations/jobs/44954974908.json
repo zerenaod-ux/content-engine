@@ -1,0 +1,13 @@
+{
+  "run_id": "44954974908",
+  "attempt": 1,
+  "kind": "daily-short",
+  "stage": "Waiting for fresh visuals",
+  "label": "Waiting for fresh visuals",
+  "updated_at": "2026-11-21T22:06:26.998777+00:00",
+  "source_branch": "main",
+  "owner_approved": false,
+  "state": "held_for_novelty",
+  "reason": "No unused supported visuals remain",
+  "retryable": false
+}
