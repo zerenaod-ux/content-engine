@@ -903,5 +903,19 @@
     "record_run": "44901257366",
     "record_attempt": "1",
     "owner": "44901257366"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "tested component rejected: director rejected: total narration needs 140-176 words\n",
+    "date": "2026-11-21",
+    "topic": "Why entering at a shallow angle enables total internal reflection in a straight optical fiber",
+    "title": "",
+    "subject": "optical_fiber",
+    "keywords": [],
+    "category": "tested mechanism",
+    "failed": true,
+    "record_run": "44926017498",
+    "record_attempt": "1",
+    "owner": "44926017498"
   }
 ]
