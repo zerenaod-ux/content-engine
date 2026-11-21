@@ -663,5 +663,13 @@
     "state": "reserved",
     "policy": "original-idea-and-visuals-v1",
     "mechanism": "clothespin"
+  },
+  {
+    "topic": "Why the magazine spring advances the next staple after a press",
+    "visual_family": "staple_clinching",
+    "owner": "44901257366",
+    "state": "reserved",
+    "policy": "original-idea-and-visuals-v1",
+    "mechanism": "stapler"
   }
 ]
