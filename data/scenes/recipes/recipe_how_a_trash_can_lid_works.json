@@ -1,0 +1,105 @@
+{
+  "object": "trash can",
+  "title": "How a trash can lid works",
+  "theme": "cool",
+  "parts": [
+    {
+      "id": "frame",
+      "kind": "frame",
+      "x": 0,
+      "z": 0,
+      "w": 7,
+      "h": 3.6
+    },
+    {
+      "id": "handle",
+      "kind": "lever",
+      "pivot": [
+        -1.7,
+        2.6
+      ],
+      "length": 1.6,
+      "angle0": 0
+    },
+    {
+      "id": "bolt",
+      "kind": "slider",
+      "origin": [
+        -0.3,
+        1.9
+      ],
+      "size": [
+        3.2,
+        3.0
+      ],
+      "axis": "x",
+      "travel": 1.0,
+      "dir": -1
+    },
+    {
+      "id": "spring",
+      "kind": "spring",
+      "a": [
+        3.3,
+        1.9
+      ],
+      "b": {
+        "part": "bolt"
+      }
+    },
+    {
+      "id": "pin",
+      "kind": "pin",
+      "center": [
+        -1.7,
+        2.6
+      ],
+      "r": 0.2
+    }
+  ],
+  "labels": {
+    "handle": "press tab",
+    "bolt": "latching latch",
+    "spring": "return spring"
+  },
+  "links": [
+    {
+      "type": "yoke",
+      "lever": "handle",
+      "slider": "bolt",
+      "sign": -1
+    }
+  ],
+  "drive": [
+    {
+      "beat": 2,
+      "part": "handle",
+      "to": -1.0
+    },
+    {
+      "beat": 3,
+      "part": "handle",
+      "to": -1.0
+    },
+    {
+      "beat": 4,
+      "part": "handle",
+      "to": 0
+    },
+    {
+      "beat": 5,
+      "part": "handle",
+      "to": 0
+    }
+  ],
+  "facts": {
+    "intro": "A spring pushes the latch bolt upward, keeping the lid sealed.",
+    "reveal": "When you press the tab, the handle pivots and pulls the bolt down against the spring.",
+    "step1": "The bolt slides out of its catch, unlocking the lid.",
+    "step2": "The lid lifts freely as you raise the press tab.",
+    "step3": "When you let go, the spring pulls the handle back.",
+    "step4": "The handle pushes the bolt back into the catch, relocking the lid.",
+    "hold": "The spring remains compressed, ready to snap the bolt shut again.",
+    "payoff": "The lid snaps shut automatically, keeping odors contained."
+  }
+}
