@@ -137,7 +137,7 @@ class Machine:
    a=val[ref];return (p['pivot'][0]+p['length']*math.cos(a),p['pivot'][1]+p['length']*math.sin(a))
   return tuple(p.get('center',p.get('origin',(0,0))))
  def state(self,t,tl):
-  i,val=self.params(t,tl);return dict(beat=i,values=val)
+  i,val=self.params(t,tl);return dict(beat=i,**{k:float(v) for k,v in val.items()})
  def bounds_violation(self):
   fr=next(p for p in self.r['parts'] if p['kind']=='frame');x0,x1=fr['x']-fr['w']/2,fr['x']+fr['w']/2;z0,z1=fr['z'],fr['z']+fr['h']
   tl={'beats':[{'start':k*6,'end':(k+1)*6} for k in range(8)]}
@@ -169,8 +169,9 @@ class Machine:
   f=self.focus(i);tg=(f[0]*.45+mid[0]*.55,0,f[2]*.5+mid[2]*.5)
   return (tg,wide*1.08,.28 if i%2 else -.22)
  def draw(self,s,t,tl,hidden=()):
-  p=self.state(t,tl);val=p['values']
+  i,val=self.params(t,tl);p=dict(beat=i,**{k:float(v) for k,v in val.items()})
   for part in self.r['parts']:
+   if part['id'] in hidden:continue
    k=part['kind'];c=PALETTE[k]
    if k=='frame':
     x,z,w,h=part['x'],part['z']+ZC,part['w'],part['h']
@@ -189,7 +190,7 @@ class Machine:
     else:s.box((part['origin'][0]+L/2-L/2,-.05,part['origin'][1]+ZC+val[part['id']]),(L,.34,H),c)
    elif k=='pin':s.cylinder((part['center'][0],-.1,part['center'][1]+ZC),part['r'],.5,c)
   for part in self.r['parts']:
-   if part['kind']!='spring':continue
+   if part['kind']!='spring' or part['id'] in hidden:continue
    a=part['a'];b=part['b']
    if isinstance(b,dict):b=self.point_of(b['part'],val)
    n=14;ax,az=a;bx,bz=b;dx,dz=bx-ax,bz-az;d=math.hypot(dx,dz) or 1e-6;nx,nz=-dz/d,dx/d;amp=min(.3,.18+.0*d);pts=[]

@@ -26,7 +26,7 @@ def snapshot(exclude_run=None):
  if not isinstance(videos,list):raise ValueError('Daily output history unavailable; refusing to guess quota')
  runs=github('actions/runs?per_page=60')['workflow_runs']
  active=any(r.get('name')=='scene-factory' and str(r.get('id'))!=str(exclude_run) and r.get('status') in (('in_progress',) if exclude_run else ('queued','in_progress','waiting','requested','pending')) for r in runs)
- available=novelty.unused(REGISTRY,novelty.records())
+ available=novelty.unused(REGISTRY,novelty.records()) or {'recipe_writer':{}}   # kit recipes are an unlimited supply once hand-built machines are used
  return decision(now,videos,available,active)
 
 def admit():

@@ -55,6 +55,7 @@ def families(row):
   if isinstance(value,str):
    if value in FAMILIES:found.add(FAMILIES[value])
    elif value in set(FAMILIES.values()):found.add(value)
+   elif value.startswith('recipe_'):found.add(value)   # kit recipe machines: the family is the recipe key itself
  text=' '.join(str(row.get(k,'')) for k in ('topic','title','topic_key','description')).lower().replace('_',' ')
  for key,pattern in PATTERNS.items():
   if re.search(pattern,text):found.add(FAMILIES[key])

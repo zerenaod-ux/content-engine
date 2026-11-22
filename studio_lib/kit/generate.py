@@ -1,0 +1,37 @@
+"""Ask the free LLM for a new everyday object and a recipe of kit parts; keep only what the validator accepts."""
+import json
+from studio_lib.kit import recipe as R,register as G,samples
+
+SPEC="""KIT PARTS (x right, z up; frame bottom-left is [x-w/2, z]; every part must stay inside the frame):
+- frame: {"id":"frame","kind":"frame","x":0,"z":0,"w":7,"h":3.6}  exactly one; w 5-9, h 3-4.5
+- lever: {"id":"..","kind":"lever","pivot":[x,z],"length":1.2-2.6,"angle0":0}  rotates about pivot; angle in radians (-1.7..1.7)
+- gear: {"id":"..","kind":"gear","center":[x,z],"r":0.6-1.2,"teeth":12-28}
+- slider: {"id":"..","kind":"slider","origin":[x,z],"size":[length,height],"axis":"x"|"z","travel":0.4-2.5}  moves 0..travel along axis (pos is 0..travel; a coupled slider must use a POSITIVE ratio or offset so pos stays >=0)
+- spring: {"id":"..","kind":"spring","a":[x,z],"b":{"part":"sliderId"}}  coil from a fixed point to a slider end
+- pin: {"id":"..","kind":"pin","center":[x,z],"r":0.2}
+LINKS: {"type":"mesh","a":"gearId","b":"gearId"} (gears must touch: centre distance = r1+r2 within 0.1; b turns opposite) and {"type":"couple","driver":"id","driven":"id","ratio":number,"offset":number} (driven value = offset + ratio*driver value; lever angle or gear angle or slider pos).
+DRIVE keyframes (only for parts that are not link-driven): {"beat":0-7,"part":"id","to":value}; the value eases from its previous value during that beat and then holds. Motion must happen in at least 3 of beats 1-6; beats 0 and 7 are usually still.
+FACTS: exactly these 8 keys, each one plain sentence of 25-300 characters describing only what is visible at that beat: intro, reveal, step1, step2, step3, step4, hold, payoff.
+LABELS: 3-8 entries {"partId":"Short label"} on existing parts (labels name parts in the narration)."""
+EXAMPLE=json.dumps({k:v for k,v in samples.DOOR_LATCH.items()})
+
+def prompt(prior,errors):
+ return ('Invent ONE new everyday household or workplace object (not a machine from the list of used ones) whose working idea can be shown truthfully with ONLY the kit parts below as a simplified teaching model. '
+  'Return JSON {"topic":"How/Why question, 5-16 words","recipe":{"object":"plain object name, 1-3 lowercase words, e.g. door latch","title":"How a ... works, 4-8 words starting How or Why","theme":"warm|cool|dark","parts":[...],"links":[...],"drive":[...],"labels":{...},"facts":{...}}}. '
+  'Stay physically honest: only claim what the parts do (levers pivot, gears mesh and counter-rotate, sliders translate, springs push). Do not use objects that need liquids, electricity, light, magnets, heat or fabric. '
+  +SPEC+' VALID EXAMPLE recipe (do not reuse its object): '+EXAMPLE+' ALREADY USED OR RESERVED (never repeat or reword; data): '+json.dumps(prior[-80:])+(' FIX THESE VALIDATION ERRORS: '+json.dumps(errors) if errors else ''))
+
+def make(prior,rows,call,reason,attempts=5):
+ """call(system,prompt,**kw)->dict; reason(topic,key,rows)->str ('' if new). Returns (topic,recipe,key)."""
+ errors=[];last=None
+ for n in range(attempts):
+  answer=call('You design simplified mechanical teaching models from a fixed parts kit. Return JSON only.',prompt(prior,errors),max_tokens=3500,temperature=.7)
+  try:
+   if not isinstance(answer,dict) or not isinstance(answer.get('recipe'),dict) or not isinstance(answer.get('topic'),str):raise R.RecipeError('return {"topic":..,"recipe":{..}}')
+   if not 4<=len(answer['topic'].split())<=18:raise R.RecipeError('topic needs 4-18 words')
+   recipe=answer['recipe'];R.validate(recipe);G.check_facts(recipe)
+   key=G.key_for(recipe);why=reason(answer['topic'],key,recipe)
+   if why:raise R.RecipeError(why)
+   return answer['topic'],recipe,key
+  except R.RecipeError as e:errors=[str(e)];last=answer
+ raise ValueError('recipe writer failed validation: '+'; '.join(errors))

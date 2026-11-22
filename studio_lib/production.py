@@ -16,7 +16,8 @@ def choose_topic(history_path=Path('data/scenes/history.json')):
     rows=history(Path(history_path).parent,os.environ.get('GITHUB_RUN_ID'))
     rows+=novelty.records()
     available=novelty.unused(REGISTRY,rows,os.environ.get('GITHUB_RUN_ID'))
-    if not available:raise ValueError('No unused supported visual setup remains; do not recycle a previous video')
+    if not available or os.environ.get('CE_FORCE_RECIPE')=='true':return recipe_topic(rows)   # hand-built machines are used up: write a new object from the parts kit
+
     prior=[x.get('topic') or x.get('title','') for x in rows if x.get('topic') or x.get('title')]
     errors=[]
     for attempt in range(4):
@@ -28,6 +29,20 @@ def choose_topic(history_path=Path('data/scenes/history.json')):
             errors.append({'topic':answer['topic'],'reason':reason});continue
         Path('idea.json').write_text(json.dumps({'topic':answer['topic'],'topic_key':signature(answer['topic']),'category':'tested mechanism','subject':answer['mechanism'],'selected_by_system':True,'selection_owner':os.environ.get('GITHUB_RUN_ID'),'keywords':[]},indent=2));return answer['topic']
     raise ValueError('No non-repeating supported topic survived the full-history checks')
+
+def recipe_topic(rows):
+    """Unlimited supply: the free LLM invents a new everyday object as a recipe of tested kit parts; every check still applies."""
+    from studio_lib.kit import generate,register
+    from studio_lib import director
+    run_id=os.environ.get('GITHUB_RUN_ID')
+    prior=[x.get('topic') or x.get('title','') for x in rows if x.get('topic') or x.get('title')]
+    def why(topic,key,recipe):
+        register.install(recipe,director.COMPONENTS)
+        return scope_error(topic,key) or novelty.reason(topic,key,rows,run_id)
+    topic,recipe,key=generate.make(prior,rows,call,why)
+    register.save(recipe)
+    Path('idea.json').write_text(json.dumps({'topic':topic,'topic_key':signature(topic),'category':'kit recipe','subject':key,'selected_by_system':True,'selection_owner':run_id,'keywords':[]},indent=2))
+    return topic
 
 def selected_mechanism(topic):
     owner=durable.reservation_owner(topic)
@@ -73,11 +88,13 @@ def emit_review_files(work):
     if tl is None:raise ValueError('measured timeline missing; no review card may be created')
     checks=json.loads((work/'component-checks.json').read_text())
     if checks.get('errors'):raise ValueError('component evidence failed; no review card may be created')
+    recipe_data=json.loads(Path('data/scenes/recipes',plan['mechanism']+'.json').read_text()) if plan['mechanism'].startswith('recipe_') and Path('data/scenes/recipes',plan['mechanism']+'.json').is_file() else None
     emoji={'wind_turbine':' 💨','photovoltaic_cell':' 🌞','piston_pump':' 💧','bascule_bridge':' 🚢'}.get(plan['mechanism'],' ⚙️')
     title=plan['title'] if any(ord(c)>0x2500 for c in plan['title']) else plan['title'].rstrip('.')+emoji
     spec={'topic':Path('topic.txt').read_text().strip() if Path('topic.txt').exists() else plan['title'],'topic_key':signature(Path('topic.txt').read_text().strip() if Path('topic.txt').exists() else plan['title']),'mode':'tested-component','title':title,'mechanism':plan['mechanism'],'visual_family':novelty.identity('',plan['mechanism']),'novelty_policy':novelty.POLICY,'story_policy':plan.get('story_policy'),'voice':tl.get('voice'),'voice_policy':tl.get('voice_policy'),'duration':tl['duration'],'steps':[{'start':b['start'],'end':b['end'],'say':b['say'],'label':b['action']} for b in tl['beats']],'source':REGISTRY[plan['mechanism']]['source'],'owner_approved':False}
     origin={'event':os.environ.get('GITHUB_EVENT_NAME'),'automatic_slot':os.environ.get('CE_AUTOMATIC_SLOT')=='true','run_id':os.environ.get('GITHUB_RUN_ID'),'attempt':int(os.environ.get('GITHUB_RUN_ATTEMPT','1')),'event_sha':os.environ.get('GITHUB_SHA'),'source_ref':os.environ.get('GITHUB_REF_NAME'),'manual_media_edits':False}
     spec['generation_origin']=origin
+    if recipe_data:spec['recipe']=recipe_data
     spec['production_evidence']={'policy':'unattended-proof-v1','novelty_policy':novelty.POLICY,'width':sealed['width'],'height':sealed['height'],'duration':sealed['duration'],'media_sha256':sealed['hashes']['video.mp4'],'alignment_revision':json.loads((work/'spoken-action-timing.json').read_text()).get('alignment_revision') if (work/'spoken-action-timing.json').is_file() else None,'render_policy':plan.get('render_policy'),'voice':tl.get('voice'),'voice_policy':tl.get('voice_policy'),'errors':[],'owner_approved':False}
     Path('auto-scene.json').write_text(json.dumps(spec,indent=2));Path('evidence-report.json').write_text(json.dumps({'errors':[],'mode':'tested-component','semantic_verification':False,'owner_approved':False,'component_checks':checks,'story_checks':json.loads((work/'story-checks.json').read_text()) if (work/'story-checks.json').exists() else None,'causal_motion_checks':json.loads((work/'causal-motion-checks.json').read_text()) if (work/'causal-motion-checks.json').exists() else None},indent=2))
     Path('ce-checks.json').write_text(json.dumps({'verdict':'warn','reasons':['Tested component output requires owner visual and narration review; not automatically approved.'],'mechanism':plan['mechanism'],'owner_approved':False},indent=2))

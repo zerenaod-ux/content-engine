@@ -22,10 +22,26 @@ class Kit(unittest.TestCase):
   self.bad(lambda r:r['parts'][2].update(r=3.0))                       # gear leaves frame / too big
  def test_mesh_ratio_and_direction(self):
   m=recipe.Machine(recipe.validate(samples.GEAR_CRANK));tl={'beats':[{'start':i*6,'end':(i+1)*6} for i in range(8)]}
-  v=m.state(40.,tl)['values'];self.assertLess(v['left']*v['big'],0)
+  v=m.state(40.,tl);self.assertLess(v['left']*v['big'],0)
  def test_slider_never_leaves_its_travel(self):
   m=recipe.Machine(recipe.validate(samples.DOOR_LATCH));tl={'beats':[{'start':i*6,'end':(i+1)*6} for i in range(8)]}
-  for t in range(48):self.assertLessEqual(abs(m.state(float(t),tl)['values']['bolt']),1.1+1e-6)
+  for t in range(48):self.assertLessEqual(abs(m.state(float(t),tl)['bolt']),1.1+1e-6)
  def test_slider_beyond_travel_is_rejected(self):
   r=copy.deepcopy(samples.DOOR_LATCH);r['parts'][2]['travel']=.5
   with self.assertRaises(R):recipe.validate(r)
+
+ def test_recipe_installs_as_full_mechanism_and_passes_real_preflight(self):
+  import tempfile
+  from pathlib import Path
+  from studio_lib.kit import register
+  from studio_lib import director,action_contracts,novelty
+  from studio_lib.registry import REGISTRY
+  for name in ('DOOR_LATCH','GEAR_CRANK'):
+   with self.subTest(name),tempfile.TemporaryDirectory() as folder:
+    key=register.install(samples.with_facts(getattr(samples,name)),director.COMPONENTS)
+    self.assertIn(key,REGISTRY);self.assertIn(key,novelty.FAMILIES)
+    tl={'beats':[{'start':i*6,'end':(i+1)*6,'action':a,'camera':'wide','say':'Engineering test fixture only'} for i,a in enumerate(REGISTRY[key]['actions'])],'duration':48,'motion_policy':'fixture'}
+    director.verify_component({'mechanism':key,'beats':tl['beats'],'hook':'Engineering check'},tl,Path(folder))
+ def test_family_of_unknown_recipe_key_is_single_use(self):
+  from studio_lib import novelty
+  self.assertEqual(novelty.families({'mechanism':'recipe_never_seen_before'}),{'recipe_never_seen_before'})

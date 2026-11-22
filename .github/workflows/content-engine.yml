@@ -14,6 +14,10 @@ on:
       topic:
         description: 'Topic to explain, or "auto" to let the system think of a new one'
         default: 'auto'
+      kit_recipe:
+        description: 'Test: invent a new object from the parts kit even if hand-built machines are unused'
+        type: boolean
+        default: false
       automatic_slot:
         description: 'Internal bounded catch-up request'
         type: boolean
@@ -31,6 +35,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 20   # tested components use CPU rendering, no generative GPU batch
+    env:
+      CE_FORCE_RECIPE: ${{ github.event.inputs.kit_recipe }}
     steps:
       - uses: actions/checkout@v4
         with: {ref: main, fetch-depth: 1, fetch-tags: false}
@@ -137,7 +143,7 @@ jobs:
           try: v = json.loads(p.read_text())
           except Exception: v = []
           spec = json.loads(Path('auto-scene.json').read_text())
-          v.append({'date': datetime.date.today().isoformat(), 'tag': sys.argv[1], 'title': sys.argv[2], 'video': sys.argv[3], 'topic': spec.get('topic'), 'topic_key': spec.get('topic_key'), 'generation_origin':spec.get('generation_origin'), 'production_evidence':spec.get('production_evidence')})
+          v.append({'date': datetime.date.today().isoformat(), 'tag': sys.argv[1], 'title': sys.argv[2], 'video': sys.argv[3], 'topic': spec.get('topic'), 'topic_key': spec.get('topic_key'), 'generation_origin':spec.get('generation_origin'), 'production_evidence':spec.get('production_evidence'), **({'recipe':spec['recipe']} if spec.get('recipe') else {})})
           p.write_text(json.dumps(v, indent=1, ensure_ascii=False) + '\n')
           PY
           python3 -m studio_lib.durable_topics save-records
