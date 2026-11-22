@@ -85,8 +85,8 @@ def _call_once(system,prompt,max_tokens=10000,temperature=.5,reasoning_effort="l
 
 def call(system,prompt,max_tokens=10000,temperature=.5,reasoning_effort="low"):
     """Free writers rate-limit by the minute: wait and ask again (up to 3 waits) before giving up."""
-    for wait in range(4):
+    for wait in range(3):
         try:return _call_once(system,prompt,max_tokens,temperature,reasoning_effort)
         except ServiceUnavailable:
-            if wait==3:raise
-            print('studio providers busy; waiting 40s',flush=True);time.sleep(40)
+            if wait==2:raise
+            print('studio providers busy; waiting 25s',flush=True);time.sleep(25)
