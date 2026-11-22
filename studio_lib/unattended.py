@@ -1,5 +1,5 @@
 """Record the next real unattended delivery; tests or manual samples never count."""
-import datetime,json,math
+import datetime,json,math,time,urllib.error
 from studio_lib.service_queue import github,read_document,write_document
 PATH='data/operations/unattended-verification.json'
 
@@ -62,6 +62,10 @@ def observe():
   control,_=read_document('data/operations/factory-control.json',{})
   report.update(next_eligible_slot=expected_start(control),daily_target=control.get('daily_target'),completed_today=control.get('ready_today'),quota_reason=control.get('reason'),schedule_note='An intended start window, not a completion promise; queued jobs and GitHub schedule delays are possible.')
  if old.get('verified') and not report['verified']:report['last_verified']=old.get('last_verified') or {k:v for k,v in old.items() if k!='last_verified'}
- write_document(PATH,report,sha,'Record real unattended production evidence without generating or publishing media')
+ for attempt in range(5):   # two runs can write this file at the same moment (HTTP 409): re-read the file version and try again
+  try:write_document(PATH,report,sha,'Record real unattended production evidence without generating or publishing media');break
+  except urllib.error.HTTPError as e:
+   if e.code not in (409,422) or attempt==4:raise
+   time.sleep(2+attempt*2);_,sha=read_document(PATH,{})
  print(json.dumps(report),flush=True);return report
 if __name__=='__main__':observe()
