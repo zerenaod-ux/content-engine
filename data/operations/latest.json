@@ -37,17 +37,15 @@
       "state": "awaiting_review"
     },
     "daily-short": {
-      "run_id": "44954974908",
+      "run_id": "44975899586",
       "attempt": 1,
       "kind": "daily-short",
-      "stage": "Waiting for fresh visuals",
-      "label": "Waiting for fresh visuals",
-      "updated_at": "2026-11-21T22:06:26.998777+00:00",
+      "stage": "selection",
+      "label": "Selecting a new topic",
+      "updated_at": "2026-11-22T02:24:33.148407+00:00",
       "source_branch": "main",
       "owner_approved": false,
-      "state": "held_for_novelty",
-      "reason": "No unused supported visuals remain",
-      "retryable": false
+      "state": "running"
     }
   }
 }
