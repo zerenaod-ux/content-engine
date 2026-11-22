@@ -679,5 +679,12 @@
     "state": "reserved",
     "policy": "original-idea-and-visuals-v1",
     "mechanism": "optical_fiber"
+  },
+  {
+    "topic": "How a pendulum clock keeps time",
+    "visual_family": "pendulum_escapement",
+    "owner": "44975899586",
+    "state": "reserved",
+    "policy": "original-idea-and-visuals-v1"
   }
 ]
