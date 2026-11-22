@@ -19,8 +19,30 @@ def sphere(s,center,r,color,n=18,bands=9):
    s.face([(x+r*math.cos(e)*math.cos(f),y+r*math.cos(e)*math.sin(f),z+r*math.sin(e)) for e,f in ((a,c),(a,d),(b,d),(b,c))],tuple(min(255,int(v*(.78+.19*math.cos(c-.5)+.08*math.sin(a)))) for v in color))
 
 def background(top,bottom):
- a=np.linspace(0,1,1280)[:,None,None]
- return Image.fromarray(np.uint8(np.broadcast_to(np.array(top)[None,None,:]*(1-a)+np.array(bottom)[None,None,:]*a,(1280,720,3))).copy())
+ """Studio backdrop: vertical gradient + soft key-light glow, faint blueprint grid, defocused light discs and a vignette.
+ Deterministic (fixed seed) so cached renders stay identical."""
+ from PIL import ImageFilter
+ H,W=1280,720;a=np.linspace(0,1,H)[:,None,None]
+ base=np.array(top,float)[None,None,:]*(1-a)+np.array(bottom,float)[None,None,:]*a
+ base=np.broadcast_to(base,(H,W,3)).copy();dark=np.mean(top)<110
+ y,x=np.mgrid[0:H,0:W];x=x/W;y=y/H
+ glow=np.exp(-(((x-.5)/.55)**2+((y-.50)/.30)**2))[:,:,None]
+ tint=np.array((70,130,170) if dark else (255,255,255),float)[None,None,:]
+ base=base+glow*(tint*(.30 if dark else .09)-(base*0 if dark else 0))
+ if not dark:base=base+glow*np.array((255,236,200),float)[None,None,:]*.03
+ grid=np.zeros((H,W),float)
+ grid[::80,:]=1;grid[:,::80]=1;grid[40::160,:]+=.5;grid=grid*(.045 if dark else .035)
+ base=base*(1-grid[:,:,None])+grid[:,:,None]*(np.array((150,200,230),float) if dark else np.array((60,90,110),float))[None,None,:]
+ rng=np.random.RandomState(7);layer=Image.new('RGB',(W,H),(0,0,0));from PIL import ImageDraw;d=ImageDraw.Draw(layer)
+ for k in range(16):
+  r=int(rng.uniform(24,84));cx=int(rng.uniform(0,W));cy=int(rng.choice([rng.uniform(40,380),rng.uniform(900,1240)]))
+  col=(120,190,230) if dark else (255,244,218) if k%3 else (255,214,170)
+  d.ellipse((cx-r,cy-r,cx+r,cy+r),fill=tuple(int(c*(.55 if dark else .75)) for c in col))
+ bok=np.asarray(layer.filter(ImageFilter.GaussianBlur(22)),float)
+ base=base+bok*(.20 if dark else .10)
+ vig=1-.20*np.clip((((x-.5)/.62)**2+((y-.5)/.66)**2),0,1.4)[:,:,None]
+ base=base*vig
+ return Image.fromarray(np.uint8(np.clip(base,0,255)))
 
 def path_point(points,u):
  lengths=[np.linalg.norm(np.subtract(b,a)) for a,b in zip(points,points[1:])];remaining=min(.999999,max(0,u))*sum(lengths)

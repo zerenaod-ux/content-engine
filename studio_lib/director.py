@@ -226,6 +226,8 @@ def component_camera(t,tl,plan):
     if hasattr(module,'shot'):
         from studio_lib.camera_direction import tracked_shot
         zoom,target,az=tracked_shot(t,beats,i,module)
+        from studio_lib.camera_direction import flourish
+        zoom,target,az=flourish(t,beats[i],i,len(beats),zoom,target,az)
     elif mechanism=='photovoltaic_cell':target=np.array([-.1,0,2.15]);zoom=1.55+.55*close;az=.30+.08*math.sin(t*.035)
     elif mechanism=='piston_pump':target=np.array([-.4,0,2.3]);zoom=.94+.46*close;az=.34+.06*math.sin(t*.04)
     else:
@@ -389,7 +391,7 @@ def run(topic,out,mechanism=None):
     print('CE_STAGE=render',flush=True)
     render_start=time.monotonic();render_hit=False
     root=Path(__file__).resolve().parent
-    render_sig=hashlib.sha256(b''.join((root/p).read_bytes() for p in ['director.py','narration_timing.py','mechanisms.py','mesh.py','solar.py','pump.py','wind.py','iris.py','float_valve.py','combination_lock.py','solid_parts.py','electric_relay.py','snap_thermostat.py','clothespin.py','zipper.py','stapler.py','optical_fiber.py','pendulum_clock.py','action_contracts.py','visual_quality.py','registry.py'])+json.dumps(tl,sort_keys=True).encode()).hexdigest()
+    render_sig=hashlib.sha256(b''.join((root/p).read_bytes() for p in ['director.py','narration_timing.py','mechanisms.py','mesh.py','solar.py','pump.py','wind.py','iris.py','float_valve.py','combination_lock.py','solid_parts.py','camera_direction.py','electric_relay.py','snap_thermostat.py','clothespin.py','zipper.py','stapler.py','optical_fiber.py','pendulum_clock.py','action_contracts.py','visual_quality.py','registry.py'])+json.dumps(tl,sort_keys=True).encode()).hexdigest()
     cached=Path(fields.get('silent_path','/nonexistent'))
     if fields.get('render_signature')==render_sig and cached.is_file() and hashlib.sha256(cached.read_bytes()).hexdigest()==fields.get('silent_sha256'):
         shutil.copyfile(cached,out/'silent.mp4');render_hit=True
