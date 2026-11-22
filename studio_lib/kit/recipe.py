@@ -135,7 +135,7 @@ class Machine:
  DARK=False
  def __init__(self,recipe):
   self.r=recipe;self.parts={p['id']:p for p in recipe['parts']};self.theme='dark'   # owner decision 2026-11-22: every machine video uses the dark cinematic set (the look of the 1K+ hits)
-  self.DARK=True;self.GROUND=(26,33,46)
+  self.DARK=True;self.GROUND=(18,24,36);self.GROUND_ALPHA=150
   self.drive=sorted(recipe['drive'],key=lambda d:d['beat']);self.links=recipe.get('links',[])
   self.order=self._order();self._shots=None
  def _order(self):
@@ -255,13 +255,13 @@ class Machine:
     val=self.params(i*6+u*6-(1e-5 if u==1 else 0),TL8)[1]
     for pid in moving:boxes.append(self.extents(pid,val))
    per.append(boxes)
-  wide=self._fit((fr['x']-fr['w']/2,fr['z'],fr['x']+fr['w']/2,fr['z']+fr['h']),.35,cap=2.2)
+  wide=self._fit((fr['x']-fr['w']/2,fr['z'],fr['x']+fr['w']/2,fr['z']+fr['h']),.2,cap=2.6)
   out=[]
   for i in range(8):
    if i in (0,7):out.append((mid,wide,.32));continue
    boxes=[b for b in per[i]+per[i-1] if b];arr=np.array(boxes)
    box=(arr[:,0].min(),arr[:,1].min(),arr[:,2].max(),arr[:,3].max())
-   cx,cz=(box[0]+box[2])/2,(box[1]+box[3])/2;z=self._fit(box,.55)
+   cx,cz=(box[0]+box[2])/2,(box[1]+box[3])/2;z=self._fit(box,.38)
    if 1<i<7:z/=1.25          # camera_direction multiplies these beats by 1.25
    out.append(((cx,0,cz+ZC),z,(.28 if i%2 else -.22)))
   return out

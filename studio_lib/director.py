@@ -246,7 +246,9 @@ def component_picture(t,tl,plan,hidden=()):
     height=module.elevation(t,tl) if hasattr(module,'elevation') else 10
     im=base_bg.copy();ground=Scene(t,zoom,target,az,elevation=height,raster_scale=scale,lighting=True);s=Scene(t,zoom,target,az,elevation=height,raster_scale=scale,lighting=True)
     floor=getattr(module,'FLOOR',.35 if mechanism=='camera_iris' else -.1)
-    ground.face([[-1000,-1000,floor],[1000,-1000,floor],[1000,1000,floor],[-1000,1000,floor]],getattr(module,'GROUND',(28,33,40) if mechanism=='camera_iris' else (218,229,224)));ground.paint(im)
+    if hasattr(module,'GROUND_ALPHA'):ground.glass([[-1000,-1000,floor],[1000,-1000,floor],[1000,1000,floor],[-1000,1000,floor]],tuple(module.GROUND)+(module.GROUND_ALPHA,));ground.paint(im)   # see-through stage floor: the spotlight glows through
+    else:
+        ground.face([[-1000,-1000,floor],[1000,-1000,floor],[1000,1000,floor],[-1000,1000,floor]],getattr(module,'GROUND',(28,33,40) if mechanism=='camera_iris' else (218,229,224)));ground.paint(im)
     module.draw(s,t,tl,hidden);visual_quality.shadow(s,im,floor);s.paint(im)
     mask=Image.new('L',im.size);md=ImageDraw.Draw(mask)
     for y in range(300*scale):md.line((0,y,720*scale,y),fill=255 if y<245*scale else int(255*(300*scale-y)/(55*scale)))
@@ -279,6 +281,16 @@ def component_picture(t,tl,plan,hidden=()):
             d.line((px*scale,py*scale,(x+w/2)*scale,(y+h)*scale),fill=(255,255,255) if dark else (31,77,89),width=2*scale)
             d.rounded_rectangle((x*scale,y*scale,(x+w)*scale,(y+h)*scale),radius=12*scale,fill=(250,244,226) if not dark else (36,48,66),outline=(31,77,89) if not dark else (140,190,220),width=2*scale)
             d.text(((x+13)*scale,(y+7)*scale),text,font=f,fill=(31,57,66) if not dark else (232,240,246))
+    if mechanism.startswith('recipe_'):   # big burned-in speech captions, 3 words at a time (what the 1K+ hits had)
+        from studio_lib.camera_direction import clause_starts
+        b=tl['beats'][beat];cs=clause_starts(b);bend=float(b['start'])+.08+float(b.get('voice_duration') or 4.)
+        parts=[q for q in re.split(r'(?<=[,;:.!?])\s+',str(b.get('say',''))) if q.strip()]
+        for k,(st,txt) in enumerate(zip(cs,parts)):
+            en=cs[k+1] if k+1<len(cs) else bend
+            if st<=t<en:
+                w=txt.split();gs=[' '.join(w[i:i+3]) for i in range(0,len(w),3)] or [txt];g=gs[min(len(gs)-1,int((t-st)/max(.01,en-st)*len(gs)))]
+                f=TITLE.font_variant(size=58*scale);tb=d.textbbox((0,0),g,font=f);x=(720*scale-(tb[2]-tb[0]))/2
+                d.text((x,1040*scale),g,font=f,fill=(255,255,255),stroke_width=5*scale,stroke_fill=(8,10,16));break
     d.line((42*scale,1195*scale,678*scale,1195*scale),fill=(170,200,200),width=3*scale);d.line((42*scale,1195*scale,(42+636*t/tl['duration'])*scale,1195*scale),fill=(221,102,57),width=3*scale)
     return visual_quality.finish(im)
 def verify(plan,tl,out):
