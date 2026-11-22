@@ -181,5 +181,13 @@
     "state": "reserved",
     "mechanism": "recipe_how_a_door_latch_works",
     "visual_family": "recipe_how_a_door_latch_works"
+  },
+  {
+    "topic": "Why does pulling a cord raise a blind?",
+    "topic_key": "blind cord pulling raise",
+    "owner": "44983328804",
+    "state": "reserved",
+    "mechanism": "recipe_how_a_window_blind_works",
+    "visual_family": "recipe_how_a_window_blind_works"
   }
 ]
