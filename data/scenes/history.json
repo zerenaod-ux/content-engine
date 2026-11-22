@@ -30,7 +30,7 @@
   {
     "date": "2026-11-12",
     "topic": "why water towers stand so tall",
-    "title": "Why Water Towers Stand So Tall \ud83d\uddfc",
+    "title": "Why Water Towers Stand So Tall 🗼",
     "subject": "water tower",
     "keywords": [
       "water",
@@ -44,7 +44,7 @@
   {
     "date": "2026-11-12",
     "topic": "how a hydroelectric dam turns falling water into electricity",
-    "title": "How A Dam Turns Water Into Power \u26a1",
+    "title": "How A Dam Turns Water Into Power ⚡",
     "subject": "hydroelectric dam",
     "keywords": [
       "dam",
@@ -58,7 +58,7 @@
   {
     "date": "2026-11-12",
     "topic": "how a well pump brings water up from deep underground",
-    "title": "How a Well Pump Lifts Water \ud83d\udeb0",
+    "title": "How a Well Pump Lifts Water 🚰",
     "subject": "well pump",
     "keywords": [
       "well",
@@ -72,7 +72,7 @@
   {
     "date": "2026-11-12",
     "topic": "how bees turn flowers into honey",
-    "title": "How Bees Turn Flowers Into Honey \ud83c\udf6f",
+    "title": "How Bees Turn Flowers Into Honey 🍯",
     "subject": "bees honey",
     "keywords": [
       "bees",
@@ -86,7 +86,7 @@
   {
     "date": "2026-11-13",
     "topic": "Why do corn kernels explode into fluffy popcorn when heated?",
-    "title": "Why Corn Pops Into Fluffy Snack \ud83c\udf7f",
+    "title": "Why Corn Pops Into Fluffy Snack 🍿",
     "subject": "popcorn",
     "keywords": [
       "kernel",
@@ -100,7 +100,7 @@
   {
     "date": "2026-11-13",
     "topic": "How does a refrigerator cool food using a compressor?",
-    "title": "How a Fridge Freezes Food \u2744\ufe0f",
+    "title": "How a Fridge Freezes Food ❄️",
     "subject": "refrigerator",
     "keywords": [
       "compressor",
@@ -114,7 +114,7 @@
   {
     "date": "2026-11-13",
     "topic": "How does a toaster turn bread into toast?",
-    "title": "Why a Toaster Makes Toast \ud83c\udf5e",
+    "title": "Why a Toaster Makes Toast 🍞",
     "subject": "toaster",
     "keywords": [
       "bread",
@@ -143,7 +143,7 @@
   {
     "date": "2026-11-13",
     "topic": "How does a LED light emit bright colors from a tiny chip?",
-    "title": "How LED chips paint bright colors \ud83c\udf08",
+    "title": "How LED chips paint bright colors 🌈",
     "subject": "LED",
     "keywords": [
       "semiconductor",
@@ -158,7 +158,7 @@
   {
     "date": "2026-11-13",
     "topic": "How does a wind turbine turn wind into electricity?",
-    "title": "How Wind Powers Your Home \u26a1",
+    "title": "How Wind Powers Your Home ⚡",
     "subject": "wind turbine",
     "keywords": [
       "blades",
@@ -171,8 +171,8 @@
   },
   {
     "date": "2026-11-13",
-    "topic": "How Wind Powers Home \u26a1",
-    "title": "How Wind Powers Home \u26a1",
+    "topic": "How Wind Powers Home ⚡",
+    "title": "How Wind Powers Home ⚡",
     "subject": "",
     "keywords": [],
     "category": ""
@@ -180,7 +180,7 @@
   {
     "date": "2026-11-13",
     "topic": "How a CD player reads data using a laser",
-    "title": "How a tiny laser reads music \ud83c\udfb6",
+    "title": "How a tiny laser reads music 🎶",
     "subject": "CD player",
     "keywords": [
       "laser",
@@ -209,7 +209,7 @@
   {
     "date": "2026-11-13",
     "topic": "Why does a rainbow appear when sunlight passes through a raindrop?",
-    "title": "Why Rainbows Shine From Raindrops \ud83c\udf08",
+    "title": "Why Rainbows Shine From Raindrops 🌈",
     "subject": "raindrop",
     "keywords": [
       "refraction",
@@ -239,7 +239,7 @@
   },
   {
     "techniques": [],
-    "failure_cause": "topic: Why does a comet develop a glowing tail when near the Sun?\nplan try 1: 3 problems: cast \"ionTail\" is outside the stage | cast \"dustTail\" is outside the stage | step 7: \"shows\" must be one of the cast ids\nplan try 2: PASSED\nprinciple: A comet\u2019s tail is not smoke; it forms when sunlight heats the icy nucleus, causing gas to sublimate and drag dust, while the Sun\u2019s solar wind ionizes the gas and radiation pressure pushes dust, creating two distinct tails.\ncast: sun (Sun), comet (Comet), nucleus (Nucleus (cut\u2011away)), ice (Ice particles), dust (Dust grains), rays (Sunlight), wind (Solar wind), ionTail (Ion tail), dustTail (Dust tail)\nscene: no free LLM answered (GROQ openai/gpt-oss-20b provider rate-limited; remaining requests preserved ; CEREBRAS_API_KEY model list: HTTP Error 401: Unauthorized ; GEMINI models/gemini-flash-lite-latest provider rate-limited; remaining requests preserved); waiting 10 s (wait 1 of 1)\n",
+    "failure_cause": "topic: Why does a comet develop a glowing tail when near the Sun?\nplan try 1: 3 problems: cast \"ionTail\" is outside the stage | cast \"dustTail\" is outside the stage | step 7: \"shows\" must be one of the cast ids\nplan try 2: PASSED\nprinciple: A comet’s tail is not smoke; it forms when sunlight heats the icy nucleus, causing gas to sublimate and drag dust, while the Sun’s solar wind ionizes the gas and radiation pressure pushes dust, creating two distinct tails.\ncast: sun (Sun), comet (Comet), nucleus (Nucleus (cut‑away)), ice (Ice particles), dust (Dust grains), rays (Sunlight), wind (Solar wind), ionTail (Ion tail), dustTail (Dust tail)\nscene: no free LLM answered (GROQ openai/gpt-oss-20b provider rate-limited; remaining requests preserved ; CEREBRAS_API_KEY model list: HTTP Error 401: Unauthorized ; GEMINI models/gemini-flash-lite-latest provider rate-limited; remaining requests preserved); waiting 10 s (wait 1 of 1)\n",
     "date": "2026-11-14",
     "topic": "Why does a comet develop a glowing tail when near the Sun?",
     "title": "",
@@ -256,7 +256,7 @@
   },
   {
     "techniques": [],
-    "failure_cause": "topic: How does a single snowflake get its intricate shape?\nplan try 1: PASSED\nprinciple: A snowflake forms when water vapor in a cloud deposits onto a tiny ice crystal. The crystal\u2019s hexagonal lattice lets each new molecule attach in a specific orientation. If the surrounding air is supersaturated, growth is fastest at the tips, creating branching. Temperature shifts change the preferred growth direction, adding plates or columns. The final pattern records the exact temperature and humidity the crystal experienced as it fell. Common misconceptions include the idea that each snowflake is a perfect hexagon or that magic shapes them; in reality the shape is a natural result of diffusion\u2011limited aggregation under varying atmospheric conditions.\ncast: cloud (cloud of humid air), snowflake (large snowflake crystal), vapor (water vapor particles), tempGauge (temperature gauge), humGauge (humidity gauge), microscope (microscope close\u2011up view)\nscene: no free LLM answered (GROQ openai/gpt-oss-20b provider rate-limited; remaining requests preserved ; CEREBRAS_API_KEY model list: HTTP Error 401: Unauthorized ; OPENROUTER google/gemma-4-31b-it:free provider rate-limited; remaining requests preserved ; GEMINI models/gemini-flash-lit); waiting 10 s (wait 1 of 1)\n",
+    "failure_cause": "topic: How does a single snowflake get its intricate shape?\nplan try 1: PASSED\nprinciple: A snowflake forms when water vapor in a cloud deposits onto a tiny ice crystal. The crystal’s hexagonal lattice lets each new molecule attach in a specific orientation. If the surrounding air is supersaturated, growth is fastest at the tips, creating branching. Temperature shifts change the preferred growth direction, adding plates or columns. The final pattern records the exact temperature and humidity the crystal experienced as it fell. Common misconceptions include the idea that each snowflake is a perfect hexagon or that magic shapes them; in reality the shape is a natural result of diffusion‑limited aggregation under varying atmospheric conditions.\ncast: cloud (cloud of humid air), snowflake (large snowflake crystal), vapor (water vapor particles), tempGauge (temperature gauge), humGauge (humidity gauge), microscope (microscope close‑up view)\nscene: no free LLM answered (GROQ openai/gpt-oss-20b provider rate-limited; remaining requests preserved ; CEREBRAS_API_KEY model list: HTTP Error 401: Unauthorized ; OPENROUTER google/gemma-4-31b-it:free provider rate-limited; remaining requests preserved ; GEMINI models/gemini-flash-lit); waiting 10 s (wait 1 of 1)\n",
     "date": "2026-11-14",
     "topic": "How does a single snowflake get its intricate shape?",
     "title": "",
@@ -273,9 +273,9 @@
   },
   {
     "techniques": [],
-    "failure_cause": "topic: How does the moon\u2019s pull create ocean tides?\nplan try 1: 2 problems: step 3: say must have 4 to 18 words | step 6: say must have 4 to 18 words\nplan try 2: PASSED\nprinciple: The Moon\u2019s gravity pulls more strongly on the side of Earth that faces it, lifting the ocean there. At the same time Earth\u2019s solid body is pulled toward the Moon, leaving water behind on the opposite side, so two tidal bulges form. As Earth rotates, coastlines move under these bulges, experiencing high and low tides. This model ignores complex factors like coastal shape, ocean depth variations, and solar tides, focusing on the primary lunar effect.\ncast: moon (Moon), earth (Earth cross\u2011section), bulgeN (Near\u2011side tide bulge), bulgeF (Far\u2011side tide bulge), arrow (Gravitational pull arrow), sun (Sun), land (Coastline segment)\nscene try 1: 5 problems: step 1 demonstration: moon.orbit is not a supported numeric animation field; choose a part/field from the catalog (alpha is reveal only) | step 7 demonstration: promised change is constant | part 3 (emoji): \"orbit\" must be {\"cx\",\"cy\",\"rx\",\"ry\",\"period\",\"phase\"} with numbers | part 7 (arrow): \"head\" must be a number | a part has a malformed value (TypeError: unsupported operand type(s) for +: 'float' and 'list'); every number must be a plain number or keyframes [[time, value], ...]\nscene: no free LLM answered (GROQ openai/gpt-oss-20b provider rate-limited; remaining requests preserved ; CEREBRAS_API_KEY model list: HTTP Error 401: Unauthorized ; OPENROUTER google/gemma-4-31b-it:free provider rate-limited; remaining requests preserved ; GITHUB openai/gpt-4.1-nano Exp); waiting 10 s (wait 1 of 1)\n",
+    "failure_cause": "topic: How does the moon’s pull create ocean tides?\nplan try 1: 2 problems: step 3: say must have 4 to 18 words | step 6: say must have 4 to 18 words\nplan try 2: PASSED\nprinciple: The Moon’s gravity pulls more strongly on the side of Earth that faces it, lifting the ocean there. At the same time Earth’s solid body is pulled toward the Moon, leaving water behind on the opposite side, so two tidal bulges form. As Earth rotates, coastlines move under these bulges, experiencing high and low tides. This model ignores complex factors like coastal shape, ocean depth variations, and solar tides, focusing on the primary lunar effect.\ncast: moon (Moon), earth (Earth cross‑section), bulgeN (Near‑side tide bulge), bulgeF (Far‑side tide bulge), arrow (Gravitational pull arrow), sun (Sun), land (Coastline segment)\nscene try 1: 5 problems: step 1 demonstration: moon.orbit is not a supported numeric animation field; choose a part/field from the catalog (alpha is reveal only) | step 7 demonstration: promised change is constant | part 3 (emoji): \"orbit\" must be {\"cx\",\"cy\",\"rx\",\"ry\",\"period\",\"phase\"} with numbers | part 7 (arrow): \"head\" must be a number | a part has a malformed value (TypeError: unsupported operand type(s) for +: 'float' and 'list'); every number must be a plain number or keyframes [[time, value], ...]\nscene: no free LLM answered (GROQ openai/gpt-oss-20b provider rate-limited; remaining requests preserved ; CEREBRAS_API_KEY model list: HTTP Error 401: Unauthorized ; OPENROUTER google/gemma-4-31b-it:free provider rate-limited; remaining requests preserved ; GITHUB openai/gpt-4.1-nano Exp); waiting 10 s (wait 1 of 1)\n",
     "date": "2026-11-14",
-    "topic": "How does the moon\u2019s pull create ocean tides?",
+    "topic": "How does the moon’s pull create ocean tides?",
     "title": "",
     "subject": "tidal bulge",
     "keywords": [
@@ -290,7 +290,7 @@
   },
   {
     "techniques": [],
-    "failure_cause": "topic: How does the heart pump blood throughout the body?\nplan try 1: PASSED\nprinciple: The heart works as a double pump, moving deoxygenated blood to the lungs and oxygen\u2011rich blood to the body through coordinated chamber contractions and valve direction.\ncast: heart (human heart), ra (right atrium), rv (right ventricle), la (left atrium), lv (left ventricle), pa (pulmonary artery), pv (pulmonary vein), lungs (lungs), aorta (aorta), veins (systemic veins), blood (blood particles)\nscene try 1: 10 problems: step 1 demonstration: blood.progress is not a supported numeric animation field; choose a part/field from the catalog (alpha is reveal only) | step 2 demonstration: blood.progress is not a supported numeric animation field; choose a part/field from the catalog (alpha is reveal only) | step 3 demonstration: blood.progress is not a supported numeric animation field; choose a part/field from the catalog (alpha is reveal only) | step 4 demonstration: blood.progress is not a supported numeric animation field; choose a part/field from the catalog (alpha is reveal only) | step 5 demonstration: blood.progress is not a supported numeric animation field; choose a part/field from the catalog (alpha is reveal only) | step 6 demonstration: blood.progress is not a supported numeric animation field; choose a part/field from the catalog (alpha is reveal only) | step 7 demonstration: blood.progress is not a supported numeric animation field; choose a part/field from the catalog (alpha is reveal only) | step 8 demonstration: blood.progress is not a supported numeric animation field; choose a part/field from the catalog (alpha is reveal only)\nscene: no free LLM answered (GROQ openai/gpt-oss-20b provider rate-limited; remaining requests preserved ; OPENROUTER google/gemma-4-31b-it:free provider rate-limited; remaining requests preserved ; GITHUB openai/gpt-4.1-nano Expecting value: line 1 column 1 (char 0) ; GEMINI models/gemin); waiting 10 s (wait 1 of 1)\n",
+    "failure_cause": "topic: How does the heart pump blood throughout the body?\nplan try 1: PASSED\nprinciple: The heart works as a double pump, moving deoxygenated blood to the lungs and oxygen‑rich blood to the body through coordinated chamber contractions and valve direction.\ncast: heart (human heart), ra (right atrium), rv (right ventricle), la (left atrium), lv (left ventricle), pa (pulmonary artery), pv (pulmonary vein), lungs (lungs), aorta (aorta), veins (systemic veins), blood (blood particles)\nscene try 1: 10 problems: step 1 demonstration: blood.progress is not a supported numeric animation field; choose a part/field from the catalog (alpha is reveal only) | step 2 demonstration: blood.progress is not a supported numeric animation field; choose a part/field from the catalog (alpha is reveal only) | step 3 demonstration: blood.progress is not a supported numeric animation field; choose a part/field from the catalog (alpha is reveal only) | step 4 demonstration: blood.progress is not a supported numeric animation field; choose a part/field from the catalog (alpha is reveal only) | step 5 demonstration: blood.progress is not a supported numeric animation field; choose a part/field from the catalog (alpha is reveal only) | step 6 demonstration: blood.progress is not a supported numeric animation field; choose a part/field from the catalog (alpha is reveal only) | step 7 demonstration: blood.progress is not a supported numeric animation field; choose a part/field from the catalog (alpha is reveal only) | step 8 demonstration: blood.progress is not a supported numeric animation field; choose a part/field from the catalog (alpha is reveal only)\nscene: no free LLM answered (GROQ openai/gpt-oss-20b provider rate-limited; remaining requests preserved ; OPENROUTER google/gemma-4-31b-it:free provider rate-limited; remaining requests preserved ; GITHUB openai/gpt-4.1-nano Expecting value: line 1 column 1 (char 0) ; GEMINI models/gemin); waiting 10 s (wait 1 of 1)\n",
     "date": "2026-11-14",
     "topic": "How does the heart pump blood throughout the body?",
     "title": "",
@@ -334,7 +334,7 @@
     "failure_cause": "",
     "date": "2026-11-14",
     "topic": "How does a kinetic energy recovery system capture braking energy?",
-    "title": "How a KERS captures braking energy \ud83d\ude97",
+    "title": "How a KERS captures braking energy 🚗",
     "subject": "KERS",
     "keywords": [
       "flywheel",
@@ -350,7 +350,7 @@
     "failure_cause": "",
     "date": "2026-11-14",
     "topic": "How does a gasoline car engine turn fuel into motion?",
-    "title": "How a gasoline engine creates motion \ud83d\ude97",
+    "title": "How a gasoline engine creates motion 🚗",
     "subject": "car engine",
     "keywords": [
       "fuel",
@@ -366,7 +366,7 @@
     "failure_cause": "",
     "date": "2026-11-14",
     "topic": "How a car engine starts",
-    "title": "How a Car Engine Starts \ud83d\ude97",
+    "title": "How a Car Engine Starts 🚗",
     "subject": "",
     "keywords": [],
     "category": ""
@@ -398,7 +398,7 @@
     "failure_cause": "",
     "date": "2026-11-14",
     "topic": "How a car engine starts",
-    "title": "How a car engine starts \ud83d\ude97",
+    "title": "How a car engine starts 🚗",
     "subject": "",
     "keywords": [],
     "category": ""
@@ -408,7 +408,7 @@
     "failure_cause": "",
     "date": "2026-11-14",
     "topic": "How a car engine starts",
-    "title": "How a Car Engine Starts \ud83d\ude97",
+    "title": "How a Car Engine Starts 🚗",
     "subject": "",
     "keywords": [],
     "category": ""
@@ -418,7 +418,7 @@
     "failure_cause": "",
     "date": "2026-11-14",
     "topic": "How a car engine starts",
-    "title": "How a Car Engine Starts \ud83d\ude97",
+    "title": "How a Car Engine Starts 🚗",
     "subject": "",
     "keywords": [],
     "category": ""
@@ -428,7 +428,7 @@
     "failure_cause": "",
     "date": "2026-11-14",
     "topic": "How a car engine starts",
-    "title": "How a Car Engine Starts \ud83d\ude97",
+    "title": "How a Car Engine Starts 🚗",
     "subject": "",
     "keywords": [],
     "category": ""
@@ -438,7 +438,7 @@
     "failure_cause": "",
     "date": "2026-11-15",
     "topic": "How a car engine starts",
-    "title": "How a Car Engine Starts \ud83d\ude97",
+    "title": "How a Car Engine Starts 🚗",
     "subject": "",
     "keywords": [],
     "category": ""
@@ -448,7 +448,7 @@
     "failure_cause": "",
     "date": "2026-11-15",
     "topic": "How a car engine starts",
-    "title": "How an Engine Starts \ud83d\ude97",
+    "title": "How an Engine Starts 🚗",
     "subject": "",
     "keywords": [],
     "category": ""
@@ -458,7 +458,7 @@
     "failure_cause": "",
     "date": "2026-11-15",
     "topic": "How a car engine starts",
-    "title": "How a Car Engine Starts \ud83d\ude97",
+    "title": "How a Car Engine Starts 🚗",
     "subject": "",
     "keywords": [],
     "category": ""
@@ -468,7 +468,7 @@
     "failure_cause": "",
     "date": "2026-11-15",
     "topic": "How a car engine starts",
-    "title": "How a Car Engine Starts \ud83d\ude97",
+    "title": "How a Car Engine Starts 🚗",
     "subject": "",
     "keywords": [],
     "category": ""
@@ -478,7 +478,7 @@
     "failure_cause": "",
     "date": "2026-11-15",
     "topic": "How a car engine starts",
-    "title": "How a Car Engine Starts \ud83d\ude97",
+    "title": "How a Car Engine Starts 🚗",
     "subject": "",
     "keywords": [],
     "category": ""
@@ -488,7 +488,7 @@
     "failure_cause": "",
     "date": "2026-11-15",
     "topic": "How a car engine starts",
-    "title": "How a Car Engine Starts \ud83d\ude97",
+    "title": "How a Car Engine Starts 🚗",
     "subject": "",
     "keywords": [],
     "category": ""
@@ -498,7 +498,7 @@
     "failure_cause": "",
     "date": "2026-11-15",
     "topic": "How a car engine starts",
-    "title": "How a Car Engine Starts \ud83d\ude97",
+    "title": "How a Car Engine Starts 🚗",
     "subject": "",
     "keywords": [],
     "category": ""
@@ -508,7 +508,7 @@
     "failure_cause": "",
     "date": "2026-11-15",
     "topic": "How a car engine starts",
-    "title": "How a Car Engine Starts \ud83d\udd27",
+    "title": "How a Car Engine Starts 🔧",
     "subject": "",
     "keywords": [],
     "category": ""
@@ -518,7 +518,7 @@
     "failure_cause": "",
     "date": "2026-11-15",
     "topic": "How a car engine starts 2026-11-15T07:41:33",
-    "title": "How a Car Engine Starts \ud83d\ude97",
+    "title": "How a Car Engine Starts 🚗",
     "subject": "",
     "keywords": [],
     "category": ""
@@ -528,7 +528,7 @@
     "failure_cause": "",
     "date": "2026-11-15",
     "topic": "How your heart pumps blood 2026-11-15T13:23:41",
-    "title": "How Your Heart Pumps Blood \u2764\ufe0f",
+    "title": "How Your Heart Pumps Blood ❤️",
     "subject": "",
     "keywords": [],
     "category": ""
@@ -538,7 +538,7 @@
     "failure_cause": "",
     "date": "2026-11-15",
     "topic": "How a volcano erupts 2026-11-15T15:42:49",
-    "title": "How Volcanoes Erupt Without Lava \ud83c\udf0b",
+    "title": "How Volcanoes Erupt Without Lava 🌋",
     "subject": "",
     "keywords": [],
     "category": ""
@@ -548,7 +548,7 @@
     "failure_cause": "",
     "date": "2026-11-15",
     "topic": "How lightning forms in a storm 2026-11-15T16:48:57",
-    "title": "How Lightning Forms in Storm \u26a1",
+    "title": "How Lightning Forms in Storm ⚡",
     "subject": "",
     "keywords": [],
     "category": ""
@@ -558,7 +558,7 @@
     "failure_cause": "",
     "date": "2026-11-15",
     "topic": "How a bee makes honey 2026-11-15T22:33:58",
-    "title": "How Bees Turn Nectar Into Honey \ud83c\udf6f",
+    "title": "How Bees Turn Nectar Into Honey 🍯",
     "subject": "",
     "keywords": [],
     "category": ""
@@ -568,7 +568,7 @@
     "failure_cause": "",
     "date": "2026-11-16",
     "topic": "How a bee makes honey 2026-11-15T23:13:41",
-    "title": "How Bees Turn Nectar Into Honey \ud83c\udf6f",
+    "title": "How Bees Turn Nectar Into Honey 🍯",
     "subject": "",
     "keywords": [],
     "category": ""
@@ -578,7 +578,7 @@
     "failure_cause": "",
     "date": "2026-11-16",
     "topic": "auto 2026-11-16T01:49:27",
-    "title": "How a Car Engine Starts \ud83d\ude97",
+    "title": "How a Car Engine Starts 🚗",
     "subject": "",
     "keywords": [],
     "category": ""
@@ -605,7 +605,7 @@
     "failure_cause": "",
     "date": "2026-11-16",
     "topic": "How a solar panel converts sunlight into electricity",
-    "title": "How Solar Panels Turn Sunlight Into Power \u26a1",
+    "title": "How Solar Panels Turn Sunlight Into Power ⚡",
     "subject": "solar panel",
     "keywords": [
       "photons",
@@ -631,7 +631,7 @@
     "failure_cause": "",
     "date": "2026-11-17",
     "topic": "Why direct-drive wind turbines need no gearbox",
-    "title": "Why Direct\u2011Drive Turbines Skip Gearboxes Efficiently \ud83d\udca8",
+    "title": "Why Direct‑Drive Turbines Skip Gearboxes Efficiently 💨",
     "subject": "",
     "keywords": [],
     "category": ""
@@ -640,7 +640,7 @@
     "techniques": [],
     "failure_cause": "tested component rejected: No audio was received. Please verify that your parameters are correct.\n",
     "date": "2026-11-18",
-    "topic": "Why photovoltaic cells use anti\u2011reflective coatings",
+    "topic": "Why photovoltaic cells use anti‑reflective coatings",
     "title": "",
     "subject": "photovoltaic_cell",
     "keywords": [],
@@ -665,7 +665,7 @@
     "failure_cause": "",
     "date": "2026-11-18",
     "topic": "Why a check valve prevents backflow in a piston pump",
-    "title": "Why a Check Valve Prevents Backflow \ud83d\udca7",
+    "title": "Why a Check Valve Prevents Backflow 💧",
     "subject": "",
     "keywords": [],
     "category": "",
@@ -690,7 +690,7 @@
     "failure_cause": "",
     "date": "2026-11-19",
     "topic": "Why a bascule bridge uses counterweights to balance the moving leaf",
-    "title": "Why a Bascule Bridge Uses Counterweights Effectively \ud83d\udea2",
+    "title": "Why a Bascule Bridge Uses Counterweights Effectively 🚢",
     "subject": "",
     "keywords": [],
     "category": "",
@@ -702,7 +702,7 @@
     "failure_cause": "",
     "date": "2026-11-19",
     "topic": "Why a bascule bridge uses a trunnion pivot for smooth lifting",
-    "title": "Why a Trunnion Pivot Enables Smooth Bridge Lifting \ud83d\udea2",
+    "title": "Why a Trunnion Pivot Enables Smooth Bridge Lifting 🚢",
     "subject": "bascule_bridge",
     "keywords": [],
     "category": "tested mechanism",
@@ -740,7 +740,7 @@
     "failure_cause": "",
     "date": "2026-11-19",
     "topic": "Why the road barriers close before the bridge begins to lift",
-    "title": "Why the bridge barriers close first \ud83d\udea2",
+    "title": "Why the bridge barriers close first 🚢",
     "subject": "",
     "keywords": [],
     "category": "",
@@ -765,7 +765,7 @@
     "failure_cause": "",
     "date": "2026-11-19",
     "topic": "How the iris aperture controls exposure brightness",
-    "title": "How the Iris Aperture Controls Exposure Brightness \u2699\ufe0f",
+    "title": "How the Iris Aperture Controls Exposure Brightness ⚙️",
     "subject": "",
     "keywords": [],
     "category": "",
@@ -817,7 +817,7 @@
     "failure_cause": "",
     "date": "2026-11-19",
     "topic": "How a float valve stops a tank from overfilling",
-    "title": "How a Float Valve Prevents Overfilling \u2699\ufe0f",
+    "title": "How a Float Valve Prevents Overfilling ⚙️",
     "subject": "",
     "keywords": [],
     "category": "",
@@ -828,8 +828,8 @@
     "techniques": [],
     "failure_cause": "",
     "date": "2026-11-19",
-    "topic": "Why a three\u2011wheel combination padlock only releases when all wheels align",
-    "title": "Why a Three\u2011Wheel Padlock Only Releases \u2699\ufe0f",
+    "topic": "Why a three‑wheel combination padlock only releases when all wheels align",
+    "title": "Why a Three‑Wheel Padlock Only Releases ⚙️",
     "subject": "combination_lock",
     "keywords": [],
     "category": "tested mechanism",
@@ -840,96 +840,12 @@
     "techniques": [],
     "failure_cause": "",
     "date": "2026-11-20",
-    "topic": "How a small control voltage can switch a higher\u2011voltage load using an electromagnetic relay",
-    "title": "How a Tiny Voltage Controls Big Power \u2699\ufe0f",
+    "topic": "How a small control voltage can switch a higher‑voltage load using an electromagnetic relay",
+    "title": "How a Tiny Voltage Controls Big Power ⚙️",
     "subject": "electric_relay",
     "keywords": [],
     "category": "tested mechanism",
     "record_run": "44641287581",
     "record_attempt": "1"
-  },
-  {
-    "techniques": [],
-    "failure_cause": "tested component rejected: 'str' object has no attribute 'get'\n",
-    "date": "2026-11-20",
-    "topic": "How sliding a zipper joins fabric edges without manual stitching",
-    "title": "",
-    "subject": "zipper",
-    "keywords": [],
-    "category": "tested mechanism",
-    "failed": true,
-    "record_run": "44781456919",
-    "record_attempt": "1",
-    "owner": "44781456919"
-  },
-  {
-    "techniques": [],
-    "failure_cause": "tested component rejected: director rejected: total narration needs 140-176 words\n",
-    "date": "2026-11-20",
-    "topic": "How a Snap\u2011Thermostat Turns Off a Lamp When It Gets Hot",
-    "title": "",
-    "subject": "snap_thermostat",
-    "keywords": [],
-    "category": "tested mechanism",
-    "failed": true,
-    "record_run": "44785760894",
-    "record_attempt": "1",
-    "owner": "44785760894"
-  },
-  {
-    "techniques": [],
-    "failure_cause": "tested component rejected: GROQ HTTP 400 Failed to validate JSON. Please adjust your prompt. See 'failed_generation' for more details. | GEMINI HTTP 404 | OPENROUTER HTTP 429 Provider returned error\n",
-    "date": "2026-11-21",
-    "topic": "Why squeezing the clothespin handles stores elastic energy in the torsion spring",
-    "title": "",
-    "subject": "clothespin",
-    "keywords": [],
-    "category": "tested mechanism",
-    "failed": true,
-    "record_run": "44863574793",
-    "record_attempt": "1",
-    "owner": "44863574793"
-  },
-  {
-    "techniques": [],
-    "failure_cause": "tested component rejected: director rejected: total narration needs 140-176 words\n",
-    "date": "2026-11-21",
-    "topic": "Why the magazine spring advances the next staple after a press",
-    "title": "",
-    "subject": "stapler",
-    "keywords": [],
-    "category": "tested mechanism",
-    "failed": true,
-    "record_run": "44901257366",
-    "record_attempt": "1",
-    "owner": "44901257366"
-  },
-  {
-    "techniques": [],
-    "failure_cause": "tested component rejected: director rejected: total narration needs 140-176 words\n",
-    "date": "2026-11-21",
-    "topic": "Why entering at a shallow angle enables total internal reflection in a straight optical fiber",
-    "title": "",
-    "subject": "optical_fiber",
-    "keywords": [],
-    "category": "tested mechanism",
-    "failed": true,
-    "record_run": "44926017498",
-    "record_attempt": "1",
-    "owner": "44926017498"
-  },
-  {
-    "techniques": [],
-    "failure_cause": "tested component rejected: director rejected: total narration needs 140-176 words\n",
-    "date": "2026-11-22",
-    "topic": "How a pendulum clock keeps time",
-    "title": "",
-    "subject": "",
-    "keywords": [],
-    "category": "",
-    "failed": true,
-    "record_run": "44975899586",
-    "record_attempt": "1",
-    "owner": "44975899586"
   }
 ]

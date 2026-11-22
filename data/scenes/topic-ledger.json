@@ -37,7 +37,7 @@
     "mechanism": "thermal_contact"
   },
   {
-    "topic": "Why does the follower height vary sinusoidally in a fixed\u2011eccentricity circular cam?",
+    "topic": "Why does the follower height vary sinusoidally in a fixed‑eccentricity circular cam?",
     "topic_key": "cam circular eccentricity fixed follower height sinusoidally vary",
     "owner": "44224913213",
     "mechanism": "cam_follower",
@@ -69,7 +69,7 @@
     "state": "reserved"
   },
   {
-    "topic": "Why photovoltaic cells use anti\u2011reflective coatings",
+    "topic": "Why photovoltaic cells use anti‑reflective coatings",
     "topic_key": "anti cells coatings photovoltaic reflective use",
     "owner": "44266714493",
     "state": "reserved"
@@ -121,7 +121,7 @@
     "visual_family": "tank_float_control"
   },
   {
-    "topic": "Why a three\u2011wheel combination padlock only releases when all wheels align",
+    "topic": "Why a three‑wheel combination padlock only releases when all wheels align",
     "topic_key": "align all combination only padlock releases three wheel wheels",
     "owner": "44626696622",
     "state": "reserved",
@@ -129,57 +129,11 @@
     "visual_family": "gated_padlock"
   },
   {
-    "topic": "How a small control voltage can switch a higher\u2011voltage load using an electromagnetic relay",
+    "topic": "How a small control voltage can switch a higher‑voltage load using an electromagnetic relay",
     "topic_key": "control electromagnetic higher load relay small switch using voltage",
     "owner": "44641287581",
     "state": "reserved",
     "mechanism": "electric_relay",
     "visual_family": "electromagnetic_relay"
-  },
-  {
-    "topic": "How sliding a zipper joins fabric edges without manual stitching",
-    "topic_key": "edges fabric joins manual sliding stitching without zipper",
-    "owner": "44781456919",
-    "state": "reserved",
-    "mechanism": "zipper",
-    "visual_family": "interlocking_zipper"
-  },
-  {
-    "topic": "How a Snap\u2011Thermostat Turns Off a Lamp When It Gets Hot",
-    "topic_key": "gets hot lamp off snap thermostat turn",
-    "owner": "44785760894",
-    "state": "reserved",
-    "mechanism": "snap_thermostat",
-    "visual_family": "snap_disc_switch"
-  },
-  {
-    "topic": "Why squeezing the clothespin handles stores elastic energy in the torsion spring",
-    "topic_key": "clothespin elastic energy handles spring squeezing stores torsion",
-    "owner": "44863574793",
-    "state": "reserved",
-    "mechanism": "clothespin",
-    "visual_family": "torsion_peg"
-  },
-  {
-    "topic": "Why the magazine spring advances the next staple after a press",
-    "topic_key": "advances after magazine next press spring staple",
-    "owner": "44901257366",
-    "state": "reserved",
-    "mechanism": "stapler",
-    "visual_family": "staple_clinching"
-  },
-  {
-    "topic": "Why entering at a shallow angle enables total internal reflection in a straight optical fiber",
-    "topic_key": "angle enables entering fiber internal optical reflection shallow straight total",
-    "owner": "44926017498",
-    "state": "reserved",
-    "mechanism": "optical_fiber",
-    "visual_family": "step_index_guidance"
-  },
-  {
-    "topic": "How a pendulum clock keeps time",
-    "topic_key": "clock keeps pendulum time",
-    "owner": "44975899586",
-    "state": "reserved"
   }
 ]
