@@ -40,9 +40,9 @@
       "run_id": "44976687963",
       "attempt": 1,
       "kind": "daily-short",
-      "stage": "voice",
-      "label": "Generating narration",
-      "updated_at": "2026-11-22T02:34:54.752972+00:00",
+      "stage": "render",
+      "label": "Rendering animation",
+      "updated_at": "2026-11-22T02:37:05.611641+00:00",
       "source_branch": "main",
       "owner_approved": false,
       "state": "running"
