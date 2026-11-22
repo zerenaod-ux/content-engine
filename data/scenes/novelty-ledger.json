@@ -726,5 +726,13 @@
     "encoded_run": "44980899837",
     "policy": "original-idea-and-visuals-v1",
     "media_sha256": "440b3f8f14b47d88b66a6b2c6a2f05ad2da3129bef95bcd42e8ac47e76dd1bca"
+  },
+  {
+    "topic": "Why does pulling a cord raise a blind?",
+    "visual_family": "recipe_how_a_window_blind_works",
+    "owner": "44983328804",
+    "state": "reserved",
+    "policy": "original-idea-and-visuals-v1",
+    "mechanism": "recipe_how_a_window_blind_works"
   }
 ]
