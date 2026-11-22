@@ -9,10 +9,10 @@
   "due_slots": 3,
   "ready_today": 0,
   "daily_target": 3,
-  "unused_visuals": 0,
+  "unused_visuals": 5,
   "should_build": false,
-  "reason": "No unused supported visuals remain",
+  "reason": "The system is retaining an unfinished temporary-failure recovery",
   "dispatches": 1,
   "requested_at": 1795262028.2046368,
-  "checked_at": "2026-11-22T02:28:25.069229+00:00"
+  "checked_at": "2026-11-22T02:33:40.989147+00:00"
 }
