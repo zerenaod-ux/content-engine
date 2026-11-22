@@ -682,5 +682,15 @@
     "state": "reserved",
     "policy": "original-idea-and-visuals-v1",
     "mechanism": "recipe_how_a_drawer_slides_out"
+  },
+  {
+    "topic": "How does a simple desk organizer drawer slide out?",
+    "mechanism": "recipe_how_a_drawer_slides_out",
+    "visual_family": "recipe_how_a_drawer_slides_out",
+    "state": "created",
+    "owner": "44979671861",
+    "encoded_run": "44979671861",
+    "policy": "original-idea-and-visuals-v1",
+    "media_sha256": "dc9d6f4ce1488c6fb335e2a89bc0bd6a8ecaa4514a58729b9fb2c53ab1011932"
   }
 ]
