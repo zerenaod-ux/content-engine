@@ -10,9 +10,9 @@
   "ready_today": 0,
   "daily_target": 3,
   "unused_visuals": 4,
-  "should_build": true,
-  "reason": "A due generation slot needs a fresh video",
+  "should_build": false,
+  "reason": "A generation run is already active",
   "dispatches": 1,
   "requested_at": 1795348688.5102503,
-  "checked_at": "2026-11-22T11:58:08.510229+00:00"
+  "checked_at": "2026-11-22T14:08:37.151145+00:00"
 }
