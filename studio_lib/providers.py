@@ -79,13 +79,14 @@ def _call_once(system,prompt,max_tokens=10000,temperature=.5,reasoning_effort="l
                     if message:last+=' '+message[:350]
                 except (ValueError,AttributeError):pass
                 failures.append(last);print('studio provider refusal:',last,flush=True)
-                if e.code==404 and model:
+                if e.code in (402,403,404) and model:
                     _UNAVAILABLE.add((base,model));continue
                 if e.code==400 and json_mode and any(s in last.lower() for s in ('response_format','json_object','validate json','failed to generate json','json mode')):
                     json_mode=False;max_tokens=max(1200,max_tokens);continue
                 if e.code==429 and rate_retries==0:rate_retries+=1;continue
                 break
-            except Exception as e:last=type(e).__name__+': '+str(e)[:180];break
+            except Exception as e:
+                last=type(e).__name__+': '+str(e)[:180];failures.append(env.split('_')[0]+' '+last);print('studio provider error:',env.split('_')[0],last,flush=True);break
     raise ServiceUnavailable(' | '.join(failures[-3:]) if failures else last)
 
 
