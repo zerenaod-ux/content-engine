@@ -7,7 +7,7 @@ def classify_failure(text,attempt):
  lower=text.lower()
  if any(x in lower for x in ('no-repeat policy','no unused supported visual','visual setup already used','completed-video regeneration','completed-video replacement','no uncovered full-format','no uncovered supported component','unregistered visual family')):
   return {'retryable':False,'next_retry_at':None,'reason':'No-repeat hold: a genuinely new idea and unused visual setup are required','state':'held_for_novelty'}
- transient=any(x in lower for x in ('noaudioreceived','serviceunavailable','servicebusy','cooldown active','timed out','timeout','http error 429','http 429','http error 503','connection reset'))
+ transient=any(x in lower for x in ('noaudioreceived','serviceunavailable','servicebusy','cooldown active','timed out','timeout','http error 429','http 429','http error 503','connection reset','free request/time budget exhausted'))
  permanent=any(x in lower for x in ('http 413','request too large','unsupported','script failed bounded validation','outside required duration','essential parts leave the frame'))
  retry=transient and not permanent and attempt<4
  return {'retryable':retry,'next_retry_at':time.time()+(2700 if '429' in lower else 900) if retry else None,'reason':'Temporary service or capacity failure' if transient and not permanent else 'Needs a code, content or configuration correction','state':'waiting_to_resume' if retry else 'needs_attention'}
