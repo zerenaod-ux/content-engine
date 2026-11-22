@@ -6,12 +6,18 @@ from studio_lib.service_queue import lease,cooling_down,remember_cooldown
 _UNAVAILABLE=set()
 class ServiceUnavailable(ValueError):
     """No usable free service answered; retain valid work for a later run."""
+KEYLESS=[('KEYLESS_LLM7','https://api.llm7.io/v1',('gpt-oss','llama-3.3','qwen','deepseek','llama','mistral')),
+         ('KEYLESS_OVH','https://oai.endpoints.kepler.ai.cloud.ovh.net/v1',('gpt-oss-120b','llama-3_3','qwen','llama','mistral'))]
+KEYLESS_KEYS={'KEYLESS_LLM7':'unused','KEYLESS_OVH':''}
+
 def _call_once(system,prompt,max_tokens=10000,temperature=.5,reasoning_effort="low"):
     # GitHub Models produced empty responses in the first proof run; do not
     # burn repeated fallback attempts on it. Other channels' router is untouched.
     providers=[p for p in llm.PROVIDERS if p[0]!='GITHUB_MODELS_TOKEN' and os.environ.get(p[0])]
     if os.environ.get('GEMINI_API_KEY'):
         providers.insert(min(1,len(providers)),('GEMINI_API_KEY','https://generativelanguage.googleapis.com/v1beta/openai',('flash',)))
+    # Keyless free services (no account, limits per IP) are tried last, so a throttled key never stops a run.
+    for env,base,prefs in KEYLESS:providers.append((env,base,prefs))
     last='no configured free provider'
     failures=[]
     for env,base,prefs in providers:
@@ -19,7 +25,7 @@ def _call_once(system,prompt,max_tokens=10000,temperature=.5,reasoning_effort="l
         host=urllib.parse.urlparse(base).hostname
         if cooling_down(host):
             failures.append('Shared provider cooldown active');continue
-        key=os.environ[env].strip()
+        key=os.environ[env].strip() if os.environ.get(env) else KEYLESS_KEYS.get(env,'')
         rate_retries=0;json_mode=True;model=None
         for turn in range(4):
             path=Path(os.environ.get('CE_METRICS_PATH','metrics.json'))

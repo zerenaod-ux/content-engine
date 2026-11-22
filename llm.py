@@ -48,7 +48,7 @@ def _req(url, key, body=None):
     path.write_text(json.dumps(metrics, indent=1))
     started = time.monotonic()
     try:
-        r = urllib.request.Request(url, json.dumps(body).encode() if body is not None else None, {'Authorization': 'Bearer ' + key, 'Content-Type': 'application/json', 'User-Agent': 'studio/1.0'})
+        r = urllib.request.Request(url, json.dumps(body).encode() if body is not None else None, dict({'Authorization': 'Bearer ' + key} if key else {}, **{'Content-Type': 'application/json', 'User-Agent': 'studio/1.0'}))
         with urllib.request.urlopen(r, timeout=max(1, min(90, float(os.environ.get('CE_MAX_SECONDS', '480')) - (time.time() - metrics['started_at'])))) as x:
             result = json.load(x)
         metrics['responses'] += 1
