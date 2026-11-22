@@ -967,5 +967,19 @@
     "record_run": "44983764341",
     "record_attempt": "2",
     "owner": "44983764341"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "tested component rejected: director rejected: beat 4: name the actual visible part for this action, not a generic description\n",
+    "date": "2026-11-22",
+    "topic": "Why does a clothesline raise the bucket?",
+    "title": "",
+    "subject": "recipe_how_a_clothesline_works",
+    "keywords": [],
+    "category": "kit recipe",
+    "failed": true,
+    "record_run": "44990205920",
+    "record_attempt": "4",
+    "owner": "44990205920"
   }
 ]
