@@ -1,3 +1,4 @@
+import time
 """Ask the free LLM for a new everyday object and a recipe of kit parts; keep only what the validator accepts."""
 import json
 from studio_lib.kit import recipe as R,register as G,samples
@@ -27,7 +28,12 @@ def make(prior,rows,call,reason,attempts=5):
  """call(system,prompt,**kw)->dict; reason(topic,key,rows)->str ('' if new). Returns (topic,recipe,key)."""
  errors=[];last=None
  for n in range(attempts):
-  answer=call('You design simplified mechanical teaching models from a fixed parts kit. Return JSON only.',prompt(prior,errors),max_tokens=2300,temperature=.7)
+  for wait in range(4):   # free writers rate-limit by the minute: wait and ask again instead of failing the run
+   try:
+    answer=call('You design simplified mechanical teaching models from a fixed parts kit. Return JSON only.',prompt(prior,errors),max_tokens=2300,temperature=.7);break
+   except Exception as e:
+    if type(e).__name__!='ServiceUnavailable' or wait==3:raise
+    time.sleep(30)
   try:
    if not isinstance(answer,dict) or not isinstance(answer.get('recipe'),dict) or not isinstance(answer.get('topic'),str):raise R.RecipeError('return {"topic":..,"recipe":{..}}')
    if not 4<=len(answer['topic'].split())<=18:raise R.RecipeError('topic needs 4-18 words')
