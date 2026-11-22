@@ -672,5 +672,137 @@
     },
     "record_run": "44980899837",
     "record_attempt": "1"
+  },
+  {
+    "date": "2026-11-22",
+    "tag": "ce-20261122-2057",
+    "title": "How a Simple Soap Dispenser Works \u2699\ufe0f",
+    "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@53499d49ccfad83be6fcd291a3cf35a59175243b/videos/ce-20261122-2057.mp4",
+    "topic": "How does a manual soap dispenser pump?",
+    "topic_key": "dispenser manual pump soap",
+    "generation_origin": {
+      "event": "workflow_dispatch",
+      "automatic_slot": false,
+      "run_id": "45068361995",
+      "attempt": 1,
+      "event_sha": "4885da97bb0bf2025336a3a758cb28837b9b1504",
+      "source_ref": "main",
+      "manual_media_edits": false
+    },
+    "production_evidence": {
+      "policy": "unattended-proof-v1",
+      "novelty_policy": "original-idea-and-visuals-v1",
+      "width": 1080,
+      "height": 1920,
+      "duration": 51.866667,
+      "media_sha256": "0399bcbe7f980657b15b0e61f2b1f8dca8e47b1f228a5ff23b9bd1b863a54005",
+      "alignment_revision": "causal-component-actions-v4",
+      "render_policy": "native-studio-1080-v1",
+      "voice": "af_heart",
+      "voice_policy": "how-it-ticks-narrator-v4-heart-clean",
+      "errors": [],
+      "owner_approved": false
+    },
+    "recipe": {
+      "object": "soap dispenser",
+      "title": "How a soap dispenser works",
+      "theme": "warm",
+      "parts": [
+        {
+          "id": "frame",
+          "kind": "frame",
+          "x": 0,
+          "z": 0,
+          "w": 5,
+          "h": 4.0
+        },
+        {
+          "id": "cam",
+          "kind": "cam",
+          "center": [
+            0,
+            1.3
+          ],
+          "r": 0.9,
+          "e": 0.35
+        },
+        {
+          "id": "plunger",
+          "kind": "slider",
+          "origin": [
+            0,
+            2.15
+          ],
+          "size": [
+            0.9,
+            0.6
+          ],
+          "axis": "z",
+          "travel": 0.7
+        },
+        {
+          "id": "spring",
+          "kind": "spring",
+          "a": [
+            0,
+            3.8
+          ],
+          "b": {
+            "part": "plunger"
+          }
+        }
+      ],
+      "labels": {
+        "cam": "Cam",
+        "plunger": "Plunger",
+        "spring": "Return spring"
+      },
+      "links": [
+        {
+          "type": "cam",
+          "cam": "cam",
+          "follower": "plunger"
+        }
+      ],
+      "drive": [
+        {
+          "beat": 1,
+          "part": "cam",
+          "to": 3.0
+        },
+        {
+          "beat": 2,
+          "part": "cam",
+          "to": 6.3
+        },
+        {
+          "beat": 3,
+          "part": "cam",
+          "to": 9.4
+        },
+        {
+          "beat": 4,
+          "part": "cam",
+          "to": 12.6
+        },
+        {
+          "beat": 5,
+          "part": "cam",
+          "to": 15.7
+        }
+      ],
+      "facts": {
+        "intro": "A user squeezes the handle, turning the cam attached to it.",
+        "reveal": "The cam\u2019s eccentric shape pushes the plunger upward as it rotates.",
+        "step1": "When the plunger rises, it opens a small valve at the bottom of the bottle.",
+        "step2": "Soap is drawn up through the valve into the plunger chamber.",
+        "step3": "Continued rotation lifts the plunger further, compressing the spring.",
+        "step4": "At the peak of the lift, the valve closes and the spring forces the plunger down.",
+        "hold": "The downward stroke forces the soap out through the nozzle.",
+        "payoff": "Releasing the handle lets the cam reset, and the spring returns the plunger ready for the next squeeze."
+      }
+    },
+    "record_run": "45068361995",
+    "record_attempt": "1"
   }
 ]
