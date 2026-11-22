@@ -1,0 +1,105 @@
+{
+  "object": "door latch",
+  "title": "How a door latch works",
+  "theme": "warm",
+  "parts": [
+    {
+      "id": "frame",
+      "kind": "frame",
+      "x": 0,
+      "z": 0,
+      "w": 7,
+      "h": 3.6
+    },
+    {
+      "id": "lever",
+      "kind": "lever",
+      "pivot": [
+        -2.2,
+        1.5
+      ],
+      "length": 2.0,
+      "angle0": 0
+    },
+    {
+      "id": "bolt",
+      "kind": "slider",
+      "origin": [
+        1.0,
+        1.5
+      ],
+      "size": [
+        2.2,
+        0.6
+      ],
+      "axis": "x",
+      "travel": 1.2
+    },
+    {
+      "id": "spring",
+      "kind": "spring",
+      "a": [
+        3.3,
+        1.5
+      ],
+      "b": {
+        "part": "bolt"
+      }
+    },
+    {
+      "id": "pin",
+      "kind": "pin",
+      "center": [
+        -2.2,
+        1.5
+      ],
+      "r": 0.2
+    }
+  ],
+  "labels": {
+    "lever": "Handle",
+    "bolt": "Latch bolt",
+    "spring": "Spring"
+  },
+  "links": [
+    {
+      "type": "couple",
+      "driver": "lever",
+      "driven": "bolt",
+      "ratio": -1.0,
+      "offset": 0
+    }
+  ],
+  "drive": [
+    {
+      "beat": 1,
+      "part": "lever",
+      "to": -0.8
+    },
+    {
+      "beat": 2,
+      "part": "lever",
+      "to": -0.8
+    },
+    {
+      "beat": 3,
+      "part": "lever",
+      "to": 0
+    },
+    {
+      "beat": 4,
+      "part": "lever",
+      "to": 0
+    }
+  ],
+  "facts": {
+    "intro": "A door latch uses a simple lever\u2011and\u2011slider mechanism to lock and unlock a door without any electricity or fluid.",
+    "reveal": "The lever (handle) pivots around a pin, while the slider (bolt) slides horizontally to engage the door frame.",
+    "step1": "At beat\u202f1 the handle is pulled down, rotating the lever clockwise about its pin.",
+    "step2": "The lever\u2019s rotation is coupled to the bolt with a 1:\u20111 ratio, pulling the bolt outward.",
+    "step3": "The spring attached to the bolt stores energy, keeping the bolt extended when the handle is released.",
+    "step4": "At beat\u202f3 the handle returns to neutral, allowing the spring to pull the bolt back into the locked position.",
+    "hold": "The bolt stays engaged by the spring\u2019s force until the handle is pulled again.",
+    "payoff": "This demonstrates how a mechanical latch can securely hold a door closed using only levers, sliders, and springs."
+  }
+}
