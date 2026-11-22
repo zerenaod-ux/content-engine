@@ -917,5 +917,19 @@
     "record_run": "44926017498",
     "record_attempt": "1",
     "owner": "44926017498"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "tested component rejected: director rejected: total narration needs 140-176 words\n",
+    "date": "2026-11-22",
+    "topic": "How a pendulum clock keeps time",
+    "title": "",
+    "subject": "",
+    "keywords": [],
+    "category": "",
+    "failed": true,
+    "record_run": "44975899586",
+    "record_attempt": "1",
+    "owner": "44975899586"
   }
 ]
