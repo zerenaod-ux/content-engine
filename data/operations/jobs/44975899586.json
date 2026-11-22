@@ -1,0 +1,11 @@
+{
+  "run_id": "44975899586",
+  "attempt": 1,
+  "kind": "daily-short",
+  "stage": "selection",
+  "label": "Selecting a new topic",
+  "updated_at": "2026-11-22T02:24:33.148407+00:00",
+  "source_branch": "main",
+  "owner_approved": false,
+  "state": "running"
+}
