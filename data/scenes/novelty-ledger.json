@@ -734,5 +734,13 @@
     "state": "reserved",
     "policy": "original-idea-and-visuals-v1",
     "mechanism": "recipe_how_a_window_blind_works"
+  },
+  {
+    "topic": "How does a manual coffee grinder turn beans?",
+    "visual_family": "recipe_how_a_coffee_grinder_works",
+    "owner": "44983764341",
+    "state": "reserved",
+    "policy": "original-idea-and-visuals-v1",
+    "mechanism": "recipe_how_a_coffee_grinder_works"
   }
 ]
