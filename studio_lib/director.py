@@ -269,6 +269,16 @@ def component_picture(t,tl,plan,hidden=()):
     if mechanism=='stapler' and 1<=beat<=6:label='Paper section · input force illustrated'
     if mechanism=='optical_fiber' and 1<=beat<=6:label='Enlarged ray model · slowed illustration'
     if label:d.text((42*scale,1120*scale),label,font=visual_quality.font(FONT),fill=(225,231,230) if dark else (31,77,89))
+    if hasattr(module,'callouts'):
+        f=visual_quality.font(FONT);placed=[]
+        for text,(px,py) in module.callouts(s,t,tl):
+            tb=d.textbbox((0,0),text,font=f);w=(tb[2]-tb[0])/scale+26;h=(tb[3]-tb[1])/scale+16
+            x=min(max(px-w/2,20),700-w);y=min(max(py-62,300),1130)
+            while any(abs(x-a)<w and abs(y-b)<h+6 for a,b in placed):y-=h+10
+            placed.append((x,y))
+            d.line((px*scale,py*scale,(x+w/2)*scale,(y+h)*scale),fill=(255,255,255) if dark else (31,77,89),width=2*scale)
+            d.rounded_rectangle((x*scale,y*scale,(x+w)*scale,(y+h)*scale),radius=12*scale,fill=(250,244,226) if not dark else (36,48,66),outline=(31,77,89) if not dark else (140,190,220),width=2*scale)
+            d.text(((x+13)*scale,(y+7)*scale),text,font=f,fill=(31,57,66) if not dark else (232,240,246))
     d.line((42*scale,1195*scale,678*scale,1195*scale),fill=(170,200,200),width=3*scale);d.line((42*scale,1195*scale,(42+636*t/tl['duration'])*scale,1195*scale),fill=(221,102,57),width=3*scale)
     return visual_quality.finish(im)
 def verify(plan,tl,out):
@@ -308,6 +318,9 @@ def verify_overview(plan,tl,out):
 def verify_component(plan,tl,out):
     errors=verify_overview(plan,tl,out) if tl.get('motion_policy') else []
     mechanism=plan['mechanism'];measure=[]
+    if mechanism.startswith('recipe_'):
+        from studio_lib.kit.recipe import framing_errors
+        errors+=framing_errors(COMPONENTS[mechanism],tl)
     if mechanism in action_contracts.CONTRACTS:
         errors+=action_contracts.verify_motion(mechanism,COMPONENTS[mechanism],tl,out,plan=plan)
         evidence=action_contracts.CONTRACTS[mechanism]['visible']

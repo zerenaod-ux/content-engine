@@ -9,11 +9,13 @@ SPEC="""KIT PARTS (x right, z up; frame bottom-left is [x-w/2, z]; every part mu
 - slider: {"id":"..","kind":"slider","origin":[x,z],"size":[length,height],"axis":"x"|"z","travel":0.4-2.5}  moves 0..travel along axis (pos is 0..travel; a coupled slider must use a POSITIVE ratio or offset so pos stays >=0)
 - spring: {"id":"..","kind":"spring","a":[x,z],"b":{"part":"sliderId"}}  coil from a fixed point to a slider end
 - pin: {"id":"..","kind":"pin","center":[x,z],"r":0.2}
-LINKS: {"type":"mesh","a":"gearId","b":"gearId"} (gears must touch: centre distance = r1+r2 within 0.1; b turns opposite) and {"type":"couple","driver":"id","driven":"id","ratio":number,"offset":number} (driven value = offset + ratio*driver value; lever angle or gear angle or slider pos).
+- cam: {"id":"..","kind":"cam","center":[x,z],"r":0.6-1.2,"e":0.2-0.5}  eccentric disc (angle param)
+- pulley: {"id":"..","kind":"pulley","center":[x,z],"r":0.5-1.0}  wheel (angle param)
+LINKS: {"type":"yoke","lever":"leverId","slider":"sliderId","sign":1 or -1} (lever tip rides in a slot of the slider so the slider follows the tip's x (axis x) or z (axis z); the slider must be tall/wide enough that the tip stays inside the slot; use slider "dir":-1 with sign -1 for a slider that retracts when the tip moves toward the pivot), {"type":"cam","cam":"camId","follower":"sliderId"} (follower is a z-axis slider directly above the cam, its bottom at z = cam z + r - e, travel >= 2e; it rises and falls as the cam turns), {"type":"rope","pulley":"pulleyId","slider":"sliderId","ratio":1} (slider hangs at x = pulley x + r, z-axis with "dir":-1, descends as the pulley turns), "type":"mesh","a":"gearId","b":"gearId"} (gears must touch: centre distance = r1+r2 within 0.1; b turns opposite) and {"type":"couple","driver":"id","driven":"id","ratio":number,"offset":number} (driven value = offset + ratio*driver value; lever angle or gear angle or slider pos).
 DRIVE keyframes (only for parts that are not link-driven): {"beat":0-7,"part":"id","to":value}; the value eases from its previous value during that beat and then holds. Motion must happen in at least 3 of beats 1-6; beats 0 and 7 are usually still.
 FACTS: exactly these 8 keys, each one plain sentence of 25-300 characters describing only what is visible at that beat: intro, reveal, step1, step2, step3, step4, hold, payoff.
 LABELS: 3-8 entries {"partId":"Short label"} on existing parts (labels name parts in the narration)."""
-EXAMPLE=json.dumps({k:v for k,v in samples.DOOR_LATCH.items()})
+EXAMPLE=json.dumps({k:v for k,v in samples.CAM_PRESS.items()})
 
 def prompt(prior,errors):
  return ('Invent ONE new everyday household or workplace object (not a machine from the list of used ones) whose working idea can be shown truthfully with ONLY the kit parts below as a simplified teaching model. '
