@@ -229,13 +229,5 @@
     "state": "reserved",
     "mechanism": "snap_thermostat",
     "visual_family": "snap_disc_switch"
-  },
-  {
-    "topic": "How squeezing the handles stores energy in the clothespin spring",
-    "topic_key": "clothespin energy handles spring squeezing stores",
-    "owner": "45056546389",
-    "state": "reserved",
-    "mechanism": "clothespin",
-    "visual_family": "torsion_peg"
   }
 ]
