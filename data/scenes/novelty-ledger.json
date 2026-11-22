@@ -700,5 +700,13 @@
     "state": "reserved",
     "policy": "original-idea-and-visuals-v1",
     "mechanism": "recipe_how_a_paper_shredder_works"
+  },
+  {
+    "topic": "How does a paper cutter slice safely?",
+    "visual_family": "recipe_how_a_paper_cutter_works",
+    "owner": "44980634726",
+    "state": "reserved",
+    "policy": "original-idea-and-visuals-v1",
+    "mechanism": "recipe_how_a_paper_cutter_works"
   }
 ]
