@@ -81,7 +81,7 @@ def _call_once(system,prompt,max_tokens=10000,temperature=.5,reasoning_effort="l
                 failures.append(last);print('studio provider refusal:',last,flush=True)
                 if e.code==404 and model:
                     _UNAVAILABLE.add((base,model));continue
-                if e.code==400 and json_mode and any(s in last.lower() for s in ('response_format','json_object','validate json','failed to generate json')):
+                if e.code==400 and json_mode and any(s in last.lower() for s in ('response_format','json_object','validate json','failed to generate json','json mode')):
                     json_mode=False;max_tokens=max(1200,max_tokens);continue
                 if e.code==429 and rate_retries==0:rate_retries+=1;continue
                 break
