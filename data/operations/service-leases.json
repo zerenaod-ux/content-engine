@@ -9,6 +9,7 @@
   "cooldowns": {
     "api.groq.com": 1795325983.52452,
     "openrouter.ai": 1795326335.2113907,
-    "generativelanguage.googleapis.com": 1795324934.8439932
+    "generativelanguage.googleapis.com": 1795324934.8439932,
+    "oai.endpoints.kepler.ai.cloud.ovh.net": 1798761600.6055927
   }
 }
