@@ -237,13 +237,5 @@
     "state": "reserved",
     "mechanism": "recipe_how_a_soap_dispenser_works",
     "visual_family": "recipe_how_a_soap_dispenser_works"
-  },
-  {
-    "topic": "How the Stapler\u2019s Magazine Spring Ensures Continuous Stapling",
-    "topic_key": "continuous ensures magazine s spring stapler stapling",
-    "owner": "45077483877",
-    "state": "reserved",
-    "mechanism": "stapler",
-    "visual_family": "staple_clinching"
   }
 ]
