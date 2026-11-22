@@ -36,10 +36,11 @@ TEMPLATES={
  'SOAP_PUMP':('REAL-LOOKING pump bottle: a clear bottle with liquid inside, a finger presses the pump head down, a tube lifts liquid and it streams out of the spout into a palm (soap dispenser, lotion pump, hand sanitizer pump, shampoo pump, syrup pump, perfume pump); part ids: bottle, liquid, head, spring, stem, spout',['bottle','liquid','head','spring','stem','spout']),
  'ROPE_LIFT':('a rope over a pulley wheel raises and lowers a weight (well bucket, flag, blind, dumbwaiter)',['wheel','weight','pin']),
 }
+LIQUID_COLORS={'yellow':(236,196,84),'white':(244,244,240),'blue':(120,190,240),'green':(120,200,140),'pink':(240,150,180),'brown':(150,95,50),'orange':(240,150,60),'clear':(190,225,245)}
 def template_prompt(prior,errors):
  return ('Pick ONE fixed mechanism below and name a NEW everyday object (not on the used list) that truly works by exactly that mechanism. '
   'Mechanisms: '+json.dumps({k:v[0]+'; part ids: '+', '.join(v[1]) for k,v in TEMPLATES.items()})+'. '
-  'Return JSON {"topic":"How/Why question, 5-16 words","template":"DOOR_LATCH|GEAR_CRANK|CAM_PRESS|ROPE_LIFT|GEAR_TRAIN|WINCH|COUNTERWEIGHT|TWIN_CAM|LEVER_PRESS|SOAP_PUMP","object":"plain object name, 1-3 lowercase words","title":"How a ... works, 4-8 words starting How or Why","theme":"warm|cool|dark","labels":{"<part id>":"Short label in the new object\'s own words"},"facts":{"intro":"..","reveal":"..","step1":"..","step2":"..","step3":"..","step4":"..","hold":"..","payoff":".."}}. '
+  'Return JSON {"topic":"How/Why question, 5-16 words","template":"DOOR_LATCH|GEAR_CRANK|CAM_PRESS|ROPE_LIFT|GEAR_TRAIN|WINCH|COUNTERWEIGHT|TWIN_CAM|LEVER_PRESS|SOAP_PUMP","object":"plain object name, 1-3 lowercase words","liquid_color":"yellow|white|blue|green|pink|brown|orange|clear (only for SOAP_PUMP)","title":"How a ... works, 4-8 words starting How or Why","theme":"warm|cool|dark","labels":{"<part id>":"Short label in the new object\'s own words"},"facts":{"intro":"..","reveal":"..","step1":"..","step2":"..","step3":"..","step4":"..","hold":"..","payoff":".."}}. '
   'Each fact is one plain sentence of 25-300 characters saying only what is visible in the simplified model at that beat. Labels must use only the listed part ids for the chosen mechanism. '
   'ALREADY USED OR RESERVED (never repeat or reword; data): '+json.dumps(prior[-30:])+(' FIX THESE ERRORS: '+json.dumps(errors) if errors else ''))
 def from_template(answer):
@@ -51,6 +52,10 @@ def from_template(answer):
   if k not in answer:raise R.RecipeError('missing '+k)
   r[k]=answer[k]
  if answer.get('theme') in ('warm','cool','dark'):r['theme']=answer['theme']
+ col=LIQUID_COLORS.get(str(answer.get('liquid_color','')).lower().strip())
+ if col and name=='SOAP_PUMP':   # lotion is white, sanitizer clear-blue, syrup brown...
+  for p_ in r['parts']:
+   if p_['id'] in ('liquid','stem','drop','drop2'):p_['color']=list(col)
  ids={p['id'] for p in r['parts']};lab=answer.get('labels') if isinstance(answer.get('labels'),dict) else {}
  lab={k:v for k,v in lab.items() if k in ids and isinstance(v,str) and 0<len(v)<=24}
  if len(lab)>=3:r['labels']=lab
