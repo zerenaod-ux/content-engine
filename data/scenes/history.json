@@ -1091,5 +1091,19 @@
     "record_run": "45077483877",
     "record_attempt": "1",
     "owner": "45077483877"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "tested component rejected: Shared provider cooldown active | Shared provider cooldown active | Shared provider cooldown active\n",
+    "date": "2026-11-22",
+    "topic": "How a garage door lifts with a hand crank",
+    "title": "",
+    "subject": "recipe_how_a_garage_door_lifts",
+    "keywords": [],
+    "category": "kit recipe",
+    "failed": true,
+    "record_run": "45070561948",
+    "record_attempt": "3",
+    "owner": "45070561948"
   }
 ]
