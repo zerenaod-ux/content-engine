@@ -766,5 +766,13 @@
     "state": "reserved",
     "policy": "original-idea-and-visuals-v1",
     "mechanism": "recipe_how_a_hand_crank_ice_cream_maker_works"
+  },
+  {
+    "topic": "How a Snap-Disc Thermostat Turns Off a Heater Circuit When It Gets Hot",
+    "visual_family": "snap_disc_switch",
+    "owner": "45047059708",
+    "state": "reserved",
+    "policy": "original-idea-and-visuals-v1",
+    "mechanism": "snap_thermostat"
   }
 ]
