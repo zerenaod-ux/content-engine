@@ -40,12 +40,15 @@
       "run_id": "45030496410",
       "attempt": 3,
       "kind": "daily-short",
-      "stage": "planning",
-      "label": "Writing and checking narration",
-      "updated_at": "2026-11-22T18:40:56.458325+00:00",
+      "stage": "Stopped",
+      "label": "Stopped",
+      "updated_at": "2026-11-22T18:40:58.852218+00:00",
       "source_branch": "main",
       "owner_approved": false,
-      "state": "running"
+      "retryable": false,
+      "next_retry_at": null,
+      "reason": "Needs a code, content or configuration correction",
+      "state": "needs_attention"
     }
   }
 }
