@@ -89,6 +89,9 @@ def _models(env, base, prefs, key):
     out = []
     for p in prefs:
         out += [i for i in ids if p in i.lower() and i not in out]
+    if not out:
+        out = ids[:4]
+    print('studio models for', env.split('_')[0], ':', ','.join(ids[:12]), flush=True)
     _CACHE[env] = out[:4]
     return _CACHE[env]
 
