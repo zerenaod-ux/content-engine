@@ -96,7 +96,29 @@ SOAP_PUMP={'object':'soap dispenser','title':'How a soap pump squeezes out soap'
  'drive':[{'beat':2,'part':'head','to':.5},{'beat':3,'part':'head','to':0},{'beat':4,'part':'head','to':.5},{'beat':5,'part':'head','to':0},
   {'beat':2,'part':'drop','to':1},{'beat':3,'part':'drop','to':2},{'beat':4,'part':'drop2','to':1},{'beat':5,'part':'drop2','to':2},
   {'beat':2,'part':'liquid','to':.76},{'beat':4,'part':'liquid','to':.72}]}
-SAMPLES=('DOOR_LATCH','GEAR_CRANK','CAM_PRESS','ROPE_LIFT','GEAR_TRAIN','WINCH','COUNTERWEIGHT','TWIN_CAM','LEVER_PRESS','SOAP_PUMP')
+SPRAY_BOTTLE={'object':'spray bottle','title':'How a trigger spray bottle mists liquid','theme':'cool',
+ 'parts':[{'id':'frame','kind':'frame','x':0.8,'z':0,'w':7.4,'h':5.4,'invisible':True},
+  {'id':'liquid','kind':'liquid','rect':[-2.0,0.4,0.2,2.9],'pos0':.8,'color':[120,190,240]},
+  {'id':'tube','kind':'block','x':-0.9,'z':1.9,'w':.2,'h':3.0,'color':[200,205,210]},
+  {'id':'head','kind':'block','x':-0.3,'z':4.0,'w':3.4,'h':1.1,'color':[238,238,232]},
+  {'id':'piston','kind':'slider','origin':[1.3,3.85],'size':[1.6,1.5],'axis':'x','travel':.5,'dir':-1,'color':[150,160,168]},
+  {'id':'spout','kind':'nozzle','slider':'piston','to':2.4},
+  {'id':'spring','kind':'spring','a':[-0.5,3.85],'b':{'part':'piston'}},
+  {'id':'bottle','kind':'shell','x':-0.9,'z':.3,'w':2.4,'h':3.1},
+  {'id':'trigger','kind':'lever','pivot':[1.5,4.4],'length':1.2,'angle0':-1.2},
+  {'id':'pin','kind':'pin','center':[1.5,4.4],'r':.15},
+  {'id':'mist','kind':'jet','a':[2.4,4.0],'b':[3.8,4.7],'color':[170,215,245]},
+  {'id':'mist2','kind':'jet','a':[2.4,4.0],'b':[3.9,4.0],'color':[170,215,245]},
+  {'id':'mist3','kind':'jet','a':[2.4,4.0],'b':[3.8,3.3],'color':[170,215,245]}],
+ 'labels':{'bottle':'Bottle','liquid':'Liquid','trigger':'Trigger','piston':'Pump piston','spring':'Return spring','spout':'Nozzle'},
+ 'links':[{'type':'yoke','lever':'trigger','slider':'piston','sign':-1}],
+ 'drive':[{'beat':2,'part':'trigger','to':-1.6},{'beat':3,'part':'trigger','to':-1.2},{'beat':4,'part':'trigger','to':-1.6},{'beat':5,'part':'trigger','to':-1.2},
+  {'beat':2,'part':'mist','to':1},{'beat':2,'part':'mist2','to':1},{'beat':2,'part':'mist3','to':1},
+  {'beat':3,'part':'mist','to':2},{'beat':3,'part':'mist2','to':2},{'beat':3,'part':'mist3','to':2},
+  {'beat':4,'part':'mist','to':1},{'beat':4,'part':'mist2','to':1},{'beat':4,'part':'mist3','to':1},
+  {'beat':5,'part':'mist','to':2},{'beat':5,'part':'mist2','to':2},{'beat':5,'part':'mist3','to':2},
+  {'beat':2,'part':'liquid','to':.76}]}
+SAMPLES=('DOOR_LATCH','GEAR_CRANK','CAM_PRESS','ROPE_LIFT','GEAR_TRAIN','WINCH','COUNTERWEIGHT','TWIN_CAM','LEVER_PRESS','SOAP_PUMP','SPRAY_BOTTLE')
 def with_facts(recipe):
  import copy;r=copy.deepcopy(recipe)
  r['facts']={a:'Fixture description of what is visible during the '+a+' beat of this simplified model.' for a in ('intro','reveal','step1','step2','step3','step4','hold','payoff')}
