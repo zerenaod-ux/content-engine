@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-11-22T01:24:43.956886+00:00",
+  "checked_at": "2026-11-22T03:02:38.259456+00:00",
   "read_only": true,
   "complete": true,
   "platforms": {
@@ -13,15 +13,13 @@
     "instagram": {
       "returned_posts": 10,
       "statuses": {
-        "scheduled": 1,
-        "sent": 9
+        "sent": 10
       }
     },
     "tiktok": {
       "returned_posts": 10,
       "statuses": {
-        "scheduled": 1,
-        "sent": 9
+        "sent": 10
       }
     }
   },
@@ -302,14 +300,38 @@
         ],
         "instagram": [
           {
-            "status": "scheduled",
+            "status": "sent",
             "due": "2026-11-22T03:00:00.000Z"
           }
         ],
         "tiktok": [
           {
-            "status": "scheduled",
+            "status": "sent",
             "due": "2026-11-22T02:30:00.000Z"
+          }
+        ]
+      }
+    },
+    {
+      "tag": "ce-20261122-0244",
+      "title": "How a Pendulum Clock Keeps Time \u2699\ufe0f",
+      "platforms": {
+        "youtube": [
+          {
+            "status": "not_found_in_buffer",
+            "prior_owner_skip": false
+          }
+        ],
+        "instagram": [
+          {
+            "status": "not_found_in_buffer",
+            "prior_owner_skip": false
+          }
+        ],
+        "tiktok": [
+          {
+            "status": "not_found_in_buffer",
+            "prior_owner_skip": false
           }
         ]
       }
@@ -340,14 +362,14 @@
         "source_updated_at": "2026-11-22T00:49:19.418Z"
       },
       "instagram": {
-        "views": 731.0,
+        "views": 605.0,
         "reactions": 2.0,
         "reported_posts": 7,
         "source_updated_at": "2026-11-19T23:14:36.371Z"
       },
       "tiktok": {
-        "views": 1864.0,
-        "reactions": 98.0,
+        "views": 1481.0,
+        "reactions": 65.0,
         "reported_posts": 8,
         "source_updated_at": "2026-11-19T23:14:36.792Z"
       }
