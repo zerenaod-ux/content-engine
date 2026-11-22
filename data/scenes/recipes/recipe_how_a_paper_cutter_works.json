@@ -1,0 +1,96 @@
+{
+  "object": "paper cutter",
+  "title": "How a paper cutter works",
+  "theme": "cool",
+  "parts": [
+    {
+      "id": "frame",
+      "kind": "frame",
+      "x": 0,
+      "z": 0,
+      "w": 7,
+      "h": 3.6
+    },
+    {
+      "id": "blade",
+      "kind": "lever",
+      "pivot": [
+        -2.0,
+        1.5
+      ],
+      "length": 2.0,
+      "angle0": 0
+    },
+    {
+      "id": "slide",
+      "kind": "slider",
+      "origin": [
+        0.0,
+        1.5
+      ],
+      "size": [
+        2.0,
+        0.4
+      ],
+      "axis": "x",
+      "travel": 1.0
+    },
+    {
+      "id": "spring",
+      "kind": "spring",
+      "a": [
+        2.5,
+        1.5
+      ],
+      "b": {
+        "part": "slide"
+      }
+    }
+  ],
+  "labels": {
+    "blade": "Blade",
+    "slide": "Slider",
+    "spring": "Spring"
+  },
+  "links": [
+    {
+      "type": "couple",
+      "driver": "blade",
+      "driven": "slide",
+      "ratio": -1.0,
+      "offset": 0
+    }
+  ],
+  "drive": [
+    {
+      "beat": 2,
+      "part": "blade",
+      "to": -0.9
+    },
+    {
+      "beat": 3,
+      "part": "blade",
+      "to": -0.9
+    },
+    {
+      "beat": 4,
+      "part": "blade",
+      "to": 0
+    },
+    {
+      "beat": 5,
+      "part": "blade",
+      "to": 0
+    }
+  ],
+  "facts": {
+    "intro": "A paper cutter lets you slice a sheet cleanly with a simple lever and sliding guard.",
+    "reveal": "The blade pivots around a fixed pin while the slider moves back and forth along a track.",
+    "step1": "At beat 2 the blade is pushed down, rotating clockwise about its pivot.",
+    "step2": "The rotation pulls the slider forward because they are coupled with a negative ratio.",
+    "step3": "The spring attached to the slider stores energy as the slider reaches its forward limit.",
+    "step4": "At beat 4 the blade returns to its original angle, pushing the slider back to the start.",
+    "hold": "The slider remains at the rear position while the spring keeps tension on the blade.",
+    "payoff": "When you place paper under the blade and press, the blade cuts straight across, demonstrating lever\u2011slider interaction."
+  }
+}
