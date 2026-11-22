@@ -165,5 +165,13 @@
     "state": "reserved",
     "mechanism": "recipe_how_a_paper_shredder_works",
     "visual_family": "recipe_how_a_paper_shredder_works"
+  },
+  {
+    "topic": "How does a paper cutter slice safely?",
+    "topic_key": "cutter paper safely slice",
+    "owner": "44980634726",
+    "state": "reserved",
+    "mechanism": "recipe_how_a_paper_cutter_works",
+    "visual_family": "recipe_how_a_paper_cutter_works"
   }
 ]
