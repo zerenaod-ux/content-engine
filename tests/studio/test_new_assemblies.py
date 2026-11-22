@@ -51,6 +51,6 @@ class Assemblies(unittest.TestCase):
   tl=self.timeline('optical_fiber')
   self.assertEqual(fiber.state(23.99,tl)['output'],0);self.assertEqual(fiber.state(30.,tl)['output'],1)
  def test_each_new_assembly_passes_real_visibility_and_motion_preflight(self):
-  for key in ('zipper','stapler','optical_fiber'):
+  for key in ('zipper','stapler','optical_fiber','pendulum_clock'):
    with self.subTest(key=key),tempfile.TemporaryDirectory() as folder:
     tl=self.timeline(key);verify_component({'mechanism':key,'beats':tl['beats'],'hook':'Engineering check'},tl,Path(folder))

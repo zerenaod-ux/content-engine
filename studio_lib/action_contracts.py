@@ -36,6 +36,11 @@ CONTRACTS.update({
 
 
 CONTRACTS.update({
+ 'pendulum_clock':{
+  'subjects':[r'clock|pendulum|weight|hand',r'cutaway',r'pendulum|rod|bob|swing',r'anchor|pallet|escape|wheel|teeth',r'tooth|teeth|wheel|hand|tick',r'weight|cord|drum|gear',r'pendulum|anchor|wheel|weight|push',r'clock|pendulum|hand|weight'],
+  'moves':{1:{'cut':1},3:{'turn':1},4:{'turn':1},5:{'weight_z':-1},7:{'cut':-1}},
+  'holds':{0:['cut'],2:['cut'],3:['cut'],4:['cut'],5:['cut'],6:['cut']},
+  'visible':[(2,'pendulum'),(3,'anchor'),(3,'escape'),(5,'weight')]},
  'zipper':{
   'subjects':[r'zipper|teeth|tape|slider',r'cutaway',r'slider|guide|teeth',r'slider|head|teeth',r'slider|stop|chain',r'head|teeth|slider',r'slider|divider|teeth',r'zipper|slider|tapes'],
   'moves':{1:{'cut':1},2:{'slider':1,'joined':1},3:{'slider':1,'joined':1},4:{'slider':1,'joined':1},6:{'slider':-1,'joined':-1},7:{'cut':-1}},
@@ -80,6 +85,10 @@ def narration_errors(plan):
   elif kind=='snap_thermostat':
    if i in (1,2,4,5,7) and re.search(r'\b(disc|pin|contact)\s+(snaps|moves|rises|lowers|bends|opens|closes|returns)\b',text):errors.append(f'beat {i}: the mechanism is held until its assigned snap/reset phase')
    if re.search(r'\b(melts|melting|burns|fire|digital processor)\b',text):errors.append(f'beat {i}: no melting, fire or digital controller is depicted')
+  elif kind=='pendulum_clock':
+   if re.search(r'\b(spring|battery|quartz|motor|electric\w*|minute hand|hour hand)\b',text):errors.append(f'beat {i}: only a falling weight and one seconds hand are depicted; no spring, motor, battery or minute/hour hands')
+   if re.search(r'\b(never loses|perfectly accurate|exactly accurate|speeds up|slows down)\b',text):errors.append(f'beat {i}: do not claim perfect accuracy or changing swing speed')
+   if re.search(r'\bheavier (?:bob|pendulum)\b[^.!?]{0,40}(?:faster|slower)',text):errors.append(f'beat {i}: swing time depends on rod length, not bob mass')
   elif kind=='zipper':
    if re.search(r'\bteeth\s+(bend|stretch|melt|flex)\b',text):errors.append(f'beat {i}: metal teeth translate rigidly; only fabric tapes bend')
    if i in (0,1,5,7) and re.search(r'\bslider\s+(moves|travels|reverses|advances|slides)\b',text):errors.append(f'beat {i}: slider is held during this explanation')

@@ -15,10 +15,12 @@ def scope_error(topic,mechanism=None):
         elif re.search(r'relay',text):mechanism='electric_relay'
         elif re.search(r'thermostat|bimetal|snap.disc',text):mechanism='snap_thermostat'
         elif re.search(r'clothespin|clothes.peg',text):mechanism='clothespin'
+        elif re.search(r'pendulum|escapement|grandfather clock|(?<!wrist)(?<!digital )(?<!alarm )clock',text):mechanism='pendulum_clock'
         elif re.search(r'zipper',text):mechanism='zipper'
         elif re.search(r'stapler|stapling',text):mechanism='stapler'
         elif re.search(r'optical fib|fiber.optic|fibre.optic',text):mechanism='optical_fiber'
     patterns={
+      'pendulum_clock':r'quartz|digital|atomic|wristwatch|mainspring|spring.driven|balance wheel|minute hand|hour hand|time zone|calendar|chime|cuckoo',
       'zipper':r'waterproof|coil zipper|automatic.lock|magnetic|invisible zipper|separating pin',
       'stapler':r'electric|pneumatic|flat.clinch|tack(?:ing)?|staple gun|remove staple',
       'optical_fiber':r'bend|curv|dispersion|wavelength|single.mode|wave optic|network protocol|packet|perfect transmission',

@@ -133,6 +133,15 @@ REGISTRY.update({
 })
 
 REGISTRY.update({
+ 'pendulum_clock':{'description':'Weight-driven wooden pendulum clock: swinging rod and brass bob, anchor escapement over a toothed escape wheel, falling weight on a cord and a seconds hand on the wheel arbor; simplified, not a spring, quartz or minute-hand clock','actions':['clock','cutaway','pendulum','escapement','tick','weight','hold','payoff'],'facts':{
+ 'clock':'Introduce a recognizable wooden pendulum clock: case, a seconds dial ring with one hand, a long rod with a brass bob, and a drive weight on a cord. The pendulum is already swinging.',
+ 'cutaway':'A simplified cutaway lifts the glass front to expose the toothed escape wheel, the anchor above it, the drive gear and the weight cord.',
+ 'pendulum':'The long rod and brass bob swing back and forth at a steady rhythm of one tick per second. Swing time depends on rod length, not on how heavy the bob is.',
+ 'escapement':'The anchor sits over the escape wheel and rocks with the pendulum. Its two pallets alternately catch and release a tooth of the toothed wheel.',
+ 'tick':'Each tick lets the wheel advance one small equal step, so the seconds hand steps once per tick; sixty ticks carry it once around the dial.',
+ 'weight':'A weight hangs on a cord wound round a drum that turns the drive gear. As the weight slowly falls, the gear turns the escape wheel. The falling weight is the only energy source.',
+ 'hold':'No new part moves for this explanation. At each release the anchor gives the pendulum a tiny push that replaces the energy lost to friction and air, so it keeps swinging.',
+ 'payoff':'The cutaway closes. Pendulum, escapement, weight and seconds hand work together as one timekeeper. No winding by hand and no second mechanism is shown.'},'source':'https://en.wikipedia.org/wiki/Escapement'},
  'zipper':{'description':'Closed-end non-locking metal zipper: Y-channel guides staggered rigid teeth; not coil, waterproof or automatic-lock sliders','actions':['zipper','cutaway','guide','mesh','closed','hold','reverse','payoff'],'facts':{
  'zipper':'Introduce two separated fabric tapes with staggered metal teeth and one slider at the open end. No hand or clothing wearer is shown.',
  'cutaway':'A simplified cutaway lifts the slider upper plate and pull tab, revealing its Y-shaped guide and central divider. Teeth remain still.',

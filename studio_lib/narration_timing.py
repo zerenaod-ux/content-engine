@@ -15,6 +15,7 @@ from pathlib import Path
 VERSION = 'spoken-action-v1'
 ALIGNMENT_REVISION = 'causal-component-actions-v4'
 TRANSITIONS = {
+    'pendulum_clock':{'cutaway','payoff'},
     'zipper':{'cutaway','guide','mesh','closed','reverse','payoff'},
     'stapler':{'cutaway','feed','press','clinch','return','payoff'},
     'optical_fiber':{'cutaway','enter','reflect','guide','payoff'},
@@ -30,6 +31,7 @@ TRANSITIONS = {
     'wind_turbine': {'shaft', 'load', 'payoff'},
 }
 ANCHORS = {
+    'pendulum_clock':{'cutaway':r'cutaway','payoff':r'clock|pendulum|weight|hand'},
     'zipper':{'cutaway':r'cutaway','guide':r'slider|guide','mesh':r'slider|teeth|heads','closed':r'slider|stop','reverse':r'slider|divider','payoff':r'zipper|slider|tapes'},
     'stapler':{'cutaway':r'cutaway','feed':r'magazine|spring|staple','press':r'handle|driver|input','clinch':r'driver|legs|anvil','return':r'handle|driver|return','payoff':r'stapler|handle|staple'},
     'optical_fiber':{'cutaway':r'cutaway','enter':r'light|pulse|core','reflect':r'light|pulse|boundary','guide':r'pulse|light|core','payoff':r'cable|fibre|fiber|receiver'},
@@ -241,7 +243,7 @@ def bind(plan, timeline, out, transcribe=None):
             # action inside this beat and leave cameras on their original clock.
             start=max(beat['start'],spoken_start-.35)
             end=min(beat['end'],beat['start']+.08+float(beat['voice_duration'])+.05)
-            if plan.get('mechanism') in ('camera_iris','float_valve','combination_lock','electric_relay','snap_thermostat','zipper','stapler','optical_fiber') and planned['action']=='cutaway':end=min(beat['end'],max(spoken_end+.1,start+.9))
+            if plan.get('mechanism') in ('camera_iris','float_valve','combination_lock','electric_relay','snap_thermostat','zipper','stapler','optical_fiber','pendulum_clock') and planned['action']=='cutaway':end=min(beat['end'],max(spoken_end+.1,start+.9))
             completion=completion_match(plan['mechanism'],planned['action'],flat,spans,first_word)
             if completion:end=min(end,max(start+.5,beat['start']+.08+completion['end']+.15))
             if end-start<.35:raise ValueError('Speech cue leaves no safe action interval')
