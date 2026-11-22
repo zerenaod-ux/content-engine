@@ -40,12 +40,15 @@
       "run_id": "44980406165",
       "attempt": 2,
       "kind": "daily-short",
-      "stage": "selection",
-      "label": "Selecting a new topic",
-      "updated_at": "2026-11-22T04:12:50.567736+00:00",
+      "stage": "No-repeat hold",
+      "label": "No-repeat hold",
+      "updated_at": "2026-11-22T04:12:54.385251+00:00",
       "source_branch": "main",
       "owner_approved": false,
-      "state": "running"
+      "retryable": false,
+      "next_retry_at": null,
+      "reason": "No-repeat hold: a genuinely new idea and unused visual setup are required",
+      "state": "held_for_novelty"
     }
   }
 }
