@@ -939,5 +939,19 @@
     "record_run": "44983328804",
     "record_attempt": "1",
     "owner": "44983328804"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "tested component rejected: director rejected: beat 4: name the actual visible part for this action, not a generic description\n",
+    "date": "2026-11-22",
+    "topic": "How does a manual coffee grinder turn beans?",
+    "title": "",
+    "subject": "recipe_how_a_coffee_grinder_works",
+    "keywords": [],
+    "category": "kit recipe",
+    "failed": true,
+    "record_run": "44983764341",
+    "record_attempt": "1",
+    "owner": "44983764341"
   }
 ]
