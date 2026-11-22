@@ -7,12 +7,12 @@
     "19:05"
   ],
   "due_slots": 3,
-  "ready_today": 2,
+  "ready_today": 3,
   "daily_target": 3,
   "unused_visuals": 4,
   "should_build": false,
-  "reason": "The system is retaining an unfinished temporary-failure recovery",
+  "reason": "Daily output target already covered",
   "dispatches": 2,
   "requested_at": 1795315509.386633,
-  "checked_at": "2026-11-22T03:29:43.810514+00:00"
+  "checked_at": "2026-11-22T03:41:11.066308+00:00"
 }
