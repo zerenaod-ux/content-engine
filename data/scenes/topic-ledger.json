@@ -175,5 +175,11 @@
     "state": "reserved",
     "mechanism": "optical_fiber",
     "visual_family": "step_index_guidance"
+  },
+  {
+    "topic": "How a pendulum clock keeps time",
+    "topic_key": "clock keeps pendulum time",
+    "owner": "44975899586",
+    "state": "reserved"
   }
 ]
