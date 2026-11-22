@@ -141,5 +141,13 @@
     "topic_key": "clock keeps pendulum time",
     "owner": "44976687963",
     "state": "reserved"
+  },
+  {
+    "topic": "How the zipper slider interlocks staggered teeth to seal two fabric edges",
+    "topic_key": "edges fabric interlocks seal slider staggered teeth two zipper",
+    "owner": "44977520702",
+    "state": "reserved",
+    "mechanism": "zipper",
+    "visual_family": "interlocking_zipper"
   }
 ]
