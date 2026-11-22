@@ -913,5 +913,17 @@
     "record_run": "44980634726",
     "record_attempt": "1",
     "owner": "44980634726"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "",
+    "date": "2026-11-22",
+    "topic": "How does a simple latch keep a door closed?",
+    "title": "How a Simple Latch Secures a Door \u2699\ufe0f",
+    "subject": "recipe_how_a_door_latch_works",
+    "keywords": [],
+    "category": "kit recipe",
+    "record_run": "44980899837",
+    "record_attempt": "1"
   }
 ]
