@@ -1,24 +1,27 @@
 {
-  "checked_at": "2026-11-22T03:02:38.259456+00:00",
+  "checked_at": "2026-11-22T03:03:24.444545+00:00",
   "read_only": true,
   "complete": true,
   "platforms": {
     "youtube": {
-      "returned_posts": 10,
+      "returned_posts": 11,
       "statuses": {
         "error": 2,
+        "scheduled": 1,
         "sent": 8
       }
     },
     "instagram": {
-      "returned_posts": 10,
+      "returned_posts": 11,
       "statuses": {
+        "scheduled": 1,
         "sent": 10
       }
     },
     "tiktok": {
-      "returned_posts": 10,
+      "returned_posts": 11,
       "statuses": {
+        "scheduled": 1,
         "sent": 10
       }
     }
@@ -315,6 +318,30 @@
     {
       "tag": "ce-20261122-0244",
       "title": "How a Pendulum Clock Keeps Time \u2699\ufe0f",
+      "platforms": {
+        "youtube": [
+          {
+            "status": "scheduled",
+            "due": "2026-11-22T18:30:00.000Z"
+          }
+        ],
+        "instagram": [
+          {
+            "status": "scheduled",
+            "due": "2026-11-23T01:00:00.000Z"
+          }
+        ],
+        "tiktok": [
+          {
+            "status": "scheduled",
+            "due": "2026-11-23T00:00:00.000Z"
+          }
+        ]
+      }
+    },
+    {
+      "tag": "ce-20261122-0256",
+      "title": "How a Zipper Slider Seals Fabric Edges \u2699\ufe0f",
       "platforms": {
         "youtube": [
           {
