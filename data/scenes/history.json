@@ -871,5 +871,19 @@
     "category": "tested mechanism",
     "record_run": "44977520702",
     "record_attempt": "1"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "tested component rejected: [Errno 2] No such file or directory: 'component-output/production/spoken-action-timing.json'\n",
+    "date": "2026-11-22",
+    "topic": "How does a simple desk organizer drawer slide out?",
+    "title": "",
+    "subject": "recipe_how_a_drawer_slides_out",
+    "keywords": [],
+    "category": "kit recipe",
+    "failed": true,
+    "record_run": "44979671861",
+    "record_attempt": "1",
+    "owner": "44979671861"
   }
 ]
