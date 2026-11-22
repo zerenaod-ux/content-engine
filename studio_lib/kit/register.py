@@ -31,7 +31,7 @@ def build_entries(recipe):
  m=R.Machine(recipe);moves,holds=simulate(m);key=key_for(recipe)
  lp=label_pattern(recipe);title=' '.join(words(recipe['title']))
  tw='|'.join(sorted(set(words(recipe['title']))|set(lp.split('|'))))
- subjects=[tw,lp]+[lp]*5+[tw]
+ subjects=[tw]*8  # any label, title or object word counts as naming a visible part
  # a moving beat must also be narrated: first label of the part that moves
  visible=[]
  for i in (2,3,4,5):
