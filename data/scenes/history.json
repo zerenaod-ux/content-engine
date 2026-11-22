@@ -925,5 +925,19 @@
     "category": "kit recipe",
     "record_run": "44980899837",
     "record_attempt": "1"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "tested component rejected: GEMINI HTTP 404 | GEMINI HTTP 503 | Shared provider cooldown active\n",
+    "date": "2026-11-22",
+    "topic": "Why does pulling a cord raise a blind?",
+    "title": "",
+    "subject": "recipe_how_a_window_blind_works",
+    "keywords": [],
+    "category": "kit recipe",
+    "failed": true,
+    "record_run": "44983328804",
+    "record_attempt": "1",
+    "owner": "44983328804"
   }
 ]
