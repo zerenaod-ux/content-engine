@@ -6,13 +6,13 @@
     "11:05",
     "19:05"
   ],
-  "due_slots": 1,
+  "due_slots": 2,
   "ready_today": 0,
   "daily_target": 3,
   "unused_visuals": 3,
   "should_build": false,
-  "reason": "A generation run is already active",
+  "reason": "The system is retaining an unfinished temporary-failure recovery",
   "dispatches": 1,
   "requested_at": 1795348688.5102503,
-  "checked_at": "2026-11-22T17:04:35.440159+00:00"
+  "checked_at": "2026-11-22T17:07:53.926293+00:00"
 }
