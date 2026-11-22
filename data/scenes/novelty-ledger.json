@@ -774,5 +774,13 @@
     "state": "reserved",
     "policy": "original-idea-and-visuals-v1",
     "mechanism": "snap_thermostat"
+  },
+  {
+    "topic": "How does a manual soap dispenser pump?",
+    "visual_family": "recipe_how_a_soap_dispenser_works",
+    "owner": "45068361995",
+    "state": "reserved",
+    "policy": "original-idea-and-visuals-v1",
+    "mechanism": "recipe_how_a_soap_dispenser_works"
   }
 ]
