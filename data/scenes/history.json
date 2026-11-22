@@ -995,5 +995,19 @@
     "record_run": "44991275567",
     "record_attempt": "4",
     "owner": "44991275567"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "tested component rejected: Shared provider cooldown active | Shared provider cooldown active | Shared provider cooldown active\n",
+    "date": "2026-11-22",
+    "topic": "Why does a hand\u2011crank ice\u2011cream maker freeze the mix?",
+    "title": "",
+    "subject": "recipe_how_a_hand_crank_ice_cream_maker_works",
+    "keywords": [],
+    "category": "kit recipe",
+    "failed": true,
+    "record_run": "45030496410",
+    "record_attempt": "1",
+    "owner": "45030496410"
   }
 ]
