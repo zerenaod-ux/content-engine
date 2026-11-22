@@ -708,5 +708,13 @@
     "state": "reserved",
     "policy": "original-idea-and-visuals-v1",
     "mechanism": "recipe_how_a_paper_cutter_works"
+  },
+  {
+    "topic": "How does a simple latch keep a door closed?",
+    "visual_family": "recipe_how_a_door_latch_works",
+    "owner": "44980899837",
+    "state": "reserved",
+    "policy": "original-idea-and-visuals-v1",
+    "mechanism": "recipe_how_a_door_latch_works"
   }
 ]
