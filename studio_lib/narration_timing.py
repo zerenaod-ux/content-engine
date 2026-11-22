@@ -268,6 +268,8 @@ def bind(plan, timeline, out, transcribe=None):
         # Persist each accepted line so an interruption does not repeat alignment.
         report_path.write_text(json.dumps({'policy':VERSION,'alignment_revision':ALIGNMENT_REVISION,'cues':rows,'errors':[],
             'scope':'Discrete action timing; continuous motion and semantic pixel verification are separate'},indent=2))
+    if not rows:   # recipe machines have no spoken-action transitions; the evidence file still states that explicitly
+        report_path.write_text(json.dumps({'policy':VERSION,'alignment_revision':ALIGNMENT_REVISION,'cues':[],'errors':[],'scope':'No discrete transition actions for this mechanism; motion follows measured beat windows'},indent=2))
     timeline['motion_policy']=VERSION
     return timeline
 
