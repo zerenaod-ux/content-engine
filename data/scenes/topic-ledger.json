@@ -37,7 +37,7 @@
     "mechanism": "thermal_contact"
   },
   {
-    "topic": "Why does the follower height vary sinusoidally in a fixed\u2011eccentricity circular cam?",
+    "topic": "Why does the follower height vary sinusoidally in a fixed‑eccentricity circular cam?",
     "topic_key": "cam circular eccentricity fixed follower height sinusoidally vary",
     "owner": "44224913213",
     "mechanism": "cam_follower",
@@ -69,7 +69,7 @@
     "state": "reserved"
   },
   {
-    "topic": "Why photovoltaic cells use anti\u2011reflective coatings",
+    "topic": "Why photovoltaic cells use anti‑reflective coatings",
     "topic_key": "anti cells coatings photovoltaic reflective use",
     "owner": "44266714493",
     "state": "reserved"
@@ -121,7 +121,7 @@
     "visual_family": "tank_float_control"
   },
   {
-    "topic": "Why a three\u2011wheel combination padlock only releases when all wheels align",
+    "topic": "Why a three‑wheel combination padlock only releases when all wheels align",
     "topic_key": "align all combination only padlock releases three wheel wheels",
     "owner": "44626696622",
     "state": "reserved",
@@ -129,17 +129,11 @@
     "visual_family": "gated_padlock"
   },
   {
-    "topic": "How a small control voltage can switch a higher\u2011voltage load using an electromagnetic relay",
+    "topic": "How a small control voltage can switch a higher‑voltage load using an electromagnetic relay",
     "topic_key": "control electromagnetic higher load relay small switch using voltage",
     "owner": "44641287581",
     "state": "reserved",
     "mechanism": "electric_relay",
     "visual_family": "electromagnetic_relay"
-  },
-  {
-    "topic": "How a pendulum clock keeps time",
-    "topic_key": "clock keeps pendulum time",
-    "owner": "44976332049",
-    "state": "reserved"
   }
 ]
