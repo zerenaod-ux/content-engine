@@ -26,7 +26,7 @@ def _call_once(system,prompt,max_tokens=10000,temperature=.5,reasoning_effort="l
         if cooling_down(host):
             failures.append('Shared provider cooldown active');continue
         key=os.environ[env].strip() if os.environ.get(env) else KEYLESS_KEYS.get(env,'')
-        rate_retries=0;json_mode=True;model=None
+        rate_retries=0;json_mode=True;reasoning=True;model=None
         for turn in range(4):
             path=Path(os.environ.get('CE_METRICS_PATH','metrics.json'))
             try:ledger=json.loads(path.read_text())
@@ -48,7 +48,7 @@ def _call_once(system,prompt,max_tokens=10000,temperature=.5,reasoning_effort="l
                 model_name=model.removeprefix('models/') if env=='GEMINI_API_KEY' else model
                 messages=[{'role':'system','content':system},{'role':'user','content':prompt}]
                 body={'model':model_name,'messages':messages,'temperature':temperature,'max_tokens':max_tokens}
-                if 'gpt-oss' in model_name:body['reasoning_effort']=reasoning_effort
+                if reasoning and 'gpt-oss' in model_name:body['reasoning_effort']=reasoning_effort
                 if json_mode:body['response_format']={'type':'json_object'}
                 with lease('ai'):
                     if cooling_down(host):raise llm.ProviderCoolingDown('Shared provider cooldown active')
@@ -83,6 +83,8 @@ def _call_once(system,prompt,max_tokens=10000,temperature=.5,reasoning_effort="l
                     _UNAVAILABLE.add((base,model));continue
                 if e.code==400 and json_mode and any(s in last.lower() for s in ('response_format','json_object','validate json','failed to generate json','json mode')):
                     json_mode=False;max_tokens=max(1200,max_tokens);continue
+                if e.code==400 and reasoning and 'reasoning' in last.lower():
+                    reasoning=False;continue
                 if e.code==429 and rate_retries==0:rate_retries+=1;continue
                 break
             except Exception as e:
