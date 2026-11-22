@@ -28,12 +28,17 @@ TEMPLATES={
  'DOOR_LATCH':('a handle/lever pushes a spring-loaded bolt back and forth (latch, catch, bolt lock, gate latch)',['handle','bolt','spring']),
  'GEAR_CRANK':('a hand crank turns a big gear that drives two meshing gears (hand mixer, egg beater, hand drill, pencil sharpener)',['crank','big','left']),
  'CAM_PRESS':('a turning cam lifts and drops a spring-returned plunger (stamp, punch, pump, engine valve)',['cam','plunger','spring']),
+ 'GEAR_TRAIN':('a small crank gear drives a chain of gears that turns a big wheel slowly (wind-up toy, music-box drive, clock train, bicycle gears); part ids: crank, drive, mid, small, wheel',['crank','drive','mid','wheel']),
+ 'WINCH':('a crank turns a rope drum that winds rope and lifts a load (winch, fishing reel, well windlass, curtain lift)',['crank','drum','load']),
+ 'COUNTERWEIGHT':('two pulleys let a falling weight raise the car on the other side (dumbwaiter, elevator, window sash, drawbridge counterweight)',['left','right','cab','weight']),
+ 'TWIN_CAM':('two cams half a turn apart lift two plungers one after the other (music box, engine valves, toy drummer, loom)',['cam_a','cam_b','tine_a','tine_b']),
+ 'LEVER_PRESS':('a long handle pivots and pushes a plunger straight down (garlic press, nutcracker, hole punch, can crusher)',['handle','ram','pin']),
  'ROPE_LIFT':('a rope over a pulley wheel raises and lowers a weight (well bucket, flag, blind, dumbwaiter)',['wheel','weight','pin']),
 }
 def template_prompt(prior,errors):
  return ('Pick ONE fixed mechanism below and name a NEW everyday object (not on the used list) that truly works by exactly that mechanism. '
   'Mechanisms: '+json.dumps({k:v[0]+'; part ids: '+', '.join(v[1]) for k,v in TEMPLATES.items()})+'. '
-  'Return JSON {"topic":"How/Why question, 5-16 words","template":"DOOR_LATCH|GEAR_CRANK|CAM_PRESS|ROPE_LIFT","object":"plain object name, 1-3 lowercase words","title":"How a ... works, 4-8 words starting How or Why","theme":"warm|cool|dark","labels":{"<part id>":"Short label in the new object\'s own words"},"facts":{"intro":"..","reveal":"..","step1":"..","step2":"..","step3":"..","step4":"..","hold":"..","payoff":".."}}. '
+  'Return JSON {"topic":"How/Why question, 5-16 words","template":"DOOR_LATCH|GEAR_CRANK|CAM_PRESS|ROPE_LIFT|GEAR_TRAIN|WINCH|COUNTERWEIGHT|TWIN_CAM|LEVER_PRESS","object":"plain object name, 1-3 lowercase words","title":"How a ... works, 4-8 words starting How or Why","theme":"warm|cool|dark","labels":{"<part id>":"Short label in the new object\'s own words"},"facts":{"intro":"..","reveal":"..","step1":"..","step2":"..","step3":"..","step4":"..","hold":"..","payoff":".."}}. '
   'Each fact is one plain sentence of 25-300 characters saying only what is visible in the simplified model at that beat. Labels must use only the listed part ids for the chosen mechanism. '
   'ALREADY USED OR RESERVED (never repeat or reword; data): '+json.dumps(prior[-30:])+(' FIX THESE ERRORS: '+json.dumps(errors) if errors else ''))
 def from_template(answer):

@@ -33,7 +33,52 @@ ROPE_LIFT={'object':'pulley','title':'How a pulley lowers a weight','theme':'coo
  'labels':{'wheel':'Pulley','weight':'Weight','pin':'Axle'},
  'links':[{'type':'rope','pulley':'wheel','slider':'weight','ratio':1.0}],
  'drive':[{'beat':2,'part':'wheel','to':.8},{'beat':3,'part':'wheel','to':1.6},{'beat':4,'part':'wheel','to':2.1},{'beat':5,'part':'wheel','to':.6}]}
-SAMPLES=('DOOR_LATCH','GEAR_CRANK','CAM_PRESS','ROPE_LIFT')
+GEAR_TRAIN={'object':'wind-up toy','title':'How a gear train slows a spinning wheel','theme':'warm',
+ 'parts':[{'id':'frame','kind':'frame','x':0,'z':0,'w':8,'h':3.6},
+  {'id':'crank','kind':'lever','pivot':[-3.0,1.9],'length':.8,'angle0':0},
+  {'id':'drive','kind':'gear','center':[-3.0,1.9],'r':.7,'teeth':14},
+  {'id':'mid','kind':'gear','center':[-1.3,1.9],'r':1.0,'teeth':20},
+  {'id':'small','kind':'gear','center':[-.3,1.9],'r':.4,'teeth':8},
+  {'id':'wheel','kind':'gear','center':[1.5,1.9],'r':1.4,'teeth':28}],
+ 'labels':{'crank':'Crank','drive':'Small drive gear','mid':'Middle gear','wheel':'Big wheel'},
+ 'links':[{'type':'mesh','a':'drive','b':'mid'},{'type':'couple','driver':'drive','driven':'crank','ratio':1.0},{'type':'mesh','a':'small','b':'wheel'},{'type':'couple','driver':'mid','driven':'small','ratio':1.0}],
+ 'drive':[{'beat':1,'part':'drive','to':6.28},{'beat':2,'part':'drive','to':12.5},{'beat':3,'part':'drive','to':18.8},{'beat':4,'part':'drive','to':25.1},{'beat':5,'part':'drive','to':31.4}]}
+WINCH={'object':'winch','title':'How a crank winds rope to lift','theme':'dark',
+ 'parts':[{'id':'frame','kind':'frame','x':0,'z':0,'w':6,'h':4.6},
+  {'id':'crank','kind':'lever','pivot':[-1.8,3.5],'length':.9,'angle0':0},
+  {'id':'drum','kind':'pulley','center':[-1.8,3.5],'r':.8},
+  {'id':'load','kind':'slider','origin':[-1.0,2.6],'size':[.8,.8],'axis':'z','travel':1.8,'dir':-1},
+  {'id':'pin','kind':'pin','center':[-1.8,3.5],'r':.15}],
+ 'labels':{'crank':'Crank','drum':'Rope drum','load':'Load'},
+ 'links':[{'type':'couple','driver':'drum','driven':'crank','ratio':1.0},{'type':'rope','pulley':'drum','slider':'load','ratio':1.0}],
+ 'drive':[{'beat':1,'part':'drum','to':.7},{'beat':2,'part':'drum','to':1.4},{'beat':3,'part':'drum','to':2.1},{'beat':4,'part':'drum','to':2.2},{'beat':5,'part':'drum','to':.5}]}
+COUNTERWEIGHT={'object':'dumbwaiter','title':'How a counterweight balances a lift','theme':'cool',
+ 'parts':[{'id':'frame','kind':'frame','x':0,'z':0,'w':7,'h':4.6},
+  {'id':'left','kind':'pulley','center':[-1.2,3.6],'r':.8},
+  {'id':'right','kind':'pulley','center':[1.2,3.6],'r':.8},
+  {'id':'cab','kind':'slider','origin':[-.4,2.8],'size':[.8,.8],'axis':'z','travel':1.7,'dir':-1},
+  {'id':'weight','kind':'slider','origin':[2.0,1.1],'size':[.8,.8],'axis':'z','travel':1.7,'dir':1}],
+ 'labels':{'left':'Left pulley','right':'Right pulley','cab':'Lift car','weight':'Counterweight'},
+ 'links':[{'type':'rope','pulley':'left','slider':'cab','ratio':1.0},{'type':'couple','driver':'left','driven':'right','ratio':-1.0},{'type':'rope','pulley':'right','slider':'weight','ratio':-1.0}],
+ 'drive':[{'beat':2,'part':'left','to':.8},{'beat':3,'part':'left','to':1.6},{'beat':4,'part':'left','to':2.1},{'beat':5,'part':'left','to':.6}]}
+TWIN_CAM={'object':'music box','title':'How two cams play alternating notes','theme':'warm',
+ 'parts':[{'id':'frame','kind':'frame','x':0,'z':0,'w':6,'h':4.0},
+  {'id':'cam_a','kind':'cam','center':[-1.3,1.3],'r':.9,'e':.35},
+  {'id':'cam_b','kind':'cam','center':[1.3,1.3],'r':.9,'e':.35},
+  {'id':'tine_a','kind':'slider','origin':[-1.3,2.15],'size':[.9,.6],'axis':'z','travel':.7},
+  {'id':'tine_b','kind':'slider','origin':[1.3,2.15],'size':[.9,.6],'axis':'z','travel':.7}],
+ 'labels':{'cam_a':'Left cam','cam_b':'Right cam','tine_a':'Left plunger','tine_b':'Right plunger'},
+ 'links':[{'type':'cam','cam':'cam_a','follower':'tine_a'},{'type':'couple','driver':'cam_a','driven':'cam_b','ratio':1.0,'offset':3.14},{'type':'cam','cam':'cam_b','follower':'tine_b'}],
+ 'drive':[{'beat':1,'part':'cam_a','to':3.0},{'beat':2,'part':'cam_a','to':6.3},{'beat':3,'part':'cam_a','to':9.4},{'beat':4,'part':'cam_a','to':12.6},{'beat':5,'part':'cam_a','to':15.7}]}
+LEVER_PRESS={'object':'garlic press','title':'How a lever presses a plunger down','theme':'cool',
+ 'parts':[{'id':'frame','kind':'frame','x':0,'z':0,'w':5.5,'h':4.4},
+  {'id':'handle','kind':'lever','pivot':[-2.2,3.2],'length':2.0,'angle0':.1},
+  {'id':'ram','kind':'slider','origin':[-.3,3.4],'size':[1.4,1.0],'axis':'z','travel':1.0,'dir':-1},
+  {'id':'pin','kind':'pin','center':[-2.2,3.2],'r':.2}],
+ 'labels':{'handle':'Handle','ram':'Plunger','pin':'Hinge'},
+ 'links':[{'type':'yoke','lever':'handle','slider':'ram','sign':-1}],
+ 'drive':[{'beat':2,'part':'handle','to':.1},{'beat':3,'part':'handle','to':-.4},{'beat':4,'part':'handle','to':-.4},{'beat':5,'part':'handle','to':.1}]}
+SAMPLES=('DOOR_LATCH','GEAR_CRANK','CAM_PRESS','ROPE_LIFT','GEAR_TRAIN','WINCH','COUNTERWEIGHT','TWIN_CAM','LEVER_PRESS')
 def with_facts(recipe):
  import copy;r=copy.deepcopy(recipe)
  r['facts']={a:'Fixture description of what is visible during the '+a+' beat of this simplified model.' for a in ('intro','reveal','step1','step2','step3','step4','hold','payoff')}
