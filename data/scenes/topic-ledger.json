@@ -149,5 +149,13 @@
     "state": "reserved",
     "mechanism": "zipper",
     "visual_family": "interlocking_zipper"
+  },
+  {
+    "topic": "How does a simple desk organizer drawer slide out?",
+    "topic_key": "desk drawer organizer simple slide",
+    "owner": "44979671861",
+    "state": "reserved",
+    "mechanism": "recipe_how_a_drawer_slides_out",
+    "visual_family": "recipe_how_a_drawer_slides_out"
   }
 ]
