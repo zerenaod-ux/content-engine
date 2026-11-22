@@ -37,18 +37,17 @@
       "state": "awaiting_review"
     },
     "daily-short": {
-      "run_id": "44989633376",
-      "attempt": 4,
+      "run_id": "45000323180",
+      "attempt": 1,
       "kind": "daily-short",
-      "stage": "Stopped",
-      "label": "Stopped",
-      "updated_at": "2026-11-22T07:55:39.707053+00:00",
+      "stage": "Daily target covered",
+      "label": "Daily target covered",
+      "updated_at": "2026-11-22T07:55:57.053651+00:00",
       "source_branch": "main",
       "owner_approved": false,
-      "retryable": false,
-      "next_retry_at": null,
-      "reason": "Temporary service or capacity failure",
-      "state": "needs_attention"
+      "state": "idle",
+      "reason": "Daily output target already covered",
+      "retryable": false
     }
   }
 }
