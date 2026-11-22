@@ -1,0 +1,114 @@
+{
+  "object": "garage door",
+  "title": "How a garage door lifts",
+  "theme": "warm",
+  "parts": [
+    {
+      "id": "frame",
+      "kind": "frame",
+      "x": 0,
+      "z": 0,
+      "w": 6,
+      "h": 4.6
+    },
+    {
+      "id": "crank",
+      "kind": "lever",
+      "pivot": [
+        -1.8,
+        3.5
+      ],
+      "length": 0.9,
+      "angle0": 0
+    },
+    {
+      "id": "drum",
+      "kind": "pulley",
+      "center": [
+        -1.8,
+        3.5
+      ],
+      "r": 0.8
+    },
+    {
+      "id": "load",
+      "kind": "slider",
+      "origin": [
+        -1.0,
+        2.6
+      ],
+      "size": [
+        0.8,
+        0.8
+      ],
+      "axis": "z",
+      "travel": 1.8,
+      "dir": -1
+    },
+    {
+      "id": "pin",
+      "kind": "pin",
+      "center": [
+        -1.8,
+        3.5
+      ],
+      "r": 0.15
+    }
+  ],
+  "labels": {
+    "crank": "Crank",
+    "drum": "Rope drum",
+    "load": "Load"
+  },
+  "links": [
+    {
+      "type": "couple",
+      "driver": "drum",
+      "driven": "crank",
+      "ratio": 1.0
+    },
+    {
+      "type": "rope",
+      "pulley": "drum",
+      "slider": "load",
+      "ratio": 1.0
+    }
+  ],
+  "drive": [
+    {
+      "beat": 1,
+      "part": "drum",
+      "to": 0.7
+    },
+    {
+      "beat": 2,
+      "part": "drum",
+      "to": 1.4
+    },
+    {
+      "beat": 3,
+      "part": "drum",
+      "to": 2.1
+    },
+    {
+      "beat": 4,
+      "part": "drum",
+      "to": 2.2
+    },
+    {
+      "beat": 5,
+      "part": "drum",
+      "to": 0.5
+    }
+  ],
+  "facts": {
+    "intro": "A sturdy hand crank protrudes from the wall, ready for a firm grip.",
+    "reveal": "Turning the crank rotates the attached drum, which has a groove for the steel cable.",
+    "step1": "The cable is wound onto the drum, pulling the door upward as the drum turns.",
+    "step2": "Each rotation lifts the door a little higher, the drum\u2019s friction keeping the cable from slipping.",
+    "step3": "When the door reaches the top, the drum stops turning and the cable rests neatly on the drum.",
+    "step4": "Releasing the crank lets the door stay in place, held by the tension in the cable.",
+    "hold": "If you keep the crank turned, the drum continues winding and the door keeps rising.",
+    "payoff": "The whole system lifts the heavy garage door smoothly with only manual effort."
+  }
+}
