@@ -141,7 +141,9 @@ jobs:
           p.write_text(json.dumps(v, indent=1, ensure_ascii=False) + '\n')
           PY
           python3 -m studio_lib.durable_topics save-records
-          gh label create scene-review --color 6a55c9 --description "How It Ticks video to watch (not posted)" 2>/dev/null || true
+          # PAGES_READY: the Studio plays the Pages copy; wait until it is live so the card never appears before its video (owner 2026-11-21: card opened before Pages finished deploying).
+          for i in $(seq 1 40); do [ "$(curl -s -o /dev/null -w '%{http_code}' "https://zerenaod-ux.github.io/content-engine/videos/$TAG.mp4" -r 0-1)" = 206 ] || [ "$(curl -s -o /dev/null -w '%{http_code}' "https://zerenaod-ux.github.io/content-engine/videos/$TAG.mp4" -r 0-1)" = 200 ] && break; sleep 15; done
+          gh label create scene-review--color 6a55c9 --description "How It Ticks video to watch (not posted)" 2>/dev/null || true
           printf 'How It Ticks video (4th system, NOT posted).\n\nWatch: %s\n\nSaved in the How It Ticks folder: release %s. Approve in the app to file it under Saved, or Skip to hold it under Delete. Nothing is posted or deleted.\n' "$URL" "$TAG" > body.txt
           V=$(python3 -c "import json;print(json.load(open('ce-checks.json')).get('verdict','warn'))" 2>/dev/null || echo warn)
           R=$(python3 -c "import json;print('; '.join(json.load(open('ce-checks.json')).get('reasons',[])))" 2>/dev/null || true)
