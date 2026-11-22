@@ -1,0 +1,93 @@
+{
+  "object": "window blind",
+  "title": "How a window blind works",
+  "theme": "cool",
+  "parts": [
+    {
+      "id": "frame",
+      "kind": "frame",
+      "x": 0,
+      "z": 0,
+      "w": 5,
+      "h": 4.4
+    },
+    {
+      "id": "wheel",
+      "kind": "pulley",
+      "center": [
+        0,
+        3.4
+      ],
+      "r": 0.8
+    },
+    {
+      "id": "weight",
+      "kind": "slider",
+      "origin": [
+        0.8,
+        2.6
+      ],
+      "size": [
+        0.7,
+        0.7
+      ],
+      "axis": "z",
+      "travel": 1.7,
+      "dir": -1
+    },
+    {
+      "id": "pin",
+      "kind": "pin",
+      "center": [
+        0,
+        3.4
+      ],
+      "r": 0.15
+    }
+  ],
+  "labels": {
+    "wheel": "pulley wheel",
+    "weight": "bottom bar",
+    "pin": "cord attachment"
+  },
+  "links": [
+    {
+      "type": "rope",
+      "pulley": "wheel",
+      "slider": "weight",
+      "ratio": 1.0
+    }
+  ],
+  "drive": [
+    {
+      "beat": 2,
+      "part": "wheel",
+      "to": 0.8
+    },
+    {
+      "beat": 3,
+      "part": "wheel",
+      "to": 1.6
+    },
+    {
+      "beat": 4,
+      "part": "wheel",
+      "to": 2.1
+    },
+    {
+      "beat": 5,
+      "part": "wheel",
+      "to": 0.6
+    }
+  ],
+  "facts": {
+    "intro": "A cord is threaded over a small wheel at the top of the blind.",
+    "reveal": "The wheel is fixed to a pin that lets the cord slide but keeps the wheel in place.",
+    "step1": "When you pull the cord, the wheel turns and lifts the bottom bar.",
+    "step2": "The bottom bar, acting as the weight, rises as the cord shortens.",
+    "step3": "A spring inside the blind pulls the bottom bar back down when you release the cord.",
+    "step4": "The cord rewinds around the wheel, ready for the next pull.",
+    "hold": "The wheel\u2019s axle holds the cord tension, so the blind stays at the chosen height.",
+    "payoff": "Releasing the cord lets the spring lower the blind, completing the lift\u2011lower cycle."
+  }
+}
