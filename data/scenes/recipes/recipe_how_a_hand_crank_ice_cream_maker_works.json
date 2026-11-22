@@ -1,0 +1,115 @@
+{
+  "object": "ice cream maker",
+  "title": "How a hand\u2011crank ice\u2011cream maker works",
+  "theme": "cool",
+  "parts": [
+    {
+      "id": "frame",
+      "kind": "frame",
+      "x": 0,
+      "z": 0,
+      "w": 7,
+      "h": 4.2
+    },
+    {
+      "id": "crank",
+      "kind": "lever",
+      "pivot": [
+        -2.4,
+        2.0
+      ],
+      "length": 0.9,
+      "angle0": 0
+    },
+    {
+      "id": "big",
+      "kind": "gear",
+      "center": [
+        -2.4,
+        2.0
+      ],
+      "r": 1.1,
+      "teeth": 22
+    },
+    {
+      "id": "left",
+      "kind": "gear",
+      "center": [
+        -0.3,
+        2.0
+      ],
+      "r": 1.0,
+      "teeth": 20
+    },
+    {
+      "id": "right",
+      "kind": "gear",
+      "center": [
+        1.7,
+        2.0
+      ],
+      "r": 1.0,
+      "teeth": 20
+    }
+  ],
+  "labels": {
+    "crank": "turn handle",
+    "big": "drive gear",
+    "left": "spool gear"
+  },
+  "links": [
+    {
+      "type": "mesh",
+      "a": "big",
+      "b": "left"
+    },
+    {
+      "type": "mesh",
+      "a": "left",
+      "b": "right"
+    },
+    {
+      "type": "couple",
+      "driver": "big",
+      "driven": "crank",
+      "ratio": 1.0
+    }
+  ],
+  "drive": [
+    {
+      "beat": 1,
+      "part": "big",
+      "to": 6.28
+    },
+    {
+      "beat": 2,
+      "part": "big",
+      "to": 12.5
+    },
+    {
+      "beat": 3,
+      "part": "big",
+      "to": 18.8
+    },
+    {
+      "beat": 4,
+      "part": "big",
+      "to": 25.1
+    },
+    {
+      "beat": 5,
+      "part": "big",
+      "to": 31.4
+    }
+  ],
+  "facts": {
+    "intro": "The user grips the crank and begins to rotate it clockwise.",
+    "reveal": "The big gear, attached to the crank, starts turning with each full rotation.",
+    "step1": "The teeth of the big gear engage the left\u2011handed gear that sits beside it.",
+    "step2": "The left gear rotates in the opposite direction, pulling the inner barrel upward.",
+    "step3": "As the barrel rises, the frozen walls chill the ice\u2011cream mixture inside.",
+    "step4": "When the barrel reaches the top, the cam on the big gear releases it to drop back down.",
+    "hold": "Each repeat of this cycle draws more mixture into the cold zone and pushes frozen ice\u2011cream outward.",
+    "payoff": "Continuous cranking steadily freezes and churns the mixture into smooth ice\u2011cream."
+  }
+}
