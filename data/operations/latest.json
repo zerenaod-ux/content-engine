@@ -37,18 +37,15 @@
       "state": "awaiting_review"
     },
     "daily-short": {
-      "run_id": "45070561948",
+      "run_id": "45077483877",
       "attempt": 1,
       "kind": "daily-short",
-      "stage": "Stopped",
-      "label": "Stopped",
-      "updated_at": "2026-11-22T21:19:13.669717+00:00",
+      "stage": "selection",
+      "label": "Selecting a new topic",
+      "updated_at": "2026-11-22T22:24:23.218982+00:00",
       "source_branch": "main",
       "owner_approved": false,
-      "retryable": true,
-      "next_retry_at": 1795385053.669693,
-      "reason": "Temporary service or capacity failure",
-      "state": "waiting_to_resume"
+      "state": "running"
     }
   }
 }
