@@ -93,7 +93,8 @@ def validate(recipe):
  for d in drive:
   p=ids.get(d.get('part'))
   if not p or p['kind'] not in PARAM:raise RecipeError('drive targets a moving part')
-  if not isinstance(d.get('beat'),int) or not 0<=d['beat']<=7:raise RecipeError('beat must be 0-7')
+  try:d['beat']=min(7,max(0,int(round(float(d.get('beat'))))))  # tolerate '3', 3.0 or an off-by-one 8
+  except (TypeError,ValueError):raise RecipeError('beat must be 0-7')
   lim=(-1.7,1.7) if PARAM[p['kind']]=='angle' else (0,p.get('travel',1))
   if p['kind'] in ('gear','cam','pulley'):lim=(-40,40)
   _num(d.get('to'),'to',*lim);keyed.setdefault(p['id'],set()).add(d['beat'])

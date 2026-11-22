@@ -61,7 +61,7 @@ def _call_once(system,prompt,max_tokens=10000,temperature=.5,reasoning_effort="l
                             try:retry_at=time.time()+max(0,float(raw))
                             except (ValueError,TypeError):
                                 try:retry_at=email.utils.parsedate_to_datetime(raw).timestamp()
-                                except (ValueError,TypeError,AttributeError):retry_at=time.time()+900
+                                except (ValueError,TypeError,AttributeError):retry_at=time.time()+(65 if 'ovh' in host else 900)
                             retry_at=min(retry_at,time.time()+3600)  # never lock a service for more than an hour
                             remember_cooldown(host,retry_at)
                         raise
