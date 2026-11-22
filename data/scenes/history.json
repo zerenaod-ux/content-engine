@@ -1077,5 +1077,19 @@
     "category": "kit recipe",
     "record_run": "45068361995",
     "record_attempt": "1"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "tested component rejected: Shared provider cooldown active | Shared provider cooldown active | Shared provider cooldown active\n",
+    "date": "2026-11-22",
+    "topic": "How the Stapler\u2019s Magazine Spring Ensures Continuous Stapling",
+    "title": "",
+    "subject": "stapler",
+    "keywords": [],
+    "category": "tested mechanism",
+    "failed": true,
+    "record_run": "45077483877",
+    "record_attempt": "1",
+    "owner": "45077483877"
   }
 ]
