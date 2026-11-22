@@ -750,5 +750,13 @@
     "state": "reserved",
     "policy": "original-idea-and-visuals-v1",
     "mechanism": "recipe_how_a_clothesline_works"
+  },
+  {
+    "topic": "Why a kitchen trash can lid stays closed until you press it",
+    "visual_family": "recipe_how_a_trash_can_lid_works",
+    "owner": "44991275567",
+    "state": "reserved",
+    "policy": "original-idea-and-visuals-v1",
+    "mechanism": "recipe_how_a_trash_can_lid_works"
   }
 ]
