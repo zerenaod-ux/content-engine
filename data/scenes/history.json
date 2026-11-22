@@ -1051,5 +1051,19 @@
     "record_run": "45030496410",
     "record_attempt": "3",
     "owner": "45030496410"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "tested component rejected: Shared provider cooldown active | Shared provider cooldown active | Shared provider cooldown active\n",
+    "date": "2026-11-22",
+    "topic": "How squeezing the handles stores energy in the clothespin spring",
+    "title": "",
+    "subject": "clothespin",
+    "keywords": [],
+    "category": "tested mechanism",
+    "failed": true,
+    "record_run": "45056546389",
+    "record_attempt": "1",
+    "owner": "45056546389"
   }
 ]
