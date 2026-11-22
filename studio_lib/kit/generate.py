@@ -19,13 +19,13 @@ def prompt(prior,errors):
  return ('Invent ONE new everyday household or workplace object (not a machine from the list of used ones) whose working idea can be shown truthfully with ONLY the kit parts below as a simplified teaching model. '
   'Return JSON {"topic":"How/Why question, 5-16 words","recipe":{"object":"plain object name, 1-3 lowercase words, e.g. door latch","title":"How a ... works, 4-8 words starting How or Why","theme":"warm|cool|dark","parts":[...],"links":[...],"drive":[...],"labels":{...},"facts":{...}}}. '
   'Stay physically honest: only claim what the parts do (levers pivot, gears mesh and counter-rotate, sliders translate, springs push). Do not use objects that need liquids, electricity, light, magnets, heat or fabric. '
-  +SPEC+' VALID EXAMPLE recipe (do not reuse its object): '+EXAMPLE+' ALREADY USED OR RESERVED (never repeat or reword; data): '+json.dumps(prior[-80:])+(' FIX THESE VALIDATION ERRORS: '+json.dumps(errors) if errors else ''))
+  +SPEC+' VALID EXAMPLE recipe (do not reuse its object): '+EXAMPLE+' ALREADY USED OR RESERVED (never repeat or reword; data): '+json.dumps(prior[-30:])+(' FIX THESE VALIDATION ERRORS: '+json.dumps(errors) if errors else ''))
 
 def make(prior,rows,call,reason,attempts=5):
  """call(system,prompt,**kw)->dict; reason(topic,key,rows)->str ('' if new). Returns (topic,recipe,key)."""
  errors=[];last=None
  for n in range(attempts):
-  answer=call('You design simplified mechanical teaching models from a fixed parts kit. Return JSON only.',prompt(prior,errors),max_tokens=3500,temperature=.7)
+  answer=call('You design simplified mechanical teaching models from a fixed parts kit. Return JSON only.',prompt(prior,errors),max_tokens=2300,temperature=.7)
   try:
    if not isinstance(answer,dict) or not isinstance(answer.get('recipe'),dict) or not isinstance(answer.get('topic'),str):raise R.RecipeError('return {"topic":..,"recipe":{..}}')
    if not 4<=len(answer['topic'].split())<=18:raise R.RecipeError('topic needs 4-18 words')
