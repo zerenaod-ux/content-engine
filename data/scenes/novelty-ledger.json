@@ -664,5 +664,15 @@
     "state": "reserved",
     "policy": "original-idea-and-visuals-v1",
     "mechanism": "zipper"
+  },
+  {
+    "topic": "How the zipper slider interlocks staggered teeth to seal two fabric edges",
+    "mechanism": "zipper",
+    "visual_family": "interlocking_zipper",
+    "state": "created",
+    "owner": "44977520702",
+    "encoded_run": "44977520702",
+    "policy": "original-idea-and-visuals-v1",
+    "media_sha256": "12f66123e5f1aa37ce81333c7542722ef1cec2382c2860302251b119fc646402"
   }
 ]
