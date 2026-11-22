@@ -163,6 +163,10 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           if [ -f scene-factory.mp4 ]; then python3 scene_lib/ideas.py record auto-scene.json; elif [ -f idea.json ] || [ -f writer-log.txt ]; then python3 scene_lib/ideas.py record auto-scene.json failed; else exit 0; fi
+          # Plan M (2026-11-22): a run that died because free AI was busy (no video made) must not burn its machine/topic.
+          if [ ! -f scene-factory.mp4 ] && grep -qiE 'cooldown|HTTP Error (408|429|50[0-9])|HTTP (429|50[0-9])|rate.?limit|quota|timed? ?out|ServiceUnavailable|narration needs|invalid json|Budget' idea-log.txt writer-log.txt auto-scene.json 2>/dev/null; then
+            python3 -m studio_lib.durable_topics release-failed || true
+          fi
           python3 -m studio_lib.durable_topics save-records
       - name: Attach to release
         if: always() && steps.capacity.outputs.should_build == 'true'

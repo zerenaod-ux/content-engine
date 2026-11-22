@@ -46,3 +46,12 @@ class DurableTopicTests(unittest.TestCase):
   self.assertEqual(owner,'7');self.assertEqual(durable.reservation_owner(topic),'7')
   with patch.object(durable,'github',return_value={**source,'conclusion':'success'}):
    with self.assertRaises(ValueError):durable.resume_topic('7')
+
+
+def test_release_failed_removes_only_unproduced_rows_of_that_run(monkeypatch):
+    from studio_lib import durable_topics as d
+    store={d.LEDGER:[{'topic':'a','owner':'7','state':'reserved'},{'topic':'b','owner':'7','state':'created','tag':'ce-1'},{'topic':'c','owner':'8','state':'reserved'}],'data/scenes/novelty-ledger.json':[]}
+    monkeypatch.setattr(d,'rows',lambda path,required=True:(list(store[path]),'sha'))
+    monkeypatch.setattr(d,'write_document',lambda path,data,sha,msg:store.__setitem__(path,data))
+    d.release_failed('7')
+    assert [r['topic'] for r in store[d.LEDGER]]==['b','c']

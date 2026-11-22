@@ -113,6 +113,28 @@ def save_records():
         baseline[path]=local
     BASE.write_text(json.dumps(baseline))
 
+RELEASE_PATHS=(LEDGER,'data/scenes/novelty-ledger.json')
+
+def _produced(r):
+    return any(r.get(k) for k in ('video','tag','media_sha256','published_at','scheduled_at')) or r.get('state') in ('created','rendered','scheduled','published','skipped','deleted','saved')
+
+def release_failed(run_id=None):
+    """A run that died before making a video (busy free AI, bad JSON, word count) gives its reservation back, so the topic and machine are not burned.
+    Removes ONLY reserved rows owned by this run that have no video. Done on the remote documents (append-only save_records cannot remove)."""
+    run_id=str(run_id or os.environ['GITHUB_RUN_ID'])
+    for path in RELEASE_PATHS:
+        for attempt in range(6):
+            data,sha=rows(path,False)
+            keep=[r for r in data if not (any(str(r.get(k))==run_id for k in ('owner','record_run','run_id')) and not _produced(r) and (r.get('state')=='reserved' or r.get('failed') is True))]
+            if len(keep)==len(data):break
+            try:
+                write_document(path,keep,sha,'Release topic reserved by a failed run');print('released',len(data)-len(keep),'row(s) from',path);break
+            except urllib.error.HTTPError as e:
+                if e.code not in (409,422) or attempt==5:raise
+                time.sleep(1)
+
 if __name__=='__main__':
-    parser=argparse.ArgumentParser();parser.add_argument('action',choices=['save-records'])
-    parser.parse_args();save_records()
+    parser=argparse.ArgumentParser();parser.add_argument('action',choices=['save-records','release-failed'])
+    a=parser.parse_args()
+    if a.action=='save-records':save_records()
+    else:release_failed()
