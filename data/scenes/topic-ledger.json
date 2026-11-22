@@ -157,5 +157,13 @@
     "state": "reserved",
     "mechanism": "recipe_how_a_drawer_slides_out",
     "visual_family": "recipe_how_a_drawer_slides_out"
+  },
+  {
+    "topic": "How does a simple paper shredder work?",
+    "topic_key": "paper shredder simple",
+    "owner": "44980406165",
+    "state": "reserved",
+    "mechanism": "recipe_how_a_paper_shredder_works",
+    "visual_family": "recipe_how_a_paper_shredder_works"
   }
 ]
