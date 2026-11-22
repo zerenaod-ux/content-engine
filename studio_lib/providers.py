@@ -6,7 +6,7 @@ from studio_lib.service_queue import lease,cooling_down,remember_cooldown
 _UNAVAILABLE=set()
 class ServiceUnavailable(ValueError):
     """No usable free service answered; retain valid work for a later run."""
-def call(system,prompt,max_tokens=10000,temperature=.5,reasoning_effort="low"):
+def _call_once(system,prompt,max_tokens=10000,temperature=.5,reasoning_effort="low"):
     # GitHub Models produced empty responses in the first proof run; do not
     # burn repeated fallback attempts on it. Other channels' router is untouched.
     providers=[p for p in llm.PROVIDERS if p[0]!='GITHUB_MODELS_TOKEN' and os.environ.get(p[0])]
@@ -81,3 +81,12 @@ def call(system,prompt,max_tokens=10000,temperature=.5,reasoning_effort="low"):
                 break
             except Exception as e:last=type(e).__name__+': '+str(e)[:180];break
     raise ServiceUnavailable(' | '.join(failures[-3:]) if failures else last)
+
+
+def call(system,prompt,max_tokens=10000,temperature=.5,reasoning_effort="low"):
+    """Free writers rate-limit by the minute: wait and ask again (up to 3 waits) before giving up."""
+    for wait in range(4):
+        try:return _call_once(system,prompt,max_tokens,temperature,reasoning_effort)
+        except ServiceUnavailable:
+            if wait==3:raise
+            print('studio providers busy; waiting 40s',flush=True);time.sleep(40)
