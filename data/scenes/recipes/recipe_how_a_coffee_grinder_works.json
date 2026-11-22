@@ -1,0 +1,115 @@
+{
+  "object": "coffee grinder",
+  "title": "How a coffee grinder works",
+  "theme": "warm",
+  "parts": [
+    {
+      "id": "frame",
+      "kind": "frame",
+      "x": 0,
+      "z": 0,
+      "w": 7,
+      "h": 4.2
+    },
+    {
+      "id": "crank",
+      "kind": "lever",
+      "pivot": [
+        -2.4,
+        2.0
+      ],
+      "length": 0.9,
+      "angle0": 0
+    },
+    {
+      "id": "big",
+      "kind": "gear",
+      "center": [
+        -2.4,
+        2.0
+      ],
+      "r": 1.1,
+      "teeth": 22
+    },
+    {
+      "id": "left",
+      "kind": "gear",
+      "center": [
+        -0.3,
+        2.0
+      ],
+      "r": 1.0,
+      "teeth": 20
+    },
+    {
+      "id": "right",
+      "kind": "gear",
+      "center": [
+        1.7,
+        2.0
+      ],
+      "r": 1.0,
+      "teeth": 20
+    }
+  ],
+  "labels": {
+    "crank": "turn handle",
+    "big": "main gear",
+    "left": "side gear"
+  },
+  "links": [
+    {
+      "type": "mesh",
+      "a": "big",
+      "b": "left"
+    },
+    {
+      "type": "mesh",
+      "a": "left",
+      "b": "right"
+    },
+    {
+      "type": "couple",
+      "driver": "big",
+      "driven": "crank",
+      "ratio": 1.0
+    }
+  ],
+  "drive": [
+    {
+      "beat": 1,
+      "part": "big",
+      "to": 6.28
+    },
+    {
+      "beat": 2,
+      "part": "big",
+      "to": 12.5
+    },
+    {
+      "beat": 3,
+      "part": "big",
+      "to": 18.8
+    },
+    {
+      "beat": 4,
+      "part": "big",
+      "to": 25.1
+    },
+    {
+      "beat": 5,
+      "part": "big",
+      "to": 31.4
+    }
+  ],
+  "facts": {
+    "intro": "A sturdy handle extends from the top of the grinder, ready for a thumb to grasp and rotate.",
+    "reveal": "Turning the handle rotates a large central gear that sits inside the grinder\u2019s body.",
+    "step1": "The big gear\u2019s teeth engage with a smaller side gear attached to the burr set.",
+    "step2": "As the side gear turns, it drives the burrs to rotate in opposite directions.",
+    "step3": "The rotating burrs crush coffee beans caught between them into a fine grind.",
+    "step4": "The ground coffee falls out through a chute at the bottom while the handle continues to spin.",
+    "hold": "If you stop turning, the gears lock together, holding the burrs in place and keeping the beans from moving.",
+    "payoff": "The simple gear train lets a single hand motion efficiently grind beans without electricity."
+  }
+}
