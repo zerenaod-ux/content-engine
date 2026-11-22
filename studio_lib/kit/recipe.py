@@ -7,10 +7,10 @@ from studio_lib.narration_timing import progress
 from studio_lib.solid_parts import background as gradient
 
 ZC=2.8
-KINDS={'frame':('x','z','w','h'),'lever':('pivot','length'),'gear':('center','r','teeth'),'slider':('origin','size','axis','travel'),'spring':('a','b'),'pin':('center','r'),'cam':('center','r','e'),'pulley':('center','r')}
-PARAM={'lever':'angle','gear':'angle','slider':'pos','cam':'angle','pulley':'angle'}
+KINDS={'frame':('x','z','w','h'),'lever':('pivot','length'),'gear':('center','r','teeth'),'slider':('origin','size','axis','travel'),'spring':('a','b'),'pin':('center','r'),'cam':('center','r','e'),'pulley':('center','r'),'shell':('x','z','w','h'),'liquid':('rect',),'jet':('a','b'),'finger':('slider','x'),'nozzle':('slider','to'),'block':('x','z','w','h')}
+PARAM={'lever':'angle','gear':'angle','slider':'pos','cam':'angle','pulley':'angle','liquid':'pos','jet':'pos'}
 THEMES={'warm':((250,241,213),(226,218,181),(222,210,179)),'cool':((226,238,246),(190,211,226),(205,222,232)),'dark':((24,31,45),(12,16,26),(30,36,48))}
-PALETTE={'frame':(110,84,60),'lever':(197,146,83),'gear':(213,170,76),'slider':(150,160,168),'spring':(164,178,179),'pin':(70,84,96),'cam':(205,112,84),'pulley':(96,150,176)}
+PALETTE={'frame':(110,84,60),'lever':(197,146,83),'gear':(213,170,76),'slider':(150,160,168),'spring':(164,178,179),'pin':(70,84,96),'cam':(205,112,84),'pulley':(96,150,176),'shell':(190,225,240),'liquid':(236,200,90),'jet':(236,200,90),'finger':(232,184,150),'nozzle':(214,220,224),'block':(232,184,150)}
 LIM={'x':(-7.5,7.5),'z':(-.5,7.5)}
 
 class RecipeError(ValueError):pass
@@ -56,7 +56,19 @@ def validate(recipe):
   elif k=='pin':_pt(p['center'],pid+'.center');_num(p['r'],'r',.08,.6)
   elif k=='cam':_pt(p['center'],pid+'.center');_num(p['r'],'r',.5,1.5);_num(p['e'],'e',.15,.6)
   elif k=='pulley':_pt(p['center'],pid+'.center');_num(p['r'],'r',.4,1.2)
- if not any(p['kind']!='frame' and p['kind']!='spring' and p['kind']!='pin' for p in parts):raise RecipeError('needs at least one moving part')
+  elif k in ('shell','block'):_num(p['x'],'x',*LIM['x']);_num(p['z'],'z',*LIM['z']);_num(p['w'],'w',.2,12);_num(p['h'],'h',.1,8)
+  elif k=='liquid':
+   r_=p['rect']
+   if not (isinstance(r_,(list,tuple)) and len(r_)==4):raise RecipeError(pid+'.rect must be [x0,z0,x1,z1]')
+   _pt(r_[:2],pid+'.rect');_pt(r_[2:],pid+'.rect')
+   if r_[2]<=r_[0] or r_[3]<=r_[1]:raise RecipeError(pid+'.rect must have x1>x0 and z1>z0')
+   _num(p.get('pos0',0),'pos0',0,1)
+  elif k=='jet':_pt(p['a'],pid+'.a');_pt(p['b'],pid+'.b')
+  elif k in ('finger','nozzle'):
+   if p['slider'] not in ids and p['slider'] not in [q.get('id') for q in parts]:raise RecipeError(pid+' references an unknown slider')
+   _num(p['x' if k=='finger' else 'to'],'x',*LIM['x'])
+  if p.get('color') is not None and not (isinstance(p['color'],(list,tuple)) and len(p['color'])==3 and all(isinstance(c,int) and 0<=c<=255 for c in p['color'])):raise RecipeError(pid+'.color must be [r,g,b]')
+ if not any(p['kind'] in PARAM for p in parts):raise RecipeError('needs at least one moving part')
  if sum(p['kind']=='frame' for p in parts)!=1:raise RecipeError('exactly one frame required')
  if not isinstance(labels,dict) or not 3<=len(labels)<=8 or any(k not in ids or not isinstance(v,str) or not 2<=len(v)<=28 for k,v in labels.items()):raise RecipeError('3-8 labels on existing parts required')
  driven=set()
@@ -97,6 +109,7 @@ def validate(recipe):
   except (TypeError,ValueError):raise RecipeError('beat must be 0-7')
   lim=(-1.7,1.7) if PARAM[p['kind']]=='angle' else (0,p.get('travel',1))
   if p['kind'] in ('gear','cam','pulley'):lim=(-40,40)
+  if p['kind'] in ('liquid','jet'):lim=(0,2)
   _num(d.get('to'),'to',*lim);keyed.setdefault(p['id'],set()).add(d['beat'])
  beats=set(b for s in keyed.values() for b in s)
  if len(beats&{1,2,3,4,5,6})<3:raise RecipeError('motion must happen in at least 3 of beats 1-6')
@@ -136,7 +149,7 @@ class Machine:
  def params(self,t,tl):
   b=tl['beats'];i=min(7,next((j for j,x in enumerate(b) if t<x['end']),7));val={}
   for pid,p in self.parts.items():
-   if p['kind'] in PARAM:val[pid]=p.get('angle0',0.) if p['kind']!='slider' else p.get('pos0',0.)
+   if p['kind'] in PARAM:val[pid]=p.get('pos0',0.) if p['kind'] in ('slider','liquid','jet') else p.get('angle0',0.)
   keys={}
   for d in self.drive:keys.setdefault(d['part'],[]).append(d)
   for pid,ks in keys.items():
@@ -180,6 +193,8 @@ class Machine:
    (cx,cz),(L,H)=self.slider_geom(p,val[pid]);return (cx-L/2,cz-H/2,cx+L/2,cz+H/2)
   if k in ('gear','pulley'):x,z=p['center'];r=p['r']*1.06;return (x-r,z-r,x+r,z+r)
   if k=='cam':x,z=p['center'];r=p['r']+p['e'];return (x-r,z-r,x+r,z+r)
+  if k=='liquid':x0,z0,x1,z1=p['rect'];return (x0,z0,x1,z1)
+  if k=='jet':(ax,az),(bx,bz)=p['a'],p['b'];return (min(ax,bx)-.15,min(az,bz)-.1,max(ax,bx)+.15,max(az,bz)+.1)
   return None
  def moving_ids(self):
   ids=[p['id'] for p in self.r['parts'] if p['kind'] in PARAM]
@@ -244,6 +259,11 @@ class Machine:
    elif k=='slider':
     (cx,cz),(L,H)=self.slider_geom(p,val[pid]);x,z=cx,cz+H/2
    elif k in ('gear','pulley','cam'):x,z=p['center'][0]-p['r']*1.05-.2,p['center'][1]
+   elif k in ('shell','block'):x,z=p['x']+p['w']/2*(.8 if k=='shell' else 0),p['z']+p['h']
+   elif k=='liquid':x0,z0,x1,z1=p['rect'];x,z=(x0+x1)/2,z0+(z1-z0)*max(.2,min(1,val.get(pid,0)))*.6
+   elif k=='jet':x,z=(p['a'][0]+p['b'][0])/2+.35,(p['a'][1]+p['b'][1])/2
+   elif k in ('finger','nozzle'):
+    sl=self.parts[p['slider']];(cx,cz),(L,H)=self.slider_geom(sl,val[sl['id']]);x,z=(p['x'],cz+H/2+1.1) if k=='finger' else (p['to']-.2,cz+.3)
    elif k=='spring':a=p['a'];e=self.point_of(p['b']['part'],val) if isinstance(p['b'],dict) else p['b'];x,z=(a[0]+e[0])/2,(a[1]+e[1])/2+.25
    else:x,z=p.get('center',p.get('pivot',(0,0)))[:2] if k!='frame' else (p['x'],p['z']+p['h'])
    px,py=s.point((x,0,z+ZC+.25));out.append((text,(px,py)))
@@ -253,8 +273,9 @@ class Machine:
   rivet=(168,150,120) if self.theme!='dark' else (110,130,150)
   for part in self.r['parts']:
    if part['id'] in hidden:continue
-   k=part['kind'];c=PALETTE[k]
+   k=part['kind'];c=tuple(part.get('color') or PALETTE[k])
    if k=='frame':
+    if part.get('invisible'):continue
     x,z,w,h=part['x'],part['z']+ZC,part['w'],part['h']
     s.box((x,.55,z+h/2),(w,.12,h),tuple(int(v*.78) for v in c))
     for sx in (-1,1):s.box((x+sx*(w/2-.1),0,z+h/2),(.2,1.0,h),c)
@@ -285,6 +306,31 @@ class Machine:
       if part.get('axis','x')=='x':s.box((tx,-.23,cz+ZC),(.2,.06,H*.86),(34,40,48))
       else:s.box((cx,-.23,tz+ZC),(L*.86,.06,.2),(34,40,48))
    elif k=='pin':s.cylinder((part['center'][0],-.1,part['center'][1]+ZC),part['r'],.5,c)
+   elif k=='block':
+    s.box((part['x'],-.05,part['z']+ZC+part['h']/2),(part['w'],.7,part['h']),tuple(part.get('color') or c))
+   elif k=='liquid':
+    x0,z0,x1,z1=part['rect'];lv=max(0.,min(1.,val[part['id']]))
+    if lv>.01:s.box(((x0+x1)/2,-.05,z0+ZC+(z1-z0)*lv/2),(x1-x0,.7,(z1-z0)*lv),tuple(part.get('color') or c))
+   elif k=='jet':
+    v=val[part['id']]
+    if v>.01:
+     (ax,az),(bx,bz)=part['a'],part['b'];f=min(v,1.);tl_=max(0.,v-1.)
+     pa=(ax+(bx-ax)*tl_,-.05,az+(bz-az)*tl_+ZC);pb=(ax+(bx-ax)*f,-.05,az+(bz-az)*f+ZC);col=tuple(part.get('color') or c)
+     if tl_<.98:s.beam(pa,pb,.07,col);s.cylinder((pb[0],-.05,pb[2]),.1,.14,col,n=12)
+   elif k=='nozzle':
+    sl=self.parts[part['slider']];(cx,cz),(L,H)=self.slider_geom(sl,val[sl['id']]);ex=part['to']
+    s.beam((cx+L/2-.1,-.05,cz+ZC),(ex,-.05,cz+ZC),.14,c);s.beam((ex,-.05,cz+ZC),(ex,-.05,cz+ZC-.22),.14,tuple(int(v*.8) for v in c))
+   elif k=='finger':
+    sl=self.parts[part['slider']];(cx,cz),(L,H)=self.slider_geom(sl,val[sl['id']]);top=cz+H/2+ZC;fx=part['x'];skin=tuple(part.get('color') or c)
+    s.beam((fx,-.05,top+.05),(fx,-.05,top+1.0),.2,skin);s.beam((fx,-.26,top+.08),(fx,-.26,top+.45),.08,(246,218,200))
+    s.beam((fx,-.05,top+1.0),(fx-.35,.05,top+1.7),.22,tuple(int(v*.94) for v in skin))
+  for part in self.r['parts']:   # glass bottle: translucent front/back panes + clear rim lines, so the inside shows through
+   if part['kind']!='shell' or part['id'] in hidden:continue
+   x,z,w,h=part['x'],part['z']+ZC,part['w'],part['h'];x0,x1=x-w/2,x+w/2
+   for y,a in ((.45,38),(-.62,52)):s.glass([(x0,y,z),(x1,y,z),(x1,y,z+h),(x0,y,z+h)],(185,225,240,a))
+   s.glass([(x0+.12,-.64,z+.1),(x0+.3,-.64,z+.1),(x0+.3,-.64,z+h-.1),(x0+.12,-.64,z+h-.1)],(255,255,255,70))
+   for ex in (x0,x1):s.beam((ex,-.62,z),(ex,-.62,z+h),.03,(226,242,250))
+   for ez in (z,z+h):s.beam((x0,-.62,ez),(x1,-.62,ez),.03,(226,242,250))
   for l in self.links:   # rope: pulley rim to the hanging slider
    if l['type']=='rope' and self.parts[l['pulley']]['id'] not in hidden:
     pu=self.parts[l['pulley']];sl=self.parts[l['slider']];(cx,cz),(L,H)=self.slider_geom(sl,val[sl['id']])

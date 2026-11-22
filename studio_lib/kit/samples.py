@@ -78,7 +78,25 @@ LEVER_PRESS={'object':'garlic press','title':'How a lever presses a plunger down
  'labels':{'handle':'Handle','ram':'Plunger','pin':'Hinge'},
  'links':[{'type':'yoke','lever':'handle','slider':'ram','sign':-1}],
  'drive':[{'beat':2,'part':'handle','to':.1},{'beat':3,'part':'handle','to':-.4},{'beat':4,'part':'handle','to':-.4},{'beat':5,'part':'handle','to':.1}]}
-SAMPLES=('DOOR_LATCH','GEAR_CRANK','CAM_PRESS','ROPE_LIFT','GEAR_TRAIN','WINCH','COUNTERWEIGHT','TWIN_CAM','LEVER_PRESS')
+SOAP_PUMP={'object':'soap dispenser','title':'How a soap pump squeezes out soap','theme':'warm',
+ 'parts':[{'id':'frame','kind':'frame','x':0,'z':0,'w':6.2,'h':5.4,'invisible':True},
+  {'id':'liquid','kind':'liquid','rect':[-1.3,0.4,1.3,2.9],'pos0':.8,'color':[236,196,84]},
+  {'id':'collar','kind':'block','x':0,'z':3.4,'w':1.2,'h':.3,'color':[238,238,232]},
+  {'id':'stem','kind':'slider','origin':[0,3.0],'size':[.3,2.6],'axis':'z','travel':.5,'dir':-1,'color':[236,196,84]},
+  {'id':'head','kind':'slider','origin':[0,4.5],'size':[1.1,.45],'axis':'z','travel':.5,'dir':-1,'color':[238,238,232]},
+  {'id':'spout','kind':'nozzle','slider':'head','to':2.0},
+  {'id':'finger','kind':'finger','slider':'head','x':0.0},
+  {'id':'spring','kind':'spring','a':[0.0,3.7],'b':{'part':'head'}},
+  {'id':'bottle','kind':'shell','x':0,'z':.3,'w':2.8,'h':3.1},
+  {'id':'palm','kind':'block','x':2.0,'z':.5,'w':1.5,'h':.28},
+  {'id':'drop','kind':'jet','a':[2.0,4.15],'b':[2.0,.9],'color':[236,196,84]},
+  {'id':'drop2','kind':'jet','a':[2.0,4.15],'b':[2.0,.9],'color':[236,196,84]}],
+ 'labels':{'bottle':'Bottle','liquid':'Liquid soap','head':'Pump head','spring':'Return spring','stem':'Pump tube','spout':'Spout'},
+ 'links':[{'type':'couple','driver':'head','driven':'stem','ratio':1.0}],
+ 'drive':[{'beat':2,'part':'head','to':.5},{'beat':3,'part':'head','to':0},{'beat':4,'part':'head','to':.5},{'beat':5,'part':'head','to':0},
+  {'beat':2,'part':'drop','to':1},{'beat':3,'part':'drop','to':2},{'beat':4,'part':'drop2','to':1},{'beat':5,'part':'drop2','to':2},
+  {'beat':2,'part':'liquid','to':.76},{'beat':4,'part':'liquid','to':.72}]}
+SAMPLES=('DOOR_LATCH','GEAR_CRANK','CAM_PRESS','ROPE_LIFT','GEAR_TRAIN','WINCH','COUNTERWEIGHT','TWIN_CAM','LEVER_PRESS','SOAP_PUMP')
 def with_facts(recipe):
  import copy;r=copy.deepcopy(recipe)
  r['facts']={a:'Fixture description of what is visible during the '+a+' beat of this simplified model.' for a in ('intro','reveal','step1','step2','step3','step4','hold','payoff')}

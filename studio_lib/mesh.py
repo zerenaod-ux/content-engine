@@ -1,7 +1,7 @@
 """Reusable CPU perspective geometry from the owner-reviewed prototype."""
 import math
 import numpy as np
-from PIL import ImageDraw
+from PIL import Image,ImageDraw
 W,H=720,1280
 def ease(x):
     x=max(0,min(1,x)); return x*x*(3-2*x)
@@ -15,7 +15,7 @@ def unit(a): return a/np.linalg.norm(a)
 class Scene:
     """A tiny perspective mesh renderer; all assets remain local and reusable."""
     def __init__(self,t,zoom,target,azimuth,elevation=10,raster_scale=1,lighting=False):
-        self.t=t; self.faces=[]; self.lines=[]; self.gear_marks=[]
+        self.t=t; self.glass_faces=[]; self.faces=[]; self.lines=[]; self.gear_marks=[]
         self.raster_scale=raster_scale;self.lighting=lighting;self.world_faces=[]
         self.target=np.array(target,dtype=float)
         self.eye=self.target+np.array([math.sin(azimuth)*16,-math.cos(azimuth)*16,elevation])/zoom
@@ -75,6 +75,10 @@ class Scene:
         # Keep the large gear's mark on its exposed left/lower sector.
         marked=angle+(math.pi if r>.4 else 0)
         self.gear_marks.append(((x,y-.21,z),r,marked))
+    def glass(self,points,rgba):
+        """Translucent face (bottle glass): drawn after every solid face so the parts inside show through."""
+        q,dep=self.project(np.asarray(points,float))
+        if min(dep)>=.2:self.glass_faces.append((float(dep.mean()),[tuple(x) for x in q],rgba))
     def paint(self,im):
         d=ImageDraw.Draw(im)
         for _,p,c in sorted(self.faces,key=lambda x:-x[0]):d.polygon([tuple(v*self.raster_scale for v in point) for point in p],fill=c)
@@ -83,4 +87,8 @@ class Scene:
             q=q*self.raster_scale
             d.line([tuple(v) for v in q],fill=(255,247,207),width=(5 if r>.4 else 4)*self.raster_scale)
             px,py=q[-1];radius=3*self.raster_scale;d.ellipse((px-radius,py-radius,px+radius,py+radius),fill=(255,247,207))
+        if self.glass_faces:
+            over=Image.new('RGBA',im.size,(0,0,0,0));od=ImageDraw.Draw(over)
+            for _,pg,rgba in sorted(self.glass_faces,key=lambda x:-x[0]):od.polygon([tuple(v*self.raster_scale for v in pt) for pt in pg],fill=rgba)
+            im.paste(over,(0,0),over)
     def point(self,p):return tuple(self.project([p])[0][0])

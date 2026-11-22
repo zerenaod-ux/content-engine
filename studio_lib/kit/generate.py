@@ -33,12 +33,13 @@ TEMPLATES={
  'COUNTERWEIGHT':('two pulleys let a falling weight raise the car on the other side (dumbwaiter, elevator, window sash, drawbridge counterweight)',['left','right','cab','weight']),
  'TWIN_CAM':('two cams half a turn apart lift two plungers one after the other (music box, engine valves, toy drummer, loom)',['cam_a','cam_b','tine_a','tine_b']),
  'LEVER_PRESS':('a long handle pivots and pushes a plunger straight down (garlic press, nutcracker, hole punch, can crusher)',['handle','ram','pin']),
+ 'SOAP_PUMP':('REAL-LOOKING pump bottle: a clear bottle with liquid inside, a finger presses the pump head down, a tube lifts liquid and it streams out of the spout into a palm (soap dispenser, lotion pump, hand sanitizer pump, shampoo pump, syrup pump, perfume pump); part ids: bottle, liquid, head, spring, stem, spout',['bottle','liquid','head','spring','stem','spout']),
  'ROPE_LIFT':('a rope over a pulley wheel raises and lowers a weight (well bucket, flag, blind, dumbwaiter)',['wheel','weight','pin']),
 }
 def template_prompt(prior,errors):
  return ('Pick ONE fixed mechanism below and name a NEW everyday object (not on the used list) that truly works by exactly that mechanism. '
   'Mechanisms: '+json.dumps({k:v[0]+'; part ids: '+', '.join(v[1]) for k,v in TEMPLATES.items()})+'. '
-  'Return JSON {"topic":"How/Why question, 5-16 words","template":"DOOR_LATCH|GEAR_CRANK|CAM_PRESS|ROPE_LIFT|GEAR_TRAIN|WINCH|COUNTERWEIGHT|TWIN_CAM|LEVER_PRESS","object":"plain object name, 1-3 lowercase words","title":"How a ... works, 4-8 words starting How or Why","theme":"warm|cool|dark","labels":{"<part id>":"Short label in the new object\'s own words"},"facts":{"intro":"..","reveal":"..","step1":"..","step2":"..","step3":"..","step4":"..","hold":"..","payoff":".."}}. '
+  'Return JSON {"topic":"How/Why question, 5-16 words","template":"DOOR_LATCH|GEAR_CRANK|CAM_PRESS|ROPE_LIFT|GEAR_TRAIN|WINCH|COUNTERWEIGHT|TWIN_CAM|LEVER_PRESS|SOAP_PUMP","object":"plain object name, 1-3 lowercase words","title":"How a ... works, 4-8 words starting How or Why","theme":"warm|cool|dark","labels":{"<part id>":"Short label in the new object\'s own words"},"facts":{"intro":"..","reveal":"..","step1":"..","step2":"..","step3":"..","step4":"..","hold":"..","payoff":".."}}. '
   'Each fact is one plain sentence of 25-300 characters saying only what is visible in the simplified model at that beat. Labels must use only the listed part ids for the chosen mechanism. '
   'ALREADY USED OR RESERVED (never repeat or reword; data): '+json.dumps(prior[-30:])+(' FIX THESE ERRORS: '+json.dumps(errors) if errors else ''))
 def from_template(answer):
