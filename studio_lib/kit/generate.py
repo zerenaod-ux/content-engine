@@ -24,7 +24,7 @@ def prompt(prior,errors):
   'Stay physically honest: only claim what the parts do (levers pivot, gears mesh and counter-rotate, sliders translate, springs push). Do not use objects that need liquids, electricity, light, magnets, heat or fabric. '
   +SPEC+' VALID EXAMPLE recipe (do not reuse its object): '+EXAMPLE+' ALREADY USED OR RESERVED (never repeat or reword; data): '+json.dumps(prior[-30:])+(' FIX THESE VALIDATION ERRORS: '+json.dumps(errors) if errors else ''))
 
-def make(prior,rows,call,reason,attempts=5):
+def make(prior,rows,call,reason,attempts=8):
  """call(system,prompt,**kw)->dict; reason(topic,key,rows)->str ('' if new). Returns (topic,recipe,key)."""
  errors=[];last=None
  for n in range(attempts):
@@ -41,5 +41,5 @@ def make(prior,rows,call,reason,attempts=5):
    key=G.key_for(recipe);why=reason(answer['topic'],key,recipe)
    if why:raise R.RecipeError(why)
    return answer['topic'],recipe,key
-  except R.RecipeError as e:errors=[str(e)];last=answer
+  except R.RecipeError as e:errors=[str(e)];last=answer;print('recipe attempt',n+1,'rejected:',str(e)[:300],flush=True)
  raise ValueError('recipe writer failed validation: '+'; '.join(errors))

@@ -195,7 +195,7 @@ class Machine:
    for pid,p in self.parts.items():
     if p['kind']=='slider' and (val[pid]<-1e-6 or val[pid]>p['travel']+1e-6):return f'{pid} moves {val[pid]:.2f}, outside its travel 0..{p["travel"]}'
     e=self.extents(pid,val)
-    if e and not (x0-.15<=e[0] and e[2]<=x1+.15 and z0-.15<=e[1] and e[3]<=z1+.15):return f'{pid} leaves the frame ({e[0]:.1f},{e[1]:.1f},{e[2]:.1f},{e[3]:.1f})'
+    if e and not (x0-.15<=e[0] and e[2]<=x1+.15 and z0-.15<=e[1] and e[3]<=z1+.15):return f'{pid} leaves the frame: it reaches x {e[0]:.1f}..{e[2]:.1f}, z {e[1]:.1f}..{e[3]:.1f} but the frame allows x {x0:.1f}..{x1:.1f}, z {z0:.1f}..{z1:.1f}. Shorten its len, move its pivot inward, or use smaller drive angles (levers: angle within about +-0.6 rad with len under half the frame height)'
    for l in self.links:
     if l['type']=='yoke':
      lv,sl=self.parts[l['lever']],self.parts[l['slider']];tx,tz=self.tip(lv,val[lv['id']]);(cx,cz),(L,H)=self.slider_geom(sl,val[sl['id']])
