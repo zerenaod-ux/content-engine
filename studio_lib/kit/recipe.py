@@ -134,8 +134,8 @@ class Machine:
  """Generic machine with the same interface as the hand-built modules."""
  DARK=False
  def __init__(self,recipe):
-  self.r=recipe;self.parts={p['id']:p for p in recipe['parts']};self.theme=recipe.get('theme','warm')
-  self.DARK=self.theme=='dark';self.GROUND=THEMES[self.theme][2]
+  self.r=recipe;self.parts={p['id']:p for p in recipe['parts']};self.theme='dark'   # owner decision 2026-11-22: every machine video uses the dark cinematic set (the look of the 1K+ hits)
+  self.DARK=True;self.GROUND=(26,33,46)
   self.drive=sorted(recipe['drive'],key=lambda d:d['beat']);self.links=recipe.get('links',[])
   self.order=self._order();self._shots=None
  def _order(self):
@@ -218,8 +218,30 @@ class Machine:
      inside=(cz-H/2+.05<=tz<=cz+H/2-.05 and abs(tx-cx)<=L/2) if sl.get('axis','x')=='x' else (cx-L/2+.05<=tx<=cx+L/2-.05 and abs(tz-cz)<=H/2)
      if not inside:return f"{lv['id']} tip leaves the slot of {sl['id']}: lever and slider do not stay joined"
   return None
+ def accent(self):
+  """Glow colour behind the object: its liquid/cam/gear colour so each video gets its own mood."""
+  for k in ('liquid','cam','gear','pulley','slider'):
+   for p in self.r['parts']:
+    if p['kind']==k:
+     c=p.get('color') or PALETTE.get(k)
+     if c:return tuple(int(v) for v in c)
+  return (90,140,190)
  @functools.lru_cache(maxsize=1)
- def background(self):top,bot,_=THEMES[self.theme];return gradient(top,bot)
+ def background(self):
+  from PIL import Image,ImageFilter,ImageDraw
+  W,H=720,1280;y=np.linspace(0,1,H)[:,None,None];x=np.linspace(-1,1,W)[None,:,None]
+  top=np.array((10,14,24),float);bot=np.array((26,32,46),float);base=top+(bot-top)*y+np.zeros((H,W,1))
+  ac=np.array(self.accent(),float);ac=ac*.55+np.array((120,150,190))*.45
+  cy=.56;d=np.sqrt((x*1.15)**2+((y-cy)*1.05)**2);glow=np.clip(1-d/.95,0,1)**2.2
+  img=base+glow*(ac*.50-base*.25)           # soft spotlight behind the machine
+  rim=np.clip(1-np.abs(y-.80)/.05,0,1)**2*.10;img+=rim*ac                      # faint horizon line where the floor starts
+  vig=1-np.clip((np.abs(x)**2.2+np.abs(y-.5)**2.6*1.6)*.55,0,.62);img*=vig     # vignette
+  im=Image.fromarray(np.clip(img,0,255).astype('uint8'))
+  bk=Image.new('RGB',(W,H),(0,0,0));dr=ImageDraw.Draw(bk);import random;rg=random.Random(sum(self.accent()))
+  for _ in range(14):                                                           # soft out-of-focus lights
+   cx,cy2,r=rg.randint(0,W),rg.randint(260,820),rg.randint(26,70);dr.ellipse((cx-r,cy2-r,cx+r,cy2+r),fill=tuple(int(v*.20) for v in ac))
+  bk=bk.filter(ImageFilter.GaussianBlur(22))
+  return Image.fromarray(np.clip(np.asarray(im,float)+np.asarray(bk,float),0,255).astype('uint8'))
  def elevation(self,t,tl):return 5.5
  def _fit(self,box,pad,cap=2.7):
   w=box[2]-box[0]+2*pad;h=box[3]-box[1]+2*pad;zx=640/(48.75*w);zz=860*.95/(48.75*h)
