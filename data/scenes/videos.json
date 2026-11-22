@@ -534,5 +534,143 @@
     },
     "record_run": "44977520702",
     "record_attempt": "1"
+  },
+  {
+    "date": "2026-11-22",
+    "tag": "ce-20261122-0338",
+    "title": "How a Simple Latch Secures a Door \u2699\ufe0f",
+    "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@bb6636d4be16d5ebe15c059681dedc3743c8f2c4/videos/ce-20261122-0338.mp4",
+    "topic": "How does a simple latch keep a door closed?",
+    "topic_key": "closed door keep latch simple",
+    "generation_origin": {
+      "event": "workflow_dispatch",
+      "automatic_slot": false,
+      "run_id": "44980899837",
+      "attempt": 1,
+      "event_sha": "5707272765f7911d610d040f5f93fb788f537b97",
+      "source_ref": "main",
+      "manual_media_edits": false
+    },
+    "production_evidence": {
+      "policy": "unattended-proof-v1",
+      "novelty_policy": "original-idea-and-visuals-v1",
+      "width": 1080,
+      "height": 1920,
+      "duration": 51.8,
+      "media_sha256": "440b3f8f14b47d88b66a6b2c6a2f05ad2da3129bef95bcd42e8ac47e76dd1bca",
+      "alignment_revision": "causal-component-actions-v4",
+      "render_policy": "native-studio-1080-v1",
+      "voice": "af_heart",
+      "voice_policy": "how-it-ticks-narrator-v4-heart-clean",
+      "errors": [],
+      "owner_approved": false
+    },
+    "recipe": {
+      "object": "door latch",
+      "title": "How a door latch works",
+      "theme": "warm",
+      "parts": [
+        {
+          "id": "frame",
+          "kind": "frame",
+          "x": 0,
+          "z": 0,
+          "w": 7,
+          "h": 3.6
+        },
+        {
+          "id": "lever",
+          "kind": "lever",
+          "pivot": [
+            -2.2,
+            1.5
+          ],
+          "length": 2.0,
+          "angle0": 0
+        },
+        {
+          "id": "bolt",
+          "kind": "slider",
+          "origin": [
+            1.0,
+            1.5
+          ],
+          "size": [
+            2.2,
+            0.6
+          ],
+          "axis": "x",
+          "travel": 1.2
+        },
+        {
+          "id": "spring",
+          "kind": "spring",
+          "a": [
+            3.3,
+            1.5
+          ],
+          "b": {
+            "part": "bolt"
+          }
+        },
+        {
+          "id": "pin",
+          "kind": "pin",
+          "center": [
+            -2.2,
+            1.5
+          ],
+          "r": 0.2
+        }
+      ],
+      "labels": {
+        "lever": "Handle",
+        "bolt": "Latch bolt",
+        "spring": "Spring"
+      },
+      "links": [
+        {
+          "type": "couple",
+          "driver": "lever",
+          "driven": "bolt",
+          "ratio": -1.0,
+          "offset": 0
+        }
+      ],
+      "drive": [
+        {
+          "beat": 1,
+          "part": "lever",
+          "to": -0.8
+        },
+        {
+          "beat": 2,
+          "part": "lever",
+          "to": -0.8
+        },
+        {
+          "beat": 3,
+          "part": "lever",
+          "to": 0
+        },
+        {
+          "beat": 4,
+          "part": "lever",
+          "to": 0
+        }
+      ],
+      "facts": {
+        "intro": "A door latch uses a simple lever\u2011and\u2011slider mechanism to lock and unlock a door without any electricity or fluid.",
+        "reveal": "The lever (handle) pivots around a pin, while the slider (bolt) slides horizontally to engage the door frame.",
+        "step1": "At beat\u202f1 the handle is pulled down, rotating the lever clockwise about its pin.",
+        "step2": "The lever\u2019s rotation is coupled to the bolt with a 1:\u20111 ratio, pulling the bolt outward.",
+        "step3": "The spring attached to the bolt stores energy, keeping the bolt extended when the handle is released.",
+        "step4": "At beat\u202f3 the handle returns to neutral, allowing the spring to pull the bolt back into the locked position.",
+        "hold": "The bolt stays engaged by the spring\u2019s force until the handle is pulled again.",
+        "payoff": "This demonstrates how a mechanical latch can securely hold a door closed using only levers, sliders, and springs."
+      }
+    },
+    "record_run": "44980899837",
+    "record_attempt": "1"
   }
 ]
