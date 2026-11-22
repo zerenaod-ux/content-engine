@@ -885,5 +885,19 @@
     "record_run": "44979671861",
     "record_attempt": "1",
     "owner": "44979671861"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "tested component rejected: free request/time budget exhausted; accepted stages remain cached\n",
+    "date": "2026-11-22",
+    "topic": "How does a simple paper shredder work?",
+    "title": "",
+    "subject": "recipe_how_a_paper_shredder_works",
+    "keywords": [],
+    "category": "kit recipe",
+    "failed": true,
+    "record_run": "44980406165",
+    "record_attempt": "1",
+    "owner": "44980406165"
   }
 ]
