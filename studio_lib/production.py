@@ -41,6 +41,11 @@ def recipe_topic(rows):
         return scope_error(topic,key) or novelty.reason(topic,key,rows,run_id)
     topic,recipe,key=generate.make(prior,rows,call,why)
     register.save(recipe)
+    if os.environ.get('GITHUB_ACTIONS')=='true' and os.environ.get('GH_TOKEN'):
+        # Keep the recipe on main so an automatic recovery run (new checkout) can rebuild the same machine.
+        from studio_lib.service_queue import write_document
+        try:write_document('data/scenes/recipes/'+key+'.json',recipe,None,'Save kit recipe '+key)
+        except Exception as e:print('recipe backup skipped:',str(e)[:120],flush=True)
     Path('idea.json').write_text(json.dumps({'topic':topic,'topic_key':signature(topic),'category':'kit recipe','subject':key,'selected_by_system':True,'selection_owner':run_id,'keywords':[]},indent=2))
     return topic
 

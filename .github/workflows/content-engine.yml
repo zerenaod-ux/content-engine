@@ -89,8 +89,8 @@ jobs:
           CE_SHARED_SERVICES: '1'
           CE_JOB_KIND: short
           CE_AUTOMATIC_SLOT: ${{ github.event.inputs.automatic_slot }}
-          CE_MAX_SECONDS: '480'
-          CE_MAX_REQUESTS: '12'
+          CE_MAX_SECONDS: '720'
+          CE_MAX_REQUESTS: '20'
           TOPIC_IN: ${{ github.event.inputs.topic }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
