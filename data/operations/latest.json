@@ -40,12 +40,15 @@
       "run_id": "45070561948",
       "attempt": 4,
       "kind": "daily-short",
-      "stage": "planning",
-      "label": "Writing and checking narration",
-      "updated_at": "2026-11-23T01:20:17.333105+00:00",
+      "stage": "Stopped",
+      "label": "Stopped",
+      "updated_at": "2026-11-23T01:22:30.750003+00:00",
       "source_branch": "main",
       "owner_approved": false,
-      "state": "running"
+      "retryable": false,
+      "next_retry_at": null,
+      "reason": "Temporary service or capacity failure",
+      "state": "needs_attention"
     }
   }
 }
