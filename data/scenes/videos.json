@@ -1255,5 +1255,38 @@
     },
     "record_run": "45115320811",
     "record_attempt": "2"
+  },
+  {
+    "date": "2026-11-23",
+    "tag": "ce-20261123-2334",
+    "title": "How entry angle controls fiber reflection \u2699\ufe0f",
+    "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@f0535cda0ee09f58f5869d7839c52865ea80acd9/videos/ce-20261123-2334.mp4",
+    "topic": "How entry angle determines total internal reflection in a straight optical fiber",
+    "topic_key": "angle determines entry fiber internal optical reflection straight total",
+    "generation_origin": {
+      "event": "workflow_dispatch",
+      "automatic_slot": false,
+      "run_id": "45288095489",
+      "attempt": 1,
+      "event_sha": "fdc50154114b463fba54c4aec0b83633eb8f2448",
+      "source_ref": "main",
+      "manual_media_edits": false
+    },
+    "production_evidence": {
+      "policy": "unattended-proof-v1",
+      "novelty_policy": "original-idea-and-visuals-v1",
+      "width": 1080,
+      "height": 1920,
+      "duration": 57.1,
+      "media_sha256": "c974e4dc41da838c4ef5245511b1cdf8a74f4e308703052af26ae573a0ff55a1",
+      "alignment_revision": "causal-component-actions-v4",
+      "render_policy": "native-studio-1080-v1",
+      "voice": "af_heart",
+      "voice_policy": "how-it-ticks-narrator-v4-heart-clean",
+      "errors": [],
+      "owner_approved": false
+    },
+    "record_run": "45288095489",
+    "record_attempt": "1"
   }
 ]
