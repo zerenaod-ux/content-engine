@@ -1,12 +1,13 @@
 {
-  "checked_at": "2026-11-23T21:53:16.563543+00:00",
+  "checked_at": "2026-11-23T23:45:29.297467+00:00",
   "read_only": true,
   "complete": true,
   "platforms": {
     "youtube": {
-      "returned_posts": 12,
+      "returned_posts": 13,
       "statuses": {
         "error": 3,
+        "scheduled": 1,
         "sent": 9
       }
     },
@@ -356,6 +357,30 @@
           {
             "status": "sent",
             "due": "2026-11-23T02:30:00.000Z"
+          }
+        ]
+      }
+    },
+    {
+      "tag": "ce-20261123-2334",
+      "title": "How entry angle controls fiber reflection \u2699\ufe0f",
+      "platforms": {
+        "youtube": [
+          {
+            "status": "scheduled",
+            "due": "2026-11-24T18:30:00.000Z"
+          }
+        ],
+        "instagram": [
+          {
+            "status": "not_found_in_buffer",
+            "prior_owner_skip": false
+          }
+        ],
+        "tiktok": [
+          {
+            "status": "not_found_in_buffer",
+            "prior_owner_skip": false
           }
         ]
       }
