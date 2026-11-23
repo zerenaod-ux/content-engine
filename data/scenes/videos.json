@@ -804,5 +804,137 @@
     },
     "record_run": "45068361995",
     "record_attempt": "1"
+  },
+  {
+    "date": "2026-11-23",
+    "tag": "ce-20261123-0900",
+    "title": "How a Hand Crank Freezes Ice Cream \u2699\ufe0f",
+    "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@47cd6bb2d5317f7a018c5a4dfe3bbb134d92ab81/videos/ce-20261123-0900.mp4",
+    "topic": "How does a manual ice cream maker work",
+    "topic_key": "cream ice maker manual",
+    "generation_origin": {
+      "event": "workflow_dispatch",
+      "automatic_slot": false,
+      "run_id": "45108272489",
+      "attempt": 3,
+      "event_sha": "7a3d56fcaffe29f048238a9af96c65d6dffdf931",
+      "source_ref": "main",
+      "manual_media_edits": false
+    },
+    "production_evidence": {
+      "policy": "unattended-proof-v1",
+      "novelty_policy": "original-idea-and-visuals-v1",
+      "width": 1080,
+      "height": 1920,
+      "duration": 59.5,
+      "media_sha256": "1eb6b62f79f9e5ffa47278a66f70ece76f2520a6b2321b5cee2a07ed1d1a1765",
+      "alignment_revision": "causal-component-actions-v4",
+      "render_policy": "native-studio-1080-v1",
+      "voice": "af_heart",
+      "voice_policy": "how-it-ticks-narrator-v4-heart-clean",
+      "errors": [],
+      "owner_approved": false
+    },
+    "recipe": {
+      "object": "ice cream maker",
+      "title": "How a manual ice cream maker works",
+      "theme": "warm",
+      "parts": [
+        {
+          "id": "frame",
+          "kind": "frame",
+          "x": 0,
+          "z": 0,
+          "w": 5,
+          "h": 4.0
+        },
+        {
+          "id": "cam",
+          "kind": "cam",
+          "center": [
+            0,
+            1.3
+          ],
+          "r": 0.9,
+          "e": 0.35
+        },
+        {
+          "id": "plunger",
+          "kind": "slider",
+          "origin": [
+            0,
+            2.15
+          ],
+          "size": [
+            0.9,
+            0.6
+          ],
+          "axis": "z",
+          "travel": 0.7
+        },
+        {
+          "id": "spring",
+          "kind": "spring",
+          "a": [
+            0,
+            3.8
+          ],
+          "b": {
+            "part": "plunger"
+          }
+        }
+      ],
+      "labels": {
+        "cam": "Cam",
+        "plunger": "Plunger",
+        "spring": "Return spring"
+      },
+      "links": [
+        {
+          "type": "cam",
+          "cam": "cam",
+          "follower": "plunger"
+        }
+      ],
+      "drive": [
+        {
+          "beat": 1,
+          "part": "cam",
+          "to": 3.0
+        },
+        {
+          "beat": 2,
+          "part": "cam",
+          "to": 6.3
+        },
+        {
+          "beat": 3,
+          "part": "cam",
+          "to": 9.4
+        },
+        {
+          "beat": 4,
+          "part": "cam",
+          "to": 12.6
+        },
+        {
+          "beat": 5,
+          "part": "cam",
+          "to": 15.7
+        }
+      ],
+      "facts": {
+        "intro": "You see a hand crank on the side of the freezer bowl, connected to a small rotating cam.",
+        "reveal": "The cam has a raised lobe that pushes up on a vertical plunger as it turns.",
+        "step1": "When the cam lifts, the plunger pushes the paddle down through the frozen mixture, breaking ice crystals.",
+        "step2": "The paddle\u2019s motion is visible as it churns the creamy base while the cam continues to rotate.",
+        "step3": "As the cam lobe passes, the spring attached to the plunger pulls it back up, resetting for the next stroke.",
+        "step4": "Each crank rotation repeats the lift\u2011push\u2011release cycle, gradually turning the mixture into smooth ice cream.",
+        "hold": "The spring\u2019s tension keeps the plunger ready to be lifted again without manual effort.",
+        "payoff": "After many rotations, the continuous cam\u2011press action transforms the liquid into frozen ice cream."
+      }
+    },
+    "record_run": "45108272489",
+    "record_attempt": "3"
   }
 ]
