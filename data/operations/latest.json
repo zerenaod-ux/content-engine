@@ -37,17 +37,15 @@
       "state": "awaiting_review"
     },
     "daily-short": {
-      "run_id": "45141925404",
-      "attempt": 1,
+      "run_id": "45108272489",
+      "attempt": 3,
       "kind": "daily-short",
-      "stage": "Daily target covered",
-      "label": "Daily target covered",
-      "updated_at": "2026-11-23T08:51:07.812787+00:00",
+      "stage": "selection",
+      "label": "Selecting a new topic",
+      "updated_at": "2026-11-23T08:52:25.810864+00:00",
       "source_branch": "main",
       "owner_approved": false,
-      "state": "idle",
-      "reason": "Daily output target already covered",
-      "retryable": false
+      "state": "running"
     }
   }
 }
