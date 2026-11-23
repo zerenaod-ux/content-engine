@@ -800,5 +800,15 @@
     "state": "reserved",
     "policy": "original-idea-and-visuals-v1",
     "mechanism": "recipe_how_a_manual_ice_cream_maker_works"
+  },
+  {
+    "topic": "How does a manual ice cream maker work",
+    "mechanism": "recipe_how_a_manual_ice_cream_maker_works",
+    "visual_family": "recipe_how_a_manual_ice_cream_maker_works",
+    "state": "created",
+    "owner": "45108272489",
+    "encoded_run": "45108272489",
+    "policy": "original-idea-and-visuals-v1",
+    "media_sha256": "1eb6b62f79f9e5ffa47278a66f70ece76f2520a6b2321b5cee2a07ed1d1a1765"
   }
 ]
