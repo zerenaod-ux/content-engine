@@ -40,12 +40,12 @@
       "run_id": "45115320811",
       "attempt": 2,
       "kind": "daily-short",
-      "stage": "ready",
-      "label": "Rendered; Studio delivery pending",
-      "updated_at": "2026-11-23T09:10:31.802445+00:00",
+      "stage": "delivered",
+      "label": "In Studio; owner review required",
+      "updated_at": "2026-11-23T09:12:31.147239+00:00",
       "source_branch": "main",
       "owner_approved": false,
-      "state": "rendered"
+      "state": "awaiting_review"
     }
   }
 }
