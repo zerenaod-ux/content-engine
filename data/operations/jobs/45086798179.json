@@ -2,10 +2,13 @@
   "run_id": "45086798179",
   "attempt": 2,
   "kind": "daily-short",
-  "stage": "selection",
-  "label": "Selecting a new topic",
-  "updated_at": "2026-11-23T01:23:13.705516+00:00",
+  "stage": "Stopped",
+  "label": "Stopped",
+  "updated_at": "2026-11-23T01:28:06.603267+00:00",
   "source_branch": "main",
   "owner_approved": false,
-  "state": "running"
+  "retryable": true,
+  "next_retry_at": 1795398186.6032352,
+  "reason": "Temporary service or capacity failure",
+  "state": "waiting_to_resume"
 }
