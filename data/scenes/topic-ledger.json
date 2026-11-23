@@ -237,5 +237,13 @@
     "state": "reserved",
     "mechanism": "recipe_how_a_soap_dispenser_works",
     "visual_family": "recipe_how_a_soap_dispenser_works"
+  },
+  {
+    "topic": "How a desk ink stamp pad works using a cam press",
+    "topic_key": "cam desk ink pad press stamp using",
+    "owner": "45108272489",
+    "state": "reserved",
+    "mechanism": "recipe_how_a_ink_stamp_pad_works",
+    "visual_family": "recipe_how_a_ink_stamp_pad_works"
   }
 ]
