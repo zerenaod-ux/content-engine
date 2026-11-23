@@ -1,0 +1,99 @@
+{
+  "object": "ink stamp pad",
+  "title": "How a Ink Stamp Pad Works",
+  "theme": "warm",
+  "parts": [
+    {
+      "id": "frame",
+      "kind": "frame",
+      "x": 0,
+      "z": 0,
+      "w": 5,
+      "h": 4.0
+    },
+    {
+      "id": "cam",
+      "kind": "cam",
+      "center": [
+        0,
+        1.3
+      ],
+      "r": 0.9,
+      "e": 0.35
+    },
+    {
+      "id": "plunger",
+      "kind": "slider",
+      "origin": [
+        0,
+        2.15
+      ],
+      "size": [
+        0.9,
+        0.6
+      ],
+      "axis": "z",
+      "travel": 0.7
+    },
+    {
+      "id": "spring",
+      "kind": "spring",
+      "a": [
+        0,
+        3.8
+      ],
+      "b": {
+        "part": "plunger"
+      }
+    }
+  ],
+  "labels": {
+    "cam": "Cam",
+    "plunger": "Plunger",
+    "spring": "Return spring"
+  },
+  "links": [
+    {
+      "type": "cam",
+      "cam": "cam",
+      "follower": "plunger"
+    }
+  ],
+  "drive": [
+    {
+      "beat": 1,
+      "part": "cam",
+      "to": 3.0
+    },
+    {
+      "beat": 2,
+      "part": "cam",
+      "to": 6.3
+    },
+    {
+      "beat": 3,
+      "part": "cam",
+      "to": 9.4
+    },
+    {
+      "beat": 4,
+      "part": "cam",
+      "to": 12.6
+    },
+    {
+      "beat": 5,
+      "part": "cam",
+      "to": 15.7
+    }
+  ],
+  "facts": {
+    "intro": "A bright red cam sits on a fixed axle, ready to turn as you press the handle.",
+    "reveal": "When you rotate the cam, its raised lobe contacts the bottom of the plunger.",
+    "step1": "The plunger is forced upward, pulling the ink\u2011soaked pad away from the paper.",
+    "step2": "At the peak of the cam\u2019s lift, the pad is fully exposed and ready for a clean imprint.",
+    "step3": "Continuing the turn lets the cam\u2019s low side drop, allowing the spring to push the plunger down.",
+    "step4": "The plunger presses the pad back onto the paper, transferring the ink in a crisp shape.",
+    "hold": "If you pause at the top, the pad stays lifted, showing the mechanism frozen in action.",
+    "payoff": "Release the cam and the spring snaps the plunger back, resetting the stamp for the next use."
+  }
+}
