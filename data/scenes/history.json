@@ -1133,5 +1133,19 @@
     "record_run": "45108272489",
     "record_attempt": "1",
     "owner": "45108272489"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "tested component rejected: Shared provider cooldown active | Shared provider cooldown active | Shared provider cooldown active\n",
+    "date": "2026-11-23",
+    "topic": "Why does a hand sanitizer dispenser dispense?",
+    "title": "",
+    "subject": "recipe_how_a_hand_sanitizer_pump_works",
+    "keywords": [],
+    "category": "kit recipe",
+    "failed": true,
+    "record_run": "45115320811",
+    "record_attempt": "1",
+    "owner": "45115320811"
   }
 ]
