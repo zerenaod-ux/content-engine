@@ -828,5 +828,13 @@
     "encoded_run": "45115320811",
     "policy": "original-idea-and-visuals-v1",
     "media_sha256": "76085f1b5ed67922c0b6ff314e55f6a10b8fab2105063f4e85935d4b59ccbabe"
+  },
+  {
+    "topic": "How entry angle determines total internal reflection in a straight optical fiber",
+    "visual_family": "step_index_guidance",
+    "owner": "45288095489",
+    "state": "reserved",
+    "policy": "original-idea-and-visuals-v1",
+    "mechanism": "optical_fiber"
   }
 ]
