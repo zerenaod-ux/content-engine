@@ -1,0 +1,99 @@
+{
+  "object": "ice cream maker",
+  "title": "How a manual ice cream maker works",
+  "theme": "warm",
+  "parts": [
+    {
+      "id": "frame",
+      "kind": "frame",
+      "x": 0,
+      "z": 0,
+      "w": 5,
+      "h": 4.0
+    },
+    {
+      "id": "cam",
+      "kind": "cam",
+      "center": [
+        0,
+        1.3
+      ],
+      "r": 0.9,
+      "e": 0.35
+    },
+    {
+      "id": "plunger",
+      "kind": "slider",
+      "origin": [
+        0,
+        2.15
+      ],
+      "size": [
+        0.9,
+        0.6
+      ],
+      "axis": "z",
+      "travel": 0.7
+    },
+    {
+      "id": "spring",
+      "kind": "spring",
+      "a": [
+        0,
+        3.8
+      ],
+      "b": {
+        "part": "plunger"
+      }
+    }
+  ],
+  "labels": {
+    "cam": "Cam",
+    "plunger": "Plunger",
+    "spring": "Return spring"
+  },
+  "links": [
+    {
+      "type": "cam",
+      "cam": "cam",
+      "follower": "plunger"
+    }
+  ],
+  "drive": [
+    {
+      "beat": 1,
+      "part": "cam",
+      "to": 3.0
+    },
+    {
+      "beat": 2,
+      "part": "cam",
+      "to": 6.3
+    },
+    {
+      "beat": 3,
+      "part": "cam",
+      "to": 9.4
+    },
+    {
+      "beat": 4,
+      "part": "cam",
+      "to": 12.6
+    },
+    {
+      "beat": 5,
+      "part": "cam",
+      "to": 15.7
+    }
+  ],
+  "facts": {
+    "intro": "You see a hand crank on the side of the freezer bowl, connected to a small rotating cam.",
+    "reveal": "The cam has a raised lobe that pushes up on a vertical plunger as it turns.",
+    "step1": "When the cam lifts, the plunger pushes the paddle down through the frozen mixture, breaking ice crystals.",
+    "step2": "The paddle\u2019s motion is visible as it churns the creamy base while the cam continues to rotate.",
+    "step3": "As the cam lobe passes, the spring attached to the plunger pulls it back up, resetting for the next stroke.",
+    "step4": "Each crank rotation repeats the lift\u2011push\u2011release cycle, gradually turning the mixture into smooth ice cream.",
+    "hold": "The spring\u2019s tension keeps the plunger ready to be lifted again without manual effort.",
+    "payoff": "After many rotations, the continuous cam\u2011press action transforms the liquid into frozen ice cream."
+  }
+}
