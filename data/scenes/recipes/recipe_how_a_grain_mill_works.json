@@ -1,0 +1,115 @@
+{
+  "object": "grain mill",
+  "title": "How a grain mill works",
+  "theme": "warm",
+  "parts": [
+    {
+      "id": "frame",
+      "kind": "frame",
+      "x": 0,
+      "z": 0,
+      "w": 7,
+      "h": 4.2
+    },
+    {
+      "id": "crank",
+      "kind": "lever",
+      "pivot": [
+        -2.4,
+        2.0
+      ],
+      "length": 0.9,
+      "angle0": 0
+    },
+    {
+      "id": "big",
+      "kind": "gear",
+      "center": [
+        -2.4,
+        2.0
+      ],
+      "r": 1.1,
+      "teeth": 22
+    },
+    {
+      "id": "left",
+      "kind": "gear",
+      "center": [
+        -0.3,
+        2.0
+      ],
+      "r": 1.0,
+      "teeth": 20
+    },
+    {
+      "id": "right",
+      "kind": "gear",
+      "center": [
+        1.7,
+        2.0
+      ],
+      "r": 1.0,
+      "teeth": 20
+    }
+  ],
+  "labels": {
+    "crank": "Crank",
+    "big": "Drive gear",
+    "left": "Beater gear"
+  },
+  "links": [
+    {
+      "type": "mesh",
+      "a": "big",
+      "b": "left"
+    },
+    {
+      "type": "mesh",
+      "a": "left",
+      "b": "right"
+    },
+    {
+      "type": "couple",
+      "driver": "big",
+      "driven": "crank",
+      "ratio": 1.0
+    }
+  ],
+  "drive": [
+    {
+      "beat": 1,
+      "part": "big",
+      "to": 6.28
+    },
+    {
+      "beat": 2,
+      "part": "big",
+      "to": 12.5
+    },
+    {
+      "beat": 3,
+      "part": "big",
+      "to": 18.8
+    },
+    {
+      "beat": 4,
+      "part": "big",
+      "to": 25.1
+    },
+    {
+      "beat": 5,
+      "part": "big",
+      "to": 31.4
+    }
+  ],
+  "facts": {
+    "intro": "You see a sturdy wooden handle attached to a small gear.",
+    "reveal": "The small gear meshes with a much larger gear that holds the lower millstone.",
+    "step1": "Turning the handle rotates the small gear clockwise.",
+    "step2": "The small gear pushes the teeth of the large gear, making it turn slower but with more torque.",
+    "step3": "The large gear spins the lower millstone while the upper stone stays fixed.",
+    "step4": "Grains placed between the stones are crushed as the lower stone rotates.",
+    "hold": "The handle stays in your hand, letting you control the grinding speed.",
+    "payoff": "The crushed flour falls out the side, showing the mechanism\u2019s purpose."
+  }
+}
