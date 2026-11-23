@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-11-23T23:45:29.297467+00:00",
+  "checked_at": "2026-11-23T23:46:08.236183+00:00",
   "read_only": true,
   "complete": true,
   "platforms": {
@@ -12,14 +12,16 @@
       }
     },
     "instagram": {
-      "returned_posts": 13,
+      "returned_posts": 14,
       "statuses": {
+        "scheduled": 1,
         "sent": 13
       }
     },
     "tiktok": {
-      "returned_posts": 12,
+      "returned_posts": 13,
       "statuses": {
+        "scheduled": 1,
         "sent": 12
       }
     }
@@ -373,14 +375,14 @@
         ],
         "instagram": [
           {
-            "status": "not_found_in_buffer",
-            "prior_owner_skip": false
+            "status": "scheduled",
+            "due": "2026-11-24T01:00:00.000Z"
           }
         ],
         "tiktok": [
           {
-            "status": "not_found_in_buffer",
-            "prior_owner_skip": false
+            "status": "scheduled",
+            "due": "2026-11-24T00:00:00.000Z"
           }
         ]
       }
