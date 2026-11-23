@@ -792,13 +792,5 @@
     "encoded_run": "45068361995",
     "policy": "original-idea-and-visuals-v1",
     "media_sha256": "0399bcbe7f980657b15b0e61f2b1f8dca8e47b1f228a5ff23b9bd1b863a54005"
-  },
-  {
-    "topic": "How a desk ink stamp pad works using a cam press",
-    "visual_family": "recipe_how_a_ink_stamp_pad_works",
-    "owner": "45108272489",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "recipe_how_a_ink_stamp_pad_works"
   }
 ]
