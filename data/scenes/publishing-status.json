@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-11-22T21:02:12.193194+00:00",
+  "checked_at": "2026-11-23T01:39:55.955480+00:00",
   "read_only": true,
   "complete": true,
   "platforms": {
@@ -7,22 +7,21 @@
       "returned_posts": 12,
       "statuses": {
         "error": 3,
-        "scheduled": 1,
-        "sent": 8
+        "sent": 9
       }
     },
     "instagram": {
       "returned_posts": 13,
       "statuses": {
-        "scheduled": 2,
-        "sent": 11
+        "scheduled": 1,
+        "sent": 12
       }
     },
     "tiktok": {
       "returned_posts": 12,
       "statuses": {
-        "scheduled": 2,
-        "sent": 10
+        "scheduled": 1,
+        "sent": 11
       }
     }
   },
@@ -327,13 +326,13 @@
         ],
         "instagram": [
           {
-            "status": "scheduled",
+            "status": "sent",
             "due": "2026-11-23T01:00:00.000Z"
           }
         ],
         "tiktok": [
           {
-            "status": "scheduled",
+            "status": "sent",
             "due": "2026-11-23T00:00:00.000Z"
           }
         ]
@@ -345,7 +344,7 @@
       "platforms": {
         "youtube": [
           {
-            "status": "scheduled",
+            "status": "sent",
             "due": "2026-11-22T22:30:00.000Z"
           }
         ],
@@ -383,22 +382,22 @@
     "available": true,
     "platforms": {
       "youtube": {
-        "views": 1184.0,
-        "reactions": 16.0,
+        "views": 1224.0,
+        "reactions": 15.0,
         "reported_posts": 5,
-        "source_updated_at": "2026-11-22T00:49:19.418Z"
+        "source_updated_at": "2026-11-23T01:08:52.562Z"
       },
       "instagram": {
-        "views": 858.0,
+        "views": 732.0,
         "reactions": 6.0,
         "reported_posts": 8,
-        "source_updated_at": "2026-11-22T18:09:04.934Z"
+        "source_updated_at": "2026-11-22T03:02:53.700Z"
       },
       "tiktok": {
-        "views": 1456.0,
-        "reactions": 63.0,
+        "views": 1188.0,
+        "reactions": 47.0,
         "reported_posts": 7,
-        "source_updated_at": "2026-11-22T18:16:46.456Z"
+        "source_updated_at": "2026-11-22T03:02:54.184Z"
       }
     },
     "scope": "recent 20 published posts",
