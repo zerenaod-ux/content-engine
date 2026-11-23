@@ -6,13 +6,13 @@
     "11:05",
     "19:05"
   ],
-  "due_slots": 0,
-  "ready_today": 0,
+  "due_slots": 1,
+  "ready_today": 2,
   "daily_target": 3,
   "unused_visuals": 1,
   "should_build": false,
-  "reason": "A generation run is already active",
+  "reason": "Daily output target already covered",
   "dispatches": 0,
   "requested_at": 0,
-  "checked_at": "2026-11-23T08:51:58.390303+00:00"
+  "checked_at": "2026-11-23T09:13:07.961044+00:00"
 }
