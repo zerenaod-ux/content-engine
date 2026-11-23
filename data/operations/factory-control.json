@@ -1,18 +1,18 @@
 {
-  "business_day": "2026-11-22",
+  "business_day": "2026-11-23",
   "timezone": "America/Chicago",
   "slots": [
     "03:05",
     "11:05",
     "19:05"
   ],
-  "due_slots": 3,
-  "ready_today": 1,
+  "due_slots": 0,
+  "ready_today": 0,
   "daily_target": 3,
   "unused_visuals": 1,
   "should_build": false,
-  "reason": "The system is retaining an unfinished temporary-failure recovery",
-  "dispatches": 2,
-  "requested_at": 1795372911.2699587,
-  "checked_at": "2026-11-23T05:26:14.056552+00:00"
+  "reason": "A generation run is already active",
+  "dispatches": 0,
+  "requested_at": 0,
+  "checked_at": "2026-11-23T08:51:58.390303+00:00"
 }
