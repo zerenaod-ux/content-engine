@@ -1171,5 +1171,17 @@
     "category": "kit recipe",
     "record_run": "45115320811",
     "record_attempt": "2"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "",
+    "date": "2026-11-23",
+    "topic": "How entry angle determines total internal reflection in a straight optical fiber",
+    "title": "How entry angle controls fiber reflection \u2699\ufe0f",
+    "subject": "optical_fiber",
+    "keywords": [],
+    "category": "tested mechanism",
+    "record_run": "45288095489",
+    "record_attempt": "1"
   }
 ]
