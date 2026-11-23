@@ -792,5 +792,13 @@
     "encoded_run": "45068361995",
     "policy": "original-idea-and-visuals-v1",
     "media_sha256": "0399bcbe7f980657b15b0e61f2b1f8dca8e47b1f228a5ff23b9bd1b863a54005"
+  },
+  {
+    "topic": "Why does a hand sanitizer dispenser dispense?",
+    "visual_family": "recipe_how_a_hand_sanitizer_pump_works",
+    "owner": "45115320811",
+    "state": "reserved",
+    "policy": "original-idea-and-visuals-v1",
+    "mechanism": "recipe_how_a_hand_sanitizer_pump_works"
   }
 ]
