@@ -253,5 +253,13 @@
     "state": "reserved",
     "mechanism": "recipe_how_a_garden_sprayer_works",
     "visual_family": "recipe_how_a_garden_sprayer_works"
+  },
+  {
+    "topic": "How entry angle determines total internal reflection in a straight optical fiber",
+    "topic_key": "angle determines entry fiber internal optical reflection straight total",
+    "owner": "45288095489",
+    "state": "reserved",
+    "mechanism": "optical_fiber",
+    "visual_family": "step_index_guidance"
   }
 ]
