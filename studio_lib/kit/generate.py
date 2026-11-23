@@ -68,12 +68,12 @@ def make(prior,rows,call,reason,attempts=8):
  for n in range(attempts):
   for wait in range(2):   # free writers rate-limit by the minute: wait and ask again instead of failing the run
    try:
-    answer=call('You design simplified mechanical teaching models from a fixed parts kit. Return JSON only.',(prompt if n<3 else template_prompt)(prior,errors),max_tokens=2300,temperature=.7);break
+    answer=call('You design simplified mechanical teaching models from a fixed parts kit. Return JSON only.',(prompt if n<1 else template_prompt)(prior,errors),max_tokens=2300,temperature=.7);break
    except Exception as e:
     if type(e).__name__!='ServiceUnavailable' or wait==1:raise
     time.sleep(30)
   try:
-   if n>=3 and isinstance(answer,dict) and 'recipe' not in answer:answer={'topic':answer.get('topic'),'recipe':from_template(answer)}
+   if n>=1 and isinstance(answer,dict) and 'recipe' not in answer:answer={'topic':answer.get('topic'),'recipe':from_template(answer)}
    if not isinstance(answer,dict) or not isinstance(answer.get('recipe'),dict) or not isinstance(answer.get('topic'),str):raise R.RecipeError('return {"topic":..,"recipe":{..}}')
    if not 4<=len(answer['topic'].split())<=18:raise R.RecipeError('topic needs 4-18 words')
    recipe=answer['recipe'];R.validate(recipe);G.check_facts(recipe)
