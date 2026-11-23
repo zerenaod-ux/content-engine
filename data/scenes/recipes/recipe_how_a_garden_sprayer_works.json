@@ -1,0 +1,286 @@
+{
+  "object": "garden sprayer",
+  "title": "How a garden sprayer works",
+  "theme": "cool",
+  "parts": [
+    {
+      "id": "frame",
+      "kind": "frame",
+      "x": 0.8,
+      "z": 0,
+      "w": 7.4,
+      "h": 5.4,
+      "invisible": true
+    },
+    {
+      "id": "liquid",
+      "kind": "liquid",
+      "rect": [
+        -2.0,
+        0.4,
+        0.2,
+        2.9
+      ],
+      "pos0": 0.8,
+      "color": [
+        120,
+        190,
+        240
+      ]
+    },
+    {
+      "id": "tube",
+      "kind": "block",
+      "x": -0.9,
+      "z": 1.9,
+      "w": 0.2,
+      "h": 3.0,
+      "color": [
+        200,
+        205,
+        210
+      ]
+    },
+    {
+      "id": "head",
+      "kind": "block",
+      "x": -0.3,
+      "z": 4.0,
+      "w": 3.4,
+      "h": 1.1,
+      "color": [
+        238,
+        238,
+        232
+      ]
+    },
+    {
+      "id": "piston",
+      "kind": "slider",
+      "origin": [
+        1.3,
+        3.85
+      ],
+      "size": [
+        1.6,
+        1.5
+      ],
+      "axis": "x",
+      "travel": 0.5,
+      "dir": -1,
+      "color": [
+        150,
+        160,
+        168
+      ]
+    },
+    {
+      "id": "spout",
+      "kind": "nozzle",
+      "slider": "piston",
+      "to": 2.4
+    },
+    {
+      "id": "spring",
+      "kind": "spring",
+      "a": [
+        -0.5,
+        3.85
+      ],
+      "b": {
+        "part": "piston"
+      }
+    },
+    {
+      "id": "bottle",
+      "kind": "shell",
+      "x": -0.9,
+      "z": 0.3,
+      "w": 2.4,
+      "h": 3.1
+    },
+    {
+      "id": "trigger",
+      "kind": "lever",
+      "pivot": [
+        1.5,
+        4.4
+      ],
+      "length": 1.2,
+      "angle0": -1.2
+    },
+    {
+      "id": "pin",
+      "kind": "pin",
+      "center": [
+        1.5,
+        4.4
+      ],
+      "r": 0.15
+    },
+    {
+      "id": "mist",
+      "kind": "jet",
+      "a": [
+        2.4,
+        4.0
+      ],
+      "b": [
+        3.8,
+        4.7
+      ],
+      "color": [
+        170,
+        215,
+        245
+      ]
+    },
+    {
+      "id": "mist2",
+      "kind": "jet",
+      "a": [
+        2.4,
+        4.0
+      ],
+      "b": [
+        3.9,
+        4.0
+      ],
+      "color": [
+        170,
+        215,
+        245
+      ]
+    },
+    {
+      "id": "mist3",
+      "kind": "jet",
+      "a": [
+        2.4,
+        4.0
+      ],
+      "b": [
+        3.8,
+        3.3
+      ],
+      "color": [
+        170,
+        215,
+        245
+      ]
+    }
+  ],
+  "labels": {
+    "bottle": "transparent tank",
+    "liquid": "water\u2011blue solution",
+    "trigger": "thumb lever",
+    "piston": "pump plunger",
+    "spring": "return spring",
+    "spout": "mist nozzle"
+  },
+  "links": [
+    {
+      "type": "yoke",
+      "lever": "trigger",
+      "slider": "piston",
+      "sign": -1
+    }
+  ],
+  "drive": [
+    {
+      "beat": 2,
+      "part": "trigger",
+      "to": -1.6
+    },
+    {
+      "beat": 3,
+      "part": "trigger",
+      "to": -1.2
+    },
+    {
+      "beat": 4,
+      "part": "trigger",
+      "to": -1.6
+    },
+    {
+      "beat": 5,
+      "part": "trigger",
+      "to": -1.2
+    },
+    {
+      "beat": 2,
+      "part": "mist",
+      "to": 1
+    },
+    {
+      "beat": 2,
+      "part": "mist2",
+      "to": 1
+    },
+    {
+      "beat": 2,
+      "part": "mist3",
+      "to": 1
+    },
+    {
+      "beat": 3,
+      "part": "mist",
+      "to": 2
+    },
+    {
+      "beat": 3,
+      "part": "mist2",
+      "to": 2
+    },
+    {
+      "beat": 3,
+      "part": "mist3",
+      "to": 2
+    },
+    {
+      "beat": 4,
+      "part": "mist",
+      "to": 1
+    },
+    {
+      "beat": 4,
+      "part": "mist2",
+      "to": 1
+    },
+    {
+      "beat": 4,
+      "part": "mist3",
+      "to": 1
+    },
+    {
+      "beat": 5,
+      "part": "mist",
+      "to": 2
+    },
+    {
+      "beat": 5,
+      "part": "mist2",
+      "to": 2
+    },
+    {
+      "beat": 5,
+      "part": "mist3",
+      "to": 2
+    },
+    {
+      "beat": 2,
+      "part": "liquid",
+      "to": 0.76
+    }
+  ],
+  "facts": {
+    "intro": "A clear tank holds the blue\u2011tinged liquid, showing the amount remaining as the sprayer is used.",
+    "reveal": "Pressing the thumb lever pulls the pump plunger back, compressing the return spring inside the barrel.",
+    "step1": "When the lever is released, the spring pushes the plunger forward, closing the valve at the top of the tank.",
+    "step2": "The forward motion forces a small amount of liquid up through the internal tube toward the mist nozzle.",
+    "step3": "At the nozzle, the liquid meets a tiny aperture that atomizes it into a fine mist as it exits.",
+    "step4": "The mist stream shoots out of the spout, coating plants evenly while the tank gradually empties.",
+    "hold": "If the trigger is held down, the spring continues to drive the plunger, delivering a steady stream until the tank empties.",
+    "payoff": "Releasing the trigger lets the spring reset, readying the sprayer for the next precise burst of mist."
+  }
+}
