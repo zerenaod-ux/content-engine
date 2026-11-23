@@ -42,7 +42,8 @@ def _call_once(system,prompt,max_tokens=10000,temperature=.5,reasoning_effort="l
                     print('free provider cooling down; preserving repair calls',flush=True)
                     time.sleep(wait+.5)
             try:
-                models=[m for m in llm._models(env,base,prefs,key) if (base,m) not in _UNAVAILABLE]
+                if env=='GEMINI_API_KEY':models=[m for m in ('gemini-2.5-flash','gemini-flash-latest','gemini-2.0-flash','gemini-2.5-flash-lite') if (base,m) not in _UNAVAILABLE]   # fixed names: the listed 'models/...' name answered 404
+                else:models=[m for m in llm._models(env,base,prefs,key) if (base,m) not in _UNAVAILABLE]
                 if not models:
                     failures.append(env.split('_')[0]+' no usable model');print('studio provider has no usable model:',env.split('_')[0],flush=True);break
                 model=models[0]
