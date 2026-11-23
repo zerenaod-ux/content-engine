@@ -11,8 +11,8 @@
   "daily_target": 3,
   "unused_visuals": 1,
   "should_build": false,
-  "reason": "A generation run is already active",
+  "reason": "The system is retaining an unfinished temporary-failure recovery",
   "dispatches": 2,
   "requested_at": 1795372911.2699587,
-  "checked_at": "2026-11-23T05:15:33.232896+00:00"
+  "checked_at": "2026-11-23T05:26:14.056552+00:00"
 }
