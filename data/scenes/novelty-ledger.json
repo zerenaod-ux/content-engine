@@ -810,5 +810,13 @@
     "encoded_run": "45108272489",
     "policy": "original-idea-and-visuals-v1",
     "media_sha256": "1eb6b62f79f9e5ffa47278a66f70ece76f2520a6b2321b5cee2a07ed1d1a1765"
+  },
+  {
+    "topic": "Why does a garden sprayer spray a fine mist?",
+    "visual_family": "recipe_how_a_garden_sprayer_works",
+    "owner": "45115320811",
+    "state": "reserved",
+    "policy": "original-idea-and-visuals-v1",
+    "mechanism": "recipe_how_a_garden_sprayer_works"
   }
 ]
