@@ -1105,5 +1105,19 @@
     "record_run": "45070561948",
     "record_attempt": "3",
     "owner": "45070561948"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "tested component rejected: Shared provider cooldown active | Shared provider cooldown active | Shared provider cooldown active\n",
+    "date": "2026-11-23",
+    "topic": "Why does a hand grain mill work?",
+    "title": "",
+    "subject": "recipe_how_a_grain_mill_works",
+    "keywords": [],
+    "category": "kit recipe",
+    "failed": true,
+    "record_run": "45102079654",
+    "record_attempt": "1",
+    "owner": "45102079654"
   }
 ]
