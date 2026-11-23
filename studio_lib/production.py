@@ -16,7 +16,8 @@ def choose_topic(history_path=Path('data/scenes/history.json')):
     rows=history(Path(history_path).parent,os.environ.get('GITHUB_RUN_ID'))
     rows+=novelty.records()
     available=novelty.unused(REGISTRY,rows,os.environ.get('GITHUB_RUN_ID'))
-    if not available or os.environ.get('CE_FORCE_RECIPE')=='true':return recipe_topic(rows)   # hand-built machines are used up: write a new object from the parts kit
+    if os.environ.get('CE_FORCE_RECIPE')=='true':return recipe_topic(rows)   # manual test only; automatic kit fallback PAUSED 2026-11-23 (owner: far weaker than hand-built machines)
+    if not available:raise ValueError('No unused hand-built machine remains; kit-recipe fallback is paused until the owner approves it')
 
     prior=[x.get('topic') or x.get('title','') for x in rows if x.get('topic') or x.get('title')]
     errors=[]
