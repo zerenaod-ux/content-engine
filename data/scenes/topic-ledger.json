@@ -245,5 +245,13 @@
     "state": "reserved",
     "mechanism": "recipe_how_a_manual_ice_cream_maker_works",
     "visual_family": "recipe_how_a_manual_ice_cream_maker_works"
+  },
+  {
+    "topic": "Why does a garden sprayer spray a fine mist?",
+    "topic_key": "fine garden mist spray sprayer",
+    "owner": "45115320811",
+    "state": "reserved",
+    "mechanism": "recipe_how_a_garden_sprayer_works",
+    "visual_family": "recipe_how_a_garden_sprayer_works"
   }
 ]
