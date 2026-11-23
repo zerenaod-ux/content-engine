@@ -1119,5 +1119,19 @@
     "record_run": "45102079654",
     "record_attempt": "1",
     "owner": "45102079654"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "tested component rejected: Shared provider cooldown active | Shared provider cooldown active | Shared provider cooldown active\n",
+    "date": "2026-11-23",
+    "topic": "How a desk ink stamp pad works using a cam press",
+    "title": "",
+    "subject": "recipe_how_a_ink_stamp_pad_works",
+    "keywords": [],
+    "category": "kit recipe",
+    "failed": true,
+    "record_run": "45108272489",
+    "record_attempt": "1",
+    "owner": "45108272489"
   }
 ]
