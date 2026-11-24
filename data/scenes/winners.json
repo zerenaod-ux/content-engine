@@ -1,0 +1,54 @@
+{
+ "policy": "winners-v1",
+ "signals": {
+  "owner_verdicts": 27,
+  "views_linked": false
+ },
+ "weights": {
+  "wind_turbine": -0.444,
+  "lever_balance": -0.286,
+  "photovoltaic_cell": -0.667,
+  "bascule_bridge": 0.0,
+  "piston_pump": -0.5,
+  "rack_pinion": -0.5,
+  "float_valve": 0.5,
+  "combination_lock": 0.5,
+  "pendulum_clock": 0.5,
+  "zipper": 0.5,
+  "ratchet_wrench": 0.5
+ },
+ "ranked": [
+  "float_valve",
+  "combination_lock",
+  "pendulum_clock",
+  "zipper",
+  "ratchet_wrench",
+  "bascule_bridge",
+  "lever_balance",
+  "wind_turbine",
+  "piston_pump",
+  "rack_pinion",
+  "photovoltaic_cell"
+ ],
+ "liked_titles": [
+  "Why a Bascule Drawbridge Lifts for Ships",
+  "Why Thermal Contact Matters \ud83c\udf21\ufe0f",
+  "Why a Bascule Bridge Uses Counterweights Effectively \ud83d\udea2",
+  "How a Float Valve Prevents Overfilling \u2699\ufe0f",
+  "Why a Three\u2011Wheel Padlock Only Releases \u2699\ufe0f",
+  "How a Pendulum Clock Keeps Time \u2699\ufe0f",
+  "How a Zipper Slider Seals Fabric Edges \u2699\ufe0f",
+  "Why a Ratchet Wrench Stops Backward Motion \u2699\ufe0f"
+ ],
+ "removed_titles": [
+  "Why a Seesaw Lifts With Less Force \u2696\ufe0f",
+  "How a Reciprocating Piston Pump Moves Water",
+  "Why a Seesaw Lifts With Less Force \u2696\ufe0f",
+  "Why Hydraulic Lift Raises Heavy Loads \ud83c\udfd7\ufe0f",
+  "How Pinion Rotation Reverses Rack Travel \u2699\ufe0f",
+  "Why a Trunnion Pivot Enables Smooth Bridge Lifting \ud83d\udea2",
+  "Why the bridge barriers close first \ud83d\udea2",
+  "How a Hand Crank Freezes Ice Cream \u2699\ufe0f"
+ ],
+ "note": "weights nudge the next pick; they never exclude a machine. Views are used only when data/analytics/video-map.json links ids to tags."
+}

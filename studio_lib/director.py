@@ -135,6 +135,8 @@ def plan_topic(topic,out,feedback=None,previous=None,mechanism=None):
     prompt='Select exactly one supported mechanism that truthfully matches TOPIC. If none fits return {"mechanism":"unsupported","reason":"..."}; never substitute a bridge for solar power or invent another mechanism. For a supported topic write fresh narration with eight beats in the exact selected action order. Each beat has 9-23 words and the eight beats add up to 140-176 words in total. Title starts with How or Why and contains 4-8 words. Natural spoken sentences, physical detail, causal explanation and a concrete engaging hook. Prefer 145-165 words; never append adverbs or redundant phrases merely to meet a quota. Avoid narration about views or production. Actual measured 40-70-second duration is mandatory. Each beat names the specific inner part the viewer is looking at (from the facts for that beat) and says what it physically does, so viewers know exactly what is happening inside. Describe only what that action contract shows. Never narrate close-ups, shots, rendering, storyboard or production camera directions. Camera is allowed as an object noun only for the camera_iris subject. Do not invent facts or numerical claims. In the bridge pivot beat the road is STATIC; explain the shaft and hinge rather than announcing motion or a view. The bridge depicts ONE car. Solar and pump internals are simplified cutaways: say so naturally once. Solar depicts a DC lamp load, not gears or AC inverter internals. Preserve physical action order; vary wording, hook and bounded camera preferences. Return {"mechanism":"selected registry id","title":"...","hook":"short engaging hook max 60 characters","beats":[{"action":"first selected action","say":"...","camera":"wide|mechanism|follow"}, ...]}. SUPPORTED COMPONENTS AND FACTS (data): '+json.dumps(catalog)+' TOPIC (data): '+json.dumps(topic)
     prompt+=' Prefer a concise 9-13-word opening question and 9-13-word first reveal; use the later causal steps for detailed explanation, while preserving total narration length.'
     prompt+='\n'+STORY_RULES+'\n'+narration_timing.writing_rules()+' Hook: 2-7 everyday words, at most 40 characters; no technical subtitle.'
+    from studio_lib import stories as _stories
+    if mechanism and _stories.current():prompt+='\n'+_stories.brief(mechanism,_stories.current())
     from studio_lib.audience import writing_context
     audience=writing_context()
     if audience:
@@ -237,6 +239,8 @@ def component_camera(t,tl,plan):
     else:
         detail=ramp(t,beats[3]['start']-.8,beats[3]['start']+1.2)*(1-ramp(t,beats[6]['start']-.8,beats[6]['start']+1.2))
         target=np.array([.5*(1-detail)-.65*detail,0,3.8+1.3*detail]);zoom=1.25+1.0*detail+.08*close;az=.35+.10*math.sin(t*.04)
+    v=plan.get('story_view')
+    if v:zoom*=float(v['zoom']);az+=float(v['az'])   # a story looks at the same machine from a different side
     return zoom,target,az
 
 def component_picture(t,tl,plan,hidden=(),want_scene=False,zoom_scale=1.0):
@@ -245,7 +249,7 @@ def component_picture(t,tl,plan,hidden=(),want_scene=False,zoom_scale=1.0):
     base_bg=module.background() if hasattr(module,'background') else BG
     scale=visual_quality.SAMPLE_SCALE;base_bg=base_bg.resize((720*scale,1280*scale),Image.Resampling.BICUBIC)
     dark=getattr(module,'DARK',mechanism=='camera_iris')
-    height=module.elevation(t,tl) if hasattr(module,'elevation') else 10
+    height=(module.elevation(t,tl) if hasattr(module,'elevation') else 10)+float((plan.get('story_view') or {}).get('elev',0))
     im=base_bg.copy();ground=Scene(t,zoom,target,az,elevation=height,raster_scale=scale,lighting=True);s=Scene(t,zoom,target,az,elevation=height,raster_scale=scale,lighting=True)
     floor=getattr(module,'FLOOR',.35 if mechanism=='camera_iris' else -.1)
     if hasattr(module,'GROUND_ALPHA'):ground.glass([[-1000,-1000,floor],[1000,-1000,floor],[1000,1000,floor],[-1000,1000,floor]],tuple(module.GROUND)+(module.GROUND_ALPHA,));ground.paint(im)   # see-through stage floor: the spotlight glows through
@@ -319,7 +323,7 @@ def verify_overview(plan,tl,out):
     samples=[]
     for i,fraction in [(0,.05),(0,.5),(0,.95),(7,.95)]:
         beat=tl['beats'][i];t=beat['start']+(beat['end']-beat['start'])*fraction
-        zoom,target,az=component_camera(t,tl,plan);scene=Scene(t,zoom,target,az,elevation=module.elevation(t,tl) if hasattr(module,'elevation') else 10)
+        zoom,target,az=component_camera(t,tl,plan);scene=Scene(t,zoom,target,az,elevation=(module.elevation(t,tl) if hasattr(module,'elevation') else 10)+float((plan.get('story_view') or {}).get('elev',0)))
         module.draw(scene,t,tl,hidden=('light','wind'))
         points=np.array([p for _,polygon,_ in scene.faces for p in polygon])
         bounds=[points.min(axis=0).tolist(),points.max(axis=0).tolist()]
@@ -403,6 +407,8 @@ def run(topic,out,mechanism=None):
             plan=plan_topic(topic,out,errors,plan,mechanism=mechanism);saved=save('needs_audit',plan)
     if novelty.identity(topic,plan['mechanism'])!=reserved_family:raise ValueError('Planner changed the reserved visual family; no media allowed')
     if plan['mechanism']!='bascule_bridge':plan['render_policy']=visual_quality.POLICY
+    from studio_lib import stories as _stories
+    if _stories.current():plan['story']=_stories.current();plan['story_view']=_stories.view_for(plan['mechanism'],plan['story'])
     story_issues=story_errors(plan)
     (out/'story-checks.json').write_text(json.dumps({'policy':STORY_VERSION,'plan_sha256':action_contracts.fingerprint(plan),'errors':story_issues,'scope':'Concrete opening, causal wording, distinct narration and component-owned held-state claims; not an acting-quality score'},indent=2))
     if story_issues:raise ValueError('Causal story contract failed: '+str(story_issues))

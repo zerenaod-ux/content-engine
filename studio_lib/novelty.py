@@ -48,22 +48,33 @@ def entities(value):
   for item in value.values():
    if isinstance(item,(dict,list)):yield from entities(item)
 
+def story_of(value):
+ """'family::story' -> ('family','story'); a plain family has no story."""
+ return tuple(value.split('::',1)) if isinstance(value,str) and '::' in value else (value,None)
+
 def families(row):
- found=set()
+ found=set();storied=bool(row.get('story'))
  for key in ('visual_family','mechanism','subject','prototype'):
   value=row.get(key)
   if isinstance(value,str):
+   if '::' in value and story_of(value)[0] in set(FAMILIES.values()):found.add(value);storied=True;continue
    if value in FAMILIES:found.add(FAMILIES[value])
    elif value in set(FAMILIES.values()):found.add(value)
    elif value.startswith('recipe_'):found.add(value)   # kit recipe machines: the family is the recipe key itself
  text=' '.join(str(row.get(k,'')) for k in ('topic','title','topic_key','description')).lower().replace('_',' ')
+ if storied:return found   # a story video names its own story; its words must not also spend the machine's original story
  for key,pattern in PATTERNS.items():
   if re.search(pattern,text):found.add(FAMILIES[key])
  return found
 
-def identity(topic,mechanism=None):
+def identity(topic,mechanism=None,story=None):
  if mechanism is not None:
   if mechanism not in FAMILIES:raise ValueError('Unregistered visual family; novelty cannot be established')
+  from studio_lib import stories
+  story=story if story is not None else stories.current()
+  if story:
+   if not stories.find(mechanism,story):raise ValueError('Unknown story for this machine; novelty cannot be established')
+   return FAMILIES[mechanism]+'::'+story
   return FAMILIES[mechanism]
  found=families({'topic':topic})
  if len(found)!=1:raise ValueError('A single registered visual family is required before generation')
@@ -121,6 +132,18 @@ def require_new(topic,mechanism=None,owner=None,root=None):
  error=reason(topic,mechanism,records(root),owner)
  if error:raise ValueError('Permanent no-repeat policy: '+error)
  return identity(topic,mechanism)
+
+def available_pairs(catalog,rows,owner=None):
+ """Every (machine, story) still unspent: story None = the machine's original video. Hand-built machines only (kit recipes stay paused)."""
+ from studio_lib import stories
+ blocked=set().union(*(families(r) for r in rows if not pending_owner(r,owner))) if rows else set()
+ out=[]
+ for k in catalog:
+  if k not in FAMILIES or k.startswith('recipe_'):continue
+  if FAMILIES[k] not in blocked:out.append((k,None))
+  for s in stories.stories_for(k):
+   if FAMILIES[k]+'::'+s['id'] not in blocked:out.append((k,s['id']))
+ return out
 
 def unused(catalog,rows,owner=None):
  blocked=set().union(*(families(r) for r in rows if not pending_owner(r,owner))) if rows else set()

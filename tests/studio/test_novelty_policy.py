@@ -49,13 +49,16 @@ class NoveltyPolicyTests(unittest.TestCase):
    (base/'novelty-ledger.json').write_text(json.dumps([{'topic':'Old solar video','visual_family':'photovoltaic_cell','state':'skipped'}]))
    self.assertTrue(novelty.reason('Why solar contacts collect charge','photovoltaic_cell',novelty.records(root)))
 
- def test_exhausted_library_switches_to_kit_recipes_without_choosing_a_used_machine(self):
-  rows=[{'mechanism':key,'state':'created'} for key in REGISTRY]
+ def test_exhausted_library_holds_instead_of_using_the_paused_kit_and_force_flag_still_works(self):
+  from studio_lib import stories
+  rows=[{'mechanism':key,'state':'created'} for key in REGISTRY]+[{'visual_family':novelty.FAMILIES[k]+'::'+s['id'],'story':s['id'],'state':'created'} for k in REGISTRY for s in stories.stories_for(k)]
   with tempfile.TemporaryDirectory() as root:
    base=Path(root);(base/'history.json').write_text('[]');(base/'videos.json').write_text('[]')
-   with patch('studio_lib.production.novelty.records',return_value=rows),patch('studio_lib.production.call') as model,patch('studio_lib.production.recipe_topic',return_value='How a new thing works') as recipe:
-    self.assertEqual(choose_topic(base/'history.json'),'How a new thing works')
-    recipe.assert_called_once();model.assert_not_called()
+   with patch('studio_lib.production.novelty.records',return_value=rows),patch('studio_lib.production.call') as model:
+    with self.assertRaisesRegex(ValueError,'No unused hand-built machine or story remains'):choose_topic(base/'history.json')
+    model.assert_not_called()
+    with patch.dict(os.environ,{'CE_FORCE_RECIPE':'true'}),patch('studio_lib.production.recipe_topic',return_value='How a new thing works') as recipe:
+     self.assertEqual(choose_topic(base/'history.json'),'How a new thing works');recipe.assert_called_once()
 
  def test_legacy_clip_compiler_is_retired(self):
   import ce_long

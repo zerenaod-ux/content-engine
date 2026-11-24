@@ -47,6 +47,7 @@ def reserve_remote(topic,owner,mechanism=None):
         if mechanism:
             from studio_lib.novelty import identity
             row.update(mechanism=mechanism,visual_family=identity(topic,mechanism))
+            if os.environ.get('CE_STORY'):row['story']=os.environ['CE_STORY']
         ledger.append(row)
         try:
             write_document(LEDGER,ledger,sha,'Reserve unique daily topic without git rebase')

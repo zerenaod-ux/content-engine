@@ -1,0 +1,497 @@
+{
+ "enabled": true,
+ "max_review_backlog": 3,
+ "note": "One video per (machine, story). The first video of a machine is its 'original' story and is not listed. Each story needs a different question, a different hero part and a different camera view. Owner approved reuse of machines on 2026-11-23.",
+ "stories": {
+  "wind_turbine": [
+   {
+    "id": "shaft_link",
+    "question": "What does the shaft carry from the spinning rotor to the generator?",
+    "hero": "shaft",
+    "focus_beat": 3,
+    "view": {
+     "az": 0.0,
+     "zoom": 1.0,
+     "elev": 0.0
+    }
+   },
+   {
+    "id": "magnet_coil",
+    "question": "Why does a magnet turning past coils make a lamp glow?",
+    "hero": "generator",
+    "focus_beat": 5,
+    "view": {
+     "az": 0.42,
+     "zoom": 1.04,
+     "elev": 3.0
+    }
+   },
+   {
+    "id": "lamp_needs_spin",
+    "question": "Why does the lamp glow only while the rotor keeps spinning?",
+    "hero": "load",
+    "focus_beat": 6,
+    "view": {
+     "az": -0.42,
+     "zoom": 0.98,
+     "elev": -2.0
+    }
+   }
+  ],
+  "photovoltaic_cell": [
+   {
+    "id": "light_in_cell",
+    "question": "What happens to sunlight once it reaches the inside of a solar cell?",
+    "hero": "cell layers",
+    "focus_beat": 2,
+    "view": {
+     "az": 0.0,
+     "zoom": 1.0,
+     "elev": 0.0
+    }
+   },
+   {
+    "id": "two_contacts",
+    "question": "Why does a solar cell need contacts on both sides?",
+    "hero": "contacts",
+    "focus_beat": 4,
+    "view": {
+     "az": 0.42,
+     "zoom": 1.04,
+     "elev": 3.0
+    }
+   },
+   {
+    "id": "current_to_load",
+    "question": "Where does the current go after it leaves the cell?",
+    "hero": "load",
+    "focus_beat": 6,
+    "view": {
+     "az": -0.42,
+     "zoom": 0.98,
+     "elev": -2.0
+    }
+   }
+  ],
+  "piston_pump": [
+   {
+    "id": "two_valves",
+    "question": "Why does a piston pump need two one-way valves?",
+    "hero": "check valves",
+    "focus_beat": 3,
+    "view": {
+     "az": 0.0,
+     "zoom": 1.0,
+     "elev": 0.0
+    }
+   },
+   {
+    "id": "suction_lift",
+    "question": "What makes water rise into the pump on the suction stroke?",
+    "hero": "piston",
+    "focus_beat": 2,
+    "view": {
+     "az": 0.42,
+     "zoom": 1.04,
+     "elev": 3.0
+    }
+   },
+   {
+    "id": "push_out",
+    "question": "How does the compression stroke push water out and not back?",
+    "hero": "outlet valve",
+    "focus_beat": 5,
+    "view": {
+     "az": -0.42,
+     "zoom": 0.98,
+     "elev": -2.0
+    }
+   }
+  ],
+  "camera_iris": [
+   {
+    "id": "small_hole",
+    "question": "Why does a smaller opening let in less light?",
+    "hero": "blades",
+    "focus_beat": 4,
+    "view": {
+     "az": 0.0,
+     "zoom": 1.0,
+     "elev": 0.0
+    }
+   },
+   {
+    "id": "blades_together",
+    "question": "How do all the blades open together instead of jamming?",
+    "hero": "guide ring",
+    "focus_beat": 5,
+    "view": {
+     "az": 0.42,
+     "zoom": 1.04,
+     "elev": 3.0
+    }
+   },
+   {
+    "id": "exposure_link",
+    "question": "How does the opening size change the exposure?",
+    "hero": "exposure",
+    "focus_beat": 6,
+    "view": {
+     "az": -0.42,
+     "zoom": 0.98,
+     "elev": -2.0
+    }
+   }
+  ],
+  "float_valve": [
+   {
+    "id": "ball_knows",
+    "question": "How does a floating ball know when a tank is full?",
+    "hero": "float ball",
+    "focus_beat": 4,
+    "view": {
+     "az": 0.0,
+     "zoom": 1.0,
+     "elev": 0.0
+    }
+   },
+   {
+    "id": "washer_seal",
+    "question": "What does the washer do as the water level climbs?",
+    "hero": "washer",
+    "focus_beat": 3,
+    "view": {
+     "az": 0.42,
+     "zoom": 1.04,
+     "elev": 3.0
+    }
+   },
+   {
+    "id": "refill_after_draw",
+    "question": "Why does the tank refill by itself after you draw water off?",
+    "hero": "float arm",
+    "focus_beat": 6,
+    "view": {
+     "az": -0.42,
+     "zoom": 0.98,
+     "elev": -2.0
+    }
+   }
+  ],
+  "combination_lock": [
+   {
+    "id": "all_three_line_up",
+    "question": "Why must all three wheels line up before the lock opens?",
+    "hero": "wheels",
+    "focus_beat": 5,
+    "view": {
+     "az": 0.0,
+     "zoom": 1.0,
+     "elev": 0.0
+    }
+   },
+   {
+    "id": "bar_blocks",
+    "question": "What stops the shackle from lifting until then?",
+    "hero": "locking bar",
+    "focus_beat": 6,
+    "view": {
+     "az": 0.42,
+     "zoom": 1.04,
+     "elev": 3.0
+    }
+   },
+   {
+    "id": "spring_bar_drops",
+    "question": "How does the spring-guided bar drop into the gaps?",
+    "hero": "bar and spring",
+    "focus_beat": 4,
+    "view": {
+     "az": -0.42,
+     "zoom": 0.98,
+     "elev": -2.0
+    }
+   }
+  ],
+  "electric_relay": [
+   {
+    "id": "small_switches_big",
+    "question": "Why can a small current switch a separate larger circuit?",
+    "hero": "contacts",
+    "focus_beat": 5,
+    "view": {
+     "az": 0.0,
+     "zoom": 1.0,
+     "elev": 0.0
+    }
+   },
+   {
+    "id": "what_pulls_armature",
+    "question": "What pulls the armature toward the coil?",
+    "hero": "coil",
+    "focus_beat": 3,
+    "view": {
+     "az": 0.42,
+     "zoom": 1.04,
+     "elev": 3.0
+    }
+   },
+   {
+    "id": "spring_returns",
+    "question": "What returns the armature when the coil current stops?",
+    "hero": "return spring",
+    "focus_beat": 5,
+    "view": {
+     "az": -0.42,
+     "zoom": 0.98,
+     "elev": -2.0
+    }
+   }
+  ],
+  "snap_thermostat": [
+   {
+    "id": "why_snap",
+    "question": "Why does the metal dome snap instead of bending slowly?",
+    "hero": "dome",
+    "focus_beat": 3,
+    "view": {
+     "az": 0.0,
+     "zoom": 1.0,
+     "elev": 0.0
+    }
+   },
+   {
+    "id": "heat_opens",
+    "question": "How does rising heat open the circuit?",
+    "hero": "contacts",
+    "focus_beat": 4,
+    "view": {
+     "az": 0.42,
+     "zoom": 1.04,
+     "elev": 3.0
+    }
+   },
+   {
+    "id": "cool_resets",
+    "question": "How does it reset itself once it cools?",
+    "hero": "dome and pin",
+    "focus_beat": 6,
+    "view": {
+     "az": -0.42,
+     "zoom": 0.98,
+     "elev": -2.0
+    }
+   }
+  ],
+  "clothespin": [
+   {
+    "id": "grip_force",
+    "question": "Where does the clothespin's gripping force come from?",
+    "hero": "spring",
+    "focus_beat": 1,
+    "view": {
+     "az": 0.0,
+     "zoom": 1.0,
+     "elev": 0.0
+    }
+   },
+   {
+    "id": "squeeze_opens",
+    "question": "Why does squeezing the handles open the jaws?",
+    "hero": "fulcrum",
+    "focus_beat": 2,
+    "view": {
+     "az": 0.42,
+     "zoom": 1.04,
+     "elev": 3.0
+    }
+   },
+   {
+    "id": "holds_without_hands",
+    "question": "How does it keep holding fabric without anyone pressing it?",
+    "hero": "jaws",
+    "focus_beat": 6,
+    "view": {
+     "az": -0.42,
+     "zoom": 0.98,
+     "elev": -2.0
+    }
+   }
+  ],
+  "pendulum_clock": [
+   {
+    "id": "steady_beat",
+    "question": "Why does a swinging pendulum keep an even beat?",
+    "hero": "pendulum",
+    "focus_beat": 2,
+    "view": {
+     "az": 0.0,
+     "zoom": 1.0,
+     "elev": 0.0
+    }
+   },
+   {
+    "id": "escapement_release",
+    "question": "What does the escapement let go of on each tick?",
+    "hero": "anchor",
+    "focus_beat": 3,
+    "view": {
+     "az": 0.42,
+     "zoom": 1.04,
+     "elev": 3.0
+    }
+   },
+   {
+    "id": "weight_powers",
+    "question": "How does a slowly falling weight keep the clock going?",
+    "hero": "weight",
+    "focus_beat": 5,
+    "view": {
+     "az": -0.42,
+     "zoom": 0.98,
+     "elev": -2.0
+    }
+   }
+  ],
+  "zipper": [
+   {
+    "id": "staggered_teeth",
+    "question": "How do staggered teeth lock into each other?",
+    "hero": "teeth",
+    "focus_beat": 3,
+    "view": {
+     "az": 0.0,
+     "zoom": 1.0,
+     "elev": 0.0
+    }
+   },
+   {
+    "id": "y_channel",
+    "question": "What does the slider's Y-shaped channel do?",
+    "hero": "slider",
+    "focus_beat": 2,
+    "view": {
+     "az": 0.42,
+     "zoom": 1.04,
+     "elev": 3.0
+    }
+   },
+   {
+    "id": "slider_back_splits",
+    "question": "Why does moving the slider back split the teeth apart?",
+    "hero": "slider",
+    "focus_beat": 6,
+    "view": {
+     "az": -0.42,
+     "zoom": 0.98,
+     "elev": -2.0
+    }
+   }
+  ],
+  "stapler": [
+   {
+    "id": "legs_fold_in",
+    "question": "Why do the staple legs fold inward under the paper?",
+    "hero": "anvil",
+    "focus_beat": 4,
+    "view": {
+     "az": 0.0,
+     "zoom": 1.0,
+     "elev": 0.0
+    }
+   },
+   {
+    "id": "spring_feeds",
+    "question": "What pushes the next staple forward after each press?",
+    "hero": "magazine spring",
+    "focus_beat": 2,
+    "view": {
+     "az": 0.42,
+     "zoom": 1.04,
+     "elev": 3.0
+    }
+   },
+   {
+    "id": "small_push_big_force",
+    "question": "How does a small hand push drive staple legs through paper?",
+    "hero": "handle",
+    "focus_beat": 3,
+    "view": {
+     "az": -0.42,
+     "zoom": 0.98,
+     "elev": -2.0
+    }
+   }
+  ],
+  "optical_fiber": [
+   {
+    "id": "stays_in_core",
+    "question": "Why does light stay inside the glass core?",
+    "hero": "core boundary",
+    "focus_beat": 3,
+    "view": {
+     "az": 0.0,
+     "zoom": 1.0,
+     "elev": 0.0
+    }
+   },
+   {
+    "id": "cladding_role",
+    "question": "What does the cladding around the core do?",
+    "hero": "cladding",
+    "focus_beat": 3,
+    "view": {
+     "az": 0.42,
+     "zoom": 1.04,
+     "elev": 3.0
+    }
+   },
+   {
+    "id": "pulse_arrives",
+    "question": "What happens when the light pulse reaches the far end?",
+    "hero": "receiver",
+    "focus_beat": 6,
+    "view": {
+     "az": -0.42,
+     "zoom": 0.98,
+     "elev": -2.0
+    }
+   }
+  ],
+  "ratchet_wrench": [
+   {
+    "id": "click_back",
+    "question": "Why does a ratchet wrench click when you swing it back?",
+    "hero": "tooth slope",
+    "focus_beat": 3,
+    "view": {
+     "az": 0.0,
+     "zoom": 1.0,
+     "elev": 0.0
+    }
+   },
+   {
+    "id": "spring_presses",
+    "question": "What does the small spring do to the catch?",
+    "hero": "spring",
+    "focus_beat": 4,
+    "view": {
+     "az": 0.42,
+     "zoom": 1.04,
+     "elev": 3.0
+    }
+   },
+   {
+    "id": "one_shape_two_ways",
+    "question": "Why can one tooth shape push one way and slide the other way?",
+    "hero": "teeth",
+    "focus_beat": 6,
+    "view": {
+     "az": -0.3,
+     "zoom": 0.96,
+     "elev": -1.0
+    }
+   }
+  ]
+ }
+}

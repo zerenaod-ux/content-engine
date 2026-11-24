@@ -8,7 +8,17 @@ TZ=ZoneInfo('America/Chicago')
 SLOTS=((3,5),(11,5),(19,5))
 STATE='data/operations/factory-control.json'
 
-def decision(now,videos,available,active=False):
+def pending_review(videos,index_items,now=None,days=14):
+ """Recent generated videos the owner has not decided yet (not in the review index)."""
+ now=now or datetime.datetime.now(datetime.timezone.utc);decided={i.get('tag') for i in index_items if isinstance(i,dict)};n=0
+ for row in videos:
+  m=re.fullmatch(r'ce-(\d{8})-(\d{4})',str(row.get('tag','')))
+  if not m or row['tag'] in decided:continue
+  stamped=datetime.datetime.strptime(''.join(m.groups()),'%Y%m%d%H%M').replace(tzinfo=datetime.timezone.utc)
+  if (now-stamped).days<=days:n+=1
+ return n
+
+def decision(now,videos,available,active=False,pending=0,cap=None):
  now=now.astimezone(TZ);due=sum((now.hour,now.minute)>=(h,m) for h,m in SLOTS)
  today=[]
  for row in videos:
@@ -17,8 +27,9 @@ def decision(now,videos,available,active=False):
   stamped=datetime.datetime.strptime(''.join(match.groups()),'%Y%m%d%H%M').replace(tzinfo=datetime.timezone.utc).astimezone(TZ)
   if stamped.date()==now.date():today.append(row['tag'])
  ready=len(set(today));remaining=max(0,due-ready)
- reason='A generation run is already active' if active else 'No unused supported visuals remain' if remaining and not available else 'Daily output target already covered' if not remaining else 'A due generation slot needs a fresh video'
- return {'business_day':now.date().isoformat(),'timezone':'America/Chicago','slots':['03:05','11:05','19:05'],'due_slots':due,'ready_today':ready,'daily_target':3,'unused_visuals':len(available),'should_build':bool(remaining and available and not active),'reason':reason}
+ held=cap is not None and pending>=cap
+ reason='A generation run is already active' if active else f'Waiting for owner review of {pending} videos before making more' if held and remaining else 'No unused supported visuals remain' if remaining and not available else 'Daily output target already covered' if not remaining else 'A due generation slot needs a fresh video'
+ return {'business_day':now.date().isoformat(),'timezone':'America/Chicago','slots':['03:05','11:05','19:05'],'due_slots':due,'ready_today':ready,'daily_target':3,'unused_visuals':len(available),'should_build':bool(remaining and available and not active and not held),'reason':reason,'pending_review':pending}
 
 def snapshot(exclude_run=None):
  now=datetime.datetime.now(datetime.timezone.utc)
@@ -26,8 +37,12 @@ def snapshot(exclude_run=None):
  if not isinstance(videos,list):raise ValueError('Daily output history unavailable; refusing to guess quota')
  runs=github('actions/runs?per_page=60')['workflow_runs']
  active=any(r.get('name')=='scene-factory' and str(r.get('id'))!=str(exclude_run) and r.get('status') in (('in_progress',) if exclude_run else ('queued','in_progress','waiting','requested','pending')) for r in runs)
- available=novelty.unused(REGISTRY,novelty.records())   # 2026-11-23 owner: kit-recipe fallback PAUSED (looked far weaker than hand-built machines); hold when none left
- return decision(now,videos,available,active)
+ # 2026-11-23 owner: kit-recipe fallback PAUSED; hand-built machines now give many stories each (machines/meta/stories.json)
+ available=novelty.available_pairs(REGISTRY,novelty.records())
+ from studio_lib import stories
+ index,_=read_document('data/scenes/review/index.json',{});items=index.get('items',[]) if isinstance(index,dict) else []
+ cap=int(stories._data().get('max_review_backlog',3)) if stories.enabled() else None
+ return decision(now,videos,available,active,pending_review(videos,items,now),cap)
 
 def admit():
  scheduled=os.environ.get('GITHUB_EVENT_NAME')=='schedule' or os.environ.get('CE_AUTOMATIC_SLOT')=='true'

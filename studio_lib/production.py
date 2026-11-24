@@ -13,22 +13,36 @@ from studio_lib.topic_guard import history,duplicate,require_new,reserve,signatu
 from studio_lib import durable_topics as durable
 from studio_lib.topic_scope import scope_error,require_supported
 def choose_topic(history_path=Path('data/scenes/history.json')):
+    """Pick the next (machine, story) and a topic for it. CE_STORY is left set only when a topic was really chosen."""
+    before=os.environ.get('CE_STORY')
+    try:return _choose_topic(history_path)
+    except BaseException:
+        if before is None:os.environ.pop('CE_STORY',None)
+        else:os.environ['CE_STORY']=before
+        raise
+
+def _choose_topic(history_path=Path('data/scenes/history.json')):
     rows=history(Path(history_path).parent,os.environ.get('GITHUB_RUN_ID'))
     rows+=novelty.records()
-    available=novelty.unused(REGISTRY,rows,os.environ.get('GITHUB_RUN_ID'))
+    from studio_lib import stories,winners
+    pairs=novelty.available_pairs(REGISTRY,rows,os.environ.get('GITHUB_RUN_ID'))
     if os.environ.get('CE_FORCE_RECIPE')=='true':return recipe_topic(rows)   # manual test only; automatic kit fallback PAUSED 2026-11-23 (owner: far weaker than hand-built machines)
-    if not available:raise ValueError('No unused hand-built machine remains; kit-recipe fallback is paused until the owner approves it')
+    if not pairs:raise ValueError('No unused hand-built machine or story remains; kit-recipe fallback is paused until the owner approves it')
+    key,sid=stories.pick(pairs,rows,winners.weights())
+    os.environ['CE_STORY']=sid or ''
+    available={key:REGISTRY[key]}
+    brief=stories.brief(key,sid) if sid else ''
 
     prior=[x.get('topic') or x.get('title','') for x in rows if x.get('topic') or x.get('title')]
     errors=[]
     for attempt in range(4):
         answer=call('Choose a factual explainer topic within a supported animation component. Return JSON only.',
-            'Choose a genuinely new explanatory question, not a rewording of an earlier video. Its causal change must be visible in the supplied action facts. Never choose bearing friction/lubrication, measured efficiency, or another unshown detail. Do not invent a new mechanism. Return {"topic":"short topic","mechanism":"supported id"}. Supported scopes: '+json.dumps({k:{'description':v['description'],'actions':v['facts']} for k,v in available.items()})+' Recent examples (data): '+json.dumps(prior[-60:])+' Rejected candidates (data): '+json.dumps(errors),max_tokens=600,temperature=.6)
-        if answer.get('mechanism') not in REGISTRY or not isinstance(answer.get('topic'),str) or not 4<=len(answer['topic'].split())<=18:raise ValueError('no valid supported automatic topic was selected')
+            (brief+' ' if brief else '')+winners.hint()+'Choose a genuinely new explanatory question, not a rewording of an earlier video. Its causal change must be visible in the supplied action facts. Never choose bearing friction/lubrication, measured efficiency, or another unshown detail. Do not invent a new mechanism. Return {"topic":"short topic","mechanism":"supported id"}. Supported scopes: '+json.dumps({k:{'description':v['description'],'actions':v['facts']} for k,v in available.items()})+' Recent examples (data): '+json.dumps(prior[-60:])+' Rejected candidates (data): '+json.dumps(errors),max_tokens=600,temperature=.6)
+        if answer.get('mechanism')!=key or not isinstance(answer.get('topic'),str) or not 4<=len(answer['topic'].split())<=18:raise ValueError('no valid supported automatic topic was selected')
         reason=scope_error(answer['topic'],answer['mechanism']) or novelty.reason(answer['topic'],answer['mechanism'],rows,os.environ.get('GITHUB_RUN_ID'))
         if reason:
             errors.append({'topic':answer['topic'],'reason':reason});continue
-        Path('idea.json').write_text(json.dumps({'topic':answer['topic'],'topic_key':signature(answer['topic']),'category':'tested mechanism','subject':answer['mechanism'],'selected_by_system':True,'selection_owner':os.environ.get('GITHUB_RUN_ID'),'keywords':[]},indent=2));return answer['topic']
+        Path('idea.json').write_text(json.dumps({'topic':answer['topic'],'topic_key':signature(answer['topic']),'category':'tested mechanism','subject':answer['mechanism'],'story':sid,'selected_by_system':True,'selection_owner':os.environ.get('GITHUB_RUN_ID'),'keywords':[]},indent=2));return answer['topic']
     raise ValueError('No non-repeating supported topic survived the full-history checks')
 
 def recipe_topic(rows):
@@ -63,6 +77,20 @@ def selected_mechanism(topic):
         if len(matches)==1:return matches[0]['mechanism']
     return None
 
+def selected_story(topic):
+    """Story belonging to a system-selected topic (same ownership proof as selected_mechanism); None for an original video."""
+    owner=durable.reservation_owner(topic)
+    if not owner:return None
+    p=Path('idea.json')
+    if p.exists():
+        d=json.loads(p.read_text())
+        if d.get('selected_by_system') is True and str(d.get('selection_owner'))==str(owner) and d.get('topic')==topic:return d.get('story') or None
+    p=Path('data/scenes/topic-ledger.json')
+    if p.exists():
+        matches=[r for r in json.loads(p.read_text()) if str(r.get('owner'))==str(owner) and r.get('topic')==topic and r.get('story')]
+        if len(matches)==1:return matches[0]['story']
+    return None
+
 def prepare(topic_file):
     if durable.enabled():durable.refresh_history()
     topic_file=Path(topic_file);lines=topic_file.read_text().splitlines();topic=(lines[0] if lines else 'auto').strip();topic=re.sub(r'\s+20\d\d-\d\d-\d\dT[\d:]+$','',topic).strip()
@@ -77,6 +105,7 @@ def prepare(topic_file):
         topic=owned[-1]['topic'] if owned else choose_topic()
     require_supported(topic)
     mechanism=selected_mechanism(topic)
+    os.environ['CE_STORY']=(selected_story(topic) if mechanism else None) or ''
     novelty.require_new(topic,mechanism,owner=owner)
     if durable.enabled():
         if mechanism:durable.reserve_remote(topic,owner,mechanism=mechanism)
@@ -97,7 +126,7 @@ def emit_review_files(work):
     recipe_data=json.loads(Path('data/scenes/recipes',plan['mechanism']+'.json').read_text()) if plan['mechanism'].startswith('recipe_') and Path('data/scenes/recipes',plan['mechanism']+'.json').is_file() else None
     emoji={'wind_turbine':' 💨','photovoltaic_cell':' 🌞','piston_pump':' 💧','bascule_bridge':' 🚢'}.get(plan['mechanism'],' ⚙️')
     title=plan['title'] if any(ord(c)>0x2500 for c in plan['title']) else plan['title'].rstrip('.')+emoji
-    spec={'topic':Path('topic.txt').read_text().strip() if Path('topic.txt').exists() else plan['title'],'topic_key':signature(Path('topic.txt').read_text().strip() if Path('topic.txt').exists() else plan['title']),'mode':'tested-component','title':title,'mechanism':plan['mechanism'],'visual_family':novelty.identity('',plan['mechanism']),'novelty_policy':novelty.POLICY,'story_policy':plan.get('story_policy'),'voice':tl.get('voice'),'voice_policy':tl.get('voice_policy'),'duration':tl['duration'],'steps':[{'start':b['start'],'end':b['end'],'say':b['say'],'label':b['action']} for b in tl['beats']],'source':REGISTRY[plan['mechanism']]['source'],'owner_approved':False}
+    spec={'topic':Path('topic.txt').read_text().strip() if Path('topic.txt').exists() else plan['title'],'topic_key':signature(Path('topic.txt').read_text().strip() if Path('topic.txt').exists() else plan['title']),'mode':'tested-component','title':title,'mechanism':plan['mechanism'],'visual_family':novelty.identity('',plan['mechanism']),'story':plan.get('story'),'novelty_policy':novelty.POLICY,'story_policy':plan.get('story_policy'),'voice':tl.get('voice'),'voice_policy':tl.get('voice_policy'),'duration':tl['duration'],'steps':[{'start':b['start'],'end':b['end'],'say':b['say'],'label':b['action']} for b in tl['beats']],'source':REGISTRY[plan['mechanism']]['source'],'owner_approved':False}
     origin={'event':os.environ.get('GITHUB_EVENT_NAME'),'automatic_slot':os.environ.get('CE_AUTOMATIC_SLOT')=='true','run_id':os.environ.get('GITHUB_RUN_ID'),'attempt':int(os.environ.get('GITHUB_RUN_ATTEMPT','1')),'event_sha':os.environ.get('GITHUB_SHA'),'source_ref':os.environ.get('GITHUB_REF_NAME'),'manual_media_edits':False}
     spec['generation_origin']=origin
     if recipe_data:spec['recipe']=recipe_data
@@ -115,6 +144,7 @@ def build(topic_file,out,work=Path('component-output/production')):
     require_new(topic,owner=durable.reservation_owner(topic))
     try:
         mechanism=selected_mechanism(topic)
+        os.environ['CE_STORY']=(selected_story(topic) if mechanism else None) or ''
         if mechanism:run(topic,work,mechanism=mechanism)
         else:run(topic,work)
         spec=emit_review_files(work);shutil.copyfile(work/'video.mp4',out)
