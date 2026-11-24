@@ -18,4 +18,7 @@ class StraightToPointTests(unittest.TestCase):
     def test_screen_narration_rejected(self):
         e=S.errors(plan('Why does a zipper stay shut?','The cutaway plate returns as the explanation concludes.'))
         self.assertTrue(any('narrate the screen' in x for x in e))
+    def test_fragment_rejected(self):
+        e=S.errors(plan('Why does a zipper stay shut?','Of interlock.'))
+        self.assertTrue(any('complete sentence' in x for x in e))
 if __name__=='__main__':unittest.main()
