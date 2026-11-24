@@ -1335,5 +1335,17 @@
     "record_run": "45335442765",
     "record_attempt": "1",
     "owner": "45335442765"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "",
+    "date": "2026-11-24",
+    "topic": "How does the thermostat reset itself once it cools?",
+    "title": "How a Thermostat Resets When Cooled \u2699\ufe0f",
+    "subject": "snap_thermostat",
+    "keywords": [],
+    "category": "tested mechanism",
+    "record_run": "45336877969",
+    "record_attempt": "1"
   }
 ]
