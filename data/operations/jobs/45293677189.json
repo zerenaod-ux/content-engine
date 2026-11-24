@@ -1,14 +1,11 @@
 {
   "run_id": "45293677189",
-  "attempt": 2,
+  "attempt": 3,
   "kind": "daily-short",
-  "stage": "Stopped",
-  "label": "Stopped",
-  "updated_at": "2026-11-24T00:37:13.089003+00:00",
+  "stage": "selection",
+  "label": "Selecting a new topic",
+  "updated_at": "2026-11-24T00:41:30.280402+00:00",
   "source_branch": "main",
   "owner_approved": false,
-  "retryable": false,
-  "next_retry_at": null,
-  "reason": "Needs a code, content or configuration correction",
-  "state": "needs_attention"
+  "state": "running"
 }
