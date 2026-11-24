@@ -1321,5 +1321,19 @@
     "record_run": "45333461622",
     "record_attempt": "1",
     "owner": "45333461622"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "tested component rejected: Complete-output gate rejected: ['Story evidence belongs to a different plan', 'Causal motion evidence belongs to a different plan or timeline']\n",
+    "date": "2026-11-24",
+    "topic": "Why does a ratchet wrench click when you swing it back?",
+    "title": "",
+    "subject": "ratchet_wrench",
+    "keywords": [],
+    "category": "tested mechanism",
+    "failed": true,
+    "record_run": "45335442765",
+    "record_attempt": "1",
+    "owner": "45335442765"
   }
 ]
