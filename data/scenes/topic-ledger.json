@@ -350,5 +350,14 @@
     "mechanism": "snap_thermostat",
     "visual_family": "snap_disc_switch::cool_resets",
     "story": "cool_resets"
+  },
+  {
+    "topic": "Why moving the slider back splits the teeth apart",
+    "topic_key": "apart back moving slider splits teeth",
+    "owner": "45399500012",
+    "state": "reserved",
+    "mechanism": "zipper",
+    "visual_family": "interlocking_zipper::slider_back_splits",
+    "story": "slider_back_splits"
   }
 ]
