@@ -1,0 +1,10 @@
+{
+ "faces_min": 250,
+ "colours_min": 170,
+ "faces_alt": 900,
+ "samples": 18,
+ "good_kept": "6/6",
+ "bad_blocked": "12/12",
+ "accuracy": 1.0,
+ "equally_good_rules": 200
+}

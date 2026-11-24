@@ -57,7 +57,11 @@ def sample_times(tl,per_beat=2):
 
 def evaluate(picture,tl,moving_beats=(),limits=None,sheet_path=None):
  """picture(t)->(PIL image, the scene's faces as (depth, polygon, colour) rows). Returns a report dict; report['errors'] is empty when the picture passes."""
- lim=dict(LIMITS);lim.update(limits or {})
+ lim=dict(LIMITS)
+ try:
+  from studio_lib import judge;lim.update(judge.load_taste())   # limits learned from the owner's verdicts
+ except Exception:pass
+ lim.update(limits or {})
  rows=[];frames=[];polys=[]  # polys holds each frame's renderer faces
  for i,t in sample_times(tl):
   im,pg=picture(t);m=frame_metrics(im,pg);m.update(beat=i,t=round(float(t),2));rows.append(m);frames.append(im);polys.append(pg)
@@ -70,7 +74,8 @@ def evaluate(picture,tl,moving_beats=(),limits=None,sheet_path=None):
   if r['detail']<lim['detail_min']:errors.append(f'{tag}: too little visible detail ({r["detail"]:.1%} edges)')
  if body:
   faces=int(np.median([r['faces'] for r in body]));colours=int(np.median([r['colours'] for r in body]))
-  if faces<lim['faces_min'] or colours<lim['colours_min']:errors.append(f'machine is built from too few facets/shades ({faces} faces, {colours} shades; needs {lim["faces_min"]}/{lim["colours_min"]}); use the rich parts library')
+  rich=(faces>=lim['faces_min'] and colours>=lim['colours_min']) or (lim.get('faces_alt') is not None and faces>=lim['faces_alt'])
+  if not rich:errors.append(f'machine is built from too few facets/shades ({faces} faces, {colours} shades; needs {lim["faces_min"]}/{lim["colours_min"]}); use the rich parts library')
  fills=sorted(r['fill'] for r in body)
  if fills and fills[len(fills)//2]<lim['median_fill_min']:errors.append(f'machine is small in most shots (median fill {fills[len(fills)//2]:.0%}); frame it bigger')
  order=sample_times(tl)
@@ -118,10 +123,11 @@ def vision_critique(sheet_path,ask):
  except Exception:return None
  return None
 
-def decide(report,vision=None,vision_floor=5.0):
- """Final verdict. Pixel errors always block. A vision score below the floor blocks only when a vision answer actually arrived."""
+def decide(report,vision=None,vision_floor=5.0,vision_blocks=True):
+ """Final verdict. Pixel errors always block. A vision score below the floor blocks only when a vision answer actually arrived
+ and the vision judge is allowed to block (CE_VISION_CHECK=block, or it has earned trust by agreeing with the owner)."""
  errors=list(report['errors'])
- if vision and vision['score']<vision_floor:errors.append(f"vision check scored {vision['score']:.1f}/10: "+'; '.join(vision['problems'][:3]))
+ if vision and vision_blocks and vision['score']<vision_floor:errors.append(f"vision check scored {vision['score']:.1f}/10: "+'; '.join(vision['problems'][:3]))
  return {'pass':not errors,'errors':errors,'score':report['score'],'vision':vision}
 
 def write_report(report,verdict,path):
@@ -134,7 +140,7 @@ def moving_beats_for(contract):
  return sorted(i for i,m in contract['moves'].items() if any(ch!='cut' for ch in m))
 
 def gemini_ask(prompt,image_bytes,model='gemini-flash-latest',timeout=40):
- """Optional free vision call (opt-in with CE_VISION_CHECK=true and GEMINI_API_KEY). Not exercised in tests against the live service."""
+ """Free vision call (runs when GEMINI_API_KEY is set; CE_VISION_CHECK=off disables it). Not exercised in tests against the live service."""
  import base64,os,urllib.request
  key=os.environ.get('GEMINI_API_KEY')
  if not key:return None
@@ -159,10 +165,15 @@ def run(picture,tl,plan,contract,out,ask=None,max_redo=2):
   if adj['needs_builder'] or adj['zoom']==zoom:break
   zoom=adj['zoom']
  plan['picture_zoom']=zoom
- vision=None
- if ask is None and os.environ.get('CE_VISION_CHECK')=='true':ask=gemini_ask
- if ask is not None:vision=vision_critique(out/'picture-contact.jpg',ask)
- verdict=decide(report,vision);verdict['attempts']=attempts;verdict['zoom']=zoom
+ vision=None;mode=os.environ.get('CE_VISION_CHECK','advisory')   # off | advisory (default: recorded, never blocks until trusted) | block
+ if ask is None and mode!='off' and os.environ.get('GEMINI_API_KEY'):ask=gemini_ask
+ if ask is not None and mode!='off':vision=vision_critique(out/'picture-contact.jpg',ask)
+ try:
+  from studio_lib import judge;blocks=mode=='block' or judge.vision_trusted()
+ except Exception:blocks=mode=='block'
+ verdict=decide(report,vision,vision_blocks=blocks);verdict['attempts']=attempts;verdict['zoom']=zoom;verdict['vision_blocks']=blocks
+ body=[r for r in report['frames'] if 1<=r['beat']<=6]
+ verdict['measures']={'faces':int(np.median([r['faces'] for r in body])) if body else 0,'colours':int(np.median([r['colours'] for r in body])) if body else 0}
  write_report(report,verdict,out/'picture-check.json')
  if not verdict['pass']:raise ValueError('Picture check failed; nothing was rendered: '+'; '.join(verdict['errors'][:4]))
  return verdict

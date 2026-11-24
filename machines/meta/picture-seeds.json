@@ -1,0 +1,167 @@
+{
+ "note": "Median measures of fixture renders. good = machines the owner saved or liked (optical fiber #70, ratchet #71, pendulum, float valve, padlock, zipper); bad = kit recipe machines the owner rejected (#66-#69 style). Fixture timeline, not real video.",
+ "samples": [
+  {
+   "machine": "optical_fiber",
+   "label": "good",
+   "faces": 322,
+   "colours": 205,
+   "fill": 0.187,
+   "tones": 9.0,
+   "detail": 0.153
+  },
+  {
+   "machine": "ratchet_wrench",
+   "label": "good",
+   "faces": 310,
+   "colours": 199,
+   "fill": 0.678,
+   "tones": 9.0,
+   "detail": 0.049
+  },
+  {
+   "machine": "pendulum_clock",
+   "label": "good",
+   "faces": 623,
+   "colours": 200,
+   "fill": 0.777,
+   "tones": 9.0,
+   "detail": 0.077
+  },
+  {
+   "machine": "float_valve",
+   "label": "good",
+   "faces": 641,
+   "colours": 399,
+   "fill": 0.487,
+   "tones": 8.0,
+   "detail": 0.103
+  },
+  {
+   "machine": "combination_lock",
+   "label": "good",
+   "faces": 1635,
+   "colours": 372,
+   "fill": 0.472,
+   "tones": 11.0,
+   "detail": 0.141
+  },
+  {
+   "machine": "zipper",
+   "label": "good",
+   "faces": 1259,
+   "colours": 84,
+   "fill": 0.131,
+   "tones": 9.0,
+   "detail": 0.303
+  },
+  {
+   "machine": "recipe_how_a_clothesline_works",
+   "label": "bad",
+   "faces": 254,
+   "colours": 114,
+   "fill": 0.682,
+   "tones": 8.0,
+   "detail": 0.07
+  },
+  {
+   "machine": "recipe_how_a_coffee_grinder_works",
+   "label": "bad",
+   "faces": 420,
+   "colours": 142,
+   "fill": 0.284,
+   "tones": 9.0,
+   "detail": 0.207
+  },
+  {
+   "machine": "recipe_how_a_garage_door_lifts",
+   "label": "bad",
+   "faces": 312,
+   "colours": 144,
+   "fill": 0.575,
+   "tones": 8.0,
+   "detail": 0.079
+  },
+  {
+   "machine": "recipe_how_a_garden_sprayer_works",
+   "label": "bad",
+   "faces": 271,
+   "colours": 119,
+   "fill": 0.132,
+   "tones": 15.5,
+   "detail": 0.285
+  },
+  {
+   "machine": "recipe_how_a_grain_mill_works",
+   "label": "bad",
+   "faces": 420,
+   "colours": 142,
+   "fill": 0.284,
+   "tones": 8.5,
+   "detail": 0.196
+  },
+  {
+   "machine": "recipe_how_a_hand_crank_ice_cream_maker_works",
+   "label": "bad",
+   "faces": 420,
+   "colours": 142,
+   "fill": 0.284,
+   "tones": 9.0,
+   "detail": 0.203
+  },
+  {
+   "machine": "recipe_how_a_hand_sanitizer_pump_works",
+   "label": "bad",
+   "faces": 164,
+   "colours": 58,
+   "fill": 0.254,
+   "tones": 10.0,
+   "detail": 0.23
+  },
+  {
+   "machine": "recipe_how_a_ink_stamp_pad_works",
+   "label": "bad",
+   "faces": 267,
+   "colours": 98,
+   "fill": 0.699,
+   "tones": 8.0,
+   "detail": 0.059
+  },
+  {
+   "machine": "recipe_how_a_manual_ice_cream_maker_works",
+   "label": "bad",
+   "faces": 267,
+   "colours": 98,
+   "fill": 0.699,
+   "tones": 8.0,
+   "detail": 0.059
+  },
+  {
+   "machine": "recipe_how_a_soap_dispenser_works",
+   "label": "bad",
+   "faces": 267,
+   "colours": 98,
+   "fill": 0.699,
+   "tones": 8.0,
+   "detail": 0.059
+  },
+  {
+   "machine": "recipe_how_a_trash_can_lid_works",
+   "label": "bad",
+   "faces": 300,
+   "colours": 108,
+   "fill": 0.388,
+   "tones": 8.0,
+   "detail": 0.099
+  },
+  {
+   "machine": "recipe_how_a_window_blind_works",
+   "label": "bad",
+   "faces": 254,
+   "colours": 114,
+   "fill": 0.682,
+   "tones": 8.0,
+   "detail": 0.077
+  }
+ ]
+}
