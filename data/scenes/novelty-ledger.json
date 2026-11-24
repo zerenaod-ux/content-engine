@@ -854,5 +854,15 @@
     "state": "reserved",
     "policy": "original-idea-and-visuals-v1",
     "mechanism": "ratchet_wrench"
+  },
+  {
+    "topic": "Why a Ratchet Wrench Prevents Backward Motion",
+    "mechanism": "ratchet_wrench",
+    "visual_family": "one_way_ratchet",
+    "state": "created",
+    "owner": "45293677189",
+    "encoded_run": "45293677189",
+    "policy": "original-idea-and-visuals-v1",
+    "media_sha256": "65d73633689cf1a67dc6517ca857966146153ca73a40d360f7d00280da6f1383"
   }
 ]
