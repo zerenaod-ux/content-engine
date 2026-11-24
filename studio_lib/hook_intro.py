@@ -9,6 +9,10 @@ ZOOM=1.9              # how far the teaser is zoomed in on the centre
 def _duration(path):
     return float(json.loads(subprocess.check_output(['ffprobe','-v','error','-show_format','-of','json',str(path)]))['format']['duration'])
 
+def _size(path):
+    v=next(x for x in json.loads(subprocess.check_output(['ffprobe','-v','error','-show_streams','-of','json',str(path)]))['streams'] if x['codec_type']=='video')
+    return int(v['width']),int(v['height'])
+
 def command(src,dst,duration,start=None,length=HOOK_SECONDS,zoom=ZOOM,width=1080,height=1920):
     start=duration*HOOK_FROM-length/2 if start is None else start
     start=max(0.,min(start,duration-length-0.1))
@@ -25,7 +29,7 @@ def deliver(src,dst):
     if os.environ.get('CE_HOOK_INTRO','on')=='off':shutil.copyfile(src,dst);return False
     tmp=dst.with_suffix('.hook.mp4')
     try:
-        d=_duration(src);subprocess.run(command(src,tmp,d),check=True,timeout=300)
+        d=_duration(src);w,h=_size(src);subprocess.run(command(src,tmp,d,width=w,height=h),check=True,timeout=300)
         if _duration(tmp)<d+HOOK_SECONDS-0.5:raise ValueError('hook version shorter than expected')
         shutil.move(str(tmp),str(dst));return True
     except Exception as e:
