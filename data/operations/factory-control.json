@@ -1,19 +1,19 @@
 {
-  "business_day": "2026-11-23",
+  "business_day": "2026-11-24",
   "timezone": "America/Chicago",
   "slots": [
     "03:05",
     "11:05",
     "19:05"
   ],
-  "due_slots": 3,
-  "ready_today": 4,
+  "due_slots": 1,
+  "ready_today": 1,
   "daily_target": 3,
-  "unused_visuals": 34,
+  "unused_visuals": 30,
   "should_build": false,
   "reason": "A generation run is already active",
-  "pending_review": 6,
+  "pending_review": 7,
   "dispatches": 0,
   "requested_at": 0,
-  "checked_at": "2026-11-24T05:16:59.354314+00:00"
+  "checked_at": "2026-11-24T11:43:18.115415+00:00"
 }
