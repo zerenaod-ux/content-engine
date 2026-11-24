@@ -872,5 +872,13 @@
     "state": "reserved",
     "policy": "original-idea-and-visuals-v1",
     "mechanism": "pendulum_clock"
+  },
+  {
+    "topic": "Why does the lamp glow only while the rotor keeps spinning?",
+    "visual_family": "rotary_generator::lamp_needs_spin",
+    "owner": "45327885922",
+    "state": "reserved",
+    "policy": "original-idea-and-visuals-v1",
+    "mechanism": "wind_turbine"
   }
 ]
