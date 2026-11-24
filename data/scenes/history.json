@@ -1417,5 +1417,19 @@
     "record_run": "45388593195",
     "record_attempt": "1",
     "owner": "45388593195"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "tested component rejected: Shared provider cooldown active | Shared provider cooldown active | Shared provider cooldown active\n",
+    "date": "2026-11-24",
+    "topic": "How a three\u2011wheel padlock stays locked until every wheel aligns",
+    "title": "",
+    "subject": "combination_lock",
+    "keywords": [],
+    "category": "tested mechanism",
+    "failed": true,
+    "record_run": "45392419434",
+    "record_attempt": "1",
+    "owner": "45392419434"
   }
 ]
