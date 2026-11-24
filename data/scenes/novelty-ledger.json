@@ -994,5 +994,13 @@
     "encoded_run": "45399500012",
     "policy": "original-idea-and-visuals-v1",
     "media_sha256": "ef24339914cab0788bd41d21ac61f602770c662ae32d0209049389785f96af57"
+  },
+  {
+    "topic": "How a hinged stapler handle translates hand pressure into staple penetration",
+    "visual_family": "staple_clinching::small_push_big_force",
+    "owner": "45447781111",
+    "state": "reserved",
+    "policy": "original-idea-and-visuals-v1",
+    "mechanism": "stapler"
   }
 ]
