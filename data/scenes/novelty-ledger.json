@@ -922,5 +922,13 @@
     "encoded_run": "45332116417",
     "policy": "original-idea-and-visuals-v1",
     "media_sha256": "74f541efde5e192a06c9b82c692c42f62bf026348fc4854b7eef6871e5fd5674"
+  },
+  {
+    "topic": "Why a pendulum maintains a steady rhythm",
+    "visual_family": "pendulum_escapement::steady_beat",
+    "owner": "45333461622",
+    "state": "reserved",
+    "policy": "original-idea-and-visuals-v1",
+    "mechanism": "pendulum_clock"
   }
 ]
