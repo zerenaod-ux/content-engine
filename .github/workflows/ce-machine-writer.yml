@@ -34,6 +34,7 @@ jobs:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
           CE_SHARED_SERVICES: '1'
+          GH_TOKEN: ${{ github.token }}
           CE_MAX_REQUESTS: '120'
           CE_MAX_SECONDS: '1900'
         run: python -m studio_lib.machine_writer
