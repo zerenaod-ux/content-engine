@@ -95,10 +95,20 @@ def _call_once(system,prompt,max_tokens=10000,temperature=.5,reasoning_effort="l
     raise ServiceUnavailable(' | '.join(failures[-3:]) if failures else last)
 
 
+def _cooldown_wait(default=25,cap=420):
+    """2026-11-24: when every free service is cooling down, wait for the first one to come back (up to 7 min) instead of 25 s."""
+    try:
+        from studio_lib.service_queue import read_document
+        state,_=read_document('data/operations/service-leases.json',{})
+        left=[v-time.time() for v in state.get('cooldowns',{}).values() if v>time.time()]
+        return int(min(cap,max(default,min(left)+5))) if left and os.environ.get('CE_SHARED_SERVICES')=='1' else default
+    except Exception:return default
+
 def call(system,prompt,max_tokens=10000,temperature=.5,reasoning_effort="low"):
     """Free writers rate-limit by the minute: wait and ask again (up to 5 waits) before giving up."""
-    for wait in range(6):
+    for wait in range(6):   # up to 6 waits (each up to 7 min when every provider is cooling down)
         try:return _call_once(system,prompt,max_tokens,temperature,reasoning_effort)
         except ServiceUnavailable:
             if wait==5:raise
-            print('studio providers busy; waiting 25s',flush=True);time.sleep(25)
+            pause=_cooldown_wait()
+            print('studio providers busy; waiting %ds'%pause,flush=True);time.sleep(pause)
