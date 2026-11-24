@@ -15,6 +15,8 @@ Use original everyday language, short energetic clauses and varied transitions.
 Do not copy the reference's wording, catchphrase, numbers or repeated address.
 Keep the engine's exact action order, safety constraints and measured duration.
 
+STRAIGHT TO THE POINT (owner rule 2026-11-24): the speaker never greets, introduces the video, or signs off. No "okay", "so", "hey", "welcome", "today", "let's", "imagine", "have you ever" in the first beat; no "that's how", "and that's it", "now you know", "thanks", "see you" in the last beat. Beat 1 starts with the concrete hook itself. The last beat ends on the real payoff fact and stops. Sound like an excited, confident expert: short, vivid, specific.
+
 VISIBLE CAUSE AND EFFECT: Every narrated physical action must name the actual
 part, material or process in that beat's supplied action facts. Its matching
 movement or change must be visible during the corresponding spoken clause:
@@ -39,6 +41,8 @@ def errors(plan):
  if len(beats)!=8:return ['A causal short needs its eight supported actions']
  lines=[b.get('say','') for b in beats]
  if not isinstance(lines[0],str) or not lines[0].strip().endswith('?'):result.append('beat 0: open with one concrete problem or useful question ending with ?')
+ if re.match(r"\s*(okay|ok|so|hey|hi|well|welcome|today|let'?s|imagine|have you ever|did you know)\b",str(lines[0]),re.I):result.append('beat 0: no greeting or warm-up; start straight with the concrete hook')
+ if re.search(r"(that'?s (how|it|all|why)|now you know|thanks|thank you|see you|in (summary|conclusion)|so there you have)",str(lines[-1]),re.I):result.append('last beat: no sign-off; end on the real payoff fact')
  if any(re.search(r'\b(recognizable|authored engineering fixture|this controlled test)\b',str(line),re.I) for line in lines):result.append('Use audience-facing explanation, not fixture or production descriptions')
  links=sum(bool(re.search(r'\b(so|because|as|when|until|if|while|therefore|instead|once|allows?|prevents?|means|lets|keeps|causes?|makes|releases?|controls?|lifts?|raises?|lowers?|pushes|pulls?|drives?|turns?|rotates?|reduces?|blocks?|stops?|opens?|closes?|connects?|aligns?|forces?|passes|reopening|pivoting|raising|turning|guiding|shrinking|reducing|lifting|lowering|rotating|pushing|pulling|closing|opening|blocking|freeing|letting|allowing|keeping)\b',str(line),re.I)) for line in lines[1:])
  if links<3:result.append('Explain at least three visible cause-and-effect links; do not list parts')

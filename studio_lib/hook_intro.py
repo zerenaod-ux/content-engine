@@ -1,4 +1,4 @@
-"""Owner rule (2026-11-24): every How It Ticks video opens with a very zoomed-in 2-3 second hook taken from the MIDDLE of the video,
+"""OFF BY DEFAULT since 2026-11-24 08:37 (owner: the teaser transition was not smooth; set CE_HOOK_INTRO=on to bring it back). Old rule (2026-11-24): every How It Ticks video opens with a very zoomed-in 2-3 second hook taken from the MIDDLE of the video,
 then restarts from the first second and plays to the end. The verified/sealed video.mp4 is never changed; only the delivered copy gets the hook."""
 import json,os,shutil,subprocess
 from pathlib import Path
@@ -27,7 +27,7 @@ def command(src,dst,duration,start=None,length=HOOK_SECONDS,zoom=ZOOM,width=1080
 def deliver(src,dst):
     """Write the hook version to dst; on any problem deliver the untouched video instead (never block a video)."""
     src=Path(src);dst=Path(dst)
-    if os.environ.get('CE_HOOK_INTRO','on')=='off':shutil.copyfile(src,dst);return False
+    if os.environ.get('CE_HOOK_INTRO','off')!='on':shutil.copyfile(src,dst);return False
     tmp=dst.with_suffix('.hook.mp4')
     try:
         d=_duration(src);w,h=_size(src);subprocess.run(command(src,tmp,d,width=w,height=h),check=True,timeout=300)
@@ -46,7 +46,7 @@ def deliver_wordless(video,foley_wav,dst):
     tmp=dst.with_suffix('.wl.mp4')
     try:
         subprocess.run(['ffmpeg','-v','error','-y','-i',str(video),'-i',str(foley_wav),'-map','0:v','-map','1:a','-c:v','copy','-c:a','aac','-b:a','160k','-shortest',str(tmp)],check=True,timeout=300)
-        return deliver(tmp,dst)
+        deliver(tmp,dst);return dst.exists()
     except Exception as e:
         print('wordless skipped:',str(e)[:200],flush=True);return False
     finally:
