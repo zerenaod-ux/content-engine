@@ -994,13 +994,5 @@
     "encoded_run": "45399500012",
     "policy": "original-idea-and-visuals-v1",
     "media_sha256": "ef24339914cab0788bd41d21ac61f602770c662ae32d0209049389785f96af57"
-  },
-  {
-    "topic": "Why a Small Control Current Switches a Larger Load Circuit",
-    "visual_family": "electromagnetic_relay::small_switches_big",
-    "owner": "45425466767",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "electric_relay"
   }
 ]
