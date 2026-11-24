@@ -269,5 +269,14 @@
     "state": "reserved",
     "mechanism": "ratchet_wrench",
     "visual_family": "one_way_ratchet"
+  },
+  {
+    "topic": "What does the escapement let go of on each tick?",
+    "topic_key": "each escapement go let tick",
+    "owner": "45326838961",
+    "state": "reserved",
+    "mechanism": "pendulum_clock",
+    "visual_family": "pendulum_escapement::escapement_release",
+    "story": "escapement_release"
   }
 ]
