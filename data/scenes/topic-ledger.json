@@ -350,14 +350,5 @@
     "mechanism": "snap_thermostat",
     "visual_family": "snap_disc_switch::cool_resets",
     "story": "cool_resets"
-  },
-  {
-    "topic": "Where does the current go after it leaves the photovoltaic cell?",
-    "topic_key": "after cell current go leaves photovoltaic",
-    "owner": "45377356940",
-    "state": "reserved",
-    "mechanism": "photovoltaic_cell",
-    "visual_family": "photovoltaic_cell::current_to_load",
-    "story": "current_to_load"
   }
 ]
