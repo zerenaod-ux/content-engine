@@ -21,8 +21,8 @@ jobs:
         with: {fetch-depth: 1}
       - uses: actions/setup-python@v5
         with: {python-version: '3.11'}
-      - run: pip install --quiet numpy pillow pytest
-      - run: python -m pytest tests/studio/test_machine_writer.py tests/studio/test_machine_specs.py -q
+      - run: pip install --quiet numpy pillow edge-tts pytest
+      - run: python -m pytest tests/studio/check_machine_writer.py -q
       - name: Design, check, and save one new machine
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
