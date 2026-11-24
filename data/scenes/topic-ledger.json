@@ -359,14 +359,5 @@
     "mechanism": "zipper",
     "visual_family": "interlocking_zipper::slider_back_splits",
     "story": "slider_back_splits"
-  },
-  {
-    "topic": "Why water rises into the pump on the suction stroke",
-    "topic_key": "pump rises stroke suction water",
-    "owner": "45438896992",
-    "state": "reserved",
-    "mechanism": "piston_pump",
-    "visual_family": "piston_pump::suction_lift",
-    "story": "suction_lift"
   }
 ]
