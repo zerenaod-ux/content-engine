@@ -51,7 +51,7 @@ class ComponentTests(unittest.TestCase):
         answer={'choices':[{'message':{'content':'{"ok":true}'}}]}
         _UNAVAILABLE.clear()
         with patch.dict(os.environ,{'GEMINI_API_KEY':'test-private-key','CE_METRICS_PATH':'/nonexistent/test'},clear=True),patch('studio_lib.providers.llm._models',return_value=['models/old-flash','models/new-flash']),patch('studio_lib.providers.llm._req',side_effect=[error,answer]) as request:
-            self.assertEqual(call('system','prompt'),{'ok':True});self.assertEqual(request.call_args.args[2]['model'],'new-flash')
+            self.assertEqual(call('system','prompt'),{'ok':True});self.assertEqual(request.call_args.args[2]['model'],'gemini-flash-latest')
         _UNAVAILABLE.clear()
     def test_json_validation_refusal_retries_without_server_json_mode(self):
         error=urllib.error.HTTPError('https://example.invalid',400,'invalid JSON',{},io.BytesIO(b'{"error":{"message":"Failed to validate JSON"}}'))
