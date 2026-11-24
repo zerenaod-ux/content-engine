@@ -15,7 +15,7 @@ concurrency:
 jobs:
   write:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 80
     steps:
       - uses: actions/checkout@v4
         with: {fetch-depth: 1}
@@ -36,7 +36,7 @@ jobs:
           CE_SHARED_SERVICES: '1'
           GH_TOKEN: ${{ github.token }}
           CE_MAX_REQUESTS: '120'
-          CE_MAX_SECONDS: '1900'
+          CE_MAX_SECONDS: '3900'
         run: python -m studio_lib.machine_writer
       - name: Commit the new machine spec
         run: |
