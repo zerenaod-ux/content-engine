@@ -29,6 +29,13 @@ jobs:
           GITHUB_MODELS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MACHINE_IDEA: ${{ github.event.inputs.idea }}
           CE_VISION_CHECK: 'off'
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          CE_SHARED_SERVICES: '1'
+          CE_MAX_REQUESTS: '120'
+          CE_MAX_SECONDS: '1900'
         run: python -m studio_lib.machine_writer
       - name: Commit the new machine spec
         run: |
