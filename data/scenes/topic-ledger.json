@@ -278,5 +278,14 @@
     "mechanism": "pendulum_clock",
     "visual_family": "pendulum_escapement::escapement_release",
     "story": "escapement_release"
+  },
+  {
+    "topic": "Why does the lamp glow only while the rotor keeps spinning?",
+    "topic_key": "glow keeps lamp only rotor spinning while",
+    "owner": "45327885922",
+    "state": "reserved",
+    "mechanism": "wind_turbine",
+    "visual_family": "rotary_generator::lamp_needs_spin",
+    "story": "lamp_needs_spin"
   }
 ]
