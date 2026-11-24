@@ -1527,5 +1527,19 @@
     "record_run": "45420981910",
     "record_attempt": "1",
     "owner": "45420981910"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "tested component rejected: Shared provider cooldown active | Shared provider cooldown active | Shared provider cooldown active\n",
+    "date": "2026-11-24",
+    "topic": "Why a Small Control Current Switches a Larger Load Circuit",
+    "title": "",
+    "subject": "electric_relay",
+    "keywords": [],
+    "category": "tested mechanism",
+    "failed": true,
+    "record_run": "45425466767",
+    "record_attempt": "1",
+    "owner": "45425466767"
   }
 ]
