@@ -323,5 +323,14 @@
     "mechanism": "float_valve",
     "visual_family": "tank_float_control::ball_knows",
     "story": "ball_knows"
+  },
+  {
+    "topic": "Why a pendulum maintains a steady rhythm",
+    "topic_key": "maintains pendulum rhythm steady",
+    "owner": "45333461622",
+    "state": "reserved",
+    "mechanism": "pendulum_clock",
+    "visual_family": "pendulum_escapement::steady_beat",
+    "story": "steady_beat"
   }
 ]
