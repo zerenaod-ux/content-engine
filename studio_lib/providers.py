@@ -106,9 +106,9 @@ def _cooldown_wait(default=25,cap=420):
 
 def call(system,prompt,max_tokens=10000,temperature=.5,reasoning_effort="low"):
     """Free writers rate-limit by the minute: wait and ask again (up to 5 waits) before giving up."""
-    for wait in range(6):   # up to 6 waits (each up to 7 min when every provider is cooling down)
+    for wait in range(10):   # up to 10 waits (each up to 7 min when every provider is cooling down)
         try:return _call_once(system,prompt,max_tokens,temperature,reasoning_effort)
         except ServiceUnavailable:
-            if wait==5:raise
+            if wait==9:raise
             pause=_cooldown_wait()
             print('studio providers busy; waiting %ds'%pause,flush=True);time.sleep(pause)
