@@ -1251,5 +1251,19 @@
     "record_run": "45327885922",
     "record_attempt": "1",
     "owner": "45327885922"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "tested component rejected: Picture check failed; nothing was rendered: machine is built from too few facets/shades (578 faces, 108 shades; needs 250/170); use the rich parts library; machine is small in most shots (median fill 13%); frame it bigger\n",
+    "date": "2026-11-24",
+    "topic": "Where does the clothespin's gripping force come from?",
+    "title": "",
+    "subject": "clothespin",
+    "keywords": [],
+    "category": "tested mechanism",
+    "failed": true,
+    "record_run": "45328165215",
+    "record_attempt": "1",
+    "owner": "45328165215"
   }
 ]
