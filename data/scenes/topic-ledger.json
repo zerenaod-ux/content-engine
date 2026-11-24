@@ -359,5 +359,14 @@
     "mechanism": "zipper",
     "visual_family": "interlocking_zipper::slider_back_splits",
     "story": "slider_back_splits"
+  },
+  {
+    "topic": "What does the cladding around the core do?",
+    "topic_key": "around cladding core",
+    "owner": "45431398745",
+    "state": "reserved",
+    "mechanism": "optical_fiber",
+    "visual_family": "step_index_guidance::cladding_role",
+    "story": "cladding_role"
   }
 ]
