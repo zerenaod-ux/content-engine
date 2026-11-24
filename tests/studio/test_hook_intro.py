@@ -3,7 +3,7 @@ from studio_lib import hook_intro as h
 
 def test_command_takes_middle_zoomed_teaser_then_full_video():
     c=' '.join(h.command('in.mp4','out.mp4',40.0))
-    assert 'trim=start=18.750:duration=2.5' in c and 'crop=iw/1.9' in c and 'concat=n=2' in c
+    assert 'trim=start=18.750:duration=2.5' in c and 'eval=frame' in c and 'concat=n=2' in c
 
 def test_real_file_gets_hook_and_is_longer(tmp_path):
     src=tmp_path/'in.mp4'

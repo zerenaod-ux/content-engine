@@ -4,7 +4,8 @@ import json,os,shutil,subprocess
 from pathlib import Path
 HOOK_SECONDS=2.5      # length of the teaser
 HOOK_FROM=0.50        # where in the video the teaser is taken (fraction of the duration = the middle)
-ZOOM=1.9              # how far the teaser is zoomed in on the centre
+ZOOM=1.9              # where the teaser's zoom ends (centre crop)
+ZOOM_START=3.4        # macro close-up at the first frame, pulling out to ZOOM (reference Short, owner 2026-11-24)
 
 def _duration(path):
     return float(json.loads(subprocess.check_output(['ffprobe','-v','error','-show_format','-of','json',str(path)]))['format']['duration'])
@@ -16,8 +17,8 @@ def _size(path):
 def command(src,dst,duration,start=None,length=HOOK_SECONDS,zoom=ZOOM,width=1080,height=1920):
     start=duration*HOOK_FROM-length/2 if start is None else start
     start=max(0.,min(start,duration-length-0.1))
-    cw,ch=f'iw/{zoom}',f'ih/{zoom}'
-    f=(f"[0:v]trim=start={start:.3f}:duration={length},setpts=PTS-STARTPTS,crop={cw}:{ch}:(iw-{cw})/2:(ih-{ch})/2,scale={width}:{height}:flags=lanczos,setsar=1,fps=30[hv];"
+    zs=ZOOM_START
+    f=(f"[0:v]trim=start={start:.3f}:duration={length},setpts=PTS-STARTPTS,scale=w='iw*({zs}-({zs}-{zoom})*min(t/{length},1))':h='ih*({zs}-({zs}-{zoom})*min(t/{length},1))':eval=frame,crop={width}:{height},setsar=1,fps=30[hv];"
        f"[0:a]atrim=start={start:.3f}:duration={length},asetpts=PTS-STARTPTS,afade=t=out:st={length-0.12:.2f}:d=0.12,aresample=48000[ha];"
        f"[0:v]setpts=PTS-STARTPTS,setsar=1,fps=30[fv];[0:a]asetpts=PTS-STARTPTS,aresample=48000[fa];"
        f"[hv][ha][fv][fa]concat=n=2:v=1:a=1[v][a]")
