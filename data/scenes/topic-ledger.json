@@ -368,5 +368,14 @@
     "mechanism": "wind_turbine",
     "visual_family": "rotary_generator::magnet_coil",
     "story": "magnet_coil"
+  },
+  {
+    "topic": "How does the iris keep a perfectly round opening while the blades pivot?",
+    "topic_key": "blades iris keep opening perfectly pivot round while",
+    "owner": "45460334123",
+    "state": "reserved",
+    "mechanism": "camera_iris",
+    "visual_family": "optical_iris::blades_together",
+    "story": "blades_together"
   }
 ]
