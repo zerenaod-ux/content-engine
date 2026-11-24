@@ -377,5 +377,14 @@
     "mechanism": "clothespin",
     "visual_family": "torsion_peg::holds_without_hands",
     "story": "holds_without_hands"
+  },
+  {
+    "topic": "How a three\u2011wheel padlock prevents accidental opening",
+    "topic_key": "accidental opening padlock prevents three wheel",
+    "owner": "45476143219",
+    "state": "reserved",
+    "mechanism": "combination_lock",
+    "visual_family": "gated_padlock::all_three_line_up",
+    "story": "all_three_line_up"
   }
 ]
