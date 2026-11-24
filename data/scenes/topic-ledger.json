@@ -359,14 +359,5 @@
     "mechanism": "zipper",
     "visual_family": "interlocking_zipper::slider_back_splits",
     "story": "slider_back_splits"
-  },
-  {
-    "topic": "How a photovoltaic cell powers a DC motor",
-    "topic_key": "cell dc electric motor photovoltaic",
-    "owner": "45450538529",
-    "state": "reserved",
-    "mechanism": "photovoltaic_cell",
-    "visual_family": "photovoltaic_cell::current_to_load",
-    "story": "current_to_load"
   }
 ]
