@@ -904,5 +904,13 @@
     "state": "reserved",
     "policy": "original-idea-and-visuals-v1",
     "mechanism": "piston_pump"
+  },
+  {
+    "topic": "How a Float Ball Detects a Full Tank",
+    "visual_family": "tank_float_control::ball_knows",
+    "owner": "45332116417",
+    "state": "reserved",
+    "policy": "original-idea-and-visuals-v1",
+    "mechanism": "float_valve"
   }
 ]
