@@ -880,5 +880,13 @@
     "state": "reserved",
     "policy": "original-idea-and-visuals-v1",
     "mechanism": "wind_turbine"
+  },
+  {
+    "topic": "Where does the clothespin's gripping force come from?",
+    "visual_family": "torsion_peg::grip_force",
+    "owner": "45328165215",
+    "state": "reserved",
+    "policy": "original-idea-and-visuals-v1",
+    "mechanism": "clothespin"
   }
 ]
