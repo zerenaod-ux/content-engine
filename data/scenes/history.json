@@ -1569,5 +1569,19 @@
     "record_run": "45438896992",
     "record_attempt": "1",
     "owner": "45438896992"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "tested component rejected: Shared provider cooldown active | Shared provider cooldown active | Shared provider cooldown active\n",
+    "date": "2026-11-24",
+    "topic": "How a hinged stapler handle translates hand pressure into staple penetration",
+    "title": "",
+    "subject": "stapler",
+    "keywords": [],
+    "category": "tested mechanism",
+    "failed": true,
+    "record_run": "45447781111",
+    "record_attempt": "1",
+    "owner": "45447781111"
   }
 ]
