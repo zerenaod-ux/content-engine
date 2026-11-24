@@ -1375,5 +1375,19 @@
     "record_run": "45378465323",
     "record_attempt": "1",
     "owner": "45378465323"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "tested component rejected: Shared provider cooldown active | Shared provider cooldown active | KEYLESS ValueError: provider returned an empty answer\n",
+    "date": "2026-11-24",
+    "topic": "Where does the current go after it leaves the photovoltaic cell?",
+    "title": "",
+    "subject": "",
+    "keywords": [],
+    "category": "",
+    "failed": true,
+    "record_run": "45377356940",
+    "record_attempt": "2",
+    "owner": "45377356940"
   }
 ]
