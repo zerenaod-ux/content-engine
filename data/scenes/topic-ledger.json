@@ -350,5 +350,14 @@
     "mechanism": "snap_thermostat",
     "visual_family": "snap_disc_switch::cool_resets",
     "story": "cool_resets"
+  },
+  {
+    "topic": "How a three\u2011wheel padlock stays locked until every wheel aligns",
+    "topic_key": "aligns every locked padlock stays three until wheel",
+    "owner": "45392419434",
+    "state": "reserved",
+    "mechanism": "combination_lock",
+    "visual_family": "gated_padlock::all_three_line_up",
+    "story": "all_three_line_up"
   }
 ]
