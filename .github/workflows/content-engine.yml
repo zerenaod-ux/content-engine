@@ -179,9 +179,9 @@ jobs:
           TRY: ${{ github.event.inputs.retry }}
         run: |
           n=${TRY:-0}
-          if [ ! -f scene-factory.mp4 ] && [ "$n" -lt 4 ]; then
+          if [ ! -f scene-factory.mp4 ] && [ "$n" -lt 6 ]; then
             # free AI limits reset by the minute; a rejected plan or picture just needs another topic/machine
-            sleep 120
+            sleep $((300 + 420*n))
             gh api -X POST repos/${{ github.repository }}/actions/workflows/content-engine.yml/dispatches -f ref=${{ github.ref_name }} -f 'inputs[topic]=auto' -f "inputs[retry]=$((n+1))" || true
             echo "retry $((n+1)) dispatched"
           fi
