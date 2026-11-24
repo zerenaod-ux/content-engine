@@ -1183,5 +1183,19 @@
     "category": "tested mechanism",
     "record_run": "45288095489",
     "record_attempt": "1"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "tested component rejected: Measured audio did not uniquely contain action cue in beat 7; hold before rendering\n",
+    "date": "2026-11-24",
+    "topic": "Why a Ratchet Wrench Prevents Backward Motion",
+    "title": "",
+    "subject": "ratchet_wrench",
+    "keywords": [],
+    "category": "tested mechanism",
+    "failed": true,
+    "record_run": "45293677189",
+    "record_attempt": "1",
+    "owner": "45293677189"
   }
 ]
