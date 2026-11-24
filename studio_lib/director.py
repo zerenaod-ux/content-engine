@@ -239,9 +239,9 @@ def component_camera(t,tl,plan):
         target=np.array([.5*(1-detail)-.65*detail,0,3.8+1.3*detail]);zoom=1.25+1.0*detail+.08*close;az=.35+.10*math.sin(t*.04)
     return zoom,target,az
 
-def component_picture(t,tl,plan,hidden=()):
+def component_picture(t,tl,plan,hidden=(),want_scene=False,zoom_scale=1.0):
     mechanism=plan['mechanism'];module=COMPONENTS[mechanism]
-    zoom,target,az=component_camera(t,tl,plan)
+    zoom,target,az=component_camera(t,tl,plan);zoom*=float(plan.get('picture_zoom',1.0))*zoom_scale   # picture check can ask for a bigger or smaller view
     base_bg=module.background() if hasattr(module,'background') else BG
     scale=visual_quality.SAMPLE_SCALE;base_bg=base_bg.resize((720*scale,1280*scale),Image.Resampling.BICUBIC)
     dark=getattr(module,'DARK',mechanism=='camera_iris')
@@ -295,7 +295,7 @@ def component_picture(t,tl,plan,hidden=()):
                 f=TITLE.font_variant(size=58*scale);tb=d.textbbox((0,0),g,font=f);x=(720*scale-(tb[2]-tb[0]))/2
                 d.text((x,1040*scale),g,font=f,fill=(255,255,255),stroke_width=5*scale,stroke_fill=(8,10,16));break
     d.line((42*scale,1195*scale,678*scale,1195*scale),fill=(170,200,200),width=3*scale);d.line((42*scale,1195*scale,(42+636*t/tl['duration'])*scale,1195*scale),fill=(221,102,57),width=3*scale)
-    return visual_quality.finish(im)
+    return (visual_quality.finish(im),s) if want_scene else visual_quality.finish(im)
 def verify(plan,tl,out):
     if plan['mechanism']!='bascule_bridge':return verify_component(plan,tl,out)
     errors=[];roads=sorted([(x-n/2,x+n/2) for x,n in APPROACHES]+[(-5.2,2.8)])
@@ -419,10 +419,15 @@ def run(topic,out,mechanism=None):
     verify(plan,tl,out)
     fields={k:saved[k] for k in ('render_signature','silent_path','silent_sha256') if k in saved}
     save('narrated',plan,timeline=tl,**fields)
+    if plan['mechanism']!='bascule_bridge':
+        from studio_lib import picture_check
+        print('CE_STAGE=picture_check',flush=True)
+        picture_verdict=picture_check.run(lambda x,z:(lambda r:(r[0],r[1].faces))(component_picture(x,tl,plan,want_scene=True,zoom_scale=z/float(plan.get('picture_zoom',1.0)))),tl,plan,action_contracts.CONTRACTS[plan['mechanism']],out)
+    else:picture_verdict=None
     print('CE_STAGE=render',flush=True)
     render_start=time.monotonic();render_hit=False
     root=Path(__file__).resolve().parent
-    render_sig=hashlib.sha256(b''.join((root/p).read_bytes() for p in ['director.py','narration_timing.py','mechanisms.py','mesh.py','solar.py','pump.py','wind.py','iris.py','float_valve.py','combination_lock.py','solid_parts.py','camera_direction.py','electric_relay.py','snap_thermostat.py','clothespin.py','zipper.py','stapler.py','optical_fiber.py','pendulum_clock.py','machine_spec.py','kit/recipe.py','kit/register.py','action_contracts.py','visual_quality.py','registry.py'])+b''.join(p.read_bytes() for p in machine_spec.render_files())+json.dumps(tl,sort_keys=True).encode()).hexdigest()
+    render_sig=hashlib.sha256(b''.join((root/p).read_bytes() for p in ['director.py','narration_timing.py','mechanisms.py','mesh.py','solar.py','pump.py','wind.py','iris.py','float_valve.py','combination_lock.py','solid_parts.py','camera_direction.py','electric_relay.py','snap_thermostat.py','clothespin.py','zipper.py','stapler.py','optical_fiber.py','pendulum_clock.py','machine_spec.py','kit/recipe.py','kit/register.py','action_contracts.py','visual_quality.py','registry.py'])+b''.join(p.read_bytes() for p in machine_spec.render_files())+json.dumps([tl,plan.get('picture_zoom',1.0)],sort_keys=True).encode()).hexdigest()
     cached=Path(fields.get('silent_path','/nonexistent'))
     if fields.get('render_signature')==render_sig and cached.is_file() and hashlib.sha256(cached.read_bytes()).hexdigest()==fields.get('silent_sha256'):
         shutil.copyfile(cached,out/'silent.mp4');render_hit=True
@@ -444,7 +449,7 @@ def run(topic,out,mechanism=None):
     print('CE_STAGE=audio',flush=True)
     verify_output(plan,tl,out,critique)
     subprocess.run(['ffmpeg','-v','error','-i',str(out/'video.mp4'),'-f','null','-'],check=True)
-    result={'status':'component_rendered_editorial_pending','topic':topic,'mechanism':plan['mechanism'],'automatic_narration':True,'tested_geometry_component':True,'manual_generated_plan_edits':False,'arbitrary_topic_support':False,'supported_mechanisms':list(REGISTRY),'owner_approved':False,'director_checkpoint_reused':reused,'render_cache_hit':render_hit,'visual_quality':visual_quality.POLICY if plan['mechanism']!='bascule_bridge' else 'legacy','duration':tl['duration'],'wall_seconds':time.monotonic()-start,'render_seconds':time.monotonic()-render_start}
+    result={'picture_check':{'pass':True,'score':picture_verdict['score'],'zoom':picture_verdict['zoom']} if picture_verdict else None,'status':'component_rendered_editorial_pending','topic':topic,'mechanism':plan['mechanism'],'automatic_narration':True,'tested_geometry_component':True,'manual_generated_plan_edits':False,'arbitrary_topic_support':False,'supported_mechanisms':list(REGISTRY),'owner_approved':False,'director_checkpoint_reused':reused,'render_cache_hit':render_hit,'visual_quality':visual_quality.POLICY if plan['mechanism']!='bascule_bridge' else 'legacy','duration':tl['duration'],'wall_seconds':time.monotonic()-start,'render_seconds':time.monotonic()-render_start}
     (out/'result.json').write_text(json.dumps(result,indent=2));print(json.dumps(result),flush=True)
 def main():
     p=argparse.ArgumentParser();p.add_argument('--topic',required=True);p.add_argument('--out',required=True);a=p.parse_args();run(a.topic,a.out)

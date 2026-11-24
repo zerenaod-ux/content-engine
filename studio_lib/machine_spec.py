@@ -23,6 +23,7 @@ def _regex(value,where):
 def validate(spec):
  """Return the spec with int beat keys, or raise SpecError naming the first problem."""
  if not isinstance(spec,dict):raise SpecError('spec must be an object')
+ if 'TODO' in json.dumps(spec):raise SpecError('spec still has TODO text; finish it before installing')
  for k in ('key','module','family','pattern','detect','block','description','actions','facts','source','contract','transitions','anchors'):
   if k not in spec:raise SpecError(f'missing field: {k}')
  key=spec['key']
@@ -30,7 +31,7 @@ def validate(spec):
  if not isinstance(spec['family'],str) or not re.fullmatch(r'[a-z][a-z0-9_]{2,40}',spec['family']):raise SpecError('family must be a lowercase name')
  for k in ('pattern','detect','block'):_regex(spec[k],k)
  actions=spec['actions']
- if not isinstance(actions,list) or len(actions)!=BEATS or len(set(actions))!=BEATS or not all(isinstance(a,str) and re.fullmatch(r'[a-z_]+',a) for a in actions):raise SpecError('actions needs 8 different lowercase names')
+ if not isinstance(actions,list) or len(actions)!=BEATS or len(set(actions))!=BEATS or not all(isinstance(a,str) and re.fullmatch(r'[a-z][a-z0-9_]*',a) for a in actions):raise SpecError('actions needs 8 different lowercase names')
  facts=spec['facts']
  if not isinstance(facts,dict) or set(facts)!=set(actions):raise SpecError('facts needs exactly one entry per action')
  for a,v in facts.items():

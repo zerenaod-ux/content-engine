@@ -53,3 +53,33 @@ class MachineSpecs(unittest.TestCase):
  def test_spec_caption_label_is_registered(self):
   self.assertIn('ratchet_wrench',ms.LABELS)
 if __name__=='__main__':unittest.main()
+
+class Scaffold(unittest.TestCase):
+ def test_new_machine_scaffold_is_refused_until_finished_then_installs_and_passes_preflight(self):
+  import sys,importlib,re
+  from tools import new_machine
+  key='scaffold_demo_machine'
+  mod=new_machine.ROOT/'studio_lib'/(key+'.py');draft=new_machine.ROOT/'machines'/'_drafts'/(key+'.json')
+  try:
+   new_machine.main([key,'Scaffold demo','--family','scaffold_demo_family'])
+   spec=json.loads(draft.read_text())
+   with self.assertRaises(ms.SpecError):ms.validate(spec)
+   def finish(v,name=''):
+    if isinstance(v,dict):return {k:finish(i,k) for k,i in v.items()}
+    if isinstance(v,list):return [finish(i,name) for i in v]
+    if isinstance(v,str) and 'TODO' in v:
+     return {'pattern':r'\bscaffoldgizmo\b','detect':'scaffoldgizmo','block':'motorised','source':'https://example.org/gizmo'}.get(name,'A plain sentence about gizmo, gear and spring parts and what stays hidden.' if len(v)>20 else 'gizmo|gear|spring')
+    return v
+   done=finish(spec);done['anchors']['payoff']='gizmo|gear';text=json.dumps(done)
+   self.assertNotIn('TODO',text)
+   key_in=ms.install(done);self.assertEqual(key_in,key)
+   COMPONENTS[key]=importlib.import_module('studio_lib.'+key)
+   with tempfile.TemporaryDirectory() as folder:
+    tl={'beats':[{'start':i*6,'end':(i+1)*6,'action':a,'camera':'wide','say':'Engineering test fixture only'} for i,a in enumerate(done['actions'])],'duration':48,'motion_policy':'fixture'}
+    verify_component({'mechanism':key,'beats':tl['beats'],'hook':'Engineering check'},tl,Path(folder))
+  finally:
+   for p in (mod,draft):
+    if p.exists():p.unlink()
+   from studio_lib import novelty,topic_scope
+   for d in (REGISTRY,action_contracts.CONTRACTS,narration_timing.TRANSITIONS,narration_timing.ANCHORS,novelty.FAMILIES,novelty.PATTERNS,topic_scope.SPEC_DETECT,topic_scope.SPEC_BLOCK,ms.SPECS,COMPONENTS):d.pop(key,None)
+   sys.modules.pop('studio_lib.'+key,None)
