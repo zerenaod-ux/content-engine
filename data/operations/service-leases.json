@@ -8,7 +8,7 @@
   "waiters": [],
   "cooldowns": {
     "api.groq.com": 1795522819.3120651,
-    "openrouter.ai": 1795521562.5595174,
+    "openrouter.ai": 1795522694.1712756,
     "generativelanguage.googleapis.com": 1795521615.0067239,
     "oai.endpoints.kepler.ai.cloud.ovh.net": 1795524652.5784068,
     "api.llm7.io": 1795524284.7382016
