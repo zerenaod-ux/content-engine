@@ -448,7 +448,12 @@ def run(topic,out,mechanism=None):
         if p.wait():raise RuntimeError('component render failed')
         cached=Path('.ce-cache/studio-renders')/(cp.key+'.mp4');cached.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(out/'silent.mp4',cached)
     save('rendered',plan,timeline=tl,render_signature=render_sig,silent_path=str(cached),silent_sha256=hashlib.sha256(cached.read_bytes()).hexdigest())
-    assemble(spec,tl,out)
+    track=None
+    try:
+        from studio_lib import foley
+        if foley.enabled():track=foley.render(COMPONENTS[plan['mechanism']],tl,plan['mechanism']);print('foley track made',flush=True)
+    except Exception as e:print('foley skipped:',str(e)[:200],flush=True)
+    assemble(spec,tl,out,foley_track=track)
     novelty.record_created(topic,plan['mechanism'],out/'video.mp4')
     require_video_duration(out/'video.mp4')
     from studio_lib.daily_quality import verify as verify_output

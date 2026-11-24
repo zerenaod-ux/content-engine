@@ -45,12 +45,14 @@ async def narrate(spec,out,cache,duration_range=(40,70)):
     # older routes are intentionally ignored; an outage remains retryable.
     return await _cpu_narrate(spec,out,cache,duration_range=duration_range)
 
-def assemble(spec,timeline,out):
+def assemble(spec,timeline,out,foley_track=None):
     out=Path(out);T=timeline['duration'];n=int(T*SR);voice=np.zeros(n)
     for b in timeline['beats']:
         raw=subprocess.check_output(['ffmpeg','-v','error','-i',b['voice'],'-ar',str(SR),'-ac','1','-f','f32le','-']);x=np.frombuffer(raw,np.float32).astype(float)
         pos=int((b['start']+.08)*SR);x=x[:n-pos];voice[pos:pos+len(x)]+=x
-    # Speech-only master: no generated tone, music or click beneath narration.
+    # Speech master (no music or generated tone). Machine sounds from the real motion are mixed in below, ducked under speech (foley.py, owner request 2026-11-24).
     mixed=voice*.78/(abs(voice).max()+1e-9)
+    if foley_track is not None:   # owner request 2026-11-24: the machine's own sounds, ducked under speech (studio_lib/foley.py)
+        from studio_lib import foley as _f;mixed=_f.mix(mixed,foley_track);mixed=mixed/max(1.,abs(mixed).max()/.97)
     with wave.open(str(out/'mix.wav'),'wb') as w:w.setnchannels(1);w.setsampwidth(2);w.setframerate(SR);w.writeframes((np.clip(mixed,-.98,.98)*32700).astype(np.int16).tobytes())
     subprocess.run(['ffmpeg','-v','error','-y','-i',str(out/'silent.mp4'),'-i',str(out/'mix.wav'),'-c:v','copy','-c:a','aac','-b:a','160k',*mastering_args(),'-t',str(T),'-movflags','+faststart',str(out/'video.mp4')],check=True)
