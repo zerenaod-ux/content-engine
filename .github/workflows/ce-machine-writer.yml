@@ -1,0 +1,40 @@
+name: Machine writer
+on:
+  workflow_dispatch:
+    inputs:
+      idea:
+        description: 'Machine idea (empty = pick automatically)'
+        required: false
+  schedule:
+    - cron: '40 12 * * 3'
+permissions:
+  contents: write
+concurrency:
+  group: ce-machine-writer
+  cancel-in-progress: false
+jobs:
+  write:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 1}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: pip install --quiet numpy pillow pytest
+      - run: python -m pytest tests/studio/test_machine_writer.py tests/studio/test_machine_specs.py -q
+      - name: Design, check, and save one new machine
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GITHUB_MODELS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MACHINE_IDEA: ${{ github.event.inputs.idea }}
+          CE_VISION_CHECK: 'off'
+        run: python -m studio_lib.machine_writer
+      - name: Commit the new machine spec
+        run: |
+          if [ -n "$(git status --porcelain machines)" ]; then
+            git config user.name "how-it-ticks-bot"; git config user.email "bot@users.noreply.github.com"
+            git add machines/mw_*.json
+            git commit -m "New machine written and checked by the machine writer"
+            for i in 1 2 3; do git pull --rebase origin main && git push origin HEAD:main && break || sleep 5; done
+          else echo "Nothing new to commit"; fi

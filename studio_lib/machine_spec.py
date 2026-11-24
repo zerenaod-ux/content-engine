@@ -93,7 +93,12 @@ def install(spec,components=None):
  from studio_lib.registry import REGISTRY
  from studio_lib import action_contracts,narration_timing,novelty,topic_scope
  spec=validate(spec);key=spec['key']
- module=importlib.import_module(spec['module']);check_module(spec,module)
+ if spec.get('code'):
+  from studio_lib import machine_writer
+  import sys
+  module=machine_writer.build_module(spec['module'],spec['code']);sys.modules[spec['module']]=module
+ else:module=importlib.import_module(spec['module'])
+ check_module(spec,module)
  others={v for k,v in novelty.FAMILIES.items() if k!=key}
  if spec['family'] in others:raise SpecError('visual family is already used by another machine')
  bounds=[{'channel':b['channel'],'min':getattr(module,b['min']) if isinstance(b['min'],str) else b['min'],'max':getattr(module,b['max']) if isinstance(b['max'],str) else b['max'],'message':b['message']} for b in spec.get('bounds',[])]
@@ -128,6 +133,7 @@ def render_files():
  """Files that change the picture: every installed spec and its geometry module (part of the render cache signature)."""
  files=[]
  for key in sorted(SPECS):
+  if SPECS[key].get('code'):files.append(SPEC_DIR/(key+'.json'));continue
   mod=importlib.import_module(SPECS[key]['module']);files.append(Path(mod.__file__))
   p=SPEC_DIR/(key+'.json')
   if p.is_file():files.append(p)

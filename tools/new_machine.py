@@ -23,7 +23,7 @@ def background():return gradient((15,27,39),(41,60,74))
 
 def draw(s,t,tl,hidden=()):
  p=state(t,tl)
- P.plate(s,(0,.9,2.5),(6.0,.3,5.0),(46,60,74))
+ if 'plate' not in hidden:P.plate(s,(0,.9,2.5),(6.0,.3,5.0),(46,60,74))
  if 'gear' not in hidden:
   P.gear(s,(-1.0,0,2.7),1.25,16,p['turn'],.4,(186,198,206))
   P.gear(s,(1.05,0,1.75),.7,9,-p['turn']*16/9*0+(-p['turn']*16/9),.4,(222,176,84),tip=.14)
