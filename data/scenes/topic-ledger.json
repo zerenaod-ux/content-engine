@@ -350,14 +350,5 @@
     "mechanism": "snap_thermostat",
     "visual_family": "snap_disc_switch::cool_resets",
     "story": "cool_resets"
-  },
-  {
-    "topic": "How does a clothespin keep holding fabric without anyone pressing it?",
-    "topic_key": "anyone clothespin fabric holding keep pressing without",
-    "owner": "45388593195",
-    "state": "reserved",
-    "mechanism": "clothespin",
-    "visual_family": "torsion_peg::holds_without_hands",
-    "story": "holds_without_hands"
   }
 ]
