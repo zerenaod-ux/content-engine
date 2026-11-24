@@ -1018,5 +1018,15 @@
     "state": "reserved",
     "policy": "original-idea-and-visuals-v1",
     "mechanism": "combination_lock"
+  },
+  {
+    "topic": "How a three\u2011wheel padlock prevents accidental opening",
+    "mechanism": "combination_lock",
+    "visual_family": "gated_padlock::all_three_line_up",
+    "state": "created",
+    "owner": "45476143219",
+    "encoded_run": "45476143219",
+    "policy": "original-idea-and-visuals-v1",
+    "media_sha256": "0fffb163c96f7e928acb4b420d32626058561a8cccab72d060b6d75a5add627f"
   }
 ]
