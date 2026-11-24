@@ -1445,5 +1445,17 @@
     "record_run": "45395318384",
     "record_attempt": "1",
     "owner": "45395318384"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "",
+    "date": "2026-11-24",
+    "topic": "Why moving the slider back splits the teeth apart",
+    "title": "Why the Slider Splits Zipper Teeth \u2699\ufe0f",
+    "subject": "zipper",
+    "keywords": [],
+    "category": "tested mechanism",
+    "record_run": "45399500012",
+    "record_attempt": "1"
   }
 ]
