@@ -1611,5 +1611,19 @@
     "record_run": "45457846770",
     "record_attempt": "1",
     "owner": "45457846770"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "tested component rejected: Shared provider cooldown active | Shared provider cooldown active | Shared provider cooldown active\n",
+    "date": "2026-11-24",
+    "topic": "How does the iris keep a perfectly round opening while the blades pivot?",
+    "title": "",
+    "subject": "camera_iris",
+    "keywords": [],
+    "category": "tested mechanism",
+    "failed": true,
+    "record_run": "45460334123",
+    "record_attempt": "1",
+    "owner": "45460334123"
   }
 ]
