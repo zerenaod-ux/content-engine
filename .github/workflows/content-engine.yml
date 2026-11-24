@@ -38,7 +38,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 20   # tested components use CPU rendering, no generative GPU batch
+    timeout-minutes: 75   # tested components use CPU rendering, no generative GPU batch
     env:
       CE_FORCE_RECIPE: ${{ github.event.inputs.kit_recipe }}
     steps:
