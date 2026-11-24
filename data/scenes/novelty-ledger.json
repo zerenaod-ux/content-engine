@@ -1010,5 +1010,13 @@
     "state": "reserved",
     "policy": "original-idea-and-visuals-v1",
     "mechanism": "clothespin"
+  },
+  {
+    "topic": "How a three\u2011wheel padlock prevents accidental opening",
+    "visual_family": "gated_padlock::all_three_line_up",
+    "owner": "45476143219",
+    "state": "reserved",
+    "policy": "original-idea-and-visuals-v1",
+    "mechanism": "combination_lock"
   }
 ]
