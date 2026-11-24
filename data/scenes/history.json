@@ -1265,5 +1265,19 @@
     "record_run": "45328165215",
     "record_attempt": "1",
     "owner": "45328165215"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "tested component rejected: director rejected: Unsupported topic detail: the tested stapler component does not depict this feature; beat 0: staple legs stay straight until the anvil-clinching phase\n",
+    "date": "2026-11-24",
+    "topic": "Why do the staple legs fold inward under the paper?",
+    "title": "",
+    "subject": "stapler",
+    "keywords": [],
+    "category": "tested mechanism",
+    "failed": true,
+    "record_run": "45329526885",
+    "record_attempt": "1",
+    "owner": "45329526885"
   }
 ]
