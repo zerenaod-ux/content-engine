@@ -976,13 +976,5 @@
     "encoded_run": "45336877969",
     "policy": "original-idea-and-visuals-v1",
     "media_sha256": "3e0b267f2b428a305fccf1debabd4656798b369f7d8c8024a895e949625d8162"
-  },
-  {
-    "topic": "Where does the current go after it leaves the photovoltaic cell?",
-    "visual_family": "photovoltaic_cell::current_to_load",
-    "owner": "45377356940",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "photovoltaic_cell"
   }
 ]
