@@ -5,7 +5,15 @@
       "until": 1795517292.9509106
     }
   },
-  "waiters": [],
+  "waiters": [
+    {
+      "owner": "45377356940-1-ai",
+      "service": "ai",
+      "priority": 0,
+      "seen": 1795517115.1966288,
+      "joined": 1795517115.1966288
+    }
+  ],
   "cooldowns": {
     "api.groq.com": 1795517099.9473076,
     "openrouter.ai": 1795517908.078864,
