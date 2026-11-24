@@ -3,6 +3,8 @@
 This does not establish arbitrary-topic support or semantic completeness.
 """
 import re,unicodedata
+SPEC_DETECT={}   # key -> topic words that select a spec machine (machines/<key>.json)
+SPEC_BLOCK={}    # key -> details the machine does not depict
 
 def scope_error(topic,mechanism=None):
     text=unicodedata.normalize('NFKC',str(topic)).lower()
@@ -19,9 +21,10 @@ def scope_error(topic,mechanism=None):
         elif re.search(r'zipper',text):mechanism='zipper'
         elif re.search(r'stapler|stapling',text):mechanism='stapler'
         elif re.search(r'optical fib|fiber.optic|fibre.optic',text):mechanism='optical_fiber'
-        elif re.search(r'ratchet|socket wrench|pawl',text):mechanism='ratchet_wrench'
+        else:
+            for k,p in SPEC_DETECT.items():
+                if re.search(p,text):mechanism=k;break
     patterns={
-      'ratchet_wrench':r'electric|cordless|battery|impact|torque|click.?type|reversib|reversing|switch|strap|tie.?down|cable tie|zip tie|socket size|72.tooth|gear count|air tool|pneumatic',
       'pendulum_clock':r'quartz|digital|atomic|wristwatch|mainspring|spring.driven|balance wheel|minute hand|hour hand|time zone|calendar|chime|cuckoo',
       'zipper':r'waterproof|coil zipper|automatic.lock|magnetic|invisible zipper|separating pin',
       'stapler':r'electric|pneumatic|flat.clinch|tack(?:ing)?|staple gun|remove staple',
@@ -37,6 +40,7 @@ def scope_error(topic,mechanism=None):
       'piston_pump':r'centrifugal|peristaltic|impeller|diaphragm',
       'bascule_bridge':r'suspension|cable.stayed|vertical.lift|swing bridge|bearing.{0,40}(?:friction|lubricat)|(?:friction|lubricat).{0,40}(?:bearing|trunnion)',
     }
+    patterns.update(SPEC_BLOCK)
     if mechanism in patterns and re.search(patterns[mechanism],text):
         return 'Unsupported topic detail: the tested '+mechanism+' component does not depict this feature'
     return ''
@@ -44,3 +48,6 @@ def scope_error(topic,mechanism=None):
 def require_supported(topic):
     reason=scope_error(topic)
     if reason:raise ValueError(reason)
+
+from studio_lib import machine_spec
+machine_spec.ensure_loaded()

@@ -1,0 +1,169 @@
+{
+ "key": "ratchet_wrench",
+ "module": "studio_lib.ratchet_wrench",
+ "family": "one_way_ratchet",
+ "pattern": "\\b(ratchet|socket wrench|pawl)\\b",
+ "detect": "ratchet|socket wrench|pawl",
+ "block": "electric|cordless|battery|impact|torque|click.?type|reversib|reversing|switch|strap|tie.?down|cable tie|zip tie|socket size|72.tooth|gear count|air tool|pneumatic",
+ "description": "Manual ratchet wrench head: sawtooth ratchet wheel, spring-loaded pawl and hex bolt; one fixed drive direction; not a reversible, torque, impact or cordless wrench",
+ "actions": [
+  "wrench",
+  "cutaway",
+  "drive",
+  "slip",
+  "catch",
+  "repeat",
+  "hold",
+  "payoff"
+ ],
+ "facts": {
+  "wrench": "Introduce a recognizable ratchet wrench: a long handle with a red grip, a round head and one hex bolt on a fixed plate. Everything is still.",
+  "cutaway": "A simplified cutaway lifts the head cover to expose the toothed ratchet wheel, the spring-loaded pawl above it and the hex bolt turned by the wheel.",
+  "drive": "Illustrated input force swings the handle forward. The pawl sits in a gap and pushes the steep face of a tooth, so the wheel and the bolt turn together with the handle.",
+  "slip": "The handle swings back. The pawl rides up the sloped back of each tooth and clicks into the next gap, so the wheel and the bolt stay where they are.",
+  "catch": "Close-up of the forward stroke again. The spring keeps the pawl pressed into the wheel, so the pawl catches the steep face of a tooth and the wheel and bolt turn another step.",
+  "repeat": "The handle swings back a second time. The pawl clicks over the teeth again and the bolt keeps the extra turn. Each forward and back stroke adds one more forward turn.",
+  "hold": "No new part moves for this explanation. The steep face pushes the pawl and locks; the sloped face lets it slide away. The tooth shape makes the wheel turn one way only.",
+  "payoff": "The cover closes. Handle, pawl, wheel and bolt work together as a one-way turner. No reversing switch, motor or second tool is shown."
+ },
+ "source": "https://en.wikipedia.org/wiki/Ratchet_(device)",
+ "contract": {
+  "subjects": [
+   "wrench|ratchet|handle|bolt",
+   "cutaway",
+   "handle|pawl|wheel|tooth|teeth|bolt",
+   "handle|pawl|tooth|teeth|wheel|click|bolt",
+   "pawl|spring|tooth|teeth|wheel|handle",
+   "handle|pawl|tooth|teeth|click|bolt|wheel",
+   "tooth|teeth|pawl|slope|sloped|steep|face|wheel|bolt",
+   "wrench|ratchet|bolt|handle|pawl"
+  ],
+  "moves": {
+   "1": {
+    "cut": 1
+   },
+   "2": {
+    "handle": 1,
+    "wheel": 1
+   },
+   "3": {
+    "handle": -1
+   },
+   "4": {
+    "handle": 1,
+    "wheel": 1
+   },
+   "5": {
+    "handle": -1
+   },
+   "7": {
+    "cut": -1
+   }
+  },
+  "holds": {
+   "0": [
+    "handle",
+    "wheel",
+    "cut"
+   ],
+   "1": [
+    "handle",
+    "wheel"
+   ],
+   "2": [
+    "cut"
+   ],
+   "3": [
+    "wheel",
+    "cut"
+   ],
+   "4": [
+    "cut"
+   ],
+   "5": [
+    "wheel",
+    "cut"
+   ],
+   "6": [
+    "handle",
+    "wheel",
+    "cut"
+   ],
+   "7": [
+    "handle",
+    "wheel"
+   ]
+  },
+  "visible": [
+   [
+    2,
+    "wheel"
+   ],
+   [
+    2,
+    "input"
+   ],
+   [
+    3,
+    "pawl"
+   ],
+   [
+    4,
+    "spring"
+   ],
+   [
+    5,
+    "bolt"
+   ]
+  ]
+ },
+ "transitions": [
+  "cutaway",
+  "payoff"
+ ],
+ "anchors": {
+  "cutaway": "cutaway",
+  "payoff": "wrench|ratchet|bolt|handle"
+ },
+ "cue_bans": [
+  {
+   "pattern": "\\bpawl\\b",
+   "message": "motion_cue must not use the word pawl; speech recognition mishears it, use wrench, ratchet, bolt or handle"
+  }
+ ],
+ "narration_rules": [
+  {
+   "pattern": "\\b(motor|battery|electric\\w*|torque wrench|impact wrench|cordless)\\b",
+   "message": "only a manual one-way ratchet is depicted"
+  },
+  {
+   "pattern": "\\b(reverse|reverses|reversing|reversible|switch|flip the)\\b",
+   "message": "no reversing switch is depicted"
+  },
+  {
+   "pattern": "\\bbolt\\s+(turns|rotates|spins|loosens|tightens|moves|backs)\\b",
+   "beats": [
+    3,
+    5
+   ],
+   "message": "the bolt holds still while the handle swings back"
+  },
+  {
+   "pattern": "\\b(hand|finger)\\s+(pushes|pulls|swings|turns|grips)\\b",
+   "message": "input is shown with an arrow, not a hand"
+  }
+ ],
+ "bounds": [
+  {
+   "channel": "pawl_r",
+   "min": "R0",
+   "max": "R1",
+   "message": "Pawl tip left the tooth profile"
+  }
+ ],
+ "label": {
+  "from": 1,
+  "to": 6,
+  "text": "Cutaway · simplified ratchet head · input force illustrated"
+ }
+}

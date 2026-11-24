@@ -3,6 +3,8 @@ import json,re,hashlib,math
 from pathlib import Path
 import numpy as np
 
+SPEC_RULES={}    # key -> narration rules from machines/<key>.json
+SPEC_BOUNDS={}   # key -> measured-state bounds from machines/<key>.json
 CONTRACTS={
  'float_valve':{
   'subjects':[r'tank|water|float|level',r'cutaway',r'float|ball',r'washer|seal|stem|seat|plug|valve',r'valve|washer|inlet|seal',r'outlet|drain|draw.off|tap',r'float|water|level|valve',r'tank|level|water|float'],
@@ -41,11 +43,6 @@ CONTRACTS.update({
   'moves':{1:{'cut':1},3:{'turn':1},4:{'turn':1},5:{'weight_z':-1},7:{'cut':-1}},
   'holds':{0:['cut'],2:['cut'],3:['cut'],4:['cut'],5:['cut'],6:['cut']},
   'visible':[(2,'pendulum'),(3,'anchor'),(3,'escape'),(5,'weight')]},
- 'ratchet_wrench':{
-  'subjects':[r'wrench|ratchet|handle|bolt',r'cutaway',r'handle|pawl|wheel|tooth|teeth|bolt',r'handle|pawl|tooth|teeth|wheel|click|bolt',r'pawl|spring|tooth|teeth|wheel|handle',r'handle|pawl|tooth|teeth|click|bolt|wheel',r'tooth|teeth|pawl|slope|sloped|steep|face|wheel|bolt',r'wrench|ratchet|bolt|handle|pawl'],
-  'moves':{1:{'cut':1},2:{'handle':1,'wheel':1},3:{'handle':-1},4:{'handle':1,'wheel':1},5:{'handle':-1},7:{'cut':-1}},
-  'holds':{0:['handle','wheel','cut'],1:['handle','wheel'],2:['cut'],3:['wheel','cut'],4:['cut'],5:['wheel','cut'],6:['handle','wheel','cut'],7:['handle','wheel']},
-  'visible':[(2,'wheel'),(2,'input'),(3,'pawl'),(4,'spring'),(5,'bolt')]},
  'zipper':{
   'subjects':[r'zipper|teeth|tape|slider',r'cutaway',r'slider|guide|teeth',r'slider|head|teeth',r'slider|stop|chain',r'head|teeth|slider',r'slider|divider|teeth',r'zipper|slider|tapes'],
   'moves':{1:{'cut':1},2:{'slider':1,'joined':1},3:{'slider':1,'joined':1},4:{'slider':1,'joined':1},6:{'slider':-1,'joined':-1},7:{'cut':-1}},
@@ -94,11 +91,6 @@ def narration_errors(plan):
    if re.search(r'\b(spring|battery|quartz|motor|electric\w*|minute hand|hour hand)\b',text):errors.append(f'beat {i}: only a falling weight and one seconds hand are depicted; no spring, motor, battery or minute/hour hands')
    if re.search(r'\b(never loses|perfectly accurate|exactly accurate|speeds up|slows down)\b',text):errors.append(f'beat {i}: do not claim perfect accuracy or changing swing speed')
    if re.search(r'\bheavier (?:bob|pendulum)\b[^.!?]{0,40}(?:faster|slower)',text):errors.append(f'beat {i}: swing time depends on rod length, not bob mass')
-  elif kind=='ratchet_wrench':
-   if re.search(r'\b(motor|battery|electric\w*|torque wrench|impact wrench|cordless)\b',text):errors.append(f'beat {i}: only a manual one-way ratchet is depicted')
-   if re.search(r'\b(reverse|reverses|reversing|reversible|switch|flip the)\b',text):errors.append(f'beat {i}: no reversing switch is depicted')
-   if i in (3,5) and re.search(r'\bbolt\s+(turns|rotates|spins|loosens|tightens|moves|backs)\b',text):errors.append(f'beat {i}: the bolt holds still while the handle swings back')
-   if re.search(r'\b(hand|finger)\s+(pushes|pulls|swings|turns|grips)\b',text):errors.append(f'beat {i}: input is shown with an arrow, not a hand')
   elif kind=='zipper':
    if re.search(r'\bteeth\s+(bend|stretch|melt|flex)\b',text):errors.append(f'beat {i}: metal teeth translate rigidly; only fabric tapes bend')
    if i in (0,1,5,7) and re.search(r'\bslider\s+(moves|travels|reverses|advances|slides)\b',text):errors.append(f'beat {i}: slider is held during this explanation')
@@ -115,6 +107,8 @@ def narration_errors(plan):
    if i in (1,3,4,6,7) and re.search(r'\bjaws?\s+(open|opens|close|closes|move|moves|rotate|rotates)\b',text):errors.append(f'beat {i}: the jaws are held; no extra movement occurs here')
    if re.search(r'\bwood\s+(bends|flexes|stretches)\b',text):errors.append(f'beat {i}: the wooden members rotate rigidly; only the metal spring elastically deforms')
    if re.search(r'\b(hand|finger|motor)\s+(pushes|squeezes|turns|drives)\b',text):errors.append(f'beat {i}: input is shown with labeled arrows, not a hand or motor')
+  for r in SPEC_RULES.get(kind,[]):
+   if ('beats' not in r or i in r['beats']) and re.search(r['pattern'],text):errors.append(f'beat {i}: '+r['message'])
  return errors
 
 def channels(state):
@@ -150,8 +144,6 @@ def verify_motion(kind,module,tl,out,plan=None):
     if p['powered'] and p['gap']>.001:errors.append('Thermostat lamp powered across an open gap')
    elif kind=='clothespin':
     if p['beat']>=5 and p['gap']<module.THICKNESS-1e-6:errors.append('Jaws passed through the inserted fabric')
-   elif kind=='ratchet_wrench':
-    if p['pawl_r']<module.R0-1e-6 or p['pawl_r']>module.R1+1e-6:errors.append('Pawl tip left the tooth profile')
    elif kind=='stapler':
     if p['bend']>1e-6 and p['crown_z']>module.CONTACT+1e-6:errors.append('Staple bends before touching its anvil')
     for side in (-1,1):
@@ -162,6 +154,9 @@ def verify_motion(kind,module,tl,out,plan=None):
    elif kind=='combination_lock':
     if p['shackle']>0 and p['free']<.999:errors.append('Shackle lifted before all gates and locking tab cleared')
     if p['bar_z']<module.BAR_HIGH-1e-5 and not module.aligned(p['angles']):errors.append('Locking bar crossed an unaligned wheel rim')
+   elif kind in SPEC_BOUNDS:
+    for b in SPEC_BOUNDS[kind]:
+     if p[b['channel']]<b['min']-1e-6 or p[b['channel']]>b['max']+1e-6:errors.append(b['message'])
  result={'plan_sha256':fingerprint(plan),'timeline_sha256':fingerprint(tl),'contract':'component-causal-motion-v1','mechanism':kind,'errors':sorted(set(errors)),'measurements':rows,'scope':'Measured timeline linked to actual renderer state; pixel visibility is checked separately'}
  Path(out,'causal-motion-checks.json').write_text(json.dumps(result,indent=2))
  return result['errors']
@@ -183,3 +178,6 @@ def evidence_errors(report,plan,timeline):
   if mode=='held' and abs(value)>1e-5:errors.append('Measured held state changed')
  if seen!=set(expected):errors.append('Causal motion evidence is incomplete')
  return errors
+
+from studio_lib import machine_spec
+machine_spec.ensure_loaded()

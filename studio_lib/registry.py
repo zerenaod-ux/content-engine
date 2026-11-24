@@ -168,14 +168,8 @@ REGISTRY.update({
  'guide':'The pulse continues reflecting at successive boundaries along the straight core until reaching the far end and activating the receiver indicator.',
  'pulse':'More illustrative pulses travel along that same supported path. Their slow visible movement illustrates propagation, not the real speed of light.',
  'receive':'Pulses continue arriving at the receiving end; the indicator is already active. No packet decoding, electricity generation or camera sensor internals are shown.',
- 'payoff':'Cutaway layers return to show the complete cable with its receiver still active. Explain guided light without claiming perfect transmission or every launch angle is trapped.'},'source':'https://www.thefoa.org/tech/ref/basic/total_internal_reflection.html','mechanism_source':'https://ntrs.nasa.gov/api/citations/19960011720/downloads/19960011720.pdf'},
- 'ratchet_wrench':{'description':'Manual ratchet wrench head: sawtooth ratchet wheel, spring-loaded pawl and hex bolt; one fixed drive direction; not a reversible, torque, impact or cordless wrench','actions':['wrench','cutaway','drive','slip','catch','repeat','hold','payoff'],'facts':{
- 'wrench':'Introduce a recognizable ratchet wrench: a long handle with a red grip, a round head and one hex bolt on a fixed plate. Everything is still.',
- 'cutaway':'A simplified cutaway lifts the head cover to expose the toothed ratchet wheel, the spring-loaded pawl above it and the hex bolt turned by the wheel.',
- 'drive':'Illustrated input force swings the handle forward. The pawl sits in a gap and pushes the steep face of a tooth, so the wheel and the bolt turn together with the handle.',
- 'slip':'The handle swings back. The pawl rides up the sloped back of each tooth and clicks into the next gap, so the wheel and the bolt stay where they are.',
- 'catch':'Close-up of the forward stroke again. The spring keeps the pawl pressed into the wheel, so the pawl catches the steep face of a tooth and the wheel and bolt turn another step.',
- 'repeat':'The handle swings back a second time. The pawl clicks over the teeth again and the bolt keeps the extra turn. Each forward and back stroke adds one more forward turn.',
- 'hold':'No new part moves for this explanation. The steep face pushes the pawl and locks; the sloped face lets it slide away. The tooth shape makes the wheel turn one way only.',
- 'payoff':'The cover closes. Handle, pawl, wheel and bolt work together as a one-way turner. No reversing switch, motor or second tool is shown.'},'source':'https://en.wikipedia.org/wiki/Ratchet_(device)'}
+ 'payoff':'Cutaway layers return to show the complete cable with its receiver still active. Explain guided light without claiming perfect transmission or every launch angle is trapped.'},'source':'https://www.thefoa.org/tech/ref/basic/total_internal_reflection.html','mechanism_source':'https://ntrs.nasa.gov/api/citations/19960011720/downloads/19960011720.pdf'}
 })
+
+from studio_lib import machine_spec
+machine_spec.ensure_loaded()

@@ -14,9 +14,10 @@ from pathlib import Path
 
 VERSION = 'spoken-action-v1'
 ALIGNMENT_REVISION = 'causal-component-actions-v4'
+CUE_BANS = {}      # key -> words speech recognition mishears (from machines/<key>.json)
+SHORT_CUTAWAY = {'camera_iris','float_valve','combination_lock','electric_relay','snap_thermostat','zipper','stapler','optical_fiber','pendulum_clock'}
 TRANSITIONS = {
     'pendulum_clock':{'cutaway','payoff'},
-    'ratchet_wrench':{'cutaway','payoff'},
     'zipper':{'cutaway','guide','mesh','closed','reverse','payoff'},
     'stapler':{'cutaway','feed','press','clinch','return','payoff'},
     'optical_fiber':{'cutaway','enter','reflect','guide','payoff'},
@@ -33,7 +34,6 @@ TRANSITIONS = {
 }
 ANCHORS = {
     'pendulum_clock':{'cutaway':r'cutaway','payoff':r'clock|pendulum|weight|hand'},
-    'ratchet_wrench':{'cutaway':r'cutaway','payoff':r'wrench|ratchet|bolt|handle'},
     'zipper':{'cutaway':r'cutaway','guide':r'slider|guide','mesh':r'slider|teeth|heads','closed':r'slider|stop','reverse':r'slider|divider','payoff':r'zipper|slider|tapes'},
     'stapler':{'cutaway':r'cutaway','feed':r'magazine|spring|staple','press':r'handle|driver|input','clinch':r'driver|legs|anvil','return':r'handle|driver|return','payoff':r'stapler|handle|staple'},
     'optical_fiber':{'cutaway':r'cutaway','enter':r'light|pulse|core','reflect':r'light|pulse|boundary','guide':r'pulse|light|core','payoff':r'cable|fibre|fiber|receiver'},
@@ -124,8 +124,8 @@ def cue_errors(plan):
             errors.append(f'beat {i}: motion_cue needs 2-10 exact spoken words')
         elif len(locations(tokens(b.get('say','')),tokens(cue))) != 1:
             errors.append(f'beat {i}: motion_cue must occur exactly once in its narration')
-        elif plan.get('mechanism')=='ratchet_wrench' and re.search(r'\bpawl\b',cue,re.I):
-            errors.append(f'beat {i}: motion_cue must not use the word pawl; speech recognition mishears it, use wrench, ratchet, bolt or handle')
+        elif any(re.search(x['pattern'],cue,re.I) for x in CUE_BANS.get(plan.get('mechanism'),[])):
+            errors.append(f'beat {i}: '+next(x['message'] for x in CUE_BANS[plan['mechanism']] if re.search(x['pattern'],cue,re.I)))
         elif not re.search(ANCHORS[plan['mechanism']][b['action']],cue,re.I):
             errors.append(f'beat {i}: motion_cue must name this action or the internal part being revealed')
     return errors
@@ -247,7 +247,7 @@ def bind(plan, timeline, out, transcribe=None):
             # action inside this beat and leave cameras on their original clock.
             start=max(beat['start'],spoken_start-.35)
             end=min(beat['end'],beat['start']+.08+float(beat['voice_duration'])+.05)
-            if plan.get('mechanism') in ('camera_iris','float_valve','combination_lock','electric_relay','snap_thermostat','zipper','stapler','optical_fiber','pendulum_clock','ratchet_wrench') and planned['action']=='cutaway':end=min(beat['end'],max(spoken_end+.1,start+.9))
+            if plan.get('mechanism') in SHORT_CUTAWAY and planned['action']=='cutaway':end=min(beat['end'],max(spoken_end+.1,start+.9))
             completion=completion_match(plan['mechanism'],planned['action'],flat,spans,first_word)
             if completion:end=min(end,max(start+.5,beat['start']+.08+completion['end']+.15))
             if end-start<.35:raise ValueError('Speech cue leaves no safe action interval')
@@ -303,3 +303,6 @@ def require_bound(plan,timeline,out,verify_audio=False):
         if verify_audio and hashlib.sha256(Path(beat['voice']).read_bytes()).hexdigest()!=row['audio_sha256']:
             raise ValueError('Voice changed after action alignment')
     return report
+
+from studio_lib import machine_spec
+machine_spec.ensure_loaded()
