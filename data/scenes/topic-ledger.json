@@ -359,14 +359,5 @@
     "mechanism": "zipper",
     "visual_family": "interlocking_zipper::slider_back_splits",
     "story": "slider_back_splits"
-  },
-  {
-    "topic": "Why a Small Control Current Switches a Larger Load Circuit",
-    "topic_key": "circuit control current larger load small switches",
-    "owner": "45425466767",
-    "state": "reserved",
-    "mechanism": "electric_relay",
-    "visual_family": "electromagnetic_relay::small_switches_big",
-    "story": "small_switches_big"
   }
 ]
