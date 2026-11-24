@@ -359,5 +359,14 @@
     "mechanism": "zipper",
     "visual_family": "interlocking_zipper::slider_back_splits",
     "story": "slider_back_splits"
+  },
+  {
+    "topic": "How the three\u2011wheel padlock keeps the shackle locked until every wheel\u2019s gate aligns",
+    "topic_key": "aligns every gate keeps locked padlock s shackle three until wheel",
+    "owner": "45420981910",
+    "state": "reserved",
+    "mechanism": "combination_lock",
+    "visual_family": "gated_padlock::all_three_line_up",
+    "story": "all_three_line_up"
   }
 ]
