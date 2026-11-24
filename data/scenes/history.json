@@ -1457,5 +1457,19 @@
     "category": "tested mechanism",
     "record_run": "45399500012",
     "record_attempt": "1"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "tested component rejected: Shared provider cooldown active | Shared provider cooldown active | Shared provider cooldown active\n",
+    "date": "2026-11-24",
+    "topic": "Where does the current go after it leaves the photovoltaic cell?",
+    "title": "",
+    "subject": "photovoltaic_cell",
+    "keywords": [],
+    "category": "tested mechanism",
+    "failed": true,
+    "record_run": "45377356940",
+    "record_attempt": "3",
+    "owner": "45377356940"
   }
 ]
