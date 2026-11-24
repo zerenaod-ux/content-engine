@@ -22,9 +22,13 @@ on:
         description: 'Internal bounded catch-up request'
         type: boolean
         default: false
+      retry:
+        description: 'Internal: which automatic retry this is (0 = first try)'
+        default: '0'
   push:
     paths: ['publish/run.trigger']
 permissions:
+  actions: write
   contents: write
   issues: write
   models: read
@@ -168,6 +172,19 @@ jobs:
             python3 -m studio_lib.durable_topics release-failed || true
           fi
           python3 -m studio_lib.durable_topics save-records
+      - name: Retry automatically with a fresh topic (2026-11-23, owner rule - keep building without waiting)
+        if: always() && steps.capacity.outputs.should_build == 'true' && github.event_name != 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TRY: ${{ github.event.inputs.retry }}
+        run: |
+          n=${TRY:-0}
+          if [ ! -f scene-factory.mp4 ] && [ "$n" -lt 4 ]; then
+            # free AI limits reset by the minute; a rejected plan or picture just needs another topic/machine
+            sleep 120
+            gh api -X POST repos/${{ github.repository }}/actions/workflows/content-engine.yml/dispatches -f ref=${{ github.ref_name }} -f 'inputs[topic]=auto' -f "inputs[retry]=$((n+1))" || true
+            echo "retry $((n+1)) dispatched"
+          fi
       - name: Attach to release
         if: always() && steps.capacity.outputs.should_build == 'true'
         env:
