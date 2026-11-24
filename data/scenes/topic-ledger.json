@@ -359,14 +359,5 @@
     "mechanism": "zipper",
     "visual_family": "interlocking_zipper::slider_back_splits",
     "story": "slider_back_splits"
-  },
-  {
-    "topic": "How a Clothespin Holds Fabric Without Pressing",
-    "topic_key": "clothespin fabric holds pressing without",
-    "owner": "45416315700",
-    "state": "reserved",
-    "mechanism": "clothespin",
-    "visual_family": "torsion_peg::holds_without_hands",
-    "story": "holds_without_hands"
   }
 ]
