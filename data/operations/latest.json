@@ -40,12 +40,15 @@
       "run_id": "45327885922",
       "attempt": 1,
       "kind": "daily-short",
-      "stage": "voice",
-      "label": "Generating narration",
-      "updated_at": "2026-11-24T04:40:17.881268+00:00",
+      "stage": "Stopped",
+      "label": "Stopped",
+      "updated_at": "2026-11-24T04:41:19.721165+00:00",
       "source_branch": "main",
       "owner_approved": false,
-      "state": "running"
+      "retryable": false,
+      "next_retry_at": null,
+      "reason": "Needs a code, content or configuration correction",
+      "state": "needs_attention"
     }
   }
 }
