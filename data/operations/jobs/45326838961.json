@@ -2,10 +2,13 @@
   "run_id": "45326838961",
   "attempt": 1,
   "kind": "daily-short",
-  "stage": "planning",
-  "label": "Writing and checking narration",
-  "updated_at": "2026-11-24T04:31:52.422840+00:00",
+  "stage": "Stopped",
+  "label": "Stopped",
+  "updated_at": "2026-11-24T04:31:58.584479+00:00",
   "source_branch": "main",
   "owner_approved": false,
-  "state": "running"
+  "retryable": true,
+  "next_retry_at": 1795497418.5844526,
+  "reason": "Temporary service or capacity failure",
+  "state": "waiting_to_resume"
 }
