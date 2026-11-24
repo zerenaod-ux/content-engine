@@ -912,5 +912,15 @@
     "state": "reserved",
     "policy": "original-idea-and-visuals-v1",
     "mechanism": "float_valve"
+  },
+  {
+    "topic": "How a Float Ball Detects a Full Tank",
+    "mechanism": "float_valve",
+    "visual_family": "tank_float_control::ball_knows",
+    "state": "created",
+    "owner": "45332116417",
+    "encoded_run": "45332116417",
+    "policy": "original-idea-and-visuals-v1",
+    "media_sha256": "74f541efde5e192a06c9b82c692c42f62bf026348fc4854b7eef6871e5fd5674"
   }
 ]
