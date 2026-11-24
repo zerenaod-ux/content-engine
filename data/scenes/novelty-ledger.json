@@ -994,13 +994,5 @@
     "encoded_run": "45399500012",
     "policy": "original-idea-and-visuals-v1",
     "media_sha256": "ef24339914cab0788bd41d21ac61f602770c662ae32d0209049389785f96af57"
-  },
-  {
-    "topic": "Why water rises into the pump on the suction stroke",
-    "visual_family": "piston_pump::suction_lift",
-    "owner": "45438896992",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "piston_pump"
   }
 ]
