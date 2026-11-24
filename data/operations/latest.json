@@ -37,15 +37,15 @@
       "state": "awaiting_review"
     },
     "daily-short": {
-      "run_id": "45288095489",
+      "run_id": "45293677189",
       "attempt": 1,
       "kind": "daily-short",
-      "stage": "delivered",
-      "label": "In Studio; owner review required",
-      "updated_at": "2026-11-23T23:36:07.670956+00:00",
+      "stage": "selection",
+      "label": "Selecting a new topic",
+      "updated_at": "2026-11-24T00:01:53.496225+00:00",
       "source_branch": "main",
       "owner_approved": false,
-      "state": "awaiting_review"
+      "state": "running"
     }
   }
 }
