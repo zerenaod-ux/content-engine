@@ -24,7 +24,8 @@ class Scene:
     def project(self,points):
         p=np.asarray(points)-self.eye; depth=p@self.forward
         return np.column_stack([W/2+780*(p@self.right)/depth,740-780*(p@self.up)/depth]),depth
-    def face(self,points,color):
+    def face(self,points,color,bias=0.):
+        """bias>0 sorts the face nearer to the viewer, so a small decal never sinks behind the larger surface it sits on."""
         p=np.asarray(points,float)
         dep=(p-self.eye)@self.forward
         if min(dep)<.2:
@@ -40,7 +41,7 @@ class Scene:
             color=lit_color(p,color,self.eye)
             self.world_faces.append(p.copy())
         q,dep=self.project(p)
-        self.faces.append((float(dep.mean()),[tuple(x) for x in q],color))
+        self.faces.append((float(dep.mean())-bias,[tuple(x) for x in q],color))
     def box(self,center,size,color,transform=None):
         x,y,z=center; a,b,c=np.array(size)/2
         p=np.array([[x+dx*a,y+dy*b,z+dz*c] for dx,dy,dz in [(-1,-1,-1),(1,-1,-1),(1,1,-1),(-1,1,-1),(-1,-1,1),(1,-1,1),(1,1,1),(-1,1,1)]])
