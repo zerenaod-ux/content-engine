@@ -51,9 +51,9 @@ def test_write_retries_with_feedback(tmp_path):
     spec=W.write('demo gear lift',ask=ask,workdir=tmp_path/'w')
     assert spec['writer_tries']==2 and 'import not allowed' in calls[1]
 
-def test_write_gives_up_after_three(tmp_path):
+def test_write_gives_up_after_six(tmp_path):
     def ask(p):d=good();d['code']='import os\n'+d['code'];return d
-    with pytest.raises(W.WriterError,match='3 tries'):W.write('x machine',ask=ask,workdir=tmp_path/'w')
+    with pytest.raises(W.WriterError,match='6 tries'):W.write('x machine',ask=ask,workdir=tmp_path/'w')
 
 def test_pick_idea_skips_existing_and_respects_limit(tmp_path):
     first=W.pick_idea(tmp_path)

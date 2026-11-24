@@ -201,14 +201,22 @@ Return {{"title","description","words","parts","subjects","cues","facts","source
   * state(t,tl) returns a dict with 'beat' and float channels (e.g. cut, turn, slide) that really move per beat; a channel must stay constant in the beats where nothing moves it. At least three of beats 1-6 must move something.
   * draw() uses parts_rich helpers: P.plate, P.gear, P.spring, P.tube, P.disc, P.annulus, P.hex_prism, P.piston_cylinder, P.rivets, P.hook_link, P.chamfer_box, P.tooth_profile. Use several colours and many faces: a rich, detailed model, never plain boxes.
   * shot(i) returns ((x,y,z) target, zoom, floor) per beat, framing the machine inside a 9:16 frame.
+  * EXACT signatures of the parts helpers (call them exactly like this; every argument without a default is REQUIRED, colour is always a (r,g,b) tuple; the first argument s is the scene passed to draw):
+{signatures}
 Here is a working example of the module shape:
 {example}'''
+
+def part_signatures():
+ import inspect
+ from studio_lib import parts_rich as _p
+ names=('plate','gear','spring','tube','disc','annulus','hex_prism','piston_cylinder','rivets','hook_link','chamfer_box','tooth_profile')
+ return '\n'.join('    P.'+n+str(inspect.signature(getattr(_p,n))) for n in names if hasattr(_p,n))
 
 def example_code():
  text=(ROOT/'tools'/'new_machine.py').read_text();a=text.index("MODULE='''")+10;b=text.index("'''",a)
  return text[a:b].replace('{title}','Example').replace('{key}','example')
 
-def write(idea,ask=None,workdir='machine-writer',max_tries=3):
+def write(idea,ask=None,workdir='machine-writer',max_tries=6):
  """Ask the model for a machine; return the checked spec (also saved to machines/<key>.json by save()). ask(prompt)->dict."""
  if ask is None:
   from studio_lib import providers
@@ -216,7 +224,7 @@ def write(idea,ask=None,workdir='machine-writer',max_tries=3):
  slug=re.sub(r'[^a-z0-9]+','_',str(idea).lower()).strip('_')[:24] or 'machine';key='mw_'+slug
  feedback='';last=None
  for attempt in range(1,max_tries+1):
-  draft=ask(PROMPT.format(idea=idea,feedback=feedback,actions=', '.join(ACTIONS),example=example_code()))
+  draft=ask(PROMPT.format(idea=idea,feedback=feedback,actions=', '.join(ACTIONS),example=example_code(),signatures=part_signatures()))
   try:
    if not isinstance(draft,dict):raise WriterError('answer was not a JSON object')
    check_code(draft.get('code'))
