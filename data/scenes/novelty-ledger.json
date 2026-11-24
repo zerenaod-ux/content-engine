@@ -994,13 +994,5 @@
     "encoded_run": "45399500012",
     "policy": "original-idea-and-visuals-v1",
     "media_sha256": "ef24339914cab0788bd41d21ac61f602770c662ae32d0209049389785f96af57"
-  },
-  {
-    "topic": "What does the cladding around the core do?",
-    "visual_family": "step_index_guidance::cladding_role",
-    "owner": "45431398745",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "optical_fiber"
   }
 ]
