@@ -1293,5 +1293,19 @@
     "record_run": "45331379925",
     "record_attempt": "1",
     "owner": "45331379925"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "tested component rejected: Complete-output gate rejected: ['Story evidence belongs to a different plan', 'Causal motion evidence belongs to a different plan or timeline']\n",
+    "date": "2026-11-24",
+    "topic": "How a Float Ball Detects a Full Tank",
+    "title": "",
+    "subject": "float_valve",
+    "keywords": [],
+    "category": "tested mechanism",
+    "failed": true,
+    "record_run": "45332116417",
+    "record_attempt": "1",
+    "owner": "45332116417"
   }
 ]
