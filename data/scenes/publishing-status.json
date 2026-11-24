@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-11-24T00:25:46.223140+00:00",
+  "checked_at": "2026-11-24T01:08:50.771597+00:00",
   "read_only": true,
   "complete": true,
   "platforms": {
@@ -14,8 +14,7 @@
     "instagram": {
       "returned_posts": 14,
       "statuses": {
-        "scheduled": 1,
-        "sent": 13
+        "sent": 14
       }
     },
     "tiktok": {
@@ -374,7 +373,7 @@
         ],
         "instagram": [
           {
-            "status": "scheduled",
+            "status": "sent",
             "due": "2026-11-24T01:00:00.000Z"
           }
         ],
@@ -382,6 +381,30 @@
           {
             "status": "sent",
             "due": "2026-11-24T00:00:00.000Z"
+          }
+        ]
+      }
+    },
+    {
+      "tag": "ce-20261124-0050",
+      "title": "Why a Ratchet Wrench Stops Backward Motion \u2699\ufe0f",
+      "platforms": {
+        "youtube": [
+          {
+            "status": "not_found_in_buffer",
+            "prior_owner_skip": false
+          }
+        ],
+        "instagram": [
+          {
+            "status": "not_found_in_buffer",
+            "prior_owner_skip": false
+          }
+        ],
+        "tiktok": [
+          {
+            "status": "not_found_in_buffer",
+            "prior_owner_skip": false
           }
         ]
       }
@@ -412,7 +435,7 @@
         "source_updated_at": "2026-11-23T01:08:52.562Z"
       },
       "instagram": {
-        "views": 844.0,
+        "views": 717.0,
         "reactions": 5.0,
         "reported_posts": 8,
         "source_updated_at": "2026-11-23T02:58:31.357Z"
