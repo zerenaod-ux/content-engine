@@ -1002,5 +1002,13 @@
     "state": "reserved",
     "policy": "original-idea-and-visuals-v1",
     "mechanism": "wind_turbine"
+  },
+  {
+    "topic": "How a clothespin Holds Fabric Without Extra Pressure",
+    "visual_family": "torsion_peg::holds_without_hands",
+    "owner": "45470485524",
+    "state": "reserved",
+    "policy": "original-idea-and-visuals-v1",
+    "mechanism": "clothespin"
   }
 ]
