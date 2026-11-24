@@ -397,13 +397,13 @@ def run(topic,out,mechanism=None):
     if saved['stage']=='needs_repair':
         plan=plan_topic(topic,out,validate(plan) if saved.get('repair_kind')=='validation' else saved['errors'],plan,mechanism=mechanism);saved=save('needs_audit',plan)
     if saved['stage']=='needs_audit':
-        for review_attempt in range(2):
+        for review_attempt in range(3):   # 2026-11-23: one more repair pass before giving up
             errors=critique(plan,out)
             if not errors:
                 prior={k:saved[k] for k in ('timeline','render_signature','silent_path','silent_sha256') if k in saved}
                 saved=save('checked_scene',plan,**prior);break
             save('needs_repair',plan,errors=errors)
-            if review_attempt:raise ValueError('automatic narration repair still contradicts supplied facts')
+            if review_attempt>=2:raise ValueError('automatic narration repair still contradicts supplied facts')
             plan=plan_topic(topic,out,errors,plan,mechanism=mechanism);saved=save('needs_audit',plan)
     if novelty.identity(topic,plan['mechanism'])!=reserved_family:raise ValueError('Planner changed the reserved visual family; no media allowed')
     if plan['mechanism']!='bascule_bridge':plan['render_policy']=visual_quality.POLICY
