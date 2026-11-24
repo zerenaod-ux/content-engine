@@ -332,5 +332,14 @@
     "mechanism": "pendulum_clock",
     "visual_family": "pendulum_escapement::steady_beat",
     "story": "steady_beat"
+  },
+  {
+    "topic": "Why does a ratchet wrench click when you swing it back?",
+    "topic_key": "back click ratchet swing wrench",
+    "owner": "45335442765",
+    "state": "reserved",
+    "mechanism": "ratchet_wrench",
+    "visual_family": "one_way_ratchet::click_back",
+    "story": "click_back"
   }
 ]
