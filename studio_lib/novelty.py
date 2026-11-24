@@ -133,6 +133,22 @@ def require_new(topic,mechanism=None,owner=None,root=None):
  if error:raise ValueError('Permanent no-repeat policy: '+error)
  return identity(topic,mechanism)
 
+_STOP=set('a an the and or of to in on is are does do how why what when which that this it its before until only for with from by as at be can'.split())
+def _words(t):
+ t=re.sub(r'[^a-z ]',' ',str(t).lower().replace('\u2011','-'))
+ return {w[:5] for w in t.split() if w not in _STOP and len(w)>2}
+def story_repeats_earlier(question,mechanism,rows,limit=.5):
+ """True when a story's question mostly repeats the topic or title of an earlier finished video of the same machine."""
+ q=_words(question)
+ if not q:return False
+ for r in rows:
+  if r.get('failed') or r.get('failure_cause'):continue
+  if (r.get('mechanism') or r.get('subject'))!=mechanism:continue
+  for key in ('topic','title'):
+   t=_words(r.get(key,''))
+   if t and len(q&t)/len(q)>=limit:return True
+ return False
+
 def available_pairs(catalog,rows,owner=None):
  """Every (machine, story) still unspent: story None = the machine's original video. Hand-built machines only (kit recipes stay paused)."""
  from studio_lib import stories
@@ -142,8 +158,12 @@ def available_pairs(catalog,rows,owner=None):
   if k not in FAMILIES or k.startswith('recipe_'):continue
   if FAMILIES[k] not in blocked:out.append((k,None))
   for s in stories.stories_for(k):
-   if FAMILIES[k]+'::'+s['id'] not in blocked:out.append((k,s['id']))
- return out
+   if FAMILIES[k]+'::'+s['id'] in blocked:continue
+   if story_repeats_earlier(s.get('question',''),k,rows):continue   # same question as an earlier video of this machine = same video to a viewer
+   out.append((k,s['id']))
+ firsts=[x for x in out if x[1] is None]
+ if firsts:return firsts   # owner rule 2026-11-24: no machine is shown a second time until every machine has had its first video
+ return out if os.environ.get('CE_STORIES')=='on' else []   # owner 2026-11-24: a retelling of a machine already published looks like the same video; OFF until the owner asks (CE_STORIES=on)
 
 def unused(catalog,rows,owner=None):
  blocked=set().union(*(families(r) for r in rows if not pending_owner(r,owner))) if rows else set()

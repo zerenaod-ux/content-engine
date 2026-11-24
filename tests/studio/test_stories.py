@@ -38,6 +38,7 @@ class Stories(unittest.TestCase):
   os.environ['CE_STORY']='staggered_teeth';self.assertEqual(novelty.identity('','zipper'),fam+'::staggered_teeth')
   with self.assertRaises(ValueError):novelty.identity('','zipper',story='made_up')
  def test_a_used_original_does_not_spend_stories_and_a_used_story_spends_only_itself(self):
+  os.environ['CE_STORIES']='on';self.addCleanup(os.environ.pop,'CE_STORIES',None)
   fam=novelty.FAMILIES['zipper']
   rows=[{'topic':'How a zipper slider seals fabric edges','visual_family':fam,'state':'created'}]
   pairs=novelty.available_pairs({'zipper':REGISTRY['zipper']},rows)
