@@ -182,7 +182,16 @@ def _cli(argv):
  try:
   spec=check_spec(json.loads(Path(inp).read_text()),key,Path(res).parent/'picture')
   Path(res).write_text(json.dumps({'spec':spec}))
- except Exception as e:Path(res).write_text(json.dumps({'error':(type(e).__name__+': ' if not isinstance(e,WriterError) else '')+str(e)[:400]}))
+ except Exception as e:
+  where=''
+  try:
+   import traceback
+   code=(json.loads(Path(inp).read_text()).get('code') or '').splitlines()
+   for fr in reversed(traceback.extract_tb(e.__traceback__)):
+    if str(fr.filename).startswith('<machine:'):
+     n=fr.lineno or 0;where=' [in your code, line %d (function %s): %s]'%(n,fr.name,(code[n-1].strip() if 0<n<=len(code) else '')[:120]);break
+  except Exception:pass
+  Path(res).write_text(json.dumps({'error':((type(e).__name__+': ' if not isinstance(e,WriterError) else '')+str(e)[:300]+where)[:500]}))
 
 PROMPT='''You design ONE new simplified machine for a vertical (9:16) science-explainer channel called How It Ticks. Return JSON only.
 Machine idea: {idea}
