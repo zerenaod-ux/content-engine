@@ -948,5 +948,15 @@
     "state": "reserved",
     "policy": "original-idea-and-visuals-v1",
     "mechanism": "ratchet_wrench"
+  },
+  {
+    "topic": "Why does a ratchet wrench click when you swing it back?",
+    "mechanism": "ratchet_wrench",
+    "visual_family": "one_way_ratchet::click_back",
+    "state": "created",
+    "owner": "45335442765",
+    "encoded_run": "45335442765",
+    "policy": "original-idea-and-visuals-v1",
+    "media_sha256": "96090b42f8631fa91feb85c4f64c5899c431708831499d8feb97c507807dcd48"
   }
 ]
