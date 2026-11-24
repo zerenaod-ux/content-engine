@@ -386,5 +386,14 @@
     "mechanism": "combination_lock",
     "visual_family": "gated_padlock::all_three_line_up",
     "story": "all_three_line_up"
+  },
+  {
+    "topic": "Why a Tiny Control Current Operates a Separate High\u2011Power Circuit",
+    "topic_key": "circuit control current electric high operates separate tiny",
+    "owner": "45460334123",
+    "state": "reserved",
+    "mechanism": "electric_relay",
+    "visual_family": "electromagnetic_relay::small_switches_big",
+    "story": "small_switches_big"
   }
 ]
