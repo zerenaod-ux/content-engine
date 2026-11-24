@@ -359,5 +359,14 @@
     "mechanism": "zipper",
     "visual_family": "interlocking_zipper::slider_back_splits",
     "story": "slider_back_splits"
+  },
+  {
+    "topic": "Why a magnet turning past coils makes a lamp glow",
+    "topic_key": "coils glow lamp magnet past turn",
+    "owner": "45457846770",
+    "state": "reserved",
+    "mechanism": "wind_turbine",
+    "visual_family": "rotary_generator::magnet_coil",
+    "story": "magnet_coil"
   }
 ]
