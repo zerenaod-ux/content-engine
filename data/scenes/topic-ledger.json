@@ -261,5 +261,13 @@
     "state": "reserved",
     "mechanism": "optical_fiber",
     "visual_family": "step_index_guidance"
+  },
+  {
+    "topic": "Why a Ratchet Wrench Prevents Backward Motion",
+    "topic_key": "backward motion prevents ratchet wrench",
+    "owner": "45293677189",
+    "state": "reserved",
+    "mechanism": "ratchet_wrench",
+    "visual_family": "one_way_ratchet"
   }
 ]
