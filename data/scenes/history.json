@@ -1307,5 +1307,19 @@
     "record_run": "45332116417",
     "record_attempt": "1",
     "owner": "45332116417"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "tested component rejected: Complete-output gate rejected: ['Story evidence belongs to a different plan', 'Causal motion evidence belongs to a different plan or timeline']\n",
+    "date": "2026-11-24",
+    "topic": "Why a pendulum maintains a steady rhythm",
+    "title": "",
+    "subject": "pendulum_clock",
+    "keywords": [],
+    "category": "tested mechanism",
+    "failed": true,
+    "record_run": "45333461622",
+    "record_attempt": "1",
+    "owner": "45333461622"
   }
 ]
