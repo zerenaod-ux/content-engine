@@ -359,5 +359,14 @@
     "mechanism": "zipper",
     "visual_family": "interlocking_zipper::slider_back_splits",
     "story": "slider_back_splits"
+  },
+  {
+    "topic": "Where does the current go after it leaves the photovoltaic cell?",
+    "topic_key": "after cell current go leaves photovoltaic",
+    "owner": "45377356940",
+    "state": "reserved",
+    "mechanism": "photovoltaic_cell",
+    "visual_family": "photovoltaic_cell::current_to_load",
+    "story": "current_to_load"
   }
 ]
