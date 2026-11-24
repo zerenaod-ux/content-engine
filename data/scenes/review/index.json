@@ -708,7 +708,33 @@
    "ready_for_future_publish": true,
    "record": "saved/ce-20261123-2334/45291301964-1.json",
    "history": []
+  },
+  {
+   "tag": "ce-20261123-0900",
+   "title": "How a Hand Crank Freezes Ice Cream ⚙️",
+   "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@47cd6bb2d5317f7a018c5a4dfe3bbb134d92ab81/videos/ce-20261123-0900.mp4",
+   "folder": "delete",
+   "issue_number": 68,
+   "issue_url": "https://github.com/zerenaod-ux/content-engine/issues/68",
+   "reviewed_at": "2026-11-24T00:22:59.109074+00:00",
+   "publishing_enabled": false,
+   "ready_for_future_publish": false,
+   "record": "delete/ce-20261123-0900/45296627391-1.json",
+   "history": []
+  },
+  {
+   "tag": "ce-20261123-0910",
+   "title": "Why a garden sprayer makes fine mist ⚙️",
+   "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@39f247b8f0d0d7928f36b7957188ed2c1dcced62/videos/ce-20261123-0910.mp4",
+   "folder": "delete",
+   "issue_number": 69,
+   "issue_url": "https://github.com/zerenaod-ux/content-engine/issues/69",
+   "reviewed_at": "2026-11-24T00:22:59.524854+00:00",
+   "publishing_enabled": false,
+   "ready_for_future_publish": false,
+   "record": "delete/ce-20261123-0910/45296627391-1.json",
+   "history": []
   }
  ],
- "updated_at": "2026-11-23T23:44:13.685301+00:00"
+ "updated_at": "2026-11-24T00:22:59.524854+00:00"
 }
