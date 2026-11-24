@@ -116,7 +116,10 @@ def channels(state):
  for i,a in enumerate(state.get('angles',[])):d['wheel'+str(i)]=float(a)
  return d
 
-def fingerprint(data):return hashlib.sha256(json.dumps(data,sort_keys=True,separators=(',',':')).encode()).hexdigest()
+def fingerprint(data):
+ # picture_zoom is set by the picture check AFTER the story/motion evidence is written; it is framing only, so it must not change the plan's identity (fix 2026-11-23, live runs 45331379925/45332116417 died on this)
+ if isinstance(data,dict) and 'picture_zoom' in data:data={k:v for k,v in data.items() if k!='picture_zoom'}
+ return hashlib.sha256(json.dumps(data,sort_keys=True,separators=(',',':')).encode()).hexdigest()
 
 def verify_motion(kind,module,tl,out,plan=None):
  contract=CONTRACTS.get(kind)
