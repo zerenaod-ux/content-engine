@@ -147,7 +147,7 @@ def build(topic_file,out,work=Path('component-output/production')):
         os.environ['CE_STORY']=(selected_story(topic) if mechanism else None) or ''
         if mechanism:run(topic,work,mechanism=mechanism)
         else:run(topic,work)
-        spec=emit_review_files(work);from studio_lib import hook_intro;spec['hook_intro']=hook_intro.deliver(work/'video.mp4',out)   # owner rule 2026-11-24: zoomed middle-of-video hook first
+        spec=emit_review_files(work);from studio_lib import hook_intro;spec['hook_intro']=hook_intro.deliver(work/'video.mp4',out);spec['wordless']=hook_intro.deliver_wordless(work/'video.mp4',work/'foley.wav',Path(out).with_name(Path(out).stem+'-wordless.mp4'))   # owner rule 2026-11-24: zoomed middle-of-video hook first
         with Path('writer-log.txt').open('a') as f:f.write('tested component completed: '+spec['title']+'; owner review pending\n')
         return spec
     except Exception as e:

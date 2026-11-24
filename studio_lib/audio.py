@@ -54,5 +54,8 @@ def assemble(spec,timeline,out,foley_track=None):
     mixed=voice*.78/(abs(voice).max()+1e-9)
     if foley_track is not None:   # owner request 2026-11-24: the machine's own sounds, ducked under speech (studio_lib/foley.py)
         from studio_lib import foley as _f;mixed=_f.mix(mixed,foley_track);mixed=mixed/max(1.,abs(mixed).max()/.97)
+    if foley_track is not None:   # wordless variant: machine sounds only (reference Short, owner 2026-11-24)
+        wl=np.zeros(n);wl[:min(n,len(foley_track))]=foley_track[:n];wl=wl*.8/(abs(wl).max()+1e-9)
+        with wave.open(str(out/'foley.wav'),'wb') as w:w.setnchannels(1);w.setsampwidth(2);w.setframerate(SR);w.writeframes((np.clip(wl,-.98,.98)*32700).astype(np.int16).tobytes())
     with wave.open(str(out/'mix.wav'),'wb') as w:w.setnchannels(1);w.setsampwidth(2);w.setframerate(SR);w.writeframes((np.clip(mixed,-.98,.98)*32700).astype(np.int16).tobytes())
     subprocess.run(['ffmpeg','-v','error','-y','-i',str(out/'silent.mp4'),'-i',str(out/'mix.wav'),'-c:v','copy','-c:a','aac','-b:a','160k',*mastering_args(),'-t',str(T),'-movflags','+faststart',str(out/'video.mp4')],check=True)

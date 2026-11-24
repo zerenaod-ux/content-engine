@@ -38,3 +38,17 @@ def deliver(src,dst):
         try:tmp.unlink()
         except OSError:pass
         shutil.copyfile(src,dst);return False
+
+def deliver_wordless(video,foley_wav,dst):
+    """Same video, narration replaced by the machine's own sounds; gets the same zoomed hook. Never blocks the main delivery."""
+    video=Path(video);foley_wav=Path(foley_wav);dst=Path(dst)
+    if not foley_wav.exists():return False
+    tmp=dst.with_suffix('.wl.mp4')
+    try:
+        subprocess.run(['ffmpeg','-v','error','-y','-i',str(video),'-i',str(foley_wav),'-map','0:v','-map','1:a','-c:v','copy','-c:a','aac','-b:a','160k','-shortest',str(tmp)],check=True,timeout=300)
+        return deliver(tmp,dst)
+    except Exception as e:
+        print('wordless skipped:',str(e)[:200],flush=True);return False
+    finally:
+        try:tmp.unlink()
+        except OSError:pass

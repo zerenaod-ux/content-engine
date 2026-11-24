@@ -14,3 +14,10 @@ def test_real_file_gets_hook_and_is_longer(tmp_path):
 def test_failure_delivers_original(tmp_path):
     src=tmp_path/'bad.mp4';src.write_bytes(b'not a video')
     assert h.deliver(src,tmp_path/'out.mp4') is False and (tmp_path/'out.mp4').read_bytes()==b'not a video'
+
+def test_wordless_uses_foley_audio(tmp_path):
+    src=tmp_path/'in.mp4'
+    subprocess.run(['ffmpeg','-v','error','-y','-f','lavfi','-i','testsrc2=size=360x640:rate=30:duration=6','-f','lavfi','-i','sine=duration=6','-c:v','libx264','-pix_fmt','yuv420p','-c:a','aac','-shortest',str(src)],check=True)
+    wav=tmp_path/'foley.wav';subprocess.run(['ffmpeg','-v','error','-y','-f','lavfi','-i','anoisesrc=d=6:r=24000','-ac','1',str(wav)],check=True)
+    assert h.deliver_wordless(src,wav,tmp_path/'o-wordless.mp4') is True and (tmp_path/'o-wordless.mp4').exists()
+    assert h.deliver_wordless(src,tmp_path/'none.wav',tmp_path/'x.mp4') is False
