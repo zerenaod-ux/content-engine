@@ -368,5 +368,14 @@
     "mechanism": "wind_turbine",
     "visual_family": "rotary_generator::magnet_coil",
     "story": "magnet_coil"
+  },
+  {
+    "topic": "How a clothespin Holds Fabric Without Extra Pressure",
+    "topic_key": "clothespin extra fabric holds pressure without",
+    "owner": "45470485524",
+    "state": "reserved",
+    "mechanism": "clothespin",
+    "visual_family": "torsion_peg::holds_without_hands",
+    "story": "holds_without_hands"
   }
 ]
