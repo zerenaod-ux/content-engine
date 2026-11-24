@@ -41,6 +41,11 @@ CONTRACTS.update({
   'moves':{1:{'cut':1},3:{'turn':1},4:{'turn':1},5:{'weight_z':-1},7:{'cut':-1}},
   'holds':{0:['cut'],2:['cut'],3:['cut'],4:['cut'],5:['cut'],6:['cut']},
   'visible':[(2,'pendulum'),(3,'anchor'),(3,'escape'),(5,'weight')]},
+ 'ratchet_wrench':{
+  'subjects':[r'wrench|ratchet|handle|bolt',r'cutaway',r'handle|pawl|wheel|tooth|teeth|bolt',r'handle|pawl|tooth|teeth|wheel|click|bolt',r'pawl|spring|tooth|teeth|wheel|handle',r'handle|pawl|tooth|teeth|click|bolt|wheel',r'tooth|teeth|pawl|slope|sloped|steep|face|wheel|bolt',r'wrench|ratchet|bolt|handle|pawl'],
+  'moves':{1:{'cut':1},2:{'handle':1,'wheel':1},3:{'handle':-1},4:{'handle':1,'wheel':1},5:{'handle':-1},7:{'cut':-1}},
+  'holds':{0:['handle','wheel','cut'],1:['handle','wheel'],2:['cut'],3:['wheel','cut'],4:['cut'],5:['wheel','cut'],6:['handle','wheel','cut'],7:['handle','wheel']},
+  'visible':[(2,'wheel'),(2,'input'),(3,'pawl'),(4,'spring'),(5,'bolt')]},
  'zipper':{
   'subjects':[r'zipper|teeth|tape|slider',r'cutaway',r'slider|guide|teeth',r'slider|head|teeth',r'slider|stop|chain',r'head|teeth|slider',r'slider|divider|teeth',r'zipper|slider|tapes'],
   'moves':{1:{'cut':1},2:{'slider':1,'joined':1},3:{'slider':1,'joined':1},4:{'slider':1,'joined':1},6:{'slider':-1,'joined':-1},7:{'cut':-1}},
@@ -89,6 +94,11 @@ def narration_errors(plan):
    if re.search(r'\b(spring|battery|quartz|motor|electric\w*|minute hand|hour hand)\b',text):errors.append(f'beat {i}: only a falling weight and one seconds hand are depicted; no spring, motor, battery or minute/hour hands')
    if re.search(r'\b(never loses|perfectly accurate|exactly accurate|speeds up|slows down)\b',text):errors.append(f'beat {i}: do not claim perfect accuracy or changing swing speed')
    if re.search(r'\bheavier (?:bob|pendulum)\b[^.!?]{0,40}(?:faster|slower)',text):errors.append(f'beat {i}: swing time depends on rod length, not bob mass')
+  elif kind=='ratchet_wrench':
+   if re.search(r'\b(motor|battery|electric\w*|torque wrench|impact wrench|cordless)\b',text):errors.append(f'beat {i}: only a manual one-way ratchet is depicted')
+   if re.search(r'\b(reverse|reverses|reversing|reversible|switch|flip the)\b',text):errors.append(f'beat {i}: no reversing switch is depicted')
+   if i in (3,5) and re.search(r'\bbolt\s+(turns|rotates|spins|loosens|tightens|moves|backs)\b',text):errors.append(f'beat {i}: the bolt holds still while the handle swings back')
+   if re.search(r'\b(hand|finger)\s+(pushes|pulls|swings|turns|grips)\b',text):errors.append(f'beat {i}: input is shown with an arrow, not a hand')
   elif kind=='zipper':
    if re.search(r'\bteeth\s+(bend|stretch|melt|flex)\b',text):errors.append(f'beat {i}: metal teeth translate rigidly; only fabric tapes bend')
    if i in (0,1,5,7) and re.search(r'\bslider\s+(moves|travels|reverses|advances|slides)\b',text):errors.append(f'beat {i}: slider is held during this explanation')
@@ -140,6 +150,8 @@ def verify_motion(kind,module,tl,out,plan=None):
     if p['powered'] and p['gap']>.001:errors.append('Thermostat lamp powered across an open gap')
    elif kind=='clothespin':
     if p['beat']>=5 and p['gap']<module.THICKNESS-1e-6:errors.append('Jaws passed through the inserted fabric')
+   elif kind=='ratchet_wrench':
+    if p['pawl_r']<module.R0-1e-6 or p['pawl_r']>module.R1+1e-6:errors.append('Pawl tip left the tooth profile')
    elif kind=='stapler':
     if p['bend']>1e-6 and p['crown_z']>module.CONTACT+1e-6:errors.append('Staple bends before touching its anvil')
     for side in (-1,1):

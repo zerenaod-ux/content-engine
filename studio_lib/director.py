@@ -18,9 +18,9 @@ from studio_lib.render import BG,FONT,TITLE
 from studio_lib.audio import narrate,assemble
 from studio_lib.checkpoints import Checkpoint
 from studio_lib.registry import REGISTRY
-from studio_lib import solar,pump,wind,iris,float_valve,combination_lock,electric_relay,snap_thermostat,clothespin,zipper,stapler,optical_fiber,pendulum_clock
+from studio_lib import solar,pump,wind,iris,float_valve,combination_lock,electric_relay,snap_thermostat,clothespin,zipper,stapler,optical_fiber,pendulum_clock,ratchet_wrench
 from studio_lib import action_contracts,visual_quality
-COMPONENTS={'photovoltaic_cell':solar,'piston_pump':pump,'wind_turbine':wind,'camera_iris':iris,'float_valve':float_valve,'combination_lock':combination_lock,'electric_relay':electric_relay,'snap_thermostat':snap_thermostat,'clothespin':clothespin,'zipper':zipper,'stapler':stapler,'optical_fiber':optical_fiber,'pendulum_clock':pendulum_clock}
+COMPONENTS={'photovoltaic_cell':solar,'piston_pump':pump,'wind_turbine':wind,'camera_iris':iris,'float_valve':float_valve,'combination_lock':combination_lock,'electric_relay':electric_relay,'snap_thermostat':snap_thermostat,'clothespin':clothespin,'zipper':zipper,'stapler':stapler,'optical_fiber':optical_fiber,'pendulum_clock':pendulum_clock,'ratchet_wrench':ratchet_wrench}
 from studio_lib.kit import register as _kit
 _kit.load_saved(COMPONENTS)   # kit recipe machines: registry, contracts and families come from saved recipes
 from studio_lib.topic_scope import scope_error,require_supported
@@ -266,6 +266,7 @@ def component_picture(t,tl,plan,hidden=()):
     if mechanism=='snap_thermostat' and 2<=beat<=6:label='Thermal action · slowed illustration'
     if mechanism=='clothespin' and beat in (2,3,4):label='Input force · illustration'
     if mechanism=='pendulum_clock' and 1<=beat<=6:label='Cutaway · simplified escapement'
+    if mechanism=='ratchet_wrench' and 1<=beat<=6:label='Cutaway · simplified ratchet head · input force illustrated'
     if mechanism.startswith('recipe_') and 1<=beat<=6:label='Simplified model · illustration'
     if mechanism=='zipper' and 1<=beat<=6:label='Enlarged slider section'
     if mechanism=='stapler' and 1<=beat<=6:label='Paper section · input force illustrated'
@@ -419,7 +420,7 @@ def run(topic,out,mechanism=None):
     print('CE_STAGE=render',flush=True)
     render_start=time.monotonic();render_hit=False
     root=Path(__file__).resolve().parent
-    render_sig=hashlib.sha256(b''.join((root/p).read_bytes() for p in ['director.py','narration_timing.py','mechanisms.py','mesh.py','solar.py','pump.py','wind.py','iris.py','float_valve.py','combination_lock.py','solid_parts.py','camera_direction.py','electric_relay.py','snap_thermostat.py','clothespin.py','zipper.py','stapler.py','optical_fiber.py','pendulum_clock.py','kit/recipe.py','kit/register.py','action_contracts.py','visual_quality.py','registry.py'])+json.dumps(tl,sort_keys=True).encode()).hexdigest()
+    render_sig=hashlib.sha256(b''.join((root/p).read_bytes() for p in ['director.py','narration_timing.py','mechanisms.py','mesh.py','solar.py','pump.py','wind.py','iris.py','float_valve.py','combination_lock.py','solid_parts.py','camera_direction.py','electric_relay.py','snap_thermostat.py','clothespin.py','zipper.py','stapler.py','optical_fiber.py','pendulum_clock.py','ratchet_wrench.py','kit/recipe.py','kit/register.py','action_contracts.py','visual_quality.py','registry.py'])+json.dumps(tl,sort_keys=True).encode()).hexdigest()
     cached=Path(fields.get('silent_path','/nonexistent'))
     if fields.get('render_signature')==render_sig and cached.is_file() and hashlib.sha256(cached.read_bytes()).hexdigest()==fields.get('silent_sha256'):
         shutil.copyfile(cached,out/'silent.mp4');render_hit=True

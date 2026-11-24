@@ -10,7 +10,7 @@ from studio_lib.topic_guard import duplicate
 POLICY='original-idea-and-visuals-v1'
 MEMORY='data/scenes/novelty-ledger.json'
 FAMILIES={
- 'pendulum_clock':'pendulum_escapement','zipper':'interlocking_zipper','stapler':'staple_clinching','optical_fiber':'step_index_guidance',
+ 'pendulum_clock':'pendulum_escapement','zipper':'interlocking_zipper','stapler':'staple_clinching','optical_fiber':'step_index_guidance','ratchet_wrench':'one_way_ratchet',
  'electric_relay':'electromagnetic_relay','snap_thermostat':'snap_disc_switch','clothespin':'torsion_peg',
  'float_valve':'tank_float_control','combination_lock':'gated_padlock',
  'camera_iris':'optical_iris',
@@ -22,6 +22,7 @@ FAMILIES={
 }
 PATTERNS={
  'pendulum_clock':r'\b(pendulum|grandfather clock|escapement|clock)\b',
+ 'ratchet_wrench':r'\b(ratchet|socket wrench|pawl)\b',
  'zipper':r'\b(zipper|zip fastener)\b',
  'stapler':r'\b(stapler|stapling|clinching anvil)\b',
  'optical_fiber':r'\b(optical fib(?:er|re)|fibre.optic|fiber.optic|total internal reflection)\b',

@@ -1,7 +1,7 @@
 import math,tempfile,unittest
 from pathlib import Path
 import numpy as np
-from studio_lib import zipper,stapler,optical_fiber as fiber
+from studio_lib import zipper,stapler,optical_fiber as fiber,ratchet_wrench as ratchet
 from studio_lib.registry import REGISTRY
 from studio_lib.director import verify_component
 
@@ -50,7 +50,13 @@ class Assemblies(unittest.TestCase):
  def test_fibre_receiver_waits_for_the_signal(self):
   tl=self.timeline('optical_fiber')
   self.assertEqual(fiber.state(23.99,tl)['output'],0);self.assertEqual(fiber.state(30.,tl)['output'],1)
+ def test_ratchet_wheel_never_reverses_and_pawl_stays_on_the_teeth(self):
+  tl=self.timeline('ratchet_wrench');last=-1.
+  for t in np.linspace(0,47.99,600):
+   p=ratchet.state(t,tl);self.assertGreaterEqual(p['wheel'],last-1e-12);last=p['wheel']
+   self.assertGreaterEqual(p['pawl_r'],ratchet.R0-1e-9);self.assertLessEqual(p['pawl_r'],ratchet.R1+1e-9)
+  self.assertAlmostEqual(ratchet.state(47.99,tl)['wheel'],2*ratchet.STROKE);self.assertAlmostEqual(ratchet.state(47.99,tl)['handle'],0.)
  def test_each_new_assembly_passes_real_visibility_and_motion_preflight(self):
-  for key in ('zipper','stapler','optical_fiber','pendulum_clock'):
+  for key in ('zipper','stapler','optical_fiber','pendulum_clock','ratchet_wrench'):
    with self.subTest(key=key),tempfile.TemporaryDirectory() as folder:
     tl=self.timeline(key);verify_component({'mechanism':key,'beats':tl['beats'],'hook':'Engineering check'},tl,Path(folder))

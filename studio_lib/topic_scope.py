@@ -19,7 +19,9 @@ def scope_error(topic,mechanism=None):
         elif re.search(r'zipper',text):mechanism='zipper'
         elif re.search(r'stapler|stapling',text):mechanism='stapler'
         elif re.search(r'optical fib|fiber.optic|fibre.optic',text):mechanism='optical_fiber'
+        elif re.search(r'ratchet|socket wrench|pawl',text):mechanism='ratchet_wrench'
     patterns={
+      'ratchet_wrench':r'electric|cordless|battery|impact|torque|click.?type|reversib|reversing|switch|strap|tie.?down|cable tie|zip tie|socket size|72.tooth|gear count|air tool|pneumatic',
       'pendulum_clock':r'quartz|digital|atomic|wristwatch|mainspring|spring.driven|balance wheel|minute hand|hour hand|time zone|calendar|chime|cuckoo',
       'zipper':r'waterproof|coil zipper|automatic.lock|magnetic|invisible zipper|separating pin',
       'stapler':r'electric|pneumatic|flat.clinch|tack(?:ing)?|staple gun|remove staple',
