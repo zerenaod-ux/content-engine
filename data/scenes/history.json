@@ -1513,5 +1513,19 @@
     "record_run": "45416315700",
     "record_attempt": "1",
     "owner": "45416315700"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "tested component rejected: Shared provider cooldown active | Shared provider cooldown active | Shared provider cooldown active\n",
+    "date": "2026-11-24",
+    "topic": "How the three\u2011wheel padlock keeps the shackle locked until every wheel\u2019s gate aligns",
+    "title": "",
+    "subject": "combination_lock",
+    "keywords": [],
+    "category": "tested mechanism",
+    "failed": true,
+    "record_run": "45420981910",
+    "record_attempt": "1",
+    "owner": "45420981910"
   }
 ]
