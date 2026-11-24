@@ -350,5 +350,14 @@
     "mechanism": "snap_thermostat",
     "visual_family": "snap_disc_switch::cool_resets",
     "story": "cool_resets"
+  },
+  {
+    "topic": "How a small hand push drives staple legs through paper",
+    "topic_key": "drives hand legs paper push small staple through",
+    "owner": "45395318384",
+    "state": "reserved",
+    "mechanism": "stapler",
+    "visual_family": "staple_clinching::small_push_big_force",
+    "story": "small_push_big_force"
   }
 ]
