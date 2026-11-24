@@ -984,5 +984,15 @@
     "state": "reserved",
     "policy": "original-idea-and-visuals-v1",
     "mechanism": "zipper"
+  },
+  {
+    "topic": "Why moving the slider back splits the teeth apart",
+    "mechanism": "zipper",
+    "visual_family": "interlocking_zipper::slider_back_splits",
+    "state": "created",
+    "owner": "45399500012",
+    "encoded_run": "45399500012",
+    "policy": "original-idea-and-visuals-v1",
+    "media_sha256": "ef24339914cab0788bd41d21ac61f602770c662ae32d0209049389785f96af57"
   }
 ]
