@@ -2,9 +2,9 @@
   "run_id": "45377356940",
   "attempt": 1,
   "kind": "daily-short",
-  "stage": "queued",
-  "label": "Waiting for shared services",
-  "updated_at": "2026-11-24T10:46:35.007683+00:00",
+  "stage": "planning",
+  "label": "Writing and checking narration",
+  "updated_at": "2026-11-24T10:46:49.875037+00:00",
   "source_branch": "main",
   "owner_approved": false,
   "state": "running"
