@@ -341,5 +341,14 @@
     "mechanism": "ratchet_wrench",
     "visual_family": "one_way_ratchet::click_back",
     "story": "click_back"
+  },
+  {
+    "topic": "How does the thermostat reset itself once it cools?",
+    "topic_key": "cools itself once reset thermostat",
+    "owner": "45336877969",
+    "state": "reserved",
+    "mechanism": "snap_thermostat",
+    "visual_family": "snap_disc_switch::cool_resets",
+    "story": "cool_resets"
   }
 ]
