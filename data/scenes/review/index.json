@@ -734,7 +734,33 @@
    "ready_for_future_publish": false,
    "record": "delete/ce-20261123-0910/45296627391-1.json",
    "history": []
+  },
+  {
+   "tag": "ce-20261122-0338",
+   "title": "How a Simple Latch Secures a Door ⚙️",
+   "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@bb6636d4be16d5ebe15c059681dedc3743c8f2c4/videos/ce-20261122-0338.mp4",
+   "folder": "delete",
+   "issue_number": 66,
+   "issue_url": "https://github.com/zerenaod-ux/content-engine/issues/66",
+   "reviewed_at": "2026-11-24T00:24:22.509462+00:00",
+   "publishing_enabled": false,
+   "ready_for_future_publish": false,
+   "record": "delete/ce-20261122-0338/45296644957-1.json",
+   "history": []
+  },
+  {
+   "tag": "ce-20261122-2057",
+   "title": "How a Simple Soap Dispenser Works ⚙️",
+   "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@53499d49ccfad83be6fcd291a3cf35a59175243b/videos/ce-20261122-2057.mp4",
+   "folder": "delete",
+   "issue_number": 67,
+   "issue_url": "https://github.com/zerenaod-ux/content-engine/issues/67",
+   "reviewed_at": "2026-11-24T00:24:22.796008+00:00",
+   "publishing_enabled": false,
+   "ready_for_future_publish": false,
+   "record": "delete/ce-20261122-2057/45296644957-1.json",
+   "history": []
   }
  ],
- "updated_at": "2026-11-24T00:22:59.524854+00:00"
+ "updated_at": "2026-11-24T00:24:22.796008+00:00"
 }
