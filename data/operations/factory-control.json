@@ -9,11 +9,11 @@
   "due_slots": 1,
   "ready_today": 2,
   "daily_target": 3,
-  "unused_visuals": 30,
+  "unused_visuals": 29,
   "should_build": false,
   "reason": "A generation run is already active",
   "pending_review": 8,
   "dispatches": 0,
   "requested_at": 0,
-  "checked_at": "2026-11-24T13:24:28.187497+00:00"
+  "checked_at": "2026-11-24T13:25:31.058010+00:00"
 }
