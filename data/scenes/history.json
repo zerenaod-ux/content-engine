@@ -1471,5 +1471,19 @@
     "record_run": "45377356940",
     "record_attempt": "3",
     "owner": "45377356940"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "tested component rejected: Shared provider cooldown active | Shared provider cooldown active | Shared provider cooldown active\n",
+    "date": "2026-11-24",
+    "topic": "How moving magnets generate light in a coil",
+    "title": "",
+    "subject": "wind_turbine",
+    "keywords": [],
+    "category": "tested mechanism",
+    "failed": true,
+    "record_run": "45406702618",
+    "record_attempt": "1",
+    "owner": "45406702618"
   }
 ]
