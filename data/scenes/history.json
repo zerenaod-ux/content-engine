@@ -1597,5 +1597,19 @@
     "record_run": "45450538529",
     "record_attempt": "1",
     "owner": "45450538529"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "tested component rejected: 'list' object has no attribute 'get'\n",
+    "date": "2026-11-24",
+    "topic": "Why a magnet turning past coils makes a lamp glow",
+    "title": "",
+    "subject": "wind_turbine",
+    "keywords": [],
+    "category": "tested mechanism",
+    "failed": true,
+    "record_run": "45457846770",
+    "record_attempt": "1",
+    "owner": "45457846770"
   }
 ]
