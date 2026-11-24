@@ -314,5 +314,14 @@
     "mechanism": "piston_pump",
     "visual_family": "piston_pump::push_out",
     "story": "push_out"
+  },
+  {
+    "topic": "How a Float Ball Detects a Full Tank",
+    "topic_key": "ball detects float full tank",
+    "owner": "45332116417",
+    "state": "reserved",
+    "mechanism": "float_valve",
+    "visual_family": "tank_float_control::ball_knows",
+    "story": "ball_knows"
   }
 ]
