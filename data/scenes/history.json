@@ -1583,5 +1583,19 @@
     "record_run": "45447781111",
     "record_attempt": "1",
     "owner": "45447781111"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "tested component rejected: free request/time budget exhausted; accepted stages remain cached\n",
+    "date": "2026-11-24",
+    "topic": "How a photovoltaic cell powers a DC motor",
+    "title": "",
+    "subject": "photovoltaic_cell",
+    "keywords": [],
+    "category": "tested mechanism",
+    "failed": true,
+    "record_run": "45450538529",
+    "record_attempt": "1",
+    "owner": "45450538529"
   }
 ]
