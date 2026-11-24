@@ -1639,5 +1639,17 @@
     "record_run": "45470485524",
     "record_attempt": "1",
     "owner": "45470485524"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "",
+    "date": "2026-11-24",
+    "topic": "How a three\u2011wheel padlock prevents accidental opening",
+    "title": "How Three Wheels Secure a Padlock \u2699\ufe0f",
+    "subject": "combination_lock",
+    "keywords": [],
+    "category": "tested mechanism",
+    "record_run": "45476143219",
+    "record_attempt": "1"
   }
 ]
