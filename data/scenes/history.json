@@ -1431,5 +1431,19 @@
     "record_run": "45392419434",
     "record_attempt": "1",
     "owner": "45392419434"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "tested component rejected: Shared provider cooldown active | Shared provider cooldown active | Shared provider cooldown active\n",
+    "date": "2026-11-24",
+    "topic": "How a small hand push drives staple legs through paper",
+    "title": "",
+    "subject": "stapler",
+    "keywords": [],
+    "category": "tested mechanism",
+    "failed": true,
+    "record_run": "45395318384",
+    "record_attempt": "1",
+    "owner": "45395318384"
   }
 ]
