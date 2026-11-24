@@ -6,7 +6,7 @@ on:
         description: 'Machine idea (empty = pick automatically)'
         required: false
   schedule:
-    - cron: '40 12 * * 3'
+    - cron: '40 8 * * *'
 permissions:
   contents: write
 concurrency:
