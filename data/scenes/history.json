@@ -1651,5 +1651,17 @@
     "category": "tested mechanism",
     "record_run": "45476143219",
     "record_attempt": "1"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "",
+    "date": "2026-11-24",
+    "topic": "Why a Tiny Control Current Operates a Separate High\u2011Power Circuit",
+    "title": "Why a Tiny Current Controls a Big Load \u2699\ufe0f",
+    "subject": "electric_relay",
+    "keywords": [],
+    "category": "tested mechanism",
+    "record_run": "45460334123",
+    "record_attempt": "2"
   }
 ]
