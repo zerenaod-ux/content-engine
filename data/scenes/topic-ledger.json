@@ -305,5 +305,14 @@
     "mechanism": "stapler",
     "visual_family": "staple_clinching::legs_fold_in",
     "story": "legs_fold_in"
+  },
+  {
+    "topic": "How the compression stroke pushes water out without backflow",
+    "topic_key": "backflow compression pushes stroke water without",
+    "owner": "45331379925",
+    "state": "reserved",
+    "mechanism": "piston_pump",
+    "visual_family": "piston_pump::push_out",
+    "story": "push_out"
   }
 ]
