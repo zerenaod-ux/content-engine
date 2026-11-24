@@ -1,13 +1,11 @@
 {
-  "leases": {},
-  "waiters": [
-    {
+  "leases": {
+    "ai": {
       "owner": "45377356940-1-ai",
-      "service": "ai",
-      "priority": 0,
-      "seen": 1795517193.980018,
-      "joined": 1795517115.1966288
-    },
+      "until": 1795517388.837121
+    }
+  },
+  "waiters": [
     {
       "owner": "45377180368-1-ai",
       "service": "ai",
