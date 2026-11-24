@@ -287,5 +287,14 @@
     "mechanism": "wind_turbine",
     "visual_family": "rotary_generator::lamp_needs_spin",
     "story": "lamp_needs_spin"
+  },
+  {
+    "topic": "Where does the clothespin's gripping force come from?",
+    "topic_key": "clothespin come force gripping s",
+    "owner": "45328165215",
+    "state": "reserved",
+    "mechanism": "clothespin",
+    "visual_family": "torsion_peg::grip_force",
+    "story": "grip_force"
   }
 ]
