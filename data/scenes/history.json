@@ -1403,5 +1403,19 @@
     "record_run": "45387743876",
     "record_attempt": "1",
     "owner": "45387743876"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "tested component rejected: Shared provider cooldown active | Shared provider cooldown active | Shared provider cooldown active\n",
+    "date": "2026-11-24",
+    "topic": "How does a clothespin keep holding fabric without anyone pressing it?",
+    "title": "",
+    "subject": "clothespin",
+    "keywords": [],
+    "category": "tested mechanism",
+    "failed": true,
+    "record_run": "45388593195",
+    "record_attempt": "1",
+    "owner": "45388593195"
   }
 ]
