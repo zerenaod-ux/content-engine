@@ -1625,5 +1625,19 @@
     "record_run": "45460334123",
     "record_attempt": "1",
     "owner": "45460334123"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "tested component rejected: Picture check failed; nothing was rendered: machine is built from too few facets/shades (578 faces, 108 shades; needs 250/170); use the rich parts library; machine is small in most shots (median fill 12%); frame it bigger\n",
+    "date": "2026-11-24",
+    "topic": "How a clothespin Holds Fabric Without Extra Pressure",
+    "title": "",
+    "subject": "clothespin",
+    "keywords": [],
+    "category": "tested mechanism",
+    "failed": true,
+    "record_run": "45470485524",
+    "record_attempt": "1",
+    "owner": "45470485524"
   }
 ]
