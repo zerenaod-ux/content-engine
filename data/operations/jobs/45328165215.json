@@ -2,10 +2,13 @@
   "run_id": "45328165215",
   "attempt": 1,
   "kind": "daily-short",
-  "stage": "picture_check",
-  "label": "picture_check",
-  "updated_at": "2026-11-24T04:47:17.192343+00:00",
+  "stage": "Stopped",
+  "label": "Stopped",
+  "updated_at": "2026-11-24T04:48:01.301046+00:00",
   "source_branch": "main",
   "owner_approved": false,
-  "state": "running"
+  "retryable": true,
+  "next_retry_at": 1795498381.3010204,
+  "reason": "Temporary service or capacity failure",
+  "state": "waiting_to_resume"
 }
