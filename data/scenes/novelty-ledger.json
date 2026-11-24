@@ -984,13 +984,5 @@
     "state": "reserved",
     "policy": "original-idea-and-visuals-v1",
     "mechanism": "photovoltaic_cell"
-  },
-  {
-    "topic": "Why a rotating magnet past coils lights a lamp",
-    "visual_family": "rotary_generator::magnet_coil",
-    "owner": "45378465323",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "wind_turbine"
   }
 ]
