@@ -33,7 +33,7 @@ TRANSITIONS = {
 }
 ANCHORS = {
     'pendulum_clock':{'cutaway':r'cutaway','payoff':r'clock|pendulum|weight|hand'},
-    'ratchet_wrench':{'cutaway':r'cutaway','payoff':r'wrench|ratchet|bolt|handle|pawl'},
+    'ratchet_wrench':{'cutaway':r'cutaway','payoff':r'wrench|ratchet|bolt|handle'},
     'zipper':{'cutaway':r'cutaway','guide':r'slider|guide','mesh':r'slider|teeth|heads','closed':r'slider|stop','reverse':r'slider|divider','payoff':r'zipper|slider|tapes'},
     'stapler':{'cutaway':r'cutaway','feed':r'magazine|spring|staple','press':r'handle|driver|input','clinch':r'driver|legs|anvil','return':r'handle|driver|return','payoff':r'stapler|handle|staple'},
     'optical_fiber':{'cutaway':r'cutaway','enter':r'light|pulse|core','reflect':r'light|pulse|boundary','guide':r'pulse|light|core','payoff':r'cable|fibre|fiber|receiver'},
@@ -124,6 +124,8 @@ def cue_errors(plan):
             errors.append(f'beat {i}: motion_cue needs 2-10 exact spoken words')
         elif len(locations(tokens(b.get('say','')),tokens(cue))) != 1:
             errors.append(f'beat {i}: motion_cue must occur exactly once in its narration')
+        elif plan.get('mechanism')=='ratchet_wrench' and re.search(r'\bpawl\b',cue,re.I):
+            errors.append(f'beat {i}: motion_cue must not use the word pawl; speech recognition mishears it, use wrench, ratchet, bolt or handle')
         elif not re.search(ANCHORS[plan['mechanism']][b['action']],cue,re.I):
             errors.append(f'beat {i}: motion_cue must name this action or the internal part being revealed')
     return errors
