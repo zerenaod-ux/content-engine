@@ -966,5 +966,15 @@
     "state": "reserved",
     "policy": "original-idea-and-visuals-v1",
     "mechanism": "snap_thermostat"
+  },
+  {
+    "topic": "How does the thermostat reset itself once it cools?",
+    "mechanism": "snap_thermostat",
+    "visual_family": "snap_disc_switch::cool_resets",
+    "state": "created",
+    "owner": "45336877969",
+    "encoded_run": "45336877969",
+    "policy": "original-idea-and-visuals-v1",
+    "media_sha256": "3e0b267f2b428a305fccf1debabd4656798b369f7d8c8024a895e949625d8162"
   }
 ]
