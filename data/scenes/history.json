@@ -1485,5 +1485,19 @@
     "record_run": "45406702618",
     "record_attempt": "1",
     "owner": "45406702618"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "tested component rejected: Shared provider cooldown active | Shared provider cooldown active | Shared provider cooldown active\n",
+    "date": "2026-11-24",
+    "topic": "How do all the iris blades open together without jamming?",
+    "title": "",
+    "subject": "camera_iris",
+    "keywords": [],
+    "category": "tested mechanism",
+    "failed": true,
+    "record_run": "45410688988",
+    "record_attempt": "1",
+    "owner": "45410688988"
   }
 ]
