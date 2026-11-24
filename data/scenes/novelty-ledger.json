@@ -864,5 +864,13 @@
     "encoded_run": "45293677189",
     "policy": "original-idea-and-visuals-v1",
     "media_sha256": "65d73633689cf1a67dc6517ca857966146153ca73a40d360f7d00280da6f1383"
+  },
+  {
+    "topic": "What does the escapement let go of on each tick?",
+    "visual_family": "pendulum_escapement::escapement_release",
+    "owner": "45326838961",
+    "state": "reserved",
+    "policy": "original-idea-and-visuals-v1",
+    "mechanism": "pendulum_clock"
   }
 ]
