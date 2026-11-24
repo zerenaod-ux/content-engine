@@ -40,12 +40,12 @@
       "run_id": "45460334123",
       "attempt": 2,
       "kind": "daily-short",
-      "stage": "audio",
-      "label": "Checking finished audio",
-      "updated_at": "2026-11-24T21:19:02.612003+00:00",
+      "stage": "ready",
+      "label": "Rendered; Studio delivery pending",
+      "updated_at": "2026-11-24T21:19:08.723907+00:00",
       "source_branch": "main",
       "owner_approved": false,
-      "state": "running"
+      "state": "rendered"
     }
   }
 }
