@@ -6,7 +6,7 @@
     "11:05",
     "19:05"
   ],
-  "due_slots": 2,
+  "due_slots": 3,
   "ready_today": 4,
   "daily_target": 3,
   "unused_visuals": 0,
@@ -14,5 +14,5 @@
   "reason": "Daily output target already covered",
   "dispatches": 0,
   "requested_at": 0,
-  "checked_at": "2026-11-24T00:56:36.668295+00:00"
+  "checked_at": "2026-11-24T01:53:15.957533+00:00"
 }
