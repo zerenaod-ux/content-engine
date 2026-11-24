@@ -359,14 +359,5 @@
     "mechanism": "zipper",
     "visual_family": "interlocking_zipper::slider_back_splits",
     "story": "slider_back_splits"
-  },
-  {
-    "topic": "How do all the iris blades open together without jamming?",
-    "topic_key": "all blades iris jamming open together without",
-    "owner": "45410688988",
-    "state": "reserved",
-    "mechanism": "camera_iris",
-    "visual_family": "optical_iris::blades_together",
-    "story": "blades_together"
   }
 ]
