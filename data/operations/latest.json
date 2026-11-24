@@ -40,12 +40,15 @@
       "run_id": "45335442765",
       "attempt": 1,
       "kind": "daily-short",
-      "stage": "audio",
-      "label": "Checking finished audio",
-      "updated_at": "2026-11-24T05:54:59.045375+00:00",
+      "stage": "Stopped",
+      "label": "Stopped",
+      "updated_at": "2026-11-24T05:55:04.485061+00:00",
       "source_branch": "main",
       "owner_approved": false,
-      "state": "running"
+      "retryable": false,
+      "next_retry_at": null,
+      "reason": "Needs a code, content or configuration correction",
+      "state": "needs_attention"
     }
   }
 }
