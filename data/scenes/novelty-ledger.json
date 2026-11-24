@@ -1002,13 +1002,5 @@
     "state": "reserved",
     "policy": "original-idea-and-visuals-v1",
     "mechanism": "wind_turbine"
-  },
-  {
-    "topic": "How does the iris keep a perfectly round opening while the blades pivot?",
-    "visual_family": "optical_iris::blades_together",
-    "owner": "45460334123",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "camera_iris"
   }
 ]
