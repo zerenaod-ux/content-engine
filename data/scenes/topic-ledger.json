@@ -359,14 +359,5 @@
     "mechanism": "zipper",
     "visual_family": "interlocking_zipper::slider_back_splits",
     "story": "slider_back_splits"
-  },
-  {
-    "topic": "How a hinged stapler handle translates hand pressure into staple penetration",
-    "topic_key": "hand handle hinged penetration pressure staple stapler translates",
-    "owner": "45447781111",
-    "state": "reserved",
-    "mechanism": "stapler",
-    "visual_family": "staple_clinching::small_push_big_force",
-    "story": "small_push_big_force"
   }
 ]
