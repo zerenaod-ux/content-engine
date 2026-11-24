@@ -350,14 +350,5 @@
     "mechanism": "snap_thermostat",
     "visual_family": "snap_disc_switch::cool_resets",
     "story": "cool_resets"
-  },
-  {
-    "topic": "How does the guide ring keep all iris blades moving together without jamming?",
-    "topic_key": "all blades guide iris jamming keep moving ring together without",
-    "owner": "45387743876",
-    "state": "reserved",
-    "mechanism": "camera_iris",
-    "visual_family": "optical_iris::blades_together",
-    "story": "blades_together"
   }
 ]
