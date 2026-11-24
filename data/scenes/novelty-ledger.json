@@ -1028,5 +1028,13 @@
     "encoded_run": "45476143219",
     "policy": "original-idea-and-visuals-v1",
     "media_sha256": "0fffb163c96f7e928acb4b420d32626058561a8cccab72d060b6d75a5add627f"
+  },
+  {
+    "topic": "Why a Tiny Control Current Operates a Separate High\u2011Power Circuit",
+    "visual_family": "electromagnetic_relay::small_switches_big",
+    "owner": "45460334123",
+    "state": "reserved",
+    "policy": "original-idea-and-visuals-v1",
+    "mechanism": "electric_relay"
   }
 ]
