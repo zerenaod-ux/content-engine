@@ -1223,5 +1223,19 @@
     "category": "",
     "record_run": "45293677189",
     "record_attempt": "3"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "tested component rejected: director rejected: need exactly the eight supported action beats\n",
+    "date": "2026-11-24",
+    "topic": "What does the escapement let go of on each tick?",
+    "title": "",
+    "subject": "pendulum_clock",
+    "keywords": [],
+    "category": "tested mechanism",
+    "failed": true,
+    "record_run": "45326838961",
+    "record_attempt": "1",
+    "owner": "45326838961"
   }
 ]
