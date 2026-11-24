@@ -994,5 +994,13 @@
     "encoded_run": "45399500012",
     "policy": "original-idea-and-visuals-v1",
     "media_sha256": "ef24339914cab0788bd41d21ac61f602770c662ae32d0209049389785f96af57"
+  },
+  {
+    "topic": "Why a magnet turning past coils makes a lamp glow",
+    "visual_family": "rotary_generator::magnet_coil",
+    "owner": "45457846770",
+    "state": "reserved",
+    "policy": "original-idea-and-visuals-v1",
+    "mechanism": "wind_turbine"
   }
 ]
