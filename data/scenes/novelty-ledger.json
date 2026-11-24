@@ -976,5 +976,13 @@
     "encoded_run": "45336877969",
     "policy": "original-idea-and-visuals-v1",
     "media_sha256": "3e0b267f2b428a305fccf1debabd4656798b369f7d8c8024a895e949625d8162"
+  },
+  {
+    "topic": "How does a clothespin keep holding fabric without anyone pressing it?",
+    "visual_family": "torsion_peg::holds_without_hands",
+    "owner": "45388593195",
+    "state": "reserved",
+    "policy": "original-idea-and-visuals-v1",
+    "mechanism": "clothespin"
   }
 ]
