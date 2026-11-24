@@ -359,14 +359,5 @@
     "mechanism": "zipper",
     "visual_family": "interlocking_zipper::slider_back_splits",
     "story": "slider_back_splits"
-  },
-  {
-    "topic": "How moving magnets generate light in a coil",
-    "topic_key": "coil generate light magnets moving",
-    "owner": "45406702618",
-    "state": "reserved",
-    "mechanism": "wind_turbine",
-    "visual_family": "rotary_generator::magnet_coil",
-    "story": "magnet_coil"
   }
 ]
