@@ -888,5 +888,13 @@
     "state": "reserved",
     "policy": "original-idea-and-visuals-v1",
     "mechanism": "clothespin"
+  },
+  {
+    "topic": "Why do the staple legs fold inward under the paper?",
+    "visual_family": "staple_clinching::legs_fold_in",
+    "owner": "45329526885",
+    "state": "reserved",
+    "policy": "original-idea-and-visuals-v1",
+    "mechanism": "stapler"
   }
 ]
