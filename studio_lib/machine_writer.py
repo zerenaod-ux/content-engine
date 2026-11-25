@@ -21,12 +21,31 @@ NEVER=r'(?!x)x'   # regular expression that matches nothing
 
 class WriterError(ValueError):pass
 
+def _unbound_locals(tree):
+ """Names a function assigns ONLY inside an if/else branch yet reads: the commonest crash in model code (UnboundLocalError)."""
+ problems=[]
+ for fn in [n for n in ast.walk(tree) if isinstance(n,ast.FunctionDef)]:
+  safe=set(a.arg for a in fn.args.args+fn.args.kwonlyargs)
+  inside=set()
+  def walk(node,in_if):
+   for ch in ast.iter_child_nodes(node):
+    if isinstance(ch,(ast.FunctionDef,ast.Lambda,ast.ClassDef)):continue
+    if isinstance(ch,ast.Name) and isinstance(ch.ctx,ast.Store):(inside if in_if else safe).add(ch.id)
+    walk(ch,in_if or isinstance(ch,ast.If))
+  walk(fn,False)
+  for x in ast.walk(fn):
+   if isinstance(x,ast.Name) and isinstance(x.ctx,ast.Load) and x.id in inside and x.id not in safe:
+    problems.append('%s() reads %s but only assigns it inside an if/else branch (line %d): assign %s=0.0 at the top of the function first'%(fn.name,x.id,x.lineno,x.id));break
+ return problems
+
 def check_code(code):
  """Raise WriterError naming the first thing the allow-list does not permit."""
  if not isinstance(code,str) or not code.strip():raise WriterError('code is empty')
  if len(code)>MAX_CODE:raise WriterError('code is longer than %d characters'%MAX_CODE)
  try:tree=ast.parse(code)
  except SyntaxError as e:raise WriterError('code does not parse: %s (line %s)'%(e.msg,e.lineno))
+ bad=_unbound_locals(tree)
+ if bad:raise WriterError(bad[0])
  names=set()
  for n in ast.walk(tree):
   if isinstance(n,BAD_NODES):raise WriterError('not allowed in machine code: '+type(n).__name__+' (line %s)'%getattr(n,'lineno','?'))
@@ -114,8 +133,9 @@ def assemble(draft,key,moves,holds,visible):
  cues=draft.get('cues',{})
  anchors={}
  for a in ('cutaway','payoff'):
-  w=_words(cues.get(a,[]) if isinstance(cues,dict) else [])
-  if not w:raise WriterError('cues.%s needs words that the narration says at that moment'%a)
+  v=cues.get(a,[]) if isinstance(cues,dict) else []
+  w=_words(re.split(r'[ ,;]+',v) if isinstance(v,str) else v if isinstance(v,list) else [])
+  if not w:raise WriterError('cues.%s must be a JSON list of lowercase words spoken at that moment, e.g. {"cutaway":["cover","lifts"],"payoff":["finally","released"]}'%a)
   anchors[a]='|'.join(re.escape(x) for x in w)
  title=str(draft.get('title','')).strip()[:60]
  return {'key':key,'module':'studio_lib.'+key,'family':key,'pattern':pat,'detect':'|'.join(re.escape(w) for w in words),'block':NEVER,
@@ -209,7 +229,7 @@ Return {{"title","description","words","parts","subjects","cues","facts","source
   * Python scoping: assign EVERY local variable unconditionally at the top of each function (e.g. offset=0.0) BEFORE any if/elif; never define a name only inside a branch and use it after. Every subject list must contain at least one word that is a part name.
   * tl['beats'] is a list of 8 dicts with start/end seconds. Beat 0 intro, 1 cover lifts (cutaway), 2 drive, 3 response, 4 hold (nothing moves), 5 repeat, 6 limit, 7 payoff.
   * state(t,tl) returns a dict with 'beat' and float channels (e.g. cut, turn, slide) that really move per beat; a channel must stay constant in the beats where nothing moves it. At least three of beats 1-6 must move something.
-  * draw() uses parts_rich helpers: P.plate, P.gear, P.spring, P.tube, P.disc, P.annulus, P.hex_prism, P.piston_cylinder, P.rivets, P.hook_link, P.chamfer_box, P.tooth_profile. Use several colours and many faces: a rich, detailed model, never plain boxes. HARD LIMITS of the automatic picture check: at least 300 faces and 150 distinct shades in total, at least 7 brightness steps visible in every shot, and the machine must fill at least 14% of the frame in most shots. So: build 10+ parts, favour curved helpers (P.gear, P.spring, P.tube, P.disc, P.annulus, P.tooth_profile, P.rivets) over P.plate/P.chamfer_box, give every part its OWN colour from a palette of 8+ metals/plastics (light, mid and dark of each), add rivets/holes/teeth for detail, and make shot(i) zoom so the machine is large (target size about 60% of the frame width).
+  * draw() uses parts_rich helpers: P.plate, P.gear, P.spring, P.tube, P.disc, P.annulus, P.hex_prism, P.piston_cylinder, P.rivets, P.hook_link, P.chamfer_box, P.tooth_profile. Use several colours and many faces: a rich, detailed model, never plain boxes. HARD LIMITS of the automatic picture check: at least 300 faces and 150 distinct shades in total, at least 7 brightness steps visible in every shot, and the machine must fill at least 14% of the frame in most shots. So: build 10+ parts, favour curved helpers (P.gear, P.spring, P.tube, P.disc, P.annulus, P.tooth_profile, P.rivets) over P.plate/P.chamfer_box, give every part its OWN colour from a palette of 8+ metals/plastics (light, mid and dark of each), add rivets/holes/teeth for detail, SCALE: coordinates are scene units; the example machine is about 6 units wide with gears of radius 0.7-1.25 and plates 5-6 wide, so a part of radius 0.03 is invisible. Build at that scale (whole machine 4-6 units wide, centred near x=0, z=2.5) and use shots like ((0,0,2.6),1.3..2.4,.30). Make shot(i) zoom so the machine is large (target size about 60% of the frame width).
   * shot(i) returns ((x,y,z) target, zoom, floor) per beat, framing the machine inside a 9:16 frame.
   * EXACT signatures of the parts helpers (call them exactly like this; every argument without a default is REQUIRED, colour is always a (r,g,b) tuple; the first argument s is the scene passed to draw):
 {signatures}
@@ -226,7 +246,7 @@ def example_code():
  text=(ROOT/'tools'/'new_machine.py').read_text();a=text.index("MODULE='''")+10;b=text.index("'''",a)
  return text[a:b].replace('{title}','Example').replace('{key}','example')
 
-def write(idea,ask=None,workdir='machine-writer',max_tries=6):
+def write(idea,ask=None,workdir='machine-writer',max_tries=10):
  """Ask the model for a machine; return the checked spec (also saved to machines/<key>.json by save()). ask(prompt)->dict."""
  if ask is None:
   from studio_lib import providers
