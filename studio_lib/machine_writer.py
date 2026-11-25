@@ -22,20 +22,60 @@ NEVER=r'(?!x)x'   # regular expression that matches nothing
 class WriterError(ValueError):pass
 
 def _unbound_locals(tree):
- """Names a function assigns ONLY inside an if/else branch yet reads: the commonest crash in model code (UnboundLocalError)."""
+ """Flow check for the commonest crash in model code: a local read before it is certainly assigned (UnboundLocalError)."""
  problems=[]
+ def expr_names(node):
+  loads=[];stores=set()
+  for x in ast.walk(node):
+   if isinstance(x,ast.Name):
+    (loads.append(x) if isinstance(x.ctx,ast.Load) else stores.add(x.id))
+   elif isinstance(x,ast.arg):stores.add(x.arg)
+  return loads,stores
+ def targets(t):
+  return {x.id for x in ast.walk(t) if isinstance(x,ast.Name)}
+ def run(stmts,cur,allst,fname):
+  cur=set(cur)
+  for st in stmts:
+   if isinstance(st,(ast.FunctionDef,ast.ClassDef)):continue
+   if isinstance(st,ast.If):
+    check(st.test,cur,allst,fname)
+    a=run(st.body,cur,allst,fname);b=run(st.orelse,cur,allst,fname)
+    cur=cur|(a&b)
+   elif isinstance(st,(ast.For,)):
+    check(st.iter,cur,allst,fname)
+    run(st.body,cur|targets(st.target),allst,fname);run(st.orelse,cur,allst,fname)
+   elif isinstance(st,ast.While):
+    check(st.test,cur,allst,fname);run(st.body,cur,allst,fname)
+   elif isinstance(st,ast.With):
+    for it in st.items:
+     check(it.context_expr,cur,allst,fname)
+     if it.optional_vars is not None:cur|=targets(it.optional_vars)
+    cur=run(st.body,cur,allst,fname)
+   elif isinstance(st,ast.Try):
+    run(st.body,cur,allst,fname)
+    for h in st.handlers:run(h.body,cur|({h.name} if h.name else set()),allst,fname)
+   elif isinstance(st,ast.Assign):
+    check(st.value,cur,allst,fname)
+    for t in st.targets:cur|=targets(t)
+   elif isinstance(st,ast.AugAssign):
+    check(st.value,cur,allst,fname)
+    if isinstance(st.target,ast.Name) and st.target.id in allst and st.target.id not in cur:problems.append('%s() updates %s before assigning it (line %d): assign %s=0.0 at the top of the function first'%(fname,st.target.id,st.lineno,st.target.id))
+    cur|=targets(st.target)
+   elif isinstance(st,ast.AnnAssign):
+    if st.value is not None:check(st.value,cur,allst,fname);cur|=targets(st.target)
+   else:
+    for ch in ast.iter_child_nodes(st):
+     if isinstance(ch,ast.expr):check(ch,cur,allst,fname)
+  return cur
+ def check(node,cur,allst,fname):
+  loads,stores=expr_names(node)
+  for x in loads:
+   if x.id in allst and x.id not in cur and x.id not in stores:
+    problems.append('%s() reads %s before it is certainly assigned (line %d): assign %s=0.0 at the top of the function, before any if/for'%(fname,x.id,x.lineno,x.id));cur.add(x.id)
  for fn in [n for n in ast.walk(tree) if isinstance(n,ast.FunctionDef)]:
-  safe=set(a.arg for a in fn.args.args+fn.args.kwonlyargs)
-  inside=set()
-  def walk(node,in_if):
-   for ch in ast.iter_child_nodes(node):
-    if isinstance(ch,(ast.FunctionDef,ast.Lambda,ast.ClassDef)):continue
-    if isinstance(ch,ast.Name) and isinstance(ch.ctx,ast.Store):(inside if in_if else safe).add(ch.id)
-    walk(ch,in_if or isinstance(ch,ast.If))
-  walk(fn,False)
-  for x in ast.walk(fn):
-   if isinstance(x,ast.Name) and isinstance(x.ctx,ast.Load) and x.id in inside and x.id not in safe:
-    problems.append('%s() reads %s but only assigns it inside an if/else branch (line %d): assign %s=0.0 at the top of the function first'%(fn.name,x.id,x.lineno,x.id));break
+  params={a.arg for a in fn.args.args+fn.args.kwonlyargs}
+  allst={x.id for x in ast.walk(fn) if isinstance(x,ast.Name) and isinstance(x.ctx,ast.Store)}-params
+  run(fn.body,params,allst,fn.name)
  return problems
 
 def check_code(code):

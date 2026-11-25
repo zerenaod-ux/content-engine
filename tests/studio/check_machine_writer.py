@@ -60,3 +60,12 @@ def test_pick_idea_skips_existing_and_respects_limit(tmp_path):
     assert first and first in W.IDEAS
     for i in range(W.MAX_WRITTEN):(tmp_path/('mw_a%d.json'%i)).write_text('{"title":"x%d"}'%i)
     assert W.pick_idea(tmp_path) is None
+
+def test_unbound_local_lint_flags_only_real_risks():
+    import ast
+    f=lambda src:W._unbound_locals(ast.parse(src))
+    assert f("def f(t):\n    if t>1:\n        cx=1.0\n    return cx\n")
+    assert f("def f(t):\n    for i in range(3):\n        y=i\n    return y\n")
+    assert not f("def f(t):\n    if t>1:\n        cx=1.0\n    else:\n        cx=2.0\n    return cx\n")
+    assert not f("def f(t):\n    cx=0.0\n    if t>1:\n        cx=1.0\n    return cx\n")
+    assert not f("def f(t):\n    r=[]\n    for i in range(3):\n        y=i*2\n        r.append(y)\n    return sum(k*2 for k in r)\n")
