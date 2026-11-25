@@ -1,19 +1,19 @@
 {
-  "business_day": "2026-11-24",
+  "business_day": "2026-11-25",
   "timezone": "America/Chicago",
   "slots": [
     "03:05",
     "11:05",
     "19:05"
   ],
-  "due_slots": 3,
-  "ready_today": 4,
+  "due_slots": 1,
+  "ready_today": 0,
   "daily_target": 3,
   "unused_visuals": 0,
   "should_build": false,
-  "reason": "Daily output target already covered",
+  "reason": "Waiting for owner review of 10 videos before making more",
   "pending_review": 10,
   "dispatches": 0,
   "requested_at": 0,
-  "checked_at": "2026-11-25T04:35:27.225114+00:00"
+  "checked_at": "2026-11-25T14:55:56.609709+00:00"
 }
