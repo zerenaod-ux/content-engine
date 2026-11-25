@@ -37,16 +37,16 @@
       "state": "awaiting_review"
     },
     "daily-short": {
-      "run_id": "45524882370",
+      "run_id": "45681676169",
       "attempt": 1,
       "kind": "daily-short",
-      "stage": "Daily target covered",
-      "label": "Daily target covered",
-      "updated_at": "2026-11-25T01:19:40.218444+00:00",
+      "stage": "Waiting for fresh visuals",
+      "label": "Waiting for fresh visuals",
+      "updated_at": "2026-11-25T19:05:30.208005+00:00",
       "source_branch": "main",
       "owner_approved": false,
-      "state": "idle",
-      "reason": "Daily output target already covered",
+      "state": "held_for_novelty",
+      "reason": "Waiting for owner review of 9 videos before making more",
       "retryable": false
     }
   }
