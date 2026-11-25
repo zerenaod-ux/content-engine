@@ -6,14 +6,14 @@
     "11:05",
     "19:05"
   ],
-  "due_slots": 1,
+  "due_slots": 2,
   "ready_today": 0,
   "daily_target": 3,
   "unused_visuals": 0,
   "should_build": false,
-  "reason": "Waiting for owner review of 10 videos before making more",
-  "pending_review": 10,
+  "reason": "Waiting for owner review of 9 videos before making more",
+  "pending_review": 9,
   "dispatches": 0,
   "requested_at": 0,
-  "checked_at": "2026-11-25T14:55:56.609709+00:00"
+  "checked_at": "2026-11-25T19:06:59.837746+00:00"
 }
