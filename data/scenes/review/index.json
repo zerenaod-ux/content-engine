@@ -773,7 +773,20 @@
    "ready_for_future_publish": true,
    "record": "saved/ce-20261124-0050/45302597965-1.json",
    "history": []
+  },
+  {
+   "tag": "ce-20261124-2032",
+   "title": "How Three Wheels Secure a Padlock ⚙️",
+   "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@2687d09585a79a0a67754876ffce71be1a59832f/videos/ce-20261124-2032.mp4",
+   "folder": "delete",
+   "issue_number": 74,
+   "issue_url": "https://github.com/zerenaod-ux/content-engine/issues/74",
+   "reviewed_at": "2026-11-25T18:39:29.802026+00:00",
+   "publishing_enabled": false,
+   "ready_for_future_publish": false,
+   "record": "delete/ce-20261124-2032/45677296782-1.json",
+   "history": []
   }
  ],
- "updated_at": "2026-11-24T01:07:47.459309+00:00"
+ "updated_at": "2026-11-25T18:39:29.802026+00:00"
 }
