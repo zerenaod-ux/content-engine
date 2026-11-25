@@ -15,12 +15,15 @@
       "run_id": "45691679335",
       "attempt": 1,
       "kind": "full",
-      "stage": "selection",
-      "label": "Selecting a new topic",
-      "updated_at": "2026-11-25T20:14:03.064068+00:00",
+      "stage": "No-repeat hold",
+      "label": "No-repeat hold",
+      "updated_at": "2026-11-25T20:14:07.562582+00:00",
       "source_branch": "main",
       "owner_approved": false,
-      "state": "running"
+      "retryable": false,
+      "next_retry_at": null,
+      "reason": "No-repeat hold: a genuinely new idea and unused visual setup are required",
+      "state": "held_for_novelty"
     },
     "short": {
       "run_id": "44228814968",
