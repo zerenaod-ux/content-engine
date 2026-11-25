@@ -206,6 +206,7 @@ Return {{"title","description","words","parts","subjects","cues","facts","source
 - source: an https link to a trustworthy page about the real machine.
 - code: python source defining state(t,tl), draw(s,t,tl,hidden=()), background(), elevation(t,tl), shot(i). Rules:
   * imports ONLY: math, functools, numpy, and from studio_lib: mesh (ease), narration_timing (progress), solid_parts (background), parts_rich (P). No other imports, no classes, no while loops, no names starting with underscore, no open/eval/exec/getattr/type/print.
+  * Python scoping: assign EVERY local variable unconditionally at the top of each function (e.g. offset=0.0) BEFORE any if/elif; never define a name only inside a branch and use it after. Every subject list must contain at least one word that is a part name.
   * tl['beats'] is a list of 8 dicts with start/end seconds. Beat 0 intro, 1 cover lifts (cutaway), 2 drive, 3 response, 4 hold (nothing moves), 5 repeat, 6 limit, 7 payoff.
   * state(t,tl) returns a dict with 'beat' and float channels (e.g. cut, turn, slide) that really move per beat; a channel must stay constant in the beats where nothing moves it. At least three of beats 1-6 must move something.
   * draw() uses parts_rich helpers: P.plate, P.gear, P.spring, P.tube, P.disc, P.annulus, P.hex_prism, P.piston_cylinder, P.rivets, P.hook_link, P.chamfer_box, P.tooth_profile. Use several colours and many faces: a rich, detailed model, never plain boxes.
