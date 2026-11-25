@@ -1,0 +1,138 @@
+{
+ "key": "mw_bicycle_derailleur",
+ "module": "studio_lib.mw_bicycle_derailleur",
+ "family": "mw_bicycle_derailleur",
+ "pattern": "\\b(bike\\ shifter|derailleur|gear\\ shifter|rear\\ gear|shifter)s?\\b",
+ "detect": "bike\\ shifter|derailleur|gear\\ shifter|rear\\ gear|shifter",
+ "block": "(?!x)x",
+ "description": "shows a bicycle rear derailleur shifting gears, no chain or bike frame is shown",
+ "actions": [
+  "intro",
+  "cutaway",
+  "drive",
+  "response",
+  "hold",
+  "repeat",
+  "limit",
+  "payoff"
+ ],
+ "facts": {
+  "intro": "The camera frames the rear derailleur hanging from an invisible bike frame; the chain, wheels and rider are omitted, focusing on the shifting mechanism itself.",
+  "cutaway": "A thin cover slides upward, revealing the cage, two pulleys, the spring, and the anchor; the background remains a plain gradient, no bike parts are visible.",
+  "drive": "The upper pulley rotates as the shifter cable pulls, moving the cage sideways; the lower pulley stays still, showing the gear change in action.",
+  "response": "The spring tension releases, pulling the cage back slightly while the guide rail guides the motion; no chain tension is illustrated.",
+  "hold": "All moving parts pause, holding the cage in its new position; the cover stays lifted, the background stays unchanged.",
+  "repeat": "The shifter pulls again, repeating the same pulley rotation and cage shift; the cover does not move this time, emphasizing the internal motion.",
+  "limit": "The cage reaches its outermost stop against the anchor, the spring is fully compressed, and further pull does nothing; the scene still shows only the derailleur.",
+  "payoff": "The cover drops, the cage rests in the new gear slot, and the camera zooms out to show the complete derailleur ready for the next shift; no bike frame or chain is shown."
+ },
+ "source": "https://en.wikipedia.org/wiki/Derailleur",
+ "contract": {
+  "subjects": [
+   "\\b(anchor|body|cage|frame|guide|link|pulley|spring)",
+   "\\b(anchor|body|cage|cover|guide|link|pulley|spring)",
+   "\\b(anchor|body|cage|gear|guide|link|pulley|spring)",
+   "\\b(anchor|body|cage|guide|link|movement|pulley|spring)",
+   "\\b(anchor|body|cage|guide|link|pulley|spring|still)",
+   "\\b(anchor|body|cage|guide|link|pulley|repeat|spring)",
+   "\\b(anchor|body|cage|guide|limit|link|pulley|spring)",
+   "\\b(anchor|body|cage|final|guide|link|pulley|spring)"
+  ],
+  "moves": {
+   "1": {
+    "cut": 1
+   },
+   "2": {
+    "cage_shift": 1
+   },
+   "4": {
+    "cage_shift": -1
+   },
+   "7": {
+    "cut": -1
+   }
+  },
+  "holds": {
+   "0": [
+    "cage_shift",
+    "cut"
+   ],
+   "1": [
+    "cage_shift"
+   ],
+   "2": [
+    "cut"
+   ],
+   "3": [
+    "cage_shift",
+    "cut"
+   ],
+   "4": [
+    "cut"
+   ],
+   "5": [
+    "cage_shift",
+    "cut"
+   ],
+   "6": [
+    "cage_shift",
+    "cut"
+   ],
+   "7": [
+    "cage_shift"
+   ]
+  },
+  "visible": [
+   [
+    2,
+    "cage"
+   ],
+   [
+    2,
+    "pulley"
+   ],
+   [
+    2,
+    "anchor"
+   ],
+   [
+    2,
+    "guide"
+   ],
+   [
+    2,
+    "link"
+   ],
+   [
+    2,
+    "body"
+   ]
+  ]
+ },
+ "transitions": [
+  "cutaway",
+  "payoff"
+ ],
+ "anchors": {
+  "cutaway": "cover|exposing|inner|lifts|mechanism|the",
+  "payoff": "derailleur|gear|into|new|position|snaps|the"
+ },
+ "narration_rules": [],
+ "cue_bans": [],
+ "bounds": [],
+ "label": {
+  "from": 1,
+  "to": 6,
+  "text": "Simplified model \u00b7 illustration"
+ },
+ "title": "derailleur",
+ "writer": "machine_writer",
+ "code": "import math,functools\nfrom studio_lib.mesh import ease\nfrom studio_lib.narration_timing import progress\nfrom studio_lib.solid_parts import background as gradient\nfrom studio_lib import parts_rich as P\nFLOOR=.30\n\ndef state(t,tl):\n    b=tl['beats']\n    i=min(7,next((j for j,x in enumerate(b) if t<x['end']),7))\n    cut=ease(progress(t,b[1]))*(1-ease(progress(t,b[7])))\n    pull=ease(progress(t,b[2]))*0.6\n    release=ease(progress(t,b[4]))*0.4\n    cage_shift=pull-release\n    return dict(beat=i,cut=cut,cage_shift=cage_shift)\n\n@functools.lru_cache(maxsize=1)\ndef background():\n    return gradient((15,27,39),(41,60,74))\n\ndef draw(s,t,tl,hidden=()):\n    p=state(t,tl)\n    # body\n    if 'body' not in hidden:\n        P.chamfer_box(s,(0,0,2.5),(4.0,0.2,0.5),(80,90,100),bevel=0.04)\n    # anchor (fixed to frame)\n    if 'anchor' not in hidden:\n        P.plate(s,(-1.6,0,2.5),(0.2,0.6,0.5),(60,70,80),tiles=(4,2))\n    # guide rail\n    if 'guide' not in hidden:\n        P.plate(s,(-0.8,0,2.5),(0.1,0.6,0.5),(100,110,120),tiles=(2,4))\n    # spring (tension)\n    if 'spring' not in hidden:\n        P.spring(s,(-0.75,0.1,2.5),(-0.75,0.4,2.5),5,0.03,0.008,(180,190,200),steps=12)\n    # cage (moves sideways)\n    if 'cage' not in hidden:\n        shift=p['cage_shift']*0.8\n        P.chamfer_box(s,(shift,0,2.5),(0.6,0.1,0.4),(150,160,170),bevel=0.03)\n    # upper pulley (driven)\n    if 'pulley' not in hidden:\n        angle=p['cage_shift']*2*math.pi\n        P.gear(s,(0.2,0,2.6),0.25,12,angle,0.05,(220,180,140),tip=0.08,root=0.12,hub=0.08,holes=3,hole_r=0.02,mark=False)\n    # lower pulley (idler)\n    if 'link' not in hidden:\n        P.gear(s,(0.2,0,2.3),0.22,10,0.0,0.04,(200,150,130),tip=0.07,root=0.11,hub=0.07,holes=2,hole_r=0.015,mark=False)\n    # cover (cutaway)\n    if 'cover' not in hidden and p['cut']<0.99:\n        P.plate(s,(-0.2,0.3+0.6*p['cut'],2.5),(1.0,0.05,0.6),(90,100,110),tiles=(6,2))\n    return p\n\nSHOTS=[((0,0,2.5),1.4,.30),((0,0,2.5),1.6,.30),((0.2,0,2.5),1.8,.30),((-0.2,0,2.5),1.7,.30),((0,0,2.5),1.5,.30),((0,0,2.5),1.6,.30),((0,0,2.5),1.5,.30),((0,0,2.5),1.4,.30)]\n\ndef shot(i):\n    return SHOTS[min(i,7)]\n\ndef elevation(t,tl):\n    return 6.0",
+ "picture_check": {
+  "score": 7.3,
+  "zoom": 2.204,
+  "faces": 879,
+  "colours": 305
+ },
+ "writer_tries": 8
+}
