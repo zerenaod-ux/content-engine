@@ -104,10 +104,15 @@ def contact_sheet(frames,path,columns=4):
 def adjustments(report,current_zoom=1.0):
  """What a redo should change. Only framing (zoom) is automatic; anything else is flagged for the builder."""
  text=' '.join(report['errors']);zoom=current_zoom;notes=[]
- if 'zoom in' in text or 'frame it bigger' in text:zoom*=1.18;notes.append('zoom in 18%')
+ if 'zoom in' in text or 'frame it bigger' in text:
+  body=sorted(r['fill'] for r in report.get('frames',[]) if 1<=r.get('beat',0)<=6)
+  med=body[len(body)//2] if body else 0.
+  # fill is area, so length scales with its square root; aim a little above the limit (2026-11-25: writer drafts stuck at 12% against 14%)
+  f=min(1.6,max(1.18,(.17/med)**.5)) if med>0 else 1.18
+  zoom*=f;notes.append('zoom in %d%%'%round((f-1)*100))
  if 'zoom out' in text:zoom/=1.15;notes.append('zoom out 13%')
  manual=[e for e in report['errors'] if 'flat shading' in e or 'too few facets' in e or 'too little visible detail' in e or 'almost nothing moves' in e]
- return {'zoom':round(max(.6,min(1.8,zoom)),3),'notes':notes,'needs_builder':bool(manual)}
+ return {'zoom':round(max(.6,min(2.4,zoom)),3),'notes':notes,'needs_builder':bool(manual)}
 
 def vision_prompt():
  return ('You are checking a vertical explainer video of a physical machine. The image is a contact sheet of frames. '

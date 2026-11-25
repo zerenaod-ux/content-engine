@@ -59,3 +59,11 @@ class PictureCheck(unittest.TestCase):
  def test_moving_beats_ignore_cover_only_motion(self):
   self.assertEqual(pc.moving_beats_for(CONTRACT),[2])
 if __name__=='__main__':unittest.main()
+
+
+class TestAutoEnlarge(unittest.TestCase):
+    def test_zoom_step_scales_with_how_small_it_is(self):
+        from studio_lib import picture_check as pc
+        rep=lambda f:{'errors':['machine is small in most shots (median fill %d%%); frame it bigger'%(f*100)],'frames':[{'beat':b,'fill':f} for b in range(1,7)]}
+        small=pc.adjustments(rep(.06),1.0)['zoom'];near=pc.adjustments(rep(.12),1.0)['zoom']
+        self.assertGreater(small,near);self.assertGreaterEqual(near,1.18)
