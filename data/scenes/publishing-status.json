@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-11-26T11:46:25.218699+00:00",
+  "checked_at": "2026-11-26T15:16:36.337062+00:00",
   "read_only": true,
   "complete": true,
   "platforms": {
@@ -440,10 +440,10 @@
         "source_updated_at": "2026-11-23T02:58:31.357Z"
       },
       "tiktok": {
-        "views": 1344.0,
-        "reactions": 57.0,
+        "views": 1425.0,
+        "reactions": 75.0,
         "reported_posts": 7,
-        "source_updated_at": "2026-11-25T15:20:24.225Z"
+        "source_updated_at": "2026-11-26T14:21:22.169Z"
       }
     },
     "scope": "recent 20 published posts",
