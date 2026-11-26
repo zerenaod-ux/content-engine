@@ -1,6 +1,6 @@
 {
   "state": "awaiting_next_unattended_delivery",
-  "checked_at": "2026-11-26T09:20:44.379491+00:00",
+  "checked_at": "2026-11-26T15:14:50.497377+00:00",
   "verified": false,
   "note": "Manual proof videos and skipped quota slots do not prove a newly generated unattended video.",
   "next_eligible_slot": "2026-11-26T11:05:00-06:00",
