@@ -7,13 +7,13 @@
     "19:05"
   ],
   "due_slots": 1,
-  "ready_today": 0,
+  "ready_today": 1,
   "daily_target": 3,
   "unused_visuals": 0,
   "should_build": false,
-  "reason": "Waiting for owner review of 9 videos before making more",
-  "pending_review": 9,
+  "reason": "Daily output target already covered",
+  "pending_review": 2,
   "dispatches": 0,
   "requested_at": 0,
-  "checked_at": "2026-11-26T15:14:48.527674+00:00"
+  "checked_at": "2026-11-26T15:32:43.388617+00:00"
 }
