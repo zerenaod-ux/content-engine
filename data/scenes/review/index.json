@@ -786,7 +786,33 @@
    "ready_for_future_publish": false,
    "record": "delete/ce-20261124-2032/45677296782-1.json",
    "history": []
+  },
+  {
+   "tag": "ce-20261124-1320",
+   "title": "Why the Slider Splits Zipper Teeth ⚙️",
+   "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@8329cb9ecf129da15f2c7096b5a84374e17aa5c9/videos/ce-20261124-1320.mp4",
+   "folder": "delete",
+   "issue_number": 73,
+   "issue_url": "https://github.com/zerenaod-ux/content-engine/issues/73",
+   "reviewed_at": "2026-11-26T15:15:51.740933+00:00",
+   "publishing_enabled": false,
+   "ready_for_future_publish": false,
+   "record": "delete/ce-20261124-1320/45847218576-1.json",
+   "history": []
+  },
+  {
+   "tag": "ce-20261124-2119",
+   "title": "Why a Tiny Current Controls a Big Load ⚙️",
+   "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@b916e51a3b3b104512dac0e66b66bd9d21dab967/videos/ce-20261124-2119.mp4",
+   "folder": "delete",
+   "issue_number": 75,
+   "issue_url": "https://github.com/zerenaod-ux/content-engine/issues/75",
+   "reviewed_at": "2026-11-26T15:15:52.640587+00:00",
+   "publishing_enabled": false,
+   "ready_for_future_publish": false,
+   "record": "delete/ce-20261124-2119/45847218576-1.json",
+   "history": []
   }
  ],
- "updated_at": "2026-11-25T18:39:29.802026+00:00"
+ "updated_at": "2026-11-26T15:15:52.640587+00:00"
 }
