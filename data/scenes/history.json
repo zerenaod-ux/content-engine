@@ -1677,5 +1677,17 @@
     "record_run": "45470485524",
     "record_attempt": "2",
     "owner": "45470485524"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "",
+    "date": "2026-11-26",
+    "topic": "How a Rear Derailleur Shifts Gears",
+    "title": "How a Rear Derailleur Changes Gears \u2699\ufe0f",
+    "subject": "mw_bicycle_derailleur",
+    "keywords": [],
+    "category": "tested mechanism",
+    "record_run": "45848278010",
+    "record_attempt": "1"
   }
 ]
