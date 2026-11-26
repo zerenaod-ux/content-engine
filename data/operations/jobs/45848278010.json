@@ -2,10 +2,10 @@
   "run_id": "45848278010",
   "attempt": 1,
   "kind": "daily-short",
-  "stage": "ready",
-  "label": "Rendered; Studio delivery pending",
-  "updated_at": "2026-11-26T15:29:30.551160+00:00",
+  "stage": "delivered",
+  "label": "In Studio; owner review required",
+  "updated_at": "2026-11-26T15:31:49.992721+00:00",
   "source_branch": "main",
   "owner_approved": false,
-  "state": "rendered"
+  "state": "awaiting_review"
 }
