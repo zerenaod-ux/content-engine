@@ -6,7 +6,7 @@ on:
         description: 'Machine idea (empty = pick automatically)'
         required: false
   schedule:
-    - cron: '40 8 * * *'
+    # PAUSED 2026-11-26 (owner: derailleur video very bad; pixel check cannot judge look). Restore: '40 8 * * *'
 permissions:
   contents: write
 concurrency:
