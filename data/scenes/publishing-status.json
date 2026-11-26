@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-11-25T19:55:34.090049+00:00",
+  "checked_at": "2026-11-26T02:49:58.556475+00:00",
   "read_only": true,
   "complete": true,
   "platforms": {
@@ -428,13 +428,13 @@
     "available": true,
     "platforms": {
       "youtube": {
-        "views": 843.0,
-        "reactions": 12.0,
+        "views": 1063.0,
+        "reactions": 13.0,
         "reported_posts": 5,
-        "source_updated_at": "2026-11-25T02:06:34.256Z"
+        "source_updated_at": "2026-11-26T02:42:21.369Z"
       },
       "instagram": {
-        "views": 894.0,
+        "views": 895.0,
         "reactions": 6.0,
         "reported_posts": 8,
         "source_updated_at": "2026-11-23T02:58:31.357Z"
