@@ -395,5 +395,13 @@
     "mechanism": "electric_relay",
     "visual_family": "electromagnetic_relay::small_switches_big",
     "story": "small_switches_big"
+  },
+  {
+    "topic": "How a Rear Derailleur Shifts Gears",
+    "topic_key": "derailleur gears rear shifts",
+    "owner": "45848278010",
+    "state": "reserved",
+    "mechanism": "mw_bicycle_derailleur",
+    "visual_family": "mw_bicycle_derailleur"
   }
 ]
