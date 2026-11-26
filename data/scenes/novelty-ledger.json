@@ -1054,5 +1054,15 @@
     "state": "reserved",
     "policy": "original-idea-and-visuals-v1",
     "mechanism": "mw_bicycle_derailleur"
+  },
+  {
+    "topic": "How a Rear Derailleur Shifts Gears",
+    "mechanism": "mw_bicycle_derailleur",
+    "visual_family": "mw_bicycle_derailleur",
+    "state": "created",
+    "owner": "45848278010",
+    "encoded_run": "45848278010",
+    "policy": "original-idea-and-visuals-v1",
+    "media_sha256": "f8d35db237a52042674de7eb66c9ddcd306c109988a88e292e99ad2b26252798"
   }
 ]
