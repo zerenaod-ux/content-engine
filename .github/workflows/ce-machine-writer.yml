@@ -5,8 +5,7 @@ on:
       idea:
         description: 'Machine idea (empty = pick automatically)'
         required: false
-  schedule:
-    # PAUSED 2026-11-26 (owner: derailleur video very bad; pixel check cannot judge look). Restore: '40 8 * * *'
+  # schedule PAUSED 2026-11-26 (owner: derailleur video very bad; pixel check cannot judge look). Restore: schedule: - cron: '40 8 * * *'
 permissions:
   contents: write
 concurrency:
