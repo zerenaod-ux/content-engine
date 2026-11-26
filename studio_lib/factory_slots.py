@@ -8,9 +8,16 @@ TZ=ZoneInfo('America/Chicago')
 SLOTS=((3,5),(11,5),(19,5))
 STATE='data/operations/factory-control.json'
 
-def pending_review(videos,index_items,now=None,days=14):
- """Recent generated videos the owner has not decided yet (not in the review index)."""
- now=now or datetime.datetime.now(datetime.timezone.utc);decided={i.get('tag') for i in index_items if isinstance(i,dict)};n=0
+def closed_tags(issues):
+ """Tags of videos whose review card is closed (approved or skipped) even when the app index has not recorded them (2026-11-26: 3 decided videos still counted as waiting and froze the factory)."""
+ out=set()
+ for i in issues if isinstance(issues,list) else []:
+  if isinstance(i,dict) and i.get('state')=='closed' and not i.get('pull_request'):out.update(re.findall(r'release (ce-\d{8}-\d{4})',str(i.get('body') or '')))
+ return out
+
+def pending_review(videos,index_items,now=None,days=14,closed=()):
+ """Recent generated videos the owner has not decided yet (not in the review index and no closed review card)."""
+ now=now or datetime.datetime.now(datetime.timezone.utc);decided={i.get('tag') for i in index_items if isinstance(i,dict)}|set(closed);n=0
  for row in videos:
   m=re.fullmatch(r'ce-(\d{8})-(\d{4})',str(row.get('tag','')))
   if not m or row['tag'] in decided:continue
@@ -42,7 +49,9 @@ def snapshot(exclude_run=None):
  from studio_lib import stories
  index,_=read_document('data/scenes/review/index.json',{});items=index.get('items',[]) if isinstance(index,dict) else []
  cap=int(stories._data().get('max_review_backlog',3)) if stories.enabled() else None
- return decision(now,videos,available,active,pending_review(videos,items,now),cap)
+ try:closed=closed_tags(github('issues?state=closed&labels=scene-review&per_page=100'))
+ except Exception:closed=set()   # fail soft: fall back to the index alone
+ return decision(now,videos,available,active,pending_review(videos,items,now,closed=closed),cap)
 
 def admit():
  scheduled=os.environ.get('GITHUB_EVENT_NAME')=='schedule' or os.environ.get('CE_AUTOMATIC_SLOT')=='true'

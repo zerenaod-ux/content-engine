@@ -112,3 +112,14 @@ class Choose(unittest.TestCase):
    if Path('idea.json').exists():Path('idea.json').unlink()
    os.environ.pop('CE_STORY',None)
 if __name__=='__main__':unittest.main()
+
+
+class TestClosedCardsAreDecided(unittest.TestCase):
+    def test_closed_review_card_is_not_pending(self):
+        import datetime
+        from studio_lib import factory_slots as f
+        now=datetime.datetime(2026,11,26,12,tzinfo=datetime.timezone.utc)
+        videos=[{'tag':'ce-20261124-0607'},{'tag':'ce-20261125-1000'}]
+        issues=[{'state':'closed','body':'Saved in the folder: release ce-20261124-0607. Approve'},{'state':'open','body':'release ce-20261125-1000.'}]
+        self.assertEqual(f.pending_review(videos,[],now),2)
+        self.assertEqual(f.pending_review(videos,[],now,closed=f.closed_tags(issues)),1)
