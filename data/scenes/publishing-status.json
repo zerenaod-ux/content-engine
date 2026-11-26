@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-11-26T15:17:19.467788+00:00",
+  "checked_at": "2026-11-26T15:18:42.766432+00:00",
   "read_only": true,
   "complete": true,
   "platforms": {
@@ -404,6 +404,30 @@
           {
             "status": "sent",
             "due": "2026-11-24T02:30:00.000Z"
+          }
+        ]
+      }
+    },
+    {
+      "tag": "ce-20261124-0607",
+      "title": "How a Thermostat Resets When Cooled \u2699\ufe0f",
+      "platforms": {
+        "youtube": [
+          {
+            "status": "not_found_in_buffer",
+            "prior_owner_skip": false
+          }
+        ],
+        "instagram": [
+          {
+            "status": "not_found_in_buffer",
+            "prior_owner_skip": false
+          }
+        ],
+        "tiktok": [
+          {
+            "status": "not_found_in_buffer",
+            "prior_owner_skip": false
           }
         ]
       }
