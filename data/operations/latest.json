@@ -37,17 +37,15 @@
       "state": "awaiting_review"
     },
     "daily-short": {
-      "run_id": "45790932749",
+      "run_id": "45848278010",
       "attempt": 1,
       "kind": "daily-short",
-      "stage": "Waiting for fresh visuals",
-      "label": "Waiting for fresh visuals",
-      "updated_at": "2026-11-26T09:19:50.993102+00:00",
+      "stage": "selection",
+      "label": "Selecting a new topic",
+      "updated_at": "2026-11-26T15:22:04.658322+00:00",
       "source_branch": "main",
       "owner_approved": false,
-      "state": "held_for_novelty",
-      "reason": "Waiting for owner review of 9 videos before making more",
-      "retryable": false
+      "state": "running"
     }
   }
 }
