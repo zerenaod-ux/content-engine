@@ -126,7 +126,7 @@ class StoryWordingRegressionTests(unittest.TestCase):
  def test_active_causal_clauses_are_not_mistaken_for_a_parts_list(self):
   plan,_=fixture('float_valve')
   lines=['What stops this tank before its water spills over?',
-         'A simplified cutaway reveals the low float and a rigid pivoted arm.',
+         'Inside the tank, a low float rides on a rigid pivoted arm.',
          'Incoming water lifts the floating ball, rotating its arm around a fixed pivot.',
          'The rising arm pushes the washer toward its seat until the inlet stops flowing.',
          'The washer stays seated, so the high water level remains held.',
