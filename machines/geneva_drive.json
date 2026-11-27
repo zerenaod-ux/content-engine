@@ -1,0 +1,142 @@
+{
+ "key": "geneva_drive",
+ "module": "studio_lib.geneva_drive",
+ "family": "geneva_drive",
+ "pattern": "\\b(geneva\\ drive|intermittent\\ motion|maltese\\ cross|stop\\ and\\ go\\ wheel)s?\\b",
+ "detect": "geneva\\ drive|intermittent\\ motion|maltese\\ cross|stop\\ and\\ go\\ wheel",
+ "block": "(?!x)x",
+ "description": "A driver wheel with one pin steps a slotted wheel exactly a quarter turn each rotation, then locks it still; no motor, film or clock shown",
+ "actions": [
+  "intro",
+  "cutaway",
+  "drive",
+  "response",
+  "hold",
+  "repeat",
+  "limit",
+  "payoff"
+ ],
+ "facts": {
+  "intro": "Introduce a recognizable Geneva drive: an orange driver wheel with a red pin on the left and a steel four-slot wheel on the right. Everything is still.",
+  "cutaway": "A simplified cutaway lifts the small cover to expose the steel slotted wheel and the red pin of the driver wheel that is about to enter one slot.",
+  "drive": "Illustrated input force turns the driver wheel steadily. Its red pin slides into a slot of the steel wheel and pushes it, so the steel wheel turns exactly a quarter turn.",
+  "response": "Close-up of the pin leaving the slot. The pin slides out, the steel wheel stops after its quarter turn, and the rim of the driver wheel holds it still.",
+  "hold": "No part moves for this explanation. The driver wheel turns all the time, but the slotted wheel moves only while the pin is inside a slot. Between steps it sits locked.",
+  "repeat": "The driver wheel makes another full turn. The pin enters the next slot, steps the steel wheel another quarter turn, and leaves again.",
+  "limit": "The driver wheel turns the other way for one turn. The pin pushes the slotted wheel back a quarter turn, so the step happens in either direction.",
+  "payoff": "The cover closes. Driver and slotted wheel work together: a steady turn becomes stop-and-go steps of exactly a quarter turn. No motor or film is shown."
+ },
+ "source": "https://en.wikipedia.org/wiki/Geneva_drive",
+ "contract": {
+  "subjects": [
+   "\\b(driver|pin|slots|wheel)",
+   "\\b(cover|pin|slots|wheel)",
+   "\\b(driver|pin|slot|wheel)",
+   "\\b(driver|pin|slot|wheel)",
+   "\\b(driver|pin|slots|wheel)",
+   "\\b(driver|pin|slot|wheel)",
+   "\\b(driver|pin|slot|wheel)",
+   "\\b(driver|pin|slots|wheel)"
+  ],
+  "moves": {
+   "1": {
+    "cut": 1
+   },
+   "2": {
+    "turn": 1,
+    "wheel": -1
+   },
+   "3": {
+    "turn": 1,
+    "wheel": -1
+   },
+   "5": {
+    "turn": 1,
+    "wheel": -1
+   },
+   "6": {
+    "turn": -1,
+    "wheel": 1
+   },
+   "7": {
+    "cut": -1
+   }
+  },
+  "holds": {
+   "0": [
+    "cut",
+    "turn",
+    "wheel"
+   ],
+   "1": [
+    "turn",
+    "wheel"
+   ],
+   "2": [
+    "cut"
+   ],
+   "3": [
+    "cut"
+   ],
+   "4": [
+    "cut",
+    "turn",
+    "wheel"
+   ],
+   "5": [
+    "cut"
+   ],
+   "6": [
+    "cut"
+   ],
+   "7": [
+    "turn",
+    "wheel"
+   ]
+  },
+  "visible": [
+   [
+    2,
+    "frame"
+   ],
+   [
+    2,
+    "wheel"
+   ],
+   [
+    2,
+    "driver"
+   ],
+   [
+    2,
+    "pin"
+   ]
+  ]
+ },
+ "transitions": [
+  "cutaway",
+  "payoff"
+ ],
+ "anchors": {
+  "cutaway": "cover|lifts|wheel",
+  "payoff": "driver|pin|steps|wheel"
+ },
+ "narration_rules": [
+  {
+   "pattern": "\\b(film|projector|camera|clock|watch|movie)s?\\b",
+   "message": "no projector, film or clock is shown"
+  },
+  {
+   "pattern": "\\b(motor|battery|electric\\w*)\\b",
+   "message": "no motor is depicted; input force is only an arrow"
+  }
+ ],
+ "cue_bans": [],
+ "bounds": [],
+ "label": {
+  "from": 1,
+  "to": 6,
+  "text": "Cutaway \u00b7 simplified Geneva drive \u00b7 input force illustrated"
+ },
+ "title": "Geneva drive"
+}

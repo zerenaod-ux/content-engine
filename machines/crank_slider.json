@@ -1,0 +1,138 @@
+{
+ "key": "crank_slider",
+ "module": "studio_lib.crank_slider",
+ "family": "crank_slider",
+ "pattern": "\\b(connecting\\ rod|crank\\ and\\ piston|crankshaft|engine\\ piston|piston)s?\\b",
+ "detect": "connecting\\ rod|crank\\ and\\ piston|crankshaft|engine\\ piston|piston",
+ "block": "(?!x)x",
+ "description": "A piston sliding in a cylinder turns a crank and flywheel through a connecting rod; no valves, fuel, spark or engine block shown",
+ "actions": [
+  "intro",
+  "cutaway",
+  "drive",
+  "response",
+  "hold",
+  "repeat",
+  "limit",
+  "payoff"
+ ],
+ "facts": {
+  "intro": "Introduce a recognizable piston and crank: a steel piston in a cylinder, a long connecting rod below it, a red crank arm and a large orange flywheel. Everything is still, with the piston at the top.",
+  "cutaway": "A simplified cutaway lifts the small cover to expose the piston, the connecting rod and the crank pin that links the rod to the flywheel.",
+  "drive": "An illustrated push from above drives the piston down the cylinder. The connecting rod pushes the crank pin around, and the flywheel turns half a turn.",
+  "response": "The flywheel keeps turning and carries the crank pin past the bottom. The rod pulls the piston back up the cylinder, so the straight motion and the round motion stay linked.",
+  "hold": "No part moves for this explanation. The piston only slides up and down in a straight line; the crank pin only travels in a circle; the rod joins the two motions.",
+  "repeat": "A second push drives the piston down and the flywheel through another full turn. Each downward push adds speed to the spinning flywheel.",
+  "limit": "The flywheel turns backwards for a moment. The piston is pulled back up and down in the same straight line, because the rod always ties it to the crank pin.",
+  "payoff": "The cover closes. Piston, rod, crank and flywheel work together: a straight push becomes a steady spin. No fuel, valves or spark are shown."
+ },
+ "source": "https://en.wikipedia.org/wiki/Crank_(mechanism)",
+ "contract": {
+  "subjects": [
+   "\\b(crank|cylinder|flywheel|piston)",
+   "\\b(cover|crank|piston|rod)",
+   "\\b(crank|flywheel|piston|rod)",
+   "\\b(crank|flywheel|piston|rod)",
+   "\\b(crank|flywheel|piston|rod)",
+   "\\b(crank|flywheel|piston|rod)",
+   "\\b(crank|flywheel|piston|rod)",
+   "\\b(crank|flywheel|piston|rod)"
+  ],
+  "moves": {
+   "1": {
+    "cut": 1
+   },
+   "2": {
+    "turn": -1
+   },
+   "3": {
+    "turn": -1
+   },
+   "5": {
+    "turn": -1
+   },
+   "6": {
+    "turn": 1
+   },
+   "7": {
+    "cut": -1
+   }
+  },
+  "holds": {
+   "0": [
+    "cut",
+    "turn"
+   ],
+   "1": [
+    "turn"
+   ],
+   "2": [
+    "cut"
+   ],
+   "3": [
+    "cut"
+   ],
+   "4": [
+    "cut",
+    "turn"
+   ],
+   "5": [
+    "cut"
+   ],
+   "6": [
+    "cut"
+   ],
+   "7": [
+    "turn"
+   ]
+  },
+  "visible": [
+   [
+    2,
+    "block"
+   ],
+   [
+    2,
+    "piston"
+   ],
+   [
+    2,
+    "rod"
+   ],
+   [
+    2,
+    "flywheel"
+   ],
+   [
+    2,
+    "crank"
+   ]
+  ]
+ },
+ "transitions": [
+  "cutaway",
+  "payoff"
+ ],
+ "anchors": {
+  "cutaway": "cover|lifts|piston",
+  "payoff": "crank|flywheel|piston|turn"
+ },
+ "narration_rules": [
+  {
+   "pattern": "\\b(fuel|gasoline|petrol|diesel|spark|explosion|combust\\w*|valve|valves|exhaust)\\b",
+   "message": "no fuel, spark or valves are depicted; speak only of a push on the piston"
+  },
+  {
+   "pattern": "\\b(car|truck|motorcycle|vehicle)s?\\b",
+   "message": "no vehicle is shown"
+  }
+ ],
+ "cue_bans": [],
+ "bounds": [],
+ "label": {
+  "from": 1,
+  "to": 6,
+  "text": "Cutaway \u00b7 simplified piston and crank \u00b7 input force illustrated"
+ },
+ "title": "piston and crankshaft"
+}

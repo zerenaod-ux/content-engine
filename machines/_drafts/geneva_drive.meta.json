@@ -1,0 +1,25 @@
+{
+ "title": "Geneva drive",
+ "family": "geneva_drive",
+ "description": "A driver wheel with one pin steps a slotted wheel exactly a quarter turn each rotation, then locks it still; no motor, film or clock shown",
+ "words": ["geneva drive", "maltese cross", "intermittent motion", "stop and go wheel"],
+ "parts": ["frame", "wheel", "driver", "pin", "cover"],
+ "subjects": [["driver", "pin", "wheel", "slots"], ["cover", "wheel", "slots", "pin"], ["driver", "pin", "wheel", "slot"], ["pin", "slot", "wheel", "driver"], ["wheel", "slots", "driver", "pin"], ["driver", "pin", "wheel", "slot"], ["wheel", "driver", "pin", "slot"], ["driver", "pin", "wheel", "slots"]],
+ "cues": {"cutaway": ["cover", "lifts", "wheel"], "payoff": ["driver", "wheel", "pin", "steps"]},
+ "facts": {
+  "intro": "Introduce a recognizable Geneva drive: an orange driver wheel with a red pin on the left and a steel four-slot wheel on the right. Everything is still.",
+  "cutaway": "A simplified cutaway lifts the small cover to expose the steel slotted wheel and the red pin of the driver wheel that is about to enter one slot.",
+  "drive": "Illustrated input force turns the driver wheel steadily. Its red pin slides into a slot of the steel wheel and pushes it, so the steel wheel turns exactly a quarter turn.",
+  "response": "Close-up of the pin leaving the slot. The pin slides out, the steel wheel stops after its quarter turn, and the rim of the driver wheel holds it still.",
+  "hold": "No part moves for this explanation. The driver wheel turns all the time, but the slotted wheel moves only while the pin is inside a slot. Between steps it sits locked.",
+  "repeat": "The driver wheel makes another full turn. The pin enters the next slot, steps the steel wheel another quarter turn, and leaves again.",
+  "limit": "The driver wheel turns the other way for one turn. The pin pushes the slotted wheel back a quarter turn, so the step happens in either direction.",
+  "payoff": "The cover closes. Driver and slotted wheel work together: a steady turn becomes stop-and-go steps of exactly a quarter turn. No motor or film is shown."
+ },
+ "source": "https://en.wikipedia.org/wiki/Geneva_drive",
+ "narration_rules": [
+  {"pattern": "\\b(film|projector|camera|clock|watch|movie)s?\\b", "message": "no projector, film or clock is shown"},
+  {"pattern": "\\b(motor|battery|electric\\w*)\\b", "message": "no motor is depicted; input force is only an arrow"}
+ ],
+ "label": {"from": 1, "to": 6, "text": "Cutaway · simplified Geneva drive · input force illustrated"}
+}
