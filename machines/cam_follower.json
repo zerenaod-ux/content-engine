@@ -18,13 +18,13 @@
  ],
  "facts": {
   "intro": "Introduce a recognizable cam and follower: an orange egg-shaped cam on a shaft, a flat-footed steel follower resting on it, a coil spring above and a red cap on top. Everything is still, with the follower down.",
-  "cutaway": "A simplified cutaway lifts the cover to expose the cam, the flat foot of the follower, its brass collar and the spring above it.",
-  "drive": "An illustrated turn spins the cam. As the wide side of the egg rolls under the foot, the follower is pushed up and the spring is squeezed.",
+  "cutaway": "Inside are the cam, the flat foot of the follower, its brass collar and the spring above it.",
+  "drive": "A turn spins the cam. As the wide side of the egg rolls under the foot, the follower is pushed up and the spring is squeezed.",
   "response": "The cam keeps turning and the narrow side comes round. The squeezed spring pushes the follower back down, so the foot stays on the cam.",
   "hold": "No part moves for this explanation. The follower only slides straight up and down; the cam only turns; the shape of the cam sets how high the follower goes.",
   "repeat": "Two more turns of the cam raise and lower the follower twice. Each turn gives the same lift, because the cam shape does not change.",
   "limit": "The cam turns backwards for a moment. The follower still rises when the wide side arrives, so the cam shape, not the turn direction, sets the lift.",
-  "payoff": "The cover closes. Cam, follower and spring work together: a steady turn becomes a repeating up and down push. No engine or valve is shown."
+  "payoff": "Cam, follower and spring work together: a steady turn becomes a repeating up and down push. No engine or valve is shown."
  },
  "source": "https://en.wikipedia.org/wiki/Cam_(mechanism)",
  "contract": {
@@ -121,6 +121,10 @@
   {
    "pattern": "\\b(engine|valve|valves|camshaft|fuel|piston|car|truck)s?\\b",
    "message": "no engine or valve is depicted; speak only of the cam, follower and spring"
+  },
+  {
+   "pattern": "\\b(cutaway|covers?|illustrated|simplified)\\b",
+   "message": "do not narrate the cover, cutaway or illustration; say what the real parts do"
   }
  ],
  "cue_bans": [],

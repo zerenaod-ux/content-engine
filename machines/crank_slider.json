@@ -18,13 +18,13 @@
  ],
  "facts": {
   "intro": "Introduce a recognizable piston and crank: a steel piston in a cylinder, a long connecting rod below it, a red crank arm and a large orange flywheel. Everything is still, with the piston at the top.",
-  "cutaway": "A simplified cutaway lifts the small cover to expose the piston, the connecting rod and the crank pin that links the rod to the flywheel.",
-  "drive": "An illustrated push from above drives the piston down the cylinder. The connecting rod pushes the crank pin around, and the flywheel turns half a turn.",
+  "cutaway": "Inside are the piston, the connecting rod and the crank pin that links the rod to the flywheel.",
+  "drive": "A push from above drives the piston down the cylinder. The connecting rod pushes the crank pin around, and the flywheel turns half a turn.",
   "response": "The flywheel keeps turning and carries the crank pin past the bottom. The rod pulls the piston back up the cylinder, so the straight motion and the round motion stay linked.",
   "hold": "No part moves for this explanation. The piston only slides up and down in a straight line; the crank pin only travels in a circle; the rod joins the two motions.",
   "repeat": "A second push drives the piston down and the flywheel through another full turn. Each downward push adds speed to the spinning flywheel.",
   "limit": "The flywheel turns backwards for a moment. The piston is pulled back up and down in the same straight line, because the rod always ties it to the crank pin.",
-  "payoff": "The cover closes. Piston, rod, crank and flywheel work together: a straight push becomes a steady spin. No fuel, valves or spark are shown."
+  "payoff": "Piston, rod, crank and flywheel work together: a straight push becomes a steady spin. No fuel, valves or spark are shown."
  },
  "source": "https://en.wikipedia.org/wiki/Crank_(mechanism)",
  "contract": {
@@ -125,6 +125,10 @@
   {
    "pattern": "\\b(car|truck|motorcycle|vehicle)s?\\b",
    "message": "no vehicle is shown"
+  },
+  {
+   "pattern": "\\b(cutaway|covers?|illustrated|simplified)\\b",
+   "message": "do not narrate the cover, cutaway or illustration; say what the real parts do"
   }
  ],
  "cue_bans": [],

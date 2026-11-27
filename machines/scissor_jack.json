@@ -18,13 +18,13 @@
  ],
  "facts": {
   "intro": "Introduce a recognizable scissor jack: a flat base, four hinged steel arms in a diamond and a flat platform on top, with a red-handled crank at the side. Everything is still and low.",
-  "cutaway": "A simplified cutaway lifts the side cover to expose the long threaded screw across the middle of the diamond and the two brass nuts at the left and right corners.",
-  "drive": "Illustrated input force turns the crank. The screw spins, the two brass nuts are pulled toward the centre, and the four arms fold upright so the platform rises.",
+  "cutaway": "Inside are the long threaded screw across the middle of the diamond and the two brass nuts at the left and right corners.",
+  "drive": "A push turns the crank. The screw spins, the two brass nuts are pulled toward the centre, and the four arms fold upright so the platform rises.",
   "response": "Close-up of the nuts. Each turn pulls them a small, fixed distance inward, so the platform climbs smoothly while the arms keep the same length.",
   "hold": "No part moves for this explanation. The weight pushing down on the platform cannot spin the screw back, so the jack stays at its height without anyone holding the crank.",
   "repeat": "The crank turns again. The nuts slide further inward, the arms stand steeper and the platform rises higher with each full turn.",
   "limit": "The crank turns the other way. The nuts move apart again and the platform lowers a little. Raising and lowering are both just the screw turning.",
-  "payoff": "The cover closes. Crank, screw, nuts and arms work together: a small turning motion becomes a slow, strong lift. No car or load is shown."
+  "payoff": "Crank, screw, nuts and arms work together: a small turning motion becomes a slow, strong lift. No car or load is shown."
  },
  "source": "https://en.wikipedia.org/wiki/Jack_(device)",
  "contract": {
@@ -137,6 +137,10 @@
   {
    "pattern": "\\b(car|truck|vehicle|tire|tyre|wheel)s?\\b",
    "message": "no car or wheel is shown; speak only of the platform and a load"
+  },
+  {
+   "pattern": "\\b(cutaway|covers?|illustrated|simplified)\\b",
+   "message": "do not narrate the cover, cutaway or illustration; say what the real parts do"
   }
  ],
  "cue_bans": [],

@@ -18,13 +18,13 @@
  ],
  "facts": {
   "intro": "Introduce a recognizable wiper linkage: a red crank on the left, a steel coupler rod, and a long arm with a dark blade pivoting on the right over a pane of glass. Everything is still.",
-  "cutaway": "A simplified cutaway lifts the cover to expose the crank, the coupler rod joining it to the arm, and the pivot the arm swings on.",
-  "drive": "An illustrated push spins the crank a full turn. The coupler rod pushes and pulls the arm, which swings across the glass and back.",
+  "cutaway": "Inside are the crank, the coupler rod joining it to the arm, and the pivot the arm swings on.",
+  "drive": "A push spins the crank a full turn. The coupler rod pushes and pulls the arm, which swings across the glass and back.",
   "response": "The crank keeps turning and the arm keeps swinging. The crank goes all the way round, yet the arm only rocks back and forth through part of a circle.",
   "hold": "No part moves for this explanation. The crank is the shortest link and can turn in a full circle; the arm is longer and can only swing.",
   "repeat": "A second push turns the crank again, and the arm sweeps across the glass and back once more, covering the same arc each time.",
   "limit": "The crank turns backwards for a moment. The arm retraces its path, because the rod ties every crank position to one arm position.",
-  "payoff": "The cover closes. Crank, coupler and arm work together: a steady spin becomes a sweep back and forth. No car or water is shown."
+  "payoff": "Crank, coupler and arm work together: a steady spin becomes a sweep back and forth. No car or water is shown."
  },
  "source": "https://en.wikipedia.org/wiki/Four-bar_linkage",
  "contract": {
@@ -121,6 +121,10 @@
   {
    "pattern": "\\b(car|cars|windshield|windscreen|rain|water|motor|driver)\\b",
    "message": "no car, rain or motor is depicted; speak only of the crank, coupler and arm"
+  },
+  {
+   "pattern": "\\b(cutaway|covers?|illustrated|simplified)\\b",
+   "message": "do not narrate the cover, cutaway or illustration; say what the real parts do"
   }
  ],
  "cue_bans": [],

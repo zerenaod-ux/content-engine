@@ -18,13 +18,13 @@
  ],
  "facts": {
   "intro": "Introduce a recognizable steering mechanism: a red three-spoke steering wheel in front, a small brass gear behind it and a long toothed steel bar running sideways below. Everything is still.",
-  "cutaway": "A simplified cutaway lifts the front cover to expose the small brass pinion gear meshed with the toothed steel rack beneath it.",
-  "drive": "Illustrated input force turns the steering wheel. The pinion turns with it, its teeth push the rack's teeth, and the rack slides sideways, pulling the rods at each end along with it.",
+  "cutaway": "Inside are the small brass pinion gear meshed with the toothed steel rack beneath it.",
+  "drive": "A push turns the steering wheel. The pinion turns with it, its teeth push the rack's teeth, and the rack slides sideways, pulling the rods at each end along with it.",
   "response": "Close-up of the teeth. Every gear tooth pushes one rack tooth, so the rack slides exactly as far as the gear's rim rolls, with no slipping.",
   "hold": "No part moves for this explanation. A turning motion is converted into a straight sideways motion: the round gear rolls along the straight toothed bar.",
   "repeat": "The wheel turns back the other way. The pinion reverses and the rack slides back through the middle, past its starting place.",
   "limit": "The wheel turns further. The rack slides as far as it can go to the other side. Turning farther always means sliding farther, in equal steps.",
-  "payoff": "The cover closes. Wheel, pinion and rack work together: turning the wheel one way or the other slides the rack left or right. No car or tires are shown."
+  "payoff": "Wheel, pinion and rack work together: turning the wheel one way or the other slides the rack left or right. No car or tires are shown."
  },
  "source": "https://en.wikipedia.org/wiki/Rack_and_pinion",
  "contract": {
@@ -129,6 +129,10 @@
   {
    "pattern": "\\b(car|tires?|tyres?|road|driver)s?\\b",
    "message": "no car, tire or driver is shown"
+  },
+  {
+   "pattern": "\\b(cutaway|covers?|illustrated|simplified)\\b",
+   "message": "do not narrate the cover, cutaway or illustration; say what the real parts do"
   }
  ],
  "cue_bans": [],

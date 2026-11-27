@@ -18,13 +18,13 @@
  ],
  "facts": {
   "intro": "Introduce a recognizable pulley system: a large steel wheel fixed high on the frame, a small orange wheel below it carrying a heavy brass weight, and one sand-coloured rope with a red handle. Everything is still.",
-  "cutaway": "A simplified cutaway lifts the cover to expose the rope tied to the beam, the small wheel that moves, and the large fixed wheel above.",
-  "drive": "An illustrated pull on the red handle draws rope over the fixed wheel. The small wheel climbs and the heavy weight rises with it.",
+  "cutaway": "Inside are the rope tied to the beam, the small wheel that moves, and the large fixed wheel above.",
+  "drive": "A pull on the red handle draws rope over the fixed wheel. The small wheel climbs and the heavy weight rises with it.",
   "response": "The handle keeps coming down and the weight keeps rising. The weight climbs only half as far as the handle moves, because two strands of rope hold it up.",
   "hold": "No part moves for this explanation. Two strands of rope hold the small wheel, so each strand carries half of the weight.",
   "repeat": "A second pull raises the weight higher again. Every metre of rope pulled down lifts the weight by half a metre.",
   "limit": "The handle is let back up for a moment. The weight sinks by half as much, so the rope never slips on the wheels.",
-  "payoff": "The cover closes. Rope, fixed wheel and moving wheel work together: a long, easy pull lifts a heavy weight. No crane is shown."
+  "payoff": "Rope, fixed wheel and moving wheel work together: a long, easy pull lifts a heavy weight. No crane is shown."
  },
  "source": "https://en.wikipedia.org/wiki/Pulley",
  "contract": {
@@ -117,6 +117,10 @@
   {
    "pattern": "\\b(crane|building|construction|well|bucket|person|worker|people)s?\\b",
    "message": "no crane or person is depicted; speak only of the rope, wheels and weight"
+  },
+  {
+   "pattern": "\\b(cutaway|covers?|illustrated|simplified)\\b",
+   "message": "do not narrate the cover, cutaway or illustration; say what the real parts do"
   }
  ],
  "cue_bans": [],

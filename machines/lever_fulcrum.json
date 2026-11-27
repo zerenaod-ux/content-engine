@@ -18,13 +18,13 @@
  ],
  "facts": {
   "intro": "Introduce a recognizable lever: a long steel beam balanced on a brass pivot, a red handle on the long right end and a heavy brass weight hanging from the short left end. Everything is still and level.",
-  "cutaway": "A simplified cutaway lifts the cover to expose the brass pivot where the beam rests and the A-shaped stand that holds it up.",
-  "drive": "An illustrated push down on the red handle tips the beam. The long arm swings a long way down, and the heavy weight on the short arm is lifted.",
+  "cutaway": "Inside are the brass pivot where the beam rests and the A-shaped stand that holds it up.",
+  "drive": "A push down on the red handle tips the beam. The long arm swings a long way down, and the heavy weight on the short arm is lifted.",
   "response": "The beam keeps tipping. The weight rises only half as far as the handle falls, because the pivot sits one third along the beam.",
   "hold": "No part moves for this explanation. The long arm is twice as long as the short arm, so the handle must travel twice as far as the weight.",
   "repeat": "A second push down tips the beam further and lifts the weight higher, again by half the distance the handle moves.",
   "limit": "The handle is let back up for a moment. The beam tips back and the weight sinks, so the weight only rises while the handle is pushed down.",
-  "payoff": "The cover closes. Beam, pivot and weight work together: a long, light push lifts a short, heavy load. No person or playground is shown."
+  "payoff": "Beam, pivot and weight work together: a long, light push lifts a short, heavy load. No person or playground is shown."
  },
  "source": "https://en.wikipedia.org/wiki/Lever",
  "contract": {
@@ -117,6 +117,10 @@
   {
    "pattern": "\\b(seesaw|see-saw|playground|child|children|kid|kids|person|people)\\b",
    "message": "no seesaw or person is depicted; speak only of the beam, pivot and weight"
+  },
+  {
+   "pattern": "\\b(cutaway|covers?|illustrated|simplified)\\b",
+   "message": "do not narrate the cover, cutaway or illustration; say what the real parts do"
   }
  ],
  "cue_bans": [],
