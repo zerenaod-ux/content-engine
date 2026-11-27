@@ -48,9 +48,13 @@ def validate(plan):
     if reason:e.append(reason)
     title=plan.get('title','')
     if not isinstance(title,str) or not 4<=len(title.split())<=8 or title.split()[0] not in ('How','Why'):e.append('title must start with How or Why and contain 4-8 words')
+    if isinstance(title,str):   # the title must follow the machine's own wording rules too (no 'seesaw'/'child' on a beam-and-weight picture)
+        from studio_lib import action_contracts as _ac
+        for r in _ac.SPEC_RULES.get(mechanism,[]):
+            if re.search(r['pattern'],title.lower()):e.append('title: '+r['message'])
     actions=REGISTRY[mechanism]['actions']
     beats=plan.get('beats',[])
-    if not isinstance(beats,list) or len(beats)!=8:return ['need exactly the eight supported action beats']
+    if not isinstance(beats,list) or len(beats)!=8:return e+['need exactly the eight supported action beats']
     for i,b in enumerate(beats):
         if not isinstance(b,dict):e.append('beat must be object');continue
         if b.get('action')!=actions[i]:e.append('preserve the engine safety order')
