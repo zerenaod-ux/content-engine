@@ -2,9 +2,9 @@
   "run_id": "45955048264",
   "attempt": 1,
   "kind": "daily-short",
-  "stage": "picture_check",
-  "label": "picture_check",
-  "updated_at": "2026-11-27T06:58:24.627400+00:00",
+  "stage": "render",
+  "label": "Rendering animation",
+  "updated_at": "2026-11-27T06:59:09.442212+00:00",
   "source_branch": "main",
   "owner_approved": false,
   "state": "running"
