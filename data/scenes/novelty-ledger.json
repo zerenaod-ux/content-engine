@@ -1072,5 +1072,15 @@
     "state": "reserved",
     "policy": "original-idea-and-visuals-v1",
     "mechanism": "chain_sprocket"
+  },
+  {
+    "topic": "Why a Large Sprocket Drives a Small Sprocket Twice as Fast",
+    "mechanism": "chain_sprocket",
+    "visual_family": "chain_sprocket",
+    "state": "created",
+    "owner": "45955048264",
+    "encoded_run": "45955048264",
+    "policy": "original-idea-and-visuals-v1",
+    "media_sha256": "5f1d20a4acb8f017ec2674119fbd0f7b880c65cd8a8d1731cbc73fd31953aa2d"
   }
 ]
