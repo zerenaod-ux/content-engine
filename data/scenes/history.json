@@ -1715,5 +1715,17 @@
     "record_run": "45970680338",
     "record_attempt": "1",
     "owner": "45970680338"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "",
+    "date": "2026-11-27",
+    "topic": "Why a Seesaw Lifts a Heavy Child With a Light Push",
+    "title": "Why a Seesaw Lifts a Heavy Child \u2699\ufe0f",
+    "subject": "lever_fulcrum",
+    "keywords": [],
+    "category": "tested mechanism",
+    "record_run": "45971656068",
+    "record_attempt": "1"
   }
 ]
