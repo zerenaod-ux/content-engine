@@ -15,8 +15,8 @@ class NoveltyPolicyTests(unittest.TestCase):
  def test_cross_format_and_shared_visual_family_are_not_loopholes(self):
   rows=[{'title':'Wind turbine internal generator','mechanism':'wind_turbine','format':'short'}]
   self.assertTrue(novelty.reason('How a hand crank generator lights a lamp','hand_generator',rows))
-  rows=[{'mechanism':'rack_pinion','format':'original_full','state':'created'}]
-  self.assertTrue(novelty.reason('How a lead screw moves a carriage','lead_screw',rows))
+  rows=[{'mechanism':'dna_pairing','format':'original_full','state':'created'}]
+  self.assertTrue(novelty.reason('How water moves between reservoirs','water_transfer',rows))   # rack_pinion now has its own spec family, so use a pair that still shares one
 
  def test_completed_video_cannot_resume_even_for_same_owner(self):
   row={'topic':'How solar cells power a lamp','mechanism':'photovoltaic_cell','owner':'test','state':'created','failed':True}
