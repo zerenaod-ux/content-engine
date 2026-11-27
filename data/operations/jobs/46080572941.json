@@ -2,9 +2,9 @@
   "run_id": "46080572941",
   "attempt": 1,
   "kind": "daily-short",
-  "stage": "selection",
-  "label": "Selecting a new topic",
-  "updated_at": "2026-11-27T23:06:58.260750+00:00",
+  "stage": "planning",
+  "label": "Writing and checking narration",
+  "updated_at": "2026-11-27T23:07:05.343165+00:00",
   "source_branch": "main",
   "owner_approved": false,
   "state": "running"
