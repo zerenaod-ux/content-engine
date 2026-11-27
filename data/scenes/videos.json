@@ -1519,5 +1519,38 @@
     },
     "record_run": "45955048264",
     "record_attempt": "1"
+  },
+  {
+    "date": "2026-11-27",
+    "tag": "ce-20261127-0921",
+    "title": "Why a Seesaw Lifts a Heavy Child \u2699\ufe0f",
+    "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@dadb2e8a31f3100bb9e44bffba17704e9c4cc7c9/videos/ce-20261127-0921.mp4",
+    "topic": "Why a Seesaw Lifts a Heavy Child With a Light Push",
+    "topic_key": "child heavy lifts light push seesaw",
+    "generation_origin": {
+      "event": "workflow_dispatch",
+      "automatic_slot": false,
+      "run_id": "45971656068",
+      "attempt": 1,
+      "event_sha": "079957cf3581354663ccf21dbb598569e10b80a2",
+      "source_ref": "main",
+      "manual_media_edits": false
+    },
+    "production_evidence": {
+      "policy": "unattended-proof-v1",
+      "novelty_policy": "original-idea-and-visuals-v1",
+      "width": 1080,
+      "height": 1920,
+      "duration": 52.1,
+      "media_sha256": "82ce2ca75722398240d3b854c639cad04f35e50c1fa08d8a15c7fcf94a493f41",
+      "alignment_revision": "causal-component-actions-v4",
+      "render_policy": "native-studio-1080-v1",
+      "voice": "af_heart",
+      "voice_policy": "how-it-ticks-narrator-v4-heart-clean",
+      "errors": [],
+      "owner_approved": false
+    },
+    "record_run": "45971656068",
+    "record_attempt": "1"
   }
 ]
