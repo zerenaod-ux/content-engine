@@ -411,5 +411,13 @@
     "state": "reserved",
     "mechanism": "chain_sprocket",
     "visual_family": "chain_sprocket"
+  },
+  {
+    "topic": "Why a Geneva Drive Turns Continuous Rotation into Precise Intermittent Steps",
+    "topic_key": "continuous drive geneva intermittent precise rotate steps turn",
+    "owner": "45970680338",
+    "state": "reserved",
+    "mechanism": "geneva_drive",
+    "visual_family": "geneva_drive"
   }
 ]
