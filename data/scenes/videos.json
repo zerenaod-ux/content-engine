@@ -1585,5 +1585,38 @@
     },
     "record_run": "45971764233",
     "record_attempt": "1"
+  },
+  {
+    "date": "2026-11-27",
+    "tag": "ce-20261127-1544",
+    "title": "Why a Geneva Drive Makes Precise Steps \u2699\ufe0f",
+    "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@27b10668a16de42e1aea6707c8472f2ec89bbca0/videos/ce-20261127-1544.mp4",
+    "topic": "Why a Geneva Drive Turns Continuous Rotation into Precise Intermittent Steps",
+    "topic_key": "continuous drive geneva intermittent precise rotate steps turn",
+    "generation_origin": {
+      "event": "workflow_dispatch",
+      "automatic_slot": false,
+      "run_id": "45970680338",
+      "attempt": 2,
+      "event_sha": "ed882ff43c69ec9bcded716a9f01bc2f4105508f",
+      "source_ref": "main",
+      "manual_media_edits": false
+    },
+    "production_evidence": {
+      "policy": "unattended-proof-v1",
+      "novelty_policy": "original-idea-and-visuals-v1",
+      "width": 1080,
+      "height": 1920,
+      "duration": 52.933333,
+      "media_sha256": "19f69252f48ad248cc167cb0c53de19d421f4b21f3ce78b20498c7f8cf52e335",
+      "alignment_revision": "causal-component-actions-v4",
+      "render_policy": "native-studio-1080-v1",
+      "voice": "af_heart",
+      "voice_policy": "how-it-ticks-narrator-v4-heart-clean",
+      "errors": [],
+      "owner_approved": false
+    },
+    "record_run": "45970680338",
+    "record_attempt": "2"
   }
 ]
