@@ -1,0 +1,130 @@
+{
+ "key": "pulley_lift",
+ "module": "studio_lib.pulley_lift",
+ "family": "pulley_lift",
+ "pattern": "\\b(block\\ and\\ tackle|movable\\ pulley|pulley|pulley\\ system|rope\\ and\\ pulley)s?\\b",
+ "detect": "block\\ and\\ tackle|movable\\ pulley|pulley|pulley\\ system|rope\\ and\\ pulley",
+ "block": "(?!x)x",
+ "description": "A rope round a fixed pulley and a movable pulley lets a short pull lift a heavy weight with half the effort; no crane, building or people shown",
+ "actions": [
+  "intro",
+  "cutaway",
+  "drive",
+  "response",
+  "hold",
+  "repeat",
+  "limit",
+  "payoff"
+ ],
+ "facts": {
+  "intro": "Introduce a recognizable pulley system: a large steel wheel fixed high on the frame, a small orange wheel below it carrying a heavy brass weight, and one sand-coloured rope with a red handle. Everything is still.",
+  "cutaway": "A simplified cutaway lifts the cover to expose the rope tied to the beam, the small wheel that moves, and the large fixed wheel above.",
+  "drive": "An illustrated pull on the red handle draws rope over the fixed wheel. The small wheel climbs and the heavy weight rises with it.",
+  "response": "The handle keeps coming down and the weight keeps rising. The weight climbs only half as far as the handle moves, because two strands of rope hold it up.",
+  "hold": "No part moves for this explanation. Two strands of rope hold the small wheel, so each strand carries half of the weight.",
+  "repeat": "A second pull raises the weight higher again. Every metre of rope pulled down lifts the weight by half a metre.",
+  "limit": "The handle is let back up for a moment. The weight sinks by half as much, so the rope never slips on the wheels.",
+  "payoff": "The cover closes. Rope, fixed wheel and moving wheel work together: a long, easy pull lifts a heavy weight. No crane is shown."
+ },
+ "source": "https://en.wikipedia.org/wiki/Pulley",
+ "contract": {
+  "subjects": [
+   "\\b(frame|pulleys|rope|weight)",
+   "\\b(cover|pulleys|rope|weight)",
+   "\\b(frame|pulleys|rope|weight)",
+   "\\b(frame|pulleys|rope|weight)",
+   "\\b(frame|pulleys|rope|weight)",
+   "\\b(frame|pulleys|rope|weight)",
+   "\\b(frame|pulleys|rope|weight)",
+   "\\b(frame|pulleys|rope|weight)"
+  ],
+  "moves": {
+   "1": {
+    "cut": 1
+   },
+   "2": {
+    "h": 1
+   },
+   "3": {
+    "h": 1
+   },
+   "5": {
+    "h": 1
+   },
+   "6": {
+    "h": -1
+   },
+   "7": {
+    "cut": -1
+   }
+  },
+  "holds": {
+   "0": [
+    "cut",
+    "h"
+   ],
+   "1": [
+    "h"
+   ],
+   "2": [
+    "cut"
+   ],
+   "3": [
+    "cut"
+   ],
+   "4": [
+    "cut",
+    "h"
+   ],
+   "5": [
+    "cut"
+   ],
+   "6": [
+    "cut"
+   ],
+   "7": [
+    "h"
+   ]
+  },
+  "visible": [
+   [
+    2,
+    "frame"
+   ],
+   [
+    2,
+    "pulleys"
+   ],
+   [
+    2,
+    "rope"
+   ],
+   [
+    2,
+    "weight"
+   ]
+  ]
+ },
+ "transitions": [
+  "cutaway",
+  "payoff"
+ ],
+ "anchors": {
+  "cutaway": "cover|lifts|pulleys",
+  "payoff": "lift|pulleys|rope|weight"
+ },
+ "narration_rules": [
+  {
+   "pattern": "\\b(crane|building|construction|well|bucket|person|worker|people)s?\\b",
+   "message": "no crane or person is depicted; speak only of the rope, wheels and weight"
+  }
+ ],
+ "cue_bans": [],
+ "bounds": [],
+ "label": {
+  "from": 1,
+  "to": 6,
+  "text": "Cutaway \u00b7 simplified pulley system \u00b7 input pull illustrated"
+ },
+ "title": "movable pulley"
+}
