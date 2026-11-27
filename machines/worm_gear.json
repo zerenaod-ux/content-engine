@@ -110,7 +110,7 @@
   "payoff"
  ],
  "anchors": {
-  "cutaway": "cover|lifts|worm",
+  "cutaway": "bottom|cover|lifts|pressing|teeth|thread|wheel|worm",
   "payoff": "slowly|turn|wheel|worm"
  },
  "narration_rules": [

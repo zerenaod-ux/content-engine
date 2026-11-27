@@ -114,7 +114,7 @@
   "payoff"
  ],
  "anchors": {
-  "cutaway": "cover|lifts|piston",
+  "cutaway": "connecting|cover|crank|flywheel|lifts|links|piston",
   "payoff": "crank|flywheel|piston|turn"
  },
  "narration_rules": [

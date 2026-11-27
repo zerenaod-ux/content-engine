@@ -106,7 +106,7 @@
   "payoff"
  ],
  "anchors": {
-  "cutaway": "cover|lifts|pins",
+  "cutaway": "above|across|body|brass|cover|four|lifts|line|pins|springs|steel|them",
   "payoff": "aligned|key|line|pins"
  },
  "narration_rules": [

@@ -118,7 +118,7 @@
   "payoff"
  ],
  "anchors": {
-  "cutaway": "cover|lifts|wheel",
+  "cutaway": "about|cover|driver|enter|lifts|slot|slotted|steel|wheel",
   "payoff": "driver|pin|steps|wheel"
  },
  "narration_rules": [

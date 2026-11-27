@@ -118,7 +118,7 @@
   "payoff"
  ],
  "anchors": {
-  "cutaway": "cover|gear|lifts",
+  "cutaway": "beneath|brass|cover|gear|lifts|meshed|pinion|rack|small|steel|toothed",
   "payoff": "rack|slides|turns|wheel"
  },
  "narration_rules": [

@@ -114,7 +114,7 @@
   "payoff"
  ],
  "anchors": {
-  "cutaway": "cover|crank|lifts",
+  "cutaway": "coupler|cover|crank|joining|lifts|pivot|swings",
   "payoff": "arm|coupler|crank|sweeps"
  },
  "narration_rules": [

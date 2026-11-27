@@ -114,7 +114,7 @@
   "payoff"
  ],
  "anchors": {
-  "cutaway": "cam|cover|lifts",
+  "cutaway": "above|brass|cam|collar|cover|flat|follower|foot|lifts|spring",
   "payoff": "cam|follower|lift|spring"
  },
  "narration_rules": [

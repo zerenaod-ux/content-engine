@@ -110,7 +110,7 @@
   "payoff"
  ],
  "anchors": {
-  "cutaway": "chain|cover|lifts",
+  "cutaway": "both|chain|cover|crank|lifts|links|sprocket|sprockets|teeth",
   "payoff": "chain|small|sprocket|turn"
  },
  "narration_rules": [

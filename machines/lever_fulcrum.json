@@ -110,7 +110,7 @@
   "payoff"
  ],
  "anchors": {
-  "cutaway": "cover|fulcrum|lifts",
+  "cutaway": "beam|brass|cover|fulcrum|holds|lifts|pivot|rests|shaped|stand|where",
   "payoff": "beam|fulcrum|lift|load"
  },
  "narration_rules": [

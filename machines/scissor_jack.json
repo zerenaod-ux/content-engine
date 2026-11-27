@@ -126,7 +126,7 @@
   "payoff"
  ],
  "anchors": {
-  "cutaway": "cover|lifts|screw",
+  "cutaway": "across|brass|corners|cover|diamond|left|lifts|long|middle|nuts|right|screw|threaded",
   "payoff": "arms|jack|lifts|platform"
  },
  "narration_rules": [
