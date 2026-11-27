@@ -1552,5 +1552,38 @@
     },
     "record_run": "45971656068",
     "record_attempt": "1"
+  },
+  {
+    "date": "2026-11-27",
+    "tag": "ce-20261127-0942",
+    "title": "Why a Pin Tumbler Lock Stays Locked \u2699\ufe0f",
+    "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@9c3f11b2527b45bf8208d8375a5c4d430ca1614d/videos/ce-20261127-0942.mp4",
+    "topic": "Why a Pin Tumbler Lock Won\u2019t Open Without the Correct Key",
+    "topic_key": "correct key lock open pin t tumbler without won",
+    "generation_origin": {
+      "event": "workflow_dispatch",
+      "automatic_slot": false,
+      "run_id": "45971764233",
+      "attempt": 1,
+      "event_sha": "add489bf7201f65119e6baa9a9ca417dbd064137",
+      "source_ref": "main",
+      "manual_media_edits": false
+    },
+    "production_evidence": {
+      "policy": "unattended-proof-v1",
+      "novelty_policy": "original-idea-and-visuals-v1",
+      "width": 1080,
+      "height": 1920,
+      "duration": 51.833333,
+      "media_sha256": "03c6ad7ebe4fd51125e510666991fe202aaa703839a58f2a50ef2b05f3332760",
+      "alignment_revision": "causal-component-actions-v4",
+      "render_policy": "native-studio-1080-v1",
+      "voice": "af_heart",
+      "voice_policy": "how-it-ticks-narrator-v4-heart-clean",
+      "errors": [],
+      "owner_approved": false
+    },
+    "record_run": "45971764233",
+    "record_attempt": "1"
   }
 ]
