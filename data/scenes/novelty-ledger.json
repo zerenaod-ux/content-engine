@@ -1152,5 +1152,15 @@
     "state": "reserved",
     "policy": "original-idea-and-visuals-v1",
     "mechanism": "scissor_jack"
+  },
+  {
+    "topic": "How a Scissor Jack Raises a Platform with Each Crank Turn",
+    "mechanism": "scissor_jack",
+    "visual_family": "scissor_jack",
+    "state": "created",
+    "owner": "46081219355",
+    "encoded_run": "46081219355",
+    "policy": "original-idea-and-visuals-v1",
+    "media_sha256": "b29df88d32a5db9932fee5f7e4cb06d4c92eee4b9396f4d724223053a03b7900"
   }
 ]
