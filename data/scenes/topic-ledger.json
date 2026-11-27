@@ -451,5 +451,13 @@
     "state": "reserved",
     "mechanism": "scissor_jack",
     "visual_family": "scissor_jack"
+  },
+  {
+    "topic": "Why a windshield wiper arm sweeps back\u2011and\u2011forth while the crank spins",
+    "topic_key": "arm back crank forth spins sweeps while windshield wiper",
+    "owner": "46081401124",
+    "state": "reserved",
+    "mechanism": "wiper_linkage",
+    "visual_family": "wiper_linkage"
   }
 ]
