@@ -1,0 +1,150 @@
+{
+ "key": "scissor_jack",
+ "module": "studio_lib.scissor_jack",
+ "family": "scissor_jack",
+ "pattern": "\\b(car\\ jack|jack|scissor\\ jack|screw\\ jack)s?\\b",
+ "detect": "car\\ jack|jack|scissor\\ jack|screw\\ jack",
+ "block": "(?!x)x",
+ "description": "A scissor jack: one screw with opposite threads pulls two side nuts together so four hinged arms fold upright and lift the platform; no car, no handle strength shown",
+ "actions": [
+  "intro",
+  "cutaway",
+  "drive",
+  "response",
+  "hold",
+  "repeat",
+  "limit",
+  "payoff"
+ ],
+ "facts": {
+  "intro": "Introduce a recognizable scissor jack: a flat base, four hinged steel arms in a diamond and a flat platform on top, with a red-handled crank at the side. Everything is still and low.",
+  "cutaway": "A simplified cutaway lifts the side cover to expose the long threaded screw across the middle of the diamond and the two brass nuts at the left and right corners.",
+  "drive": "Illustrated input force turns the crank. The screw spins, the two brass nuts are pulled toward the centre, and the four arms fold upright so the platform rises.",
+  "response": "Close-up of the nuts. Each turn pulls them a small, fixed distance inward, so the platform climbs smoothly while the arms keep the same length.",
+  "hold": "No part moves for this explanation. The weight pushing down on the platform cannot spin the screw back, so the jack stays at its height without anyone holding the crank.",
+  "repeat": "The crank turns again. The nuts slide further inward, the arms stand steeper and the platform rises higher with each full turn.",
+  "limit": "The crank turns the other way. The nuts move apart again and the platform lowers a little. Raising and lowering are both just the screw turning.",
+  "payoff": "The cover closes. Crank, screw, nuts and arms work together: a small turning motion becomes a slow, strong lift. No car or load is shown."
+ },
+ "source": "https://en.wikipedia.org/wiki/Jack_(device)",
+ "contract": {
+  "subjects": [
+   "\\b(arms|base|jack|platform)",
+   "\\b(arms|cover|nuts|screw)",
+   "\\b(arms|crank|nuts|platform|screw)",
+   "\\b(arms|nuts|platform|screw)",
+   "\\b(arms|nuts|platform|screw)",
+   "\\b(arms|crank|nuts|platform|screw)",
+   "\\b(arms|nuts|platform|screw)",
+   "\\b(arms|base|jack|platform)"
+  ],
+  "moves": {
+   "1": {
+    "cut": 1
+   },
+   "2": {
+    "lift": 1,
+    "turn": 1
+   },
+   "3": {
+    "lift": 1,
+    "turn": 1
+   },
+   "5": {
+    "lift": 1,
+    "turn": 1
+   },
+   "6": {
+    "lift": -1,
+    "turn": -1
+   },
+   "7": {
+    "cut": -1
+   }
+  },
+  "holds": {
+   "0": [
+    "cut",
+    "lift",
+    "turn"
+   ],
+   "1": [
+    "lift",
+    "turn"
+   ],
+   "2": [
+    "cut"
+   ],
+   "3": [
+    "cut"
+   ],
+   "4": [
+    "cut",
+    "lift",
+    "turn"
+   ],
+   "5": [
+    "cut"
+   ],
+   "6": [
+    "cut"
+   ],
+   "7": [
+    "lift",
+    "turn"
+   ]
+  },
+  "visible": [
+   [
+    2,
+    "base"
+   ],
+   [
+    2,
+    "arms"
+   ],
+   [
+    2,
+    "screw"
+   ],
+   [
+    2,
+    "nuts"
+   ],
+   [
+    2,
+    "platform"
+   ],
+   [
+    2,
+    "crank"
+   ]
+  ]
+ },
+ "transitions": [
+  "cutaway",
+  "payoff"
+ ],
+ "anchors": {
+  "cutaway": "cover|lifts|screw",
+  "payoff": "arms|jack|lifts|platform"
+ },
+ "narration_rules": [
+  {
+   "pattern": "\\b(motor|battery|electric\\w*|hydraulic|pump|air)\\b",
+   "message": "only a hand-cranked screw jack is depicted"
+  },
+  {
+   "pattern": "\\b(car|truck|vehicle|tire|tyre|wheel)s?\\b",
+   "message": "no car or wheel is shown; speak only of the platform and a load"
+  }
+ ],
+ "cue_bans": [],
+ "bounds": [],
+ "label": {
+  "from": 1,
+  "to": 6,
+  "text": "Cutaway \u00b7 simplified scissor jack \u00b7 input force illustrated"
+ },
+ "title": "scissor jack"
+}

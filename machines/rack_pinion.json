@@ -1,0 +1,142 @@
+{
+ "key": "rack_pinion",
+ "module": "studio_lib.rack_pinion",
+ "family": "rack_pinion",
+ "pattern": "\\b(rack\\ and\\ pinion|rack\\ pinion|steering|steering\\ rack|steering\\ wheel)s?\\b",
+ "detect": "rack\\ and\\ pinion|rack\\ pinion|steering|steering\\ rack|steering\\ wheel",
+ "block": "(?!x)x",
+ "description": "A steering wheel turns a small gear (pinion) whose teeth slide a toothed bar (rack) sideways; no car, tires or power assist shown",
+ "actions": [
+  "intro",
+  "cutaway",
+  "drive",
+  "response",
+  "hold",
+  "repeat",
+  "limit",
+  "payoff"
+ ],
+ "facts": {
+  "intro": "Introduce a recognizable steering mechanism: a red three-spoke steering wheel in front, a small brass gear behind it and a long toothed steel bar running sideways below. Everything is still.",
+  "cutaway": "A simplified cutaway lifts the front cover to expose the small brass pinion gear meshed with the toothed steel rack beneath it.",
+  "drive": "Illustrated input force turns the steering wheel. The pinion turns with it, its teeth push the rack's teeth, and the rack slides sideways, pulling the rods at each end along with it.",
+  "response": "Close-up of the teeth. Every gear tooth pushes one rack tooth, so the rack slides exactly as far as the gear's rim rolls, with no slipping.",
+  "hold": "No part moves for this explanation. A turning motion is converted into a straight sideways motion: the round gear rolls along the straight toothed bar.",
+  "repeat": "The wheel turns back the other way. The pinion reverses and the rack slides back through the middle, past its starting place.",
+  "limit": "The wheel turns further. The rack slides as far as it can go to the other side. Turning farther always means sliding farther, in equal steps.",
+  "payoff": "The cover closes. Wheel, pinion and rack work together: turning the wheel one way or the other slides the rack left or right. No car or tires are shown."
+ },
+ "source": "https://en.wikipedia.org/wiki/Rack_and_pinion",
+ "contract": {
+  "subjects": [
+   "\\b(pinion|rack|steering|wheel)",
+   "\\b(cover|pinion|rack|teeth)",
+   "\\b(pinion|rack|teeth|wheel)",
+   "\\b(gear|pinion|rack|teeth)",
+   "\\b(gear|pinion|rack|teeth)",
+   "\\b(pinion|rack|teeth|wheel)",
+   "\\b(pinion|rack|teeth|wheel)",
+   "\\b(pinion|rack|steering|wheel)"
+  ],
+  "moves": {
+   "1": {
+    "cut": 1
+   },
+   "2": {
+    "slide": 1,
+    "turn": 1
+   },
+   "3": {
+    "slide": 1,
+    "turn": 1
+   },
+   "5": {
+    "slide": -1,
+    "turn": -1
+   },
+   "6": {
+    "slide": -1,
+    "turn": -1
+   },
+   "7": {
+    "cut": -1
+   }
+  },
+  "holds": {
+   "0": [
+    "cut",
+    "slide",
+    "turn"
+   ],
+   "1": [
+    "slide",
+    "turn"
+   ],
+   "2": [
+    "cut"
+   ],
+   "3": [
+    "cut"
+   ],
+   "4": [
+    "cut",
+    "slide",
+    "turn"
+   ],
+   "5": [
+    "cut"
+   ],
+   "6": [
+    "cut"
+   ],
+   "7": [
+    "slide",
+    "turn"
+   ]
+  },
+  "visible": [
+   [
+    2,
+    "frame"
+   ],
+   [
+    2,
+    "rack"
+   ],
+   [
+    2,
+    "pinion"
+   ],
+   [
+    2,
+    "wheel"
+   ]
+  ]
+ },
+ "transitions": [
+  "cutaway",
+  "payoff"
+ ],
+ "anchors": {
+  "cutaway": "cover|gear|lifts",
+  "payoff": "rack|slides|turns|wheel"
+ },
+ "narration_rules": [
+  {
+   "pattern": "\\b(power steering|hydraulic|electric motor|assist)\\b",
+   "message": "no power assist is depicted"
+  },
+  {
+   "pattern": "\\b(car|tires?|tyres?|road|driver)s?\\b",
+   "message": "no car, tire or driver is shown"
+  }
+ ],
+ "cue_bans": [],
+ "bounds": [],
+ "label": {
+  "from": 1,
+  "to": 6,
+  "text": "Cutaway \u00b7 simplified rack and pinion \u00b7 input force illustrated"
+ },
+ "title": "rack and pinion steering"
+}
