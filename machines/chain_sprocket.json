@@ -1,0 +1,130 @@
+{
+ "key": "chain_sprocket",
+ "module": "studio_lib.chain_sprocket",
+ "family": "chain_sprocket",
+ "pattern": "\\b(bicycle\\ chain|chain|chain\\ and\\ sprocket|chain\\ drive|sprocket)s?\\b",
+ "detect": "bicycle\\ chain|chain|chain\\ and\\ sprocket|chain\\ drive|sprocket",
+ "block": "(?!x)x",
+ "description": "A hand crank turns a big sprocket and a chain turns a small sprocket twice as fast; no bicycle, wheel or rider shown",
+ "actions": [
+  "intro",
+  "cutaway",
+  "drive",
+  "response",
+  "hold",
+  "repeat",
+  "limit",
+  "payoff"
+ ],
+ "facts": {
+  "intro": "Introduce a recognizable chain drive: a large brass sprocket with a red crank on the left, a small orange sprocket on the right and a steel chain looped around both. Everything is still.",
+  "cutaway": "A simplified cutaway lifts the cover to expose the chain links, the teeth of both sprockets and the crank on the big sprocket.",
+  "drive": "An illustrated push turns the crank and the big sprocket. Its teeth pull the chain along, and the chain spins the small sprocket.",
+  "response": "The chain keeps moving around the loop. The small sprocket has half as many teeth, so it makes two turns for every turn of the big one.",
+  "hold": "No part moves for this explanation. Every chain link sits in a tooth gap; the big sprocket has sixteen teeth and the small one has eight.",
+  "repeat": "A second push turns the big sprocket another full turn, and the small sprocket makes two more turns, still in the same direction.",
+  "limit": "The crank turns backwards for a moment. The chain runs backwards around the loop, and both sprockets reverse together.",
+  "payoff": "The cover closes. Crank, big sprocket, chain and small sprocket work together: one slow turn becomes two fast turns. No bicycle is shown."
+ },
+ "source": "https://en.wikipedia.org/wiki/Roller_chain",
+ "contract": {
+  "subjects": [
+   "\\b(chain|crank|frame|sprockets)",
+   "\\b(chain|cover|crank|sprockets)",
+   "\\b(chain|crank|frame|sprockets)",
+   "\\b(chain|crank|frame|sprockets)",
+   "\\b(chain|crank|frame|sprockets)",
+   "\\b(chain|crank|frame|sprockets)",
+   "\\b(chain|crank|frame|sprockets)",
+   "\\b(chain|crank|frame|sprockets)"
+  ],
+  "moves": {
+   "1": {
+    "cut": 1
+   },
+   "2": {
+    "turn": -1
+   },
+   "3": {
+    "turn": -1
+   },
+   "5": {
+    "turn": -1
+   },
+   "6": {
+    "turn": 1
+   },
+   "7": {
+    "cut": -1
+   }
+  },
+  "holds": {
+   "0": [
+    "cut",
+    "turn"
+   ],
+   "1": [
+    "turn"
+   ],
+   "2": [
+    "cut"
+   ],
+   "3": [
+    "cut"
+   ],
+   "4": [
+    "cut",
+    "turn"
+   ],
+   "5": [
+    "cut"
+   ],
+   "6": [
+    "cut"
+   ],
+   "7": [
+    "turn"
+   ]
+  },
+  "visible": [
+   [
+    2,
+    "frame"
+   ],
+   [
+    2,
+    "sprockets"
+   ],
+   [
+    2,
+    "chain"
+   ],
+   [
+    2,
+    "crank"
+   ]
+  ]
+ },
+ "transitions": [
+  "cutaway",
+  "payoff"
+ ],
+ "anchors": {
+  "cutaway": "chain|cover|lifts",
+  "payoff": "chain|small|sprocket|turn"
+ },
+ "narration_rules": [
+  {
+   "pattern": "\\b(bike|bikes|bicycle|bicycles|wheel|wheels|rider|derailleur)\\b",
+   "message": "no bicycle or wheel is depicted; speak only of the crank, sprockets and chain"
+  }
+ ],
+ "cue_bans": [],
+ "bounds": [],
+ "label": {
+  "from": 1,
+  "to": 6,
+  "text": "Cutaway \u00b7 simplified chain drive \u00b7 input force illustrated"
+ },
+ "title": "chain and sprockets"
+}

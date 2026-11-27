@@ -1,0 +1,24 @@
+{
+ "title": "chain and sprockets",
+ "family": "chain_sprocket",
+ "description": "A hand crank turns a big sprocket and a chain turns a small sprocket twice as fast; no bicycle, wheel or rider shown",
+ "words": ["chain drive", "sprocket", "chain and sprocket", "bicycle chain", "chain"],
+ "parts": ["frame", "sprockets", "chain", "crank", "cover"],
+ "subjects": [["sprockets", "chain", "crank", "frame"], ["cover", "chain", "sprockets", "crank"], ["crank", "sprockets", "chain", "frame"], ["chain", "sprockets", "crank", "frame"], ["sprockets", "chain", "crank", "frame"], ["crank", "sprockets", "chain", "frame"], ["chain", "sprockets", "crank", "frame"], ["sprockets", "chain", "crank", "frame"]],
+ "cues": {"cutaway": ["cover", "lifts", "chain"], "payoff": ["small", "sprocket", "chain", "turn"]},
+ "facts": {
+  "intro": "Introduce a recognizable chain drive: a large brass sprocket with a red crank on the left, a small orange sprocket on the right and a steel chain looped around both. Everything is still.",
+  "cutaway": "A simplified cutaway lifts the cover to expose the chain links, the teeth of both sprockets and the crank on the big sprocket.",
+  "drive": "An illustrated push turns the crank and the big sprocket. Its teeth pull the chain along, and the chain spins the small sprocket.",
+  "response": "The chain keeps moving around the loop. The small sprocket has half as many teeth, so it makes two turns for every turn of the big one.",
+  "hold": "No part moves for this explanation. Every chain link sits in a tooth gap; the big sprocket has sixteen teeth and the small one has eight.",
+  "repeat": "A second push turns the big sprocket another full turn, and the small sprocket makes two more turns, still in the same direction.",
+  "limit": "The crank turns backwards for a moment. The chain runs backwards around the loop, and both sprockets reverse together.",
+  "payoff": "The cover closes. Crank, big sprocket, chain and small sprocket work together: one slow turn becomes two fast turns. No bicycle is shown."
+ },
+ "source": "https://en.wikipedia.org/wiki/Roller_chain",
+ "narration_rules": [
+  {"pattern": "\\b(bike|bikes|bicycle|bicycles|wheel|wheels|rider|derailleur)\\b", "message": "no bicycle or wheel is depicted; speak only of the crank, sprockets and chain"}
+ ],
+ "label": {"from": 1, "to": 6, "text": "Cutaway · simplified chain drive · input force illustrated"}
+}
