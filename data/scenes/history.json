@@ -1701,5 +1701,19 @@
     "category": "tested mechanism",
     "record_run": "45955048264",
     "record_attempt": "1"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "tested component rejected: director rejected: beat 3: must be a complete sentence of at least 6 words, not a fragment; beat 5: must be a complete sentence of at least 6 words, not a fragment\n",
+    "date": "2026-11-27",
+    "topic": "Why a Geneva Drive Turns Continuous Rotation into Precise Intermittent Steps",
+    "title": "",
+    "subject": "geneva_drive",
+    "keywords": [],
+    "category": "tested mechanism",
+    "failed": true,
+    "record_run": "45970680338",
+    "record_attempt": "1",
+    "owner": "45970680338"
   }
 ]
