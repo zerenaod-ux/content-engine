@@ -1739,5 +1739,17 @@
     "category": "tested mechanism",
     "record_run": "45971764233",
     "record_attempt": "1"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "",
+    "date": "2026-11-27",
+    "topic": "Why a Geneva Drive Turns Continuous Rotation into Precise Intermittent Steps",
+    "title": "Why a Geneva Drive Makes Precise Steps \u2699\ufe0f",
+    "subject": "",
+    "keywords": [],
+    "category": "",
+    "record_run": "45970680338",
+    "record_attempt": "2"
   }
 ]
