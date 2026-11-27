@@ -1,0 +1,134 @@
+{
+ "key": "wiper_linkage",
+ "module": "studio_lib.wiper_linkage",
+ "family": "wiper_linkage",
+ "pattern": "\\b(crank\\ rocker|four\\-bar\\ linkage|windshield\\ wiper|wiper|wiper\\ linkage)s?\\b",
+ "detect": "crank\\ rocker|four\\-bar\\ linkage|windshield\\ wiper|wiper|wiper\\ linkage",
+ "block": "(?!x)x",
+ "description": "A crank, a coupler rod and a pivoting arm turn steady spinning into a back and forth sweep; no car, motor wiring or water shown",
+ "actions": [
+  "intro",
+  "cutaway",
+  "drive",
+  "response",
+  "hold",
+  "repeat",
+  "limit",
+  "payoff"
+ ],
+ "facts": {
+  "intro": "Introduce a recognizable wiper linkage: a red crank on the left, a steel coupler rod, and a long arm with a dark blade pivoting on the right over a pane of glass. Everything is still.",
+  "cutaway": "A simplified cutaway lifts the cover to expose the crank, the coupler rod joining it to the arm, and the pivot the arm swings on.",
+  "drive": "An illustrated push spins the crank a full turn. The coupler rod pushes and pulls the arm, which swings across the glass and back.",
+  "response": "The crank keeps turning and the arm keeps swinging. The crank goes all the way round, yet the arm only rocks back and forth through part of a circle.",
+  "hold": "No part moves for this explanation. The crank is the shortest link and can turn in a full circle; the arm is longer and can only swing.",
+  "repeat": "A second push turns the crank again, and the arm sweeps across the glass and back once more, covering the same arc each time.",
+  "limit": "The crank turns backwards for a moment. The arm retraces its path, because the rod ties every crank position to one arm position.",
+  "payoff": "The cover closes. Crank, coupler and arm work together: a steady spin becomes a sweep back and forth. No car or water is shown."
+ },
+ "source": "https://en.wikipedia.org/wiki/Four-bar_linkage",
+ "contract": {
+  "subjects": [
+   "\\b(arm|coupler|crank|glass)",
+   "\\b(arm|coupler|cover|crank)",
+   "\\b(arm|coupler|crank|glass)",
+   "\\b(arm|coupler|crank|glass)",
+   "\\b(arm|coupler|crank|glass)",
+   "\\b(arm|coupler|crank|glass)",
+   "\\b(arm|coupler|crank|glass)",
+   "\\b(arm|coupler|crank|glass)"
+  ],
+  "moves": {
+   "1": {
+    "cut": 1
+   },
+   "2": {
+    "turn": 1
+   },
+   "3": {
+    "turn": 1
+   },
+   "5": {
+    "turn": 1
+   },
+   "6": {
+    "turn": -1
+   },
+   "7": {
+    "cut": -1
+   }
+  },
+  "holds": {
+   "0": [
+    "cut",
+    "turn"
+   ],
+   "1": [
+    "turn"
+   ],
+   "2": [
+    "cut"
+   ],
+   "3": [
+    "cut"
+   ],
+   "4": [
+    "cut",
+    "turn"
+   ],
+   "5": [
+    "cut"
+   ],
+   "6": [
+    "cut"
+   ],
+   "7": [
+    "turn"
+   ]
+  },
+  "visible": [
+   [
+    2,
+    "glass"
+   ],
+   [
+    2,
+    "frame"
+   ],
+   [
+    2,
+    "crank"
+   ],
+   [
+    2,
+    "coupler"
+   ],
+   [
+    2,
+    "arm"
+   ]
+  ]
+ },
+ "transitions": [
+  "cutaway",
+  "payoff"
+ ],
+ "anchors": {
+  "cutaway": "cover|crank|lifts",
+  "payoff": "arm|coupler|crank|sweeps"
+ },
+ "narration_rules": [
+  {
+   "pattern": "\\b(car|cars|windshield|windscreen|rain|water|motor|driver)\\b",
+   "message": "no car, rain or motor is depicted; speak only of the crank, coupler and arm"
+  }
+ ],
+ "cue_bans": [],
+ "bounds": [],
+ "label": {
+  "from": 1,
+  "to": 6,
+  "text": "Cutaway \u00b7 simplified wiper linkage \u00b7 input turn illustrated"
+ },
+ "title": "wiper linkage"
+}
