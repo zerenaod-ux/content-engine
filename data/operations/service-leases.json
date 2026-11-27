@@ -1,5 +1,10 @@
 {
-  "leases": {},
+  "leases": {
+    "ai": {
+      "owner": "46081401124-1-ai",
+      "until": 1795822354.4829986
+    }
+  },
   "waiters": [],
   "cooldowns": {
     "api.groq.com": 1795821271.1882172,
