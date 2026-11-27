@@ -1162,5 +1162,13 @@
     "encoded_run": "46081219355",
     "policy": "original-idea-and-visuals-v1",
     "media_sha256": "b29df88d32a5db9932fee5f7e4cb06d4c92eee4b9396f4d724223053a03b7900"
+  },
+  {
+    "topic": "Why a windshield wiper arm sweeps back\u2011and\u2011forth while the crank spins",
+    "visual_family": "wiper_linkage",
+    "owner": "46081401124",
+    "state": "reserved",
+    "policy": "original-idea-and-visuals-v1",
+    "mechanism": "wiper_linkage"
   }
 ]
