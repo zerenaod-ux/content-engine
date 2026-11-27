@@ -1689,5 +1689,17 @@
     "category": "tested mechanism",
     "record_run": "45848278010",
     "record_attempt": "1"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "",
+    "date": "2026-11-27",
+    "topic": "Why a Large Sprocket Drives a Small Sprocket Twice as Fast",
+    "title": "Why a Large Sprocket Drives Faster \u2699\ufe0f",
+    "subject": "chain_sprocket",
+    "keywords": [],
+    "category": "tested mechanism",
+    "record_run": "45955048264",
+    "record_attempt": "1"
   }
 ]
