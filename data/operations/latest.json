@@ -37,15 +37,17 @@
       "state": "awaiting_review"
     },
     "daily-short": {
-      "run_id": "45971764233",
+      "run_id": "45974847658",
       "attempt": 1,
       "kind": "daily-short",
-      "stage": "delivered",
-      "label": "In Studio; owner review required",
-      "updated_at": "2026-11-27T09:44:51.696846+00:00",
+      "stage": "Daily target covered",
+      "label": "Daily target covered",
+      "updated_at": "2026-11-27T09:45:03.968343+00:00",
       "source_branch": "main",
       "owner_approved": false,
-      "state": "awaiting_review"
+      "state": "idle",
+      "reason": "Daily output target already covered",
+      "retryable": false
     }
   }
 }
