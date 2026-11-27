@@ -1,0 +1,24 @@
+{
+ "title": "pin tumbler lock",
+ "family": "pin_lock",
+ "description": "A notched key lifts four spring-loaded pin stacks until every split sits on the shear line; no door, handle or lock casing shown",
+ "words": ["pin tumbler lock", "lock and key", "door lock", "key", "tumbler lock"],
+ "parts": ["body", "pins", "key", "cover"],
+ "subjects": [["key", "pins", "body", "cover"], ["cover", "pins", "key", "body"], ["key", "pins", "body", "cover"], ["pins", "key", "body", "cover"], ["pins", "key", "body", "cover"], ["key", "pins", "body", "cover"], ["pins", "key", "body", "cover"], ["key", "pins", "body", "cover"]],
+ "cues": {"cutaway": ["cover", "lifts", "pins"], "payoff": ["key", "pins", "line", "aligned"]},
+ "facts": {
+  "intro": "Introduce a recognizable pin tumbler lock: a red-handled key resting outside a dark lock body, with four brass and steel pins standing in a row under four springs. A bright brass line runs across the body.",
+  "cutaway": "A simplified cutaway lifts the cover to expose the four brass pins, the four steel pins above them, the four springs and the brass line across the body.",
+  "drive": "An illustrated push slides the key into the lock. Its notched top rides under each brass pin and lifts it by a different height.",
+  "response": "The key goes all the way in. Each pin has been lifted just enough, so the gap between each brass pin and steel pin sits exactly on the brass line.",
+  "hold": "No part moves for this explanation. The four brass pins have four different lengths, and the four notches in the key have four matching depths.",
+  "repeat": "The key is pulled part of the way out. Without it the springs push every pin back down, so no gap is left on the brass line.",
+  "limit": "The key slides back in. As the notches pass under each pin the springs let them rise and fall until the gaps reach the line again.",
+  "payoff": "The cover closes. Key, pins and springs work together: only a key with the right notches lines up every gap. No door is shown."
+ },
+ "source": "https://en.wikipedia.org/wiki/Pin_tumbler_lock",
+ "narration_rules": [
+  {"pattern": "\\b(door|burglar|thief|pick|picking|lockpick|break in|crime)s?\\b", "message": "no door or lock picking is depicted; speak only of the key, pins and springs"}
+ ],
+ "label": {"from": 1, "to": 6, "text": "Cutaway · simplified pin tumbler lock · input push illustrated"}
+}
