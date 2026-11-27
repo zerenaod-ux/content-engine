@@ -40,9 +40,9 @@
       "run_id": "45970680338",
       "attempt": 2,
       "kind": "daily-short",
-      "stage": "planning",
-      "label": "Writing and checking narration",
-      "updated_at": "2026-11-27T15:35:36.789254+00:00",
+      "stage": "voice",
+      "label": "Generating narration",
+      "updated_at": "2026-11-27T15:35:42.160356+00:00",
       "source_branch": "main",
       "owner_approved": false,
       "state": "running"
