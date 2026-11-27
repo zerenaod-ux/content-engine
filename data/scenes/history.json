@@ -1727,5 +1727,17 @@
     "category": "tested mechanism",
     "record_run": "45971656068",
     "record_attempt": "1"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "",
+    "date": "2026-11-27",
+    "topic": "Why a Pin Tumbler Lock Won\u2019t Open Without the Correct Key",
+    "title": "Why a Pin Tumbler Lock Stays Locked \u2699\ufe0f",
+    "subject": "pin_lock",
+    "keywords": [],
+    "category": "tested mechanism",
+    "record_run": "45971764233",
+    "record_attempt": "1"
   }
 ]
