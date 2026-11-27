@@ -1618,5 +1618,38 @@
     },
     "record_run": "45970680338",
     "record_attempt": "2"
+  },
+  {
+    "date": "2026-11-27",
+    "tag": "ce-20261127-2325",
+    "title": "How a Simple Crank Lifts a Platform \u2699\ufe0f",
+    "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@441ee3dd06f0b45a77336597942f9528a8077419/videos/ce-20261127-2325.mp4",
+    "topic": "How a Scissor Jack Raises a Platform with Each Crank Turn",
+    "topic_key": "crank each jack platform raises scissor turn",
+    "generation_origin": {
+      "event": "workflow_dispatch",
+      "automatic_slot": false,
+      "run_id": "46081219355",
+      "attempt": 1,
+      "event_sha": "b1275dd9844780d0faa47d0f21f473ce87364035",
+      "source_ref": "main",
+      "manual_media_edits": false
+    },
+    "production_evidence": {
+      "policy": "unattended-proof-v1",
+      "novelty_policy": "original-idea-and-visuals-v1",
+      "width": 1080,
+      "height": 1920,
+      "duration": 53.5,
+      "media_sha256": "b29df88d32a5db9932fee5f7e4cb06d4c92eee4b9396f4d724223053a03b7900",
+      "alignment_revision": "causal-component-actions-v4",
+      "render_policy": "native-studio-1080-v1",
+      "voice": "af_heart",
+      "voice_policy": "how-it-ticks-narrator-v4-heart-clean",
+      "errors": [],
+      "owner_approved": false
+    },
+    "record_run": "46081219355",
+    "record_attempt": "1"
   }
 ]
