@@ -1136,5 +1136,13 @@
     "encoded_run": "45970680338",
     "policy": "original-idea-and-visuals-v1",
     "media_sha256": "19f69252f48ad248cc167cb0c53de19d421f4b21f3ce78b20498c7f8cf52e335"
+  },
+  {
+    "topic": "Why pulling a handle lifts a weight only half as far",
+    "visual_family": "pulley_lift",
+    "owner": "46080572941",
+    "state": "reserved",
+    "policy": "original-idea-and-visuals-v1",
+    "mechanism": "pulley_lift"
   }
 ]
