@@ -1,0 +1,130 @@
+{
+ "key": "lever_fulcrum",
+ "module": "studio_lib.lever_fulcrum",
+ "family": "lever_fulcrum",
+ "pattern": "\\b(crowbar|first\\-class\\ lever|fulcrum|lever|lever\\ and\\ fulcrum)s?\\b",
+ "detect": "crowbar|first\\-class\\ lever|fulcrum|lever|lever\\ and\\ fulcrum",
+ "block": "(?!x)x",
+ "description": "A beam on a fulcrum lets a small push down on a long arm lift a heavy weight on a short arm; no people or playground shown",
+ "actions": [
+  "intro",
+  "cutaway",
+  "drive",
+  "response",
+  "hold",
+  "repeat",
+  "limit",
+  "payoff"
+ ],
+ "facts": {
+  "intro": "Introduce a recognizable lever: a long steel beam balanced on a brass pivot, a red handle on the long right end and a heavy brass weight hanging from the short left end. Everything is still and level.",
+  "cutaway": "A simplified cutaway lifts the cover to expose the brass pivot where the beam rests and the A-shaped stand that holds it up.",
+  "drive": "An illustrated push down on the red handle tips the beam. The long arm swings a long way down, and the heavy weight on the short arm is lifted.",
+  "response": "The beam keeps tipping. The weight rises only half as far as the handle falls, because the pivot sits one third along the beam.",
+  "hold": "No part moves for this explanation. The long arm is twice as long as the short arm, so the handle must travel twice as far as the weight.",
+  "repeat": "A second push down tips the beam further and lifts the weight higher, again by half the distance the handle moves.",
+  "limit": "The handle is let back up for a moment. The beam tips back and the weight sinks, so the weight only rises while the handle is pushed down.",
+  "payoff": "The cover closes. Beam, pivot and weight work together: a long, light push lifts a short, heavy load. No person or playground is shown."
+ },
+ "source": "https://en.wikipedia.org/wiki/Lever",
+ "contract": {
+  "subjects": [
+   "\\b(base|beam|fulcrum|load)",
+   "\\b(beam|cover|fulcrum|load)",
+   "\\b(base|beam|fulcrum|load)",
+   "\\b(base|beam|fulcrum|load)",
+   "\\b(base|beam|fulcrum|load)",
+   "\\b(base|beam|fulcrum|load)",
+   "\\b(base|beam|fulcrum|load)",
+   "\\b(base|beam|fulcrum|load)"
+  ],
+  "moves": {
+   "1": {
+    "cut": 1
+   },
+   "2": {
+    "ang": 1
+   },
+   "3": {
+    "ang": 1
+   },
+   "5": {
+    "ang": 1
+   },
+   "6": {
+    "ang": -1
+   },
+   "7": {
+    "cut": -1
+   }
+  },
+  "holds": {
+   "0": [
+    "ang",
+    "cut"
+   ],
+   "1": [
+    "ang"
+   ],
+   "2": [
+    "cut"
+   ],
+   "3": [
+    "cut"
+   ],
+   "4": [
+    "ang",
+    "cut"
+   ],
+   "5": [
+    "cut"
+   ],
+   "6": [
+    "cut"
+   ],
+   "7": [
+    "ang"
+   ]
+  },
+  "visible": [
+   [
+    2,
+    "base"
+   ],
+   [
+    2,
+    "fulcrum"
+   ],
+   [
+    2,
+    "beam"
+   ],
+   [
+    2,
+    "load"
+   ]
+  ]
+ },
+ "transitions": [
+  "cutaway",
+  "payoff"
+ ],
+ "anchors": {
+  "cutaway": "cover|fulcrum|lifts",
+  "payoff": "beam|fulcrum|lift|load"
+ },
+ "narration_rules": [
+  {
+   "pattern": "\\b(seesaw|see-saw|playground|child|children|kid|kids|person|people)\\b",
+   "message": "no seesaw or person is depicted; speak only of the beam, pivot and weight"
+  }
+ ],
+ "cue_bans": [],
+ "bounds": [],
+ "label": {
+  "from": 1,
+  "to": 6,
+  "text": "Cutaway \u00b7 simplified lever \u00b7 input force illustrated"
+ },
+ "title": "lever and fulcrum"
+}
