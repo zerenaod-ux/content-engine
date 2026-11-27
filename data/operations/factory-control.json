@@ -11,9 +11,9 @@
   "daily_target": 3,
   "unused_visuals": 0,
   "should_build": false,
-  "reason": "Daily output target already covered",
+  "reason": "A generation run is already active",
   "pending_review": 1,
   "dispatches": 0,
   "requested_at": 0,
-  "checked_at": "2026-11-27T19:47:35.391103+00:00"
+  "checked_at": "2026-11-27T23:14:23.620181+00:00"
 }
