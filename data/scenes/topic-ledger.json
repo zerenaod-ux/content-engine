@@ -443,5 +443,13 @@
     "state": "reserved",
     "mechanism": "pulley_lift",
     "visual_family": "pulley_lift"
+  },
+  {
+    "topic": "How a Scissor Jack Raises a Platform with Each Crank Turn",
+    "topic_key": "crank each jack platform raises scissor turn",
+    "owner": "46081219355",
+    "state": "reserved",
+    "mechanism": "scissor_jack",
+    "visual_family": "scissor_jack"
   }
 ]
