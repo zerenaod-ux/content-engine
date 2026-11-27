@@ -1,19 +1,19 @@
 {
-  "business_day": "2026-11-26",
+  "business_day": "2026-11-27",
   "timezone": "America/Chicago",
   "slots": [
     "03:05",
     "11:05",
     "19:05"
   ],
-  "due_slots": 3,
+  "due_slots": 0,
   "ready_today": 1,
   "daily_target": 3,
   "unused_visuals": 0,
   "should_build": false,
-  "reason": "No unused supported visuals remain",
-  "pending_review": 1,
+  "reason": "Daily output target already covered",
+  "pending_review": 2,
   "dispatches": 0,
   "requested_at": 0,
-  "checked_at": "2026-11-27T05:31:37.834506+00:00"
+  "checked_at": "2026-11-27T07:10:51.415005+00:00"
 }
