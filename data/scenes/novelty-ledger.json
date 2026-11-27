@@ -1126,5 +1126,15 @@
     "encoded_run": "45971764233",
     "policy": "original-idea-and-visuals-v1",
     "media_sha256": "03c6ad7ebe4fd51125e510666991fe202aaa703839a58f2a50ef2b05f3332760"
+  },
+  {
+    "topic": "Why a Geneva Drive Turns Continuous Rotation into Precise Intermittent Steps",
+    "mechanism": "geneva_drive",
+    "visual_family": "geneva_drive",
+    "state": "created",
+    "owner": "45970680338",
+    "encoded_run": "45970680338",
+    "policy": "original-idea-and-visuals-v1",
+    "media_sha256": "19f69252f48ad248cc167cb0c53de19d421f4b21f3ce78b20498c7f8cf52e335"
   }
 ]
