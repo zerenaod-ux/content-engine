@@ -1,0 +1,130 @@
+{
+ "key": "worm_gear",
+ "module": "studio_lib.worm_gear",
+ "family": "worm_gear",
+ "pattern": "\\b(worm\\ and\\ wheel|worm\\ drive|worm\\ gear|worm\\ wheel)s?\\b",
+ "detect": "worm\\ and\\ wheel|worm\\ drive|worm\\ gear|worm\\ wheel",
+ "block": "(?!x)x",
+ "description": "A threaded worm turned by a hand crank drives a toothed wheel one tooth per turn; no motor, gearbox casing or vehicle shown",
+ "actions": [
+  "intro",
+  "cutaway",
+  "drive",
+  "response",
+  "hold",
+  "repeat",
+  "limit",
+  "payoff"
+ ],
+ "facts": {
+  "intro": "Introduce a recognizable worm gear: a long threaded steel worm lying along the bottom with a red hand crank on its left end, and a large brass toothed wheel above it. Everything is still.",
+  "cutaway": "A simplified cutaway lifts the cover to expose the thread of the worm pressing into the teeth at the bottom of the wheel.",
+  "drive": "An illustrated push turns the crank and the worm. Its thread slides along and pushes the wheel teeth sideways, so the wheel creeps round.",
+  "response": "The worm keeps turning and the wheel keeps creeping. Each full turn of the worm moves the wheel by exactly one tooth.",
+  "hold": "No part moves for this explanation. The wheel has twelve teeth, so it needs twelve turns of the worm to go all the way round.",
+  "repeat": "A second push turns the worm several more times, and the wheel again moves slowly, one tooth for each turn.",
+  "limit": "The crank turns backwards for a moment. The wheel creeps back by the same number of teeth, so the pair stays in step.",
+  "payoff": "The cover closes. Crank, worm and wheel work together: many fast turns become one slow turn with a strong push. No motor or casing is shown."
+ },
+ "source": "https://en.wikipedia.org/wiki/Worm_drive",
+ "contract": {
+  "subjects": [
+   "\\b(crank|frame|wheel|worm)",
+   "\\b(cover|crank|wheel|worm)",
+   "\\b(crank|frame|wheel|worm)",
+   "\\b(crank|frame|wheel|worm)",
+   "\\b(crank|frame|wheel|worm)",
+   "\\b(crank|frame|wheel|worm)",
+   "\\b(crank|frame|wheel|worm)",
+   "\\b(crank|frame|wheel|worm)"
+  ],
+  "moves": {
+   "1": {
+    "cut": 1
+   },
+   "2": {
+    "turn": 1
+   },
+   "3": {
+    "turn": 1
+   },
+   "5": {
+    "turn": 1
+   },
+   "6": {
+    "turn": -1
+   },
+   "7": {
+    "cut": -1
+   }
+  },
+  "holds": {
+   "0": [
+    "cut",
+    "turn"
+   ],
+   "1": [
+    "turn"
+   ],
+   "2": [
+    "cut"
+   ],
+   "3": [
+    "cut"
+   ],
+   "4": [
+    "cut",
+    "turn"
+   ],
+   "5": [
+    "cut"
+   ],
+   "6": [
+    "cut"
+   ],
+   "7": [
+    "turn"
+   ]
+  },
+  "visible": [
+   [
+    2,
+    "frame"
+   ],
+   [
+    2,
+    "wheel"
+   ],
+   [
+    2,
+    "worm"
+   ],
+   [
+    2,
+    "crank"
+   ]
+  ]
+ },
+ "transitions": [
+  "cutaway",
+  "payoff"
+ ],
+ "anchors": {
+  "cutaway": "cover|lifts|worm",
+  "payoff": "slowly|turn|wheel|worm"
+ },
+ "narration_rules": [
+  {
+   "pattern": "\\b(motor|engine|car|truck|guitar|casing|gearbox)s?\\b",
+   "message": "no motor, gearbox or vehicle is depicted; speak only of the crank, worm and wheel"
+  }
+ ],
+ "cue_bans": [],
+ "bounds": [],
+ "label": {
+  "from": 1,
+  "to": 6,
+  "text": "Cutaway \u00b7 simplified worm gear \u00b7 input turn illustrated"
+ },
+ "title": "worm gear"
+}
