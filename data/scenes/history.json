@@ -1777,5 +1777,19 @@
     "category": "tested mechanism",
     "record_run": "46081219355",
     "record_attempt": "1"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "tested component rejected: director rejected: title: no car, rain or motor is depicted; speak only of the crank, coupler and arm; preserve the engine safety order; preserve the engine safety order; beat 0: no car, rain or motor is depicted; speak only of the crank, coupler and arm; beat 2: no car, rain or motor is depicted; speak only of the crank, coupler and arm; beat 3: no car, rain or motor is depicted; speak only of the crank, coupler and arm\n",
+    "date": "2026-11-27",
+    "topic": "Why a windshield wiper arm sweeps back\u2011and\u2011forth while the crank spins",
+    "title": "",
+    "subject": "wiper_linkage",
+    "keywords": [],
+    "category": "tested mechanism",
+    "failed": true,
+    "record_run": "46081401124",
+    "record_attempt": "1",
+    "owner": "46081401124"
   }
 ]
