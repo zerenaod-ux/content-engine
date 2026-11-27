@@ -6,7 +6,7 @@
     "11:05",
     "19:05"
   ],
-  "due_slots": 2,
+  "due_slots": 3,
   "ready_today": 1,
   "daily_target": 3,
   "unused_visuals": 0,
@@ -15,5 +15,5 @@
   "pending_review": 1,
   "dispatches": 0,
   "requested_at": 0,
-  "checked_at": "2026-11-27T00:59:18.898911+00:00"
+  "checked_at": "2026-11-27T05:31:37.834506+00:00"
 }
