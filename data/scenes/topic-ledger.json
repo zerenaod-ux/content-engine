@@ -419,5 +419,13 @@
     "state": "reserved",
     "mechanism": "geneva_drive",
     "visual_family": "geneva_drive"
+  },
+  {
+    "topic": "Why a Seesaw Lifts a Heavy Child With a Light Push",
+    "topic_key": "child heavy lifts light push seesaw",
+    "owner": "45971656068",
+    "state": "reserved",
+    "mechanism": "lever_fulcrum",
+    "visual_family": "lever_fulcrum"
   }
 ]
