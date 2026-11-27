@@ -838,7 +838,20 @@
    "ready_for_future_publish": false,
    "record": "delete/ce-20261126-1529/45905496404-1.json",
    "history": []
+  },
+  {
+   "tag": "ce-20261127-0707",
+   "title": "Why a Large Sprocket Drives Faster ⚙️",
+   "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@4cee24d45f167d2e65161bb9f820d68955dd478a/videos/ce-20261127-0707.mp4",
+   "folder": "delete",
+   "issue_number": 77,
+   "issue_url": "https://github.com/zerenaod-ux/content-engine/issues/77",
+   "reviewed_at": "2026-11-27T09:07:58.066902+00:00",
+   "publishing_enabled": false,
+   "ready_for_future_publish": false,
+   "record": "delete/ce-20261127-0707/45971064554-1.json",
+   "history": []
   }
  ],
- "updated_at": "2026-11-26T22:33:24.144662+00:00"
+ "updated_at": "2026-11-27T09:07:58.066902+00:00"
 }
