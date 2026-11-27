@@ -851,7 +851,20 @@
    "ready_for_future_publish": false,
    "record": "delete/ce-20261127-0707/45971064554-1.json",
    "history": []
+  },
+  {
+   "tag": "ce-20261127-0942",
+   "title": "Why a Pin Tumbler Lock Stays Locked ⚙️",
+   "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@9c3f11b2527b45bf8208d8375a5c4d430ca1614d/videos/ce-20261127-0942.mp4",
+   "folder": "saved",
+   "issue_number": 79,
+   "issue_url": "https://github.com/zerenaod-ux/content-engine/issues/79",
+   "reviewed_at": "2026-11-27T09:55:37.098562+00:00",
+   "publishing_enabled": false,
+   "ready_for_future_publish": true,
+   "record": "saved/ce-20261127-0942/45977686529-1.json",
+   "history": []
   }
  ],
- "updated_at": "2026-11-27T09:07:58.066902+00:00"
+ "updated_at": "2026-11-27T09:55:37.098562+00:00"
 }
