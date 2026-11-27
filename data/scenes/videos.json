@@ -1651,5 +1651,38 @@
     },
     "record_run": "46081219355",
     "record_attempt": "1"
+  },
+  {
+    "date": "2026-11-27",
+    "tag": "ce-20261127-2349",
+    "title": "How a Worm Gear Powers Slow Rotation \u2699\ufe0f",
+    "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@28a18d68b5ada1f218e55e07342f0eee005eeb46/videos/ce-20261127-2349.mp4",
+    "topic": "How a Worm Gear Turns Fast Crank Motions into Slow Powerful Rotation",
+    "topic_key": "crank fast gear motions powerful rotate slow turn worm",
+    "generation_origin": {
+      "event": "workflow_dispatch",
+      "automatic_slot": false,
+      "run_id": "46083549834",
+      "attempt": 1,
+      "event_sha": "fb5c14fc291dd94684091dcdc8ed4e5f41d4f56c",
+      "source_ref": "main",
+      "manual_media_edits": false
+    },
+    "production_evidence": {
+      "policy": "unattended-proof-v1",
+      "novelty_policy": "original-idea-and-visuals-v1",
+      "width": 1080,
+      "height": 1920,
+      "duration": 54.566667,
+      "media_sha256": "88660e84b0167626e5bd1fff922fe9f8858368838164771262ec9fc14bf21262",
+      "alignment_revision": "causal-component-actions-v4",
+      "render_policy": "native-studio-1080-v1",
+      "voice": "af_heart",
+      "voice_policy": "how-it-ticks-narrator-v4-heart-clean",
+      "errors": [],
+      "owner_approved": false
+    },
+    "record_run": "46083549834",
+    "record_attempt": "1"
   }
 ]
