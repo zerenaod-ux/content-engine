@@ -1116,5 +1116,15 @@
     "state": "reserved",
     "policy": "original-idea-and-visuals-v1",
     "mechanism": "pin_lock"
+  },
+  {
+    "topic": "Why a Pin Tumbler Lock Won\u2019t Open Without the Correct Key",
+    "mechanism": "pin_lock",
+    "visual_family": "pin_lock",
+    "state": "created",
+    "owner": "45971764233",
+    "encoded_run": "45971764233",
+    "policy": "original-idea-and-visuals-v1",
+    "media_sha256": "03c6ad7ebe4fd51125e510666991fe202aaa703839a58f2a50ef2b05f3332760"
   }
 ]
