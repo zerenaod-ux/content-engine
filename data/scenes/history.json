@@ -1765,5 +1765,17 @@
     "record_run": "46080572941",
     "record_attempt": "1",
     "owner": "46080572941"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "",
+    "date": "2026-11-27",
+    "topic": "How a Scissor Jack Raises a Platform with Each Crank Turn",
+    "title": "How a Simple Crank Lifts a Platform \u2699\ufe0f",
+    "subject": "scissor_jack",
+    "keywords": [],
+    "category": "tested mechanism",
+    "record_run": "46081219355",
+    "record_attempt": "1"
   }
 ]
