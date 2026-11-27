@@ -1090,5 +1090,13 @@
     "state": "reserved",
     "policy": "original-idea-and-visuals-v1",
     "mechanism": "geneva_drive"
+  },
+  {
+    "topic": "Why a Seesaw Lifts a Heavy Child With a Light Push",
+    "visual_family": "lever_fulcrum",
+    "owner": "45971656068",
+    "state": "reserved",
+    "policy": "original-idea-and-visuals-v1",
+    "mechanism": "lever_fulcrum"
   }
 ]
