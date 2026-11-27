@@ -1,0 +1,24 @@
+{
+ "title": "wiper linkage",
+ "family": "wiper_linkage",
+ "description": "A crank, a coupler rod and a pivoting arm turn steady spinning into a back and forth sweep; no car, motor wiring or water shown",
+ "words": ["wiper linkage", "windshield wiper", "wiper", "four-bar linkage", "crank rocker"],
+ "parts": ["glass", "frame", "crank", "coupler", "arm", "cover"],
+ "subjects": [["crank", "coupler", "arm", "glass"], ["cover", "crank", "coupler", "arm"], ["crank", "coupler", "arm", "glass"], ["coupler", "arm", "crank", "glass"], ["crank", "coupler", "arm", "glass"], ["crank", "coupler", "arm", "glass"], ["arm", "coupler", "crank", "glass"], ["arm", "crank", "coupler", "glass"]],
+ "cues": {"cutaway": ["cover", "lifts", "crank"], "payoff": ["arm", "sweeps", "crank", "coupler"]},
+ "facts": {
+  "intro": "Introduce a recognizable wiper linkage: a red crank on the left, a steel coupler rod, and a long arm with a dark blade pivoting on the right over a pane of glass. Everything is still.",
+  "cutaway": "A simplified cutaway lifts the cover to expose the crank, the coupler rod joining it to the arm, and the pivot the arm swings on.",
+  "drive": "An illustrated push spins the crank a full turn. The coupler rod pushes and pulls the arm, which swings across the glass and back.",
+  "response": "The crank keeps turning and the arm keeps swinging. The crank goes all the way round, yet the arm only rocks back and forth through part of a circle.",
+  "hold": "No part moves for this explanation. The crank is the shortest link and can turn in a full circle; the arm is longer and can only swing.",
+  "repeat": "A second push turns the crank again, and the arm sweeps across the glass and back once more, covering the same arc each time.",
+  "limit": "The crank turns backwards for a moment. The arm retraces its path, because the rod ties every crank position to one arm position.",
+  "payoff": "The cover closes. Crank, coupler and arm work together: a steady spin becomes a sweep back and forth. No car or water is shown."
+ },
+ "source": "https://en.wikipedia.org/wiki/Four-bar_linkage",
+ "narration_rules": [
+  {"pattern": "\\b(car|cars|windshield|windscreen|rain|water|motor|driver)\\b", "message": "no car, rain or motor is depicted; speak only of the crank, coupler and arm"}
+ ],
+ "label": {"from": 1, "to": 6, "text": "Cutaway · simplified wiper linkage · input turn illustrated"}
+}
