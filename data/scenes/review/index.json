@@ -864,7 +864,20 @@
    "ready_for_future_publish": true,
    "record": "saved/ce-20261127-0942/45977686529-1.json",
    "history": []
+  },
+  {
+   "tag": "ce-20261127-0921",
+   "title": "Why a Seesaw Lifts a Heavy Child ⚙️",
+   "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@dadb2e8a31f3100bb9e44bffba17704e9c4cc7c9/videos/ce-20261127-0921.mp4",
+   "folder": "delete",
+   "issue_number": 78,
+   "issue_url": "https://github.com/zerenaod-ux/content-engine/issues/78",
+   "reviewed_at": "2026-11-27T09:57:13.691447+00:00",
+   "publishing_enabled": false,
+   "ready_for_future_publish": false,
+   "record": "delete/ce-20261127-0921/45977696735-1.json",
+   "history": []
   }
  ],
- "updated_at": "2026-11-27T09:55:37.098562+00:00"
+ "updated_at": "2026-11-27T09:57:13.691447+00:00"
 }
