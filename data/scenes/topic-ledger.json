@@ -435,5 +435,13 @@
     "state": "reserved",
     "mechanism": "pin_lock",
     "visual_family": "pin_lock"
+  },
+  {
+    "topic": "Why pulling a handle lifts a weight only half as far",
+    "topic_key": "far half handle lifts only pulling weight",
+    "owner": "46080572941",
+    "state": "reserved",
+    "mechanism": "pulley_lift",
+    "visual_family": "pulley_lift"
   }
 ]
