@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-11-27T09:09:34.810784+00:00",
+  "checked_at": "2026-11-27T09:56:52.640732+00:00",
   "read_only": true,
   "complete": true,
   "platforms": {
@@ -428,6 +428,30 @@
           {
             "status": "sent",
             "due": "2026-11-27T00:00:00.000Z"
+          }
+        ]
+      }
+    },
+    {
+      "tag": "ce-20261127-0942",
+      "title": "Why a Pin Tumbler Lock Stays Locked \u2699\ufe0f",
+      "platforms": {
+        "youtube": [
+          {
+            "status": "not_found_in_buffer",
+            "prior_owner_skip": false
+          }
+        ],
+        "instagram": [
+          {
+            "status": "not_found_in_buffer",
+            "prior_owner_skip": false
+          }
+        ],
+        "tiktok": [
+          {
+            "status": "not_found_in_buffer",
+            "prior_owner_skip": false
           }
         ]
       }
