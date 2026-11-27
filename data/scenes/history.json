@@ -1791,5 +1791,17 @@
     "record_run": "46081401124",
     "record_attempt": "1",
     "owner": "46081401124"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "",
+    "date": "2026-11-27",
+    "topic": "How a Worm Gear Turns Fast Crank Motions into Slow Powerful Rotation",
+    "title": "How a Worm Gear Powers Slow Rotation \u2699\ufe0f",
+    "subject": "worm_gear",
+    "keywords": [],
+    "category": "tested mechanism",
+    "record_run": "46083549834",
+    "record_attempt": "1"
   }
 ]
