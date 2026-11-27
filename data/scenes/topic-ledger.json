@@ -403,5 +403,13 @@
     "state": "reserved",
     "mechanism": "mw_bicycle_derailleur",
     "visual_family": "mw_bicycle_derailleur"
+  },
+  {
+    "topic": "Why a Large Sprocket Drives a Small Sprocket Twice as Fast",
+    "topic_key": "drives fast large small sprocket twice",
+    "owner": "45955048264",
+    "state": "reserved",
+    "mechanism": "chain_sprocket",
+    "visual_family": "chain_sprocket"
   }
 ]
