@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-11-27T13:07:27.807086+00:00",
+  "checked_at": "2026-11-27T17:52:26.634085+00:00",
   "read_only": true,
   "complete": true,
   "platforms": {
@@ -458,6 +458,30 @@
           }
         ]
       }
+    },
+    {
+      "tag": "ce-20261127-1544",
+      "title": "Why a Geneva Drive Makes Precise Steps \u2699\ufe0f",
+      "platforms": {
+        "youtube": [
+          {
+            "status": "not_found_in_buffer",
+            "prior_owner_skip": false
+          }
+        ],
+        "instagram": [
+          {
+            "status": "not_found_in_buffer",
+            "prior_owner_skip": false
+          }
+        ],
+        "tiktok": [
+          {
+            "status": "not_found_in_buffer",
+            "prior_owner_skip": false
+          }
+        ]
+      }
     }
   ],
   "timezone": "America/Chicago",
@@ -485,16 +509,16 @@
         "source_updated_at": "2026-11-27T06:26:56.618Z"
       },
       "instagram": {
-        "views": 767.0,
-        "reactions": 6.0,
+        "views": 881.0,
+        "reactions": 7.0,
         "reported_posts": 8,
         "source_updated_at": "2026-11-23T02:58:31.357Z"
       },
       "tiktok": {
-        "views": 1151.0,
-        "reactions": 69.0,
+        "views": 1293.0,
+        "reactions": 73.0,
         "reported_posts": 7,
-        "source_updated_at": "2026-11-26T15:18:45.244Z"
+        "source_updated_at": "2026-11-27T13:22:54.046Z"
       }
     },
     "scope": "recent 20 published posts",
