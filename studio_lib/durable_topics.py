@@ -134,8 +134,33 @@ def release_failed(run_id=None):
                 if e.code not in (409,422) or attempt==5:raise
                 time.sleep(1)
 
+def release_stale():
+    """2026-11-27: a reservation whose run has FINISHED without producing a video must not burn its machine. Removes reserved/failed rows with no video
+    whose owner run is completed (never an in-progress run). A rendered video keeps its own 'created' row, so nothing published is ever forgotten."""
+    me=str(os.environ.get('GITHUB_RUN_ID',''));done={}
+    def finished(rid):
+        if rid not in done:
+            try:done[rid]=github('actions/runs/'+rid).get('status')=='completed'
+            except Exception:done[rid]=False
+        return done[rid]
+    for path in RELEASE_PATHS:
+        for attempt in range(6):
+            data,sha=rows(path,False)
+            def stale(r):
+                if _produced(r) or not (r.get('state')=='reserved' or r.get('failed') is True):return False
+                owner=str(r.get('owner') or r.get('record_run') or r.get('run_id') or '')
+                return owner.isdigit() and owner!=me and finished(owner)
+            keep=[r for r in data if not stale(r)]
+            if len(keep)==len(data):break
+            try:
+                write_document(path,keep,sha,'Release reservations of finished runs that made no video');print('released',len(data)-len(keep),'stale row(s) from',path);break
+            except urllib.error.HTTPError as e:
+                if e.code not in (409,422) or attempt==5:raise
+                time.sleep(1)
+
 if __name__=='__main__':
-    parser=argparse.ArgumentParser();parser.add_argument('action',choices=['save-records','release-failed'])
+    parser=argparse.ArgumentParser();parser.add_argument('action',choices=['save-records','release-failed','release-stale'])
     a=parser.parse_args()
     if a.action=='save-records':save_records()
+    elif a.action=='release-stale':release_stale()
     else:release_failed()

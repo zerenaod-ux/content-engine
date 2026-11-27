@@ -47,6 +47,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - name: Give back machines reserved by finished runs that made no video (2026-11-27)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 -m studio_lib.durable_topics release-stale || true
       - name: Check scheduled daily output and fresh visual capacity
         id: capacity
         env:
@@ -166,9 +170,11 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          if [ -f scene-factory.mp4 ]; then python3 scene_lib/ideas.py record auto-scene.json; elif [ -f idea.json ] || [ -f writer-log.txt ]; then python3 scene_lib/ideas.py record auto-scene.json failed; else exit 0; fi
-          # Plan M (2026-11-22): a run that died because free AI was busy (no video made) must not burn its machine/topic.
-          if [ ! -f scene-factory.mp4 ] && grep -qiE 'cooldown|HTTP Error (408|429|50[0-9])|HTTP (429|50[0-9])|rate.?limit|quota|timed? ?out|ServiceUnavailable|narration needs|invalid json|Budget' idea-log.txt writer-log.txt auto-scene.json 2>/dev/null; then
+          if [ -f scene-factory.mp4 ]; then python3 scene_lib/ideas.py record auto-scene.json; elif [ -f idea.json ] || [ -f writer-log.txt ]; then python3 scene_lib/ideas.py record auto-scene.json failed; fi
+          # 2026-11-27: ANY run that ended without a video gives its reservation back (director rejected, bad cue, busy free AI...).
+          # Before this only AI-busy errors released it, so each rejected plan permanently burned a hand-built machine (8 machines gone in one day).
+          # release-failed removes only this run's reserved/failed rows that have no video, so a rendered video is never forgotten.
+          if [ ! -f scene-factory.mp4 ]; then
             python3 -m studio_lib.durable_topics release-failed || true
           fi
           python3 -m studio_lib.durable_topics save-records
