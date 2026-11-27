@@ -1178,5 +1178,15 @@
     "state": "reserved",
     "policy": "original-idea-and-visuals-v1",
     "mechanism": "worm_gear"
+  },
+  {
+    "topic": "How a Worm Gear Turns Fast Crank Motions into Slow Powerful Rotation",
+    "mechanism": "worm_gear",
+    "visual_family": "worm_gear",
+    "state": "created",
+    "owner": "46083549834",
+    "encoded_run": "46083549834",
+    "policy": "original-idea-and-visuals-v1",
+    "media_sha256": "88660e84b0167626e5bd1fff922fe9f8858368838164771262ec9fc14bf21262"
   }
 ]
