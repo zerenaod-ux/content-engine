@@ -1751,5 +1751,19 @@
     "category": "",
     "record_run": "45970680338",
     "record_attempt": "2"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "tested component rejected: director rejected: beat 1: motion_cue must name this action or the internal part being revealed; beat 1: do not narrate the cover, cutaway or illustration; say what the real parts do\n",
+    "date": "2026-11-27",
+    "topic": "Why pulling a handle lifts a weight only half as far",
+    "title": "",
+    "subject": "pulley_lift",
+    "keywords": [],
+    "category": "tested mechanism",
+    "failed": true,
+    "record_run": "46080572941",
+    "record_attempt": "1",
+    "owner": "46080572941"
   }
 ]
