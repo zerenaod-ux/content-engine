@@ -6,14 +6,14 @@
     "11:05",
     "19:05"
   ],
-  "due_slots": 1,
+  "due_slots": 2,
   "ready_today": 0,
   "daily_target": 3,
   "unused_visuals": 0,
   "should_build": false,
   "reason": "No unused supported visuals remain",
-  "pending_review": 1,
+  "pending_review": 0,
   "dispatches": 0,
   "requested_at": 0,
-  "checked_at": "2026-11-28T13:50:14.152938+00:00"
+  "checked_at": "2026-11-28T17:28:26.684139+00:00"
 }
