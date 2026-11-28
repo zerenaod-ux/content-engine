@@ -40,12 +40,15 @@
       "run_id": "46096199494",
       "attempt": 1,
       "kind": "daily-short",
-      "stage": "selection",
-      "label": "Selecting a new topic",
-      "updated_at": "2026-11-28T02:04:28.005928+00:00",
+      "stage": "Stopped",
+      "label": "Stopped",
+      "updated_at": "2026-11-28T02:04:32.382344+00:00",
       "source_branch": "main",
       "owner_approved": false,
-      "state": "running"
+      "retryable": false,
+      "next_retry_at": null,
+      "reason": "Needs a code, content or configuration correction",
+      "state": "needs_attention"
     }
   }
 }
