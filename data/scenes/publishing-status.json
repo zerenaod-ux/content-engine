@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-11-28T01:43:07.952565+00:00",
+  "checked_at": "2026-11-28T01:44:53.485789+00:00",
   "read_only": true,
   "complete": true,
   "platforms": {
@@ -478,6 +478,30 @@
           {
             "status": "scheduled",
             "due": "2026-11-28T02:30:00.000Z"
+          }
+        ]
+      }
+    },
+    {
+      "tag": "ce-20261128-0130",
+      "title": "Why a Winch Crank Lifts Only Slightly \u2699\ufe0f",
+      "platforms": {
+        "youtube": [
+          {
+            "status": "not_found_in_buffer",
+            "prior_owner_skip": false
+          }
+        ],
+        "instagram": [
+          {
+            "status": "not_found_in_buffer",
+            "prior_owner_skip": false
+          }
+        ],
+        "tiktok": [
+          {
+            "status": "not_found_in_buffer",
+            "prior_owner_skip": false
           }
         ]
       }
