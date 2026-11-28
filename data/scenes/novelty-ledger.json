@@ -850,14 +850,6 @@
   },
   {
     "topic": "Why each turn of the winch crank lifts the crate only a little",
-    "visual_family": "winch_crane",
-    "owner": "46092483779",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "winch_crane"
-  },
-  {
-    "topic": "Why each turn of the winch crank lifts the crate only a little",
     "mechanism": "winch_crane",
     "visual_family": "winch_crane",
     "state": "created",
