@@ -570,14 +570,6 @@
   },
   {
     "topic": "How the iris aperture controls exposure brightness",
-    "visual_family": "optical_iris",
-    "owner": "44575729538",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "camera_iris"
-  },
-  {
-    "topic": "How the iris aperture controls exposure brightness",
     "mechanism": "camera_iris",
     "visual_family": "optical_iris",
     "state": "created",
@@ -585,14 +577,6 @@
     "encoded_run": "44576248575",
     "policy": "original-idea-and-visuals-v1",
     "media_sha256": "7a814d40ac0890639b8344b1d67e8a115bee7cff3f2b8d5c4c0fbde035e4527b"
-  },
-  {
-    "topic": "How a float valve stops a tank from overfilling",
-    "visual_family": "tank_float_control",
-    "owner": "44607841613",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "float_valve"
   },
   {
     "topic": "How a float valve stops a tank from overfilling",
@@ -606,14 +590,6 @@
   },
   {
     "topic": "Why a three\u2011wheel combination padlock only releases when all wheels align",
-    "visual_family": "gated_padlock",
-    "owner": "44626696622",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "combination_lock"
-  },
-  {
-    "topic": "Why a three\u2011wheel combination padlock only releases when all wheels align",
     "mechanism": "combination_lock",
     "visual_family": "gated_padlock",
     "state": "created",
@@ -621,14 +597,6 @@
     "encoded_run": "44626696622",
     "policy": "original-idea-and-visuals-v1",
     "media_sha256": "5397fb1cb8a2d3f34d8d8f2b8f302de85fb2e33031e475291e0b94f1d70408be"
-  },
-  {
-    "topic": "How a small control voltage can switch a higher\u2011voltage load using an electromagnetic relay",
-    "visual_family": "electromagnetic_relay",
-    "owner": "44641287581",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "electric_relay"
   },
   {
     "topic": "How a small control voltage can switch a higher\u2011voltage load using an electromagnetic relay",
@@ -642,13 +610,6 @@
   },
   {
     "topic": "How a pendulum clock keeps time",
-    "visual_family": "pendulum_escapement",
-    "owner": "44976687963",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1"
-  },
-  {
-    "topic": "How a pendulum clock keeps time",
     "mechanism": "pendulum_clock",
     "visual_family": "pendulum_escapement",
     "state": "created",
@@ -656,14 +617,6 @@
     "encoded_run": "44976687963",
     "policy": "original-idea-and-visuals-v1",
     "media_sha256": "0945fce9e2a74c5147832ec38413d5a2f2c1defd6d021ec3e95f54d4d78b61d4"
-  },
-  {
-    "topic": "How the zipper slider interlocks staggered teeth to seal two fabric edges",
-    "visual_family": "interlocking_zipper",
-    "owner": "44977520702",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "zipper"
   },
   {
     "topic": "How the zipper slider interlocks staggered teeth to seal two fabric edges",
@@ -677,14 +630,6 @@
   },
   {
     "topic": "How does a simple desk organizer drawer slide out?",
-    "visual_family": "recipe_how_a_drawer_slides_out",
-    "owner": "44979671861",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "recipe_how_a_drawer_slides_out"
-  },
-  {
-    "topic": "How does a simple desk organizer drawer slide out?",
     "mechanism": "recipe_how_a_drawer_slides_out",
     "visual_family": "recipe_how_a_drawer_slides_out",
     "state": "created",
@@ -692,30 +637,6 @@
     "encoded_run": "44979671861",
     "policy": "original-idea-and-visuals-v1",
     "media_sha256": "dc9d6f4ce1488c6fb335e2a89bc0bd6a8ecaa4514a58729b9fb2c53ab1011932"
-  },
-  {
-    "topic": "How does a simple paper shredder work?",
-    "visual_family": "recipe_how_a_paper_shredder_works",
-    "owner": "44980406165",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "recipe_how_a_paper_shredder_works"
-  },
-  {
-    "topic": "How does a paper cutter slice safely?",
-    "visual_family": "recipe_how_a_paper_cutter_works",
-    "owner": "44980634726",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "recipe_how_a_paper_cutter_works"
-  },
-  {
-    "topic": "How does a simple latch keep a door closed?",
-    "visual_family": "recipe_how_a_door_latch_works",
-    "owner": "44980899837",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "recipe_how_a_door_latch_works"
   },
   {
     "topic": "How does a simple latch keep a door closed?",
@@ -726,62 +647,6 @@
     "encoded_run": "44980899837",
     "policy": "original-idea-and-visuals-v1",
     "media_sha256": "440b3f8f14b47d88b66a6b2c6a2f05ad2da3129bef95bcd42e8ac47e76dd1bca"
-  },
-  {
-    "topic": "Why does pulling a cord raise a blind?",
-    "visual_family": "recipe_how_a_window_blind_works",
-    "owner": "44983328804",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "recipe_how_a_window_blind_works"
-  },
-  {
-    "topic": "How does a manual coffee grinder turn beans?",
-    "visual_family": "recipe_how_a_coffee_grinder_works",
-    "owner": "44983764341",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "recipe_how_a_coffee_grinder_works"
-  },
-  {
-    "topic": "Why does a clothesline raise the bucket?",
-    "visual_family": "recipe_how_a_clothesline_works",
-    "owner": "44990205920",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "recipe_how_a_clothesline_works"
-  },
-  {
-    "topic": "Why a kitchen trash can lid stays closed until you press it",
-    "visual_family": "recipe_how_a_trash_can_lid_works",
-    "owner": "44991275567",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "recipe_how_a_trash_can_lid_works"
-  },
-  {
-    "topic": "Why does a hand\u2011crank ice\u2011cream maker freeze the mix?",
-    "visual_family": "recipe_how_a_hand_crank_ice_cream_maker_works",
-    "owner": "45030496410",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "recipe_how_a_hand_crank_ice_cream_maker_works"
-  },
-  {
-    "topic": "How a Snap-Disc Thermostat Turns Off a Heater Circuit When It Gets Hot",
-    "visual_family": "snap_disc_switch",
-    "owner": "45047059708",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "snap_thermostat"
-  },
-  {
-    "topic": "How does a manual soap dispenser pump?",
-    "visual_family": "recipe_how_a_soap_dispenser_works",
-    "owner": "45068361995",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "recipe_how_a_soap_dispenser_works"
   },
   {
     "topic": "How does a manual soap dispenser pump?",
@@ -795,14 +660,6 @@
   },
   {
     "topic": "How does a manual ice cream maker work",
-    "visual_family": "recipe_how_a_manual_ice_cream_maker_works",
-    "owner": "45108272489",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "recipe_how_a_manual_ice_cream_maker_works"
-  },
-  {
-    "topic": "How does a manual ice cream maker work",
     "mechanism": "recipe_how_a_manual_ice_cream_maker_works",
     "visual_family": "recipe_how_a_manual_ice_cream_maker_works",
     "state": "created",
@@ -810,14 +667,6 @@
     "encoded_run": "45108272489",
     "policy": "original-idea-and-visuals-v1",
     "media_sha256": "1eb6b62f79f9e5ffa47278a66f70ece76f2520a6b2321b5cee2a07ed1d1a1765"
-  },
-  {
-    "topic": "Why does a garden sprayer spray a fine mist?",
-    "visual_family": "recipe_how_a_garden_sprayer_works",
-    "owner": "45115320811",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "recipe_how_a_garden_sprayer_works"
   },
   {
     "topic": "Why does a garden sprayer spray a fine mist?",
@@ -831,14 +680,6 @@
   },
   {
     "topic": "How entry angle determines total internal reflection in a straight optical fiber",
-    "visual_family": "step_index_guidance",
-    "owner": "45288095489",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "optical_fiber"
-  },
-  {
-    "topic": "How entry angle determines total internal reflection in a straight optical fiber",
     "mechanism": "optical_fiber",
     "visual_family": "step_index_guidance",
     "state": "created",
@@ -849,14 +690,6 @@
   },
   {
     "topic": "Why a Ratchet Wrench Prevents Backward Motion",
-    "visual_family": "one_way_ratchet",
-    "owner": "45293677189",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "ratchet_wrench"
-  },
-  {
-    "topic": "Why a Ratchet Wrench Prevents Backward Motion",
     "mechanism": "ratchet_wrench",
     "visual_family": "one_way_ratchet",
     "state": "created",
@@ -864,54 +697,6 @@
     "encoded_run": "45293677189",
     "policy": "original-idea-and-visuals-v1",
     "media_sha256": "65d73633689cf1a67dc6517ca857966146153ca73a40d360f7d00280da6f1383"
-  },
-  {
-    "topic": "What does the escapement let go of on each tick?",
-    "visual_family": "pendulum_escapement::escapement_release",
-    "owner": "45326838961",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "pendulum_clock"
-  },
-  {
-    "topic": "Why does the lamp glow only while the rotor keeps spinning?",
-    "visual_family": "rotary_generator::lamp_needs_spin",
-    "owner": "45327885922",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "wind_turbine"
-  },
-  {
-    "topic": "Where does the clothespin's gripping force come from?",
-    "visual_family": "torsion_peg::grip_force",
-    "owner": "45328165215",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "clothespin"
-  },
-  {
-    "topic": "Why do the staple legs fold inward under the paper?",
-    "visual_family": "staple_clinching::legs_fold_in",
-    "owner": "45329526885",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "stapler"
-  },
-  {
-    "topic": "How the compression stroke pushes water out without backflow",
-    "visual_family": "piston_pump::push_out",
-    "owner": "45331379925",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "piston_pump"
-  },
-  {
-    "topic": "How a Float Ball Detects a Full Tank",
-    "visual_family": "tank_float_control::ball_knows",
-    "owner": "45332116417",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "float_valve"
   },
   {
     "topic": "How a Float Ball Detects a Full Tank",
@@ -925,14 +710,6 @@
   },
   {
     "topic": "Why a pendulum maintains a steady rhythm",
-    "visual_family": "pendulum_escapement::steady_beat",
-    "owner": "45333461622",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "pendulum_clock"
-  },
-  {
-    "topic": "Why a pendulum maintains a steady rhythm",
     "mechanism": "pendulum_clock",
     "visual_family": "pendulum_escapement::steady_beat",
     "state": "created",
@@ -940,14 +717,6 @@
     "encoded_run": "45333461622",
     "policy": "original-idea-and-visuals-v1",
     "media_sha256": "d42f462d8723c16108c9d47742d6f4f347d5adc4a33ea269a65560840ad8e0e6"
-  },
-  {
-    "topic": "Why does a ratchet wrench click when you swing it back?",
-    "visual_family": "one_way_ratchet::click_back",
-    "owner": "45335442765",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "ratchet_wrench"
   },
   {
     "topic": "Why does a ratchet wrench click when you swing it back?",
@@ -961,14 +730,6 @@
   },
   {
     "topic": "How does the thermostat reset itself once it cools?",
-    "visual_family": "snap_disc_switch::cool_resets",
-    "owner": "45336877969",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "snap_thermostat"
-  },
-  {
-    "topic": "How does the thermostat reset itself once it cools?",
     "mechanism": "snap_thermostat",
     "visual_family": "snap_disc_switch::cool_resets",
     "state": "created",
@@ -979,14 +740,6 @@
   },
   {
     "topic": "Why moving the slider back splits the teeth apart",
-    "visual_family": "interlocking_zipper::slider_back_splits",
-    "owner": "45399500012",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "zipper"
-  },
-  {
-    "topic": "Why moving the slider back splits the teeth apart",
     "mechanism": "zipper",
     "visual_family": "interlocking_zipper::slider_back_splits",
     "state": "created",
@@ -994,30 +747,6 @@
     "encoded_run": "45399500012",
     "policy": "original-idea-and-visuals-v1",
     "media_sha256": "ef24339914cab0788bd41d21ac61f602770c662ae32d0209049389785f96af57"
-  },
-  {
-    "topic": "Why a magnet turning past coils makes a lamp glow",
-    "visual_family": "rotary_generator::magnet_coil",
-    "owner": "45457846770",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "wind_turbine"
-  },
-  {
-    "topic": "How a clothespin Holds Fabric Without Extra Pressure",
-    "visual_family": "torsion_peg::holds_without_hands",
-    "owner": "45470485524",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "clothespin"
-  },
-  {
-    "topic": "How a three\u2011wheel padlock prevents accidental opening",
-    "visual_family": "gated_padlock::all_three_line_up",
-    "owner": "45476143219",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "combination_lock"
   },
   {
     "topic": "How a three\u2011wheel padlock prevents accidental opening",
@@ -1031,14 +760,6 @@
   },
   {
     "topic": "Why a Tiny Control Current Operates a Separate High\u2011Power Circuit",
-    "visual_family": "electromagnetic_relay::small_switches_big",
-    "owner": "45460334123",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "electric_relay"
-  },
-  {
-    "topic": "Why a Tiny Control Current Operates a Separate High\u2011Power Circuit",
     "mechanism": "electric_relay",
     "visual_family": "electromagnetic_relay::small_switches_big",
     "state": "created",
@@ -1046,14 +767,6 @@
     "encoded_run": "45460334123",
     "policy": "original-idea-and-visuals-v1",
     "media_sha256": "924a536383552fa217e610c5dd0a00e369894ef2422a2b77e6be5343f0b59a44"
-  },
-  {
-    "topic": "How a Rear Derailleur Shifts Gears",
-    "visual_family": "mw_bicycle_derailleur",
-    "owner": "45848278010",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "mw_bicycle_derailleur"
   },
   {
     "topic": "How a Rear Derailleur Shifts Gears",
@@ -1067,14 +780,6 @@
   },
   {
     "topic": "Why a Large Sprocket Drives a Small Sprocket Twice as Fast",
-    "visual_family": "chain_sprocket",
-    "owner": "45955048264",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "chain_sprocket"
-  },
-  {
-    "topic": "Why a Large Sprocket Drives a Small Sprocket Twice as Fast",
     "mechanism": "chain_sprocket",
     "visual_family": "chain_sprocket",
     "state": "created",
@@ -1082,22 +787,6 @@
     "encoded_run": "45955048264",
     "policy": "original-idea-and-visuals-v1",
     "media_sha256": "5f1d20a4acb8f017ec2674119fbd0f7b880c65cd8a8d1731cbc73fd31953aa2d"
-  },
-  {
-    "topic": "Why a Geneva Drive Turns Continuous Rotation into Precise Intermittent Steps",
-    "visual_family": "geneva_drive",
-    "owner": "45970680338",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "geneva_drive"
-  },
-  {
-    "topic": "Why a Seesaw Lifts a Heavy Child With a Light Push",
-    "visual_family": "lever_fulcrum",
-    "owner": "45971656068",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "lever_fulcrum"
   },
   {
     "topic": "Why a Seesaw Lifts a Heavy Child With a Light Push",
@@ -1108,14 +797,6 @@
     "encoded_run": "45971656068",
     "policy": "original-idea-and-visuals-v1",
     "media_sha256": "82ce2ca75722398240d3b854c639cad04f35e50c1fa08d8a15c7fcf94a493f41"
-  },
-  {
-    "topic": "Why a Pin Tumbler Lock Won\u2019t Open Without the Correct Key",
-    "visual_family": "pin_lock",
-    "owner": "45971764233",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "pin_lock"
   },
   {
     "topic": "Why a Pin Tumbler Lock Won\u2019t Open Without the Correct Key",
@@ -1138,22 +819,6 @@
     "media_sha256": "19f69252f48ad248cc167cb0c53de19d421f4b21f3ce78b20498c7f8cf52e335"
   },
   {
-    "topic": "Why pulling a handle lifts a weight only half as far",
-    "visual_family": "pulley_lift",
-    "owner": "46080572941",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "pulley_lift"
-  },
-  {
-    "topic": "How a Scissor Jack Raises a Platform with Each Crank Turn",
-    "visual_family": "scissor_jack",
-    "owner": "46081219355",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "scissor_jack"
-  },
-  {
     "topic": "How a Scissor Jack Raises a Platform with Each Crank Turn",
     "mechanism": "scissor_jack",
     "visual_family": "scissor_jack",
@@ -1162,22 +827,6 @@
     "encoded_run": "46081219355",
     "policy": "original-idea-and-visuals-v1",
     "media_sha256": "b29df88d32a5db9932fee5f7e4cb06d4c92eee4b9396f4d724223053a03b7900"
-  },
-  {
-    "topic": "Why a windshield wiper arm sweeps back\u2011and\u2011forth while the crank spins",
-    "visual_family": "wiper_linkage",
-    "owner": "46081401124",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "wiper_linkage"
-  },
-  {
-    "topic": "How a Worm Gear Turns Fast Crank Motions into Slow Powerful Rotation",
-    "visual_family": "worm_gear",
-    "owner": "46083549834",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "worm_gear"
   },
   {
     "topic": "How a Worm Gear Turns Fast Crank Motions into Slow Powerful Rotation",
