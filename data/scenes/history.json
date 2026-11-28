@@ -1815,5 +1815,19 @@
     "category": "tested mechanism",
     "record_run": "46086445652",
     "record_attempt": "1"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "tested component rejected: director rejected: title: no car, rain or motor is depicted; speak only of the crank, coupler and arm; need exactly the eight supported action beats\n",
+    "date": "2026-11-28",
+    "topic": "Why a Windshield Wiper Blade Sweeps Back and Forth \u2699\ufe0f",
+    "title": "",
+    "subject": "wiper_linkage",
+    "keywords": [],
+    "category": "tested mechanism",
+    "failed": true,
+    "record_run": "46081401124",
+    "record_attempt": "2",
+    "owner": "46081401124"
   }
 ]
