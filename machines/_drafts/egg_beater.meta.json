@@ -1,0 +1,25 @@
+{
+ "title": "hand egg beater",
+ "family": "egg_beater",
+ "description": "A hand crank turns a big gear that turns two small gears, each carrying a beater blade that stirs a bowl of batter; no motor, hands or kitchen shown",
+ "words": ["egg beater", "hand beater", "hand whisk", "eggbeater", "whisk"],
+ "parts": ["frame", "bowl", "gears", "crank", "beaters", "cover"],
+ "subjects": [["gears", "crank", "beaters", "bowl"], ["gears", "pinion", "crank", "beaters"], ["crank", "gears", "beaters", "bowl"], ["gears", "beaters", "crank", "bowl"], ["gears", "beaters", "crank", "bowl"], ["crank", "gears", "beaters", "bowl"], ["crank", "gears", "beaters", "bowl"], ["crank", "gears", "beaters", "bowl"]],
+ "cues": {"cutaway": ["gears", "pinion", "beaters"], "payoff": ["beaters", "blades", "batter", "gears"]},
+ "facts": {
+  "intro": "Introduce a recognizable hand egg beater: a red crank on a big brass gear, two small steel gears below it each carrying a beater blade, and a bowl of yellow batter underneath. Everything is still.",
+  "cutaway": "Inside are the big brass gear, and the two small steel gears whose teeth mesh with it, each with a blade fixed to its axle.",
+  "drive": "A push turns the crank and the big gear. Its teeth drive both small gears round, and the two blades spin through the batter.",
+  "response": "The crank keeps turning. The big gear has three times as many teeth as each small gear, so each blade spins three times for every turn of the crank.",
+  "hold": "No part moves for this explanation. The big gear has twenty-four teeth and each small gear has eight, so one crank turn spins each blade three times.",
+  "repeat": "A second push turns the crank again. The blades whirl faster than the crank and keep stirring the batter in step.",
+  "limit": "The crank turns backwards for a moment. Both blades reverse as well, because the gears stay locked together tooth to tooth.",
+  "payoff": "Crank, big gear, small gears and blades work together: one slow turn of the handle becomes three fast spins of both blades. No motor or hand is shown."
+ },
+ "source": "https://en.wikipedia.org/wiki/Egg_beater",
+ "narration_rules": [
+  {"pattern": "\\b(motor|engine|electric|hands?|kitchen|cook|chef|person|people)s?\\b", "message": "no motor, hand or kitchen is depicted; speak only of the crank, gears, blades and batter"},
+  {"pattern": "\\b(cutaway|covers?|illustrated|simplified)\\b", "message": "do not narrate the cover, cutaway or illustration; say what the real parts do"}
+ ],
+ "label": {"from": 1, "to": 6, "text": "Cutaway · simplified hand egg beater · input turn illustrated"}
+}

@@ -2,7 +2,7 @@
 prefer() drops machines of the same KIND as the latest video when anything different is still available.
 hook_style() rotates the style of the opening question so consecutive videos do not start alike."""
 KIND={
- 'gears':{'rack_pinion','worm_gear','chain_sprocket','winch_crane','geneva_drive','ratchet_wrench'},
+ 'gears':{'rack_pinion','worm_gear','chain_sprocket','winch_crane','egg_beater','geneva_drive','ratchet_wrench'},
  'linkage':{'wiper_linkage','crank_slider','scissor_jack','lever_fulcrum','cam_follower'},
  'rope':{'pulley_lift'},
  'lock':{'pin_lock','combination_lock'},

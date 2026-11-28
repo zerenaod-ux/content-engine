@@ -1,0 +1,146 @@
+{
+ "key": "egg_beater",
+ "module": "studio_lib.egg_beater",
+ "family": "egg_beater",
+ "pattern": "\\b(egg\\ beater|eggbeater|hand\\ beater|hand\\ whisk|whisk)s?\\b",
+ "detect": "egg\\ beater|eggbeater|hand\\ beater|hand\\ whisk|whisk",
+ "block": "(?!x)x",
+ "description": "A hand crank turns a big gear that turns two small gears, each carrying a beater blade that stirs a bowl of batter; no motor, hands or kitchen shown",
+ "actions": [
+  "intro",
+  "cutaway",
+  "drive",
+  "response",
+  "hold",
+  "repeat",
+  "limit",
+  "payoff"
+ ],
+ "facts": {
+  "intro": "Introduce a recognizable hand egg beater: a red crank on a big brass gear, two small steel gears below it each carrying a beater blade, and a bowl of yellow batter underneath. Everything is still.",
+  "cutaway": "Inside are the big brass gear, and the two small steel gears whose teeth mesh with it, each with a blade fixed to its axle.",
+  "drive": "A push turns the crank and the big gear. Its teeth drive both small gears round, and the two blades spin through the batter.",
+  "response": "The crank keeps turning. The big gear has three times as many teeth as each small gear, so each blade spins three times for every turn of the crank.",
+  "hold": "No part moves for this explanation. The big gear has twenty-four teeth and each small gear has eight, so one crank turn spins each blade three times.",
+  "repeat": "A second push turns the crank again. The blades whirl faster than the crank and keep stirring the batter in step.",
+  "limit": "The crank turns backwards for a moment. Both blades reverse as well, because the gears stay locked together tooth to tooth.",
+  "payoff": "Crank, big gear, small gears and blades work together: one slow turn of the handle becomes three fast spins of both blades. No motor or hand is shown."
+ },
+ "source": "https://en.wikipedia.org/wiki/Egg_beater",
+ "contract": {
+  "subjects": [
+   "\\b(beaters|bowl|crank|gears)",
+   "\\b(beaters|crank|gears|pinion)",
+   "\\b(beaters|bowl|crank|gears)",
+   "\\b(beaters|bowl|crank|gears)",
+   "\\b(beaters|bowl|crank|gears)",
+   "\\b(beaters|bowl|crank|gears)",
+   "\\b(beaters|bowl|crank|gears)",
+   "\\b(beaters|bowl|crank|gears)"
+  ],
+  "moves": {
+   "1": {
+    "cut": 1
+   },
+   "2": {
+    "blades": -1,
+    "crank": 1
+   },
+   "3": {
+    "blades": -1,
+    "crank": 1
+   },
+   "5": {
+    "blades": -1,
+    "crank": 1
+   },
+   "6": {
+    "blades": 1,
+    "crank": -1
+   },
+   "7": {
+    "cut": -1
+   }
+  },
+  "holds": {
+   "0": [
+    "blades",
+    "crank",
+    "cut"
+   ],
+   "1": [
+    "blades",
+    "crank"
+   ],
+   "2": [
+    "cut"
+   ],
+   "3": [
+    "cut"
+   ],
+   "4": [
+    "blades",
+    "crank",
+    "cut"
+   ],
+   "5": [
+    "cut"
+   ],
+   "6": [
+    "cut"
+   ],
+   "7": [
+    "blades",
+    "crank"
+   ]
+  },
+  "visible": [
+   [
+    2,
+    "frame"
+   ],
+   [
+    2,
+    "bowl"
+   ],
+   [
+    2,
+    "gears"
+   ],
+   [
+    2,
+    "crank"
+   ],
+   [
+    2,
+    "beaters"
+   ]
+  ]
+ },
+ "transitions": [
+  "cutaway",
+  "payoff"
+ ],
+ "anchors": {
+  "cutaway": "beaters|gears|pinion",
+  "payoff": "batter|beaters|blades|gears"
+ },
+ "narration_rules": [
+  {
+   "pattern": "\\b(motor|engine|electric|hands?|kitchen|cook|chef|person|people)s?\\b",
+   "message": "no motor, hand or kitchen is depicted; speak only of the crank, gears, blades and batter"
+  },
+  {
+   "pattern": "\\b(cutaway|covers?|illustrated|simplified)\\b",
+   "message": "do not narrate the cover, cutaway or illustration; say what the real parts do"
+  }
+ ],
+ "cue_bans": [],
+ "bounds": [],
+ "label": {
+  "from": 1,
+  "to": 6,
+  "text": "Cutaway \u00b7 simplified hand egg beater \u00b7 input turn illustrated"
+ },
+ "title": "hand egg beater"
+}
