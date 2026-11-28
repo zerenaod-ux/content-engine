@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-11-28T01:45:56.098845+00:00",
+  "checked_at": "2026-11-28T02:43:34.038357+00:00",
   "read_only": true,
   "complete": true,
   "platforms": {
@@ -21,8 +21,8 @@
     "tiktok": {
       "returned_posts": 18,
       "statuses": {
-        "scheduled": 2,
-        "sent": 16
+        "scheduled": 1,
+        "sent": 17
       }
     }
   },
@@ -477,7 +477,7 @@
         ],
         "tiktok": [
           {
-            "status": "scheduled",
+            "status": "sent",
             "due": "2026-11-28T02:30:00.000Z"
           }
         ]
@@ -503,6 +503,30 @@
           {
             "status": "scheduled",
             "due": "2026-11-29T00:00:00.000Z"
+          }
+        ]
+      }
+    },
+    {
+      "tag": "ce-20261128-0237",
+      "title": "Why Egg\u2011Beater Blades Spin Faster Than Crank \u2699\ufe0f",
+      "platforms": {
+        "youtube": [
+          {
+            "status": "not_found_in_buffer",
+            "prior_owner_skip": false
+          }
+        ],
+        "instagram": [
+          {
+            "status": "not_found_in_buffer",
+            "prior_owner_skip": false
+          }
+        ],
+        "tiktok": [
+          {
+            "status": "not_found_in_buffer",
+            "prior_owner_skip": false
           }
         ]
       }
@@ -539,8 +563,8 @@
         "source_updated_at": "2026-11-23T02:58:31.357Z"
       },
       "tiktok": {
-        "views": 1128.0,
-        "reactions": 65.0,
+        "views": 1013.0,
+        "reactions": 62.0,
         "reported_posts": 7,
         "source_updated_at": "2026-11-27T09:56:57.326Z"
       }
