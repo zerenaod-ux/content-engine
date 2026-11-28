@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-11-27T23:30:28.629475+00:00",
+  "checked_at": "2026-11-28T01:40:54.714798+00:00",
   "read_only": true,
   "complete": true,
   "platforms": {
@@ -13,15 +13,15 @@
     "instagram": {
       "returned_posts": 18,
       "statuses": {
-        "scheduled": 2,
-        "sent": 16
+        "scheduled": 1,
+        "sent": 17
       }
     },
     "tiktok": {
       "returned_posts": 17,
       "statuses": {
-        "scheduled": 2,
-        "sent": 15
+        "scheduled": 1,
+        "sent": 16
       }
     }
   },
@@ -446,13 +446,13 @@
         ],
         "instagram": [
           {
-            "status": "scheduled",
+            "status": "sent",
             "due": "2026-11-28T01:00:00.000Z"
           }
         ],
         "tiktok": [
           {
-            "status": "scheduled",
+            "status": "sent",
             "due": "2026-11-28T00:00:00.000Z"
           }
         ]
@@ -502,22 +502,22 @@
     "available": true,
     "platforms": {
       "youtube": {
-        "views": 857.0,
-        "reactions": 6.0,
-        "reported_posts": 7,
+        "views": 518.0,
+        "reactions": 4.0,
+        "reported_posts": 6,
         "source_updated_at": "2026-11-27T06:26:56.618Z"
       },
       "instagram": {
-        "views": 759.0,
-        "reactions": 5.0,
+        "views": 634.0,
+        "reactions": 3.0,
         "reported_posts": 7,
         "source_updated_at": "2026-11-23T02:58:31.357Z"
       },
       "tiktok": {
         "views": 1128.0,
         "reactions": 65.0,
-        "reported_posts": 6,
-        "source_updated_at": "2026-11-27T13:22:54.046Z"
+        "reported_posts": 7,
+        "source_updated_at": "2026-11-27T09:56:57.326Z"
       }
     },
     "scope": "recent 20 published posts",
