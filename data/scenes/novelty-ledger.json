@@ -865,5 +865,15 @@
     "state": "reserved",
     "policy": "original-idea-and-visuals-v1",
     "mechanism": "egg_beater"
+  },
+  {
+    "topic": "Why the egg\u2011beater blades spin faster than the hand crank",
+    "mechanism": "egg_beater",
+    "visual_family": "egg_beater",
+    "state": "created",
+    "owner": "46097841327",
+    "encoded_run": "46097841327",
+    "policy": "original-idea-and-visuals-v1",
+    "media_sha256": "e6c4c06723e795f4efbd7959a318a5c3f8a05b22ce5accf6979581d9ee78cf4d"
   }
 ]
