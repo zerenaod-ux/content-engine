@@ -1841,5 +1841,17 @@
     "category": "tested mechanism",
     "record_run": "46092483779",
     "record_attempt": "1"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "",
+    "date": "2026-11-28",
+    "topic": "Why the egg\u2011beater blades spin faster than the hand crank",
+    "title": "Why Egg\u2011Beater Blades Spin Faster Than Crank \u2699\ufe0f",
+    "subject": "egg_beater",
+    "keywords": [],
+    "category": "tested mechanism",
+    "record_run": "46097841327",
+    "record_attempt": "1"
   }
 ]
