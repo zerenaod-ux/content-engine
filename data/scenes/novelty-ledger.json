@@ -840,14 +840,6 @@
   },
   {
     "topic": "Why turning a steering wheel moves a rack sideways",
-    "visual_family": "rack_pinion",
-    "owner": "46086445652",
-    "state": "reserved",
-    "policy": "original-idea-and-visuals-v1",
-    "mechanism": "rack_pinion"
-  },
-  {
-    "topic": "Why turning a steering wheel moves a rack sideways",
     "mechanism": "rack_pinion",
     "visual_family": "rack_pinion",
     "state": "created",
