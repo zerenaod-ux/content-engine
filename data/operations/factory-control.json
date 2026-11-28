@@ -1,13 +1,13 @@
 {
-  "business_day": "2026-11-27",
+  "business_day": "2026-11-28",
   "timezone": "America/Chicago",
   "slots": [
     "03:05",
     "11:05",
     "19:05"
   ],
-  "due_slots": 3,
-  "ready_today": 9,
+  "due_slots": 0,
+  "ready_today": 0,
   "daily_target": 3,
   "unused_visuals": 0,
   "should_build": false,
@@ -15,5 +15,5 @@
   "pending_review": 1,
   "dispatches": 0,
   "requested_at": 0,
-  "checked_at": "2026-11-28T04:58:34.117975+00:00"
+  "checked_at": "2026-11-28T08:48:36.866855+00:00"
 }
