@@ -1684,5 +1684,38 @@
     },
     "record_run": "46083549834",
     "record_attempt": "1"
+  },
+  {
+    "date": "2026-11-28",
+    "tag": "ce-20261128-0026",
+    "title": "Why Steering Wheel Turns Move Rack \u2699\ufe0f",
+    "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@8b8da094e940ac10bb1db335f5dc16ce920ace62/videos/ce-20261128-0026.mp4",
+    "topic": "Why turning a steering wheel moves a rack sideways",
+    "topic_key": "moves rack sideways steering turn wheel",
+    "generation_origin": {
+      "event": "workflow_dispatch",
+      "automatic_slot": false,
+      "run_id": "46086445652",
+      "attempt": 1,
+      "event_sha": "bec8771387d9cec774363e9cff0c5fb078f57753",
+      "source_ref": "main",
+      "manual_media_edits": false
+    },
+    "production_evidence": {
+      "policy": "unattended-proof-v1",
+      "novelty_policy": "original-idea-and-visuals-v1",
+      "width": 1080,
+      "height": 1920,
+      "duration": 57.633333,
+      "media_sha256": "260684cb47a8dd56d6f89fc9b4be85809ac15526c9aaeb9ddde2b44aa65ada85",
+      "alignment_revision": "causal-component-actions-v4",
+      "render_policy": "native-studio-1080-v1",
+      "voice": "af_heart",
+      "voice_policy": "how-it-ticks-narrator-v4-heart-clean",
+      "errors": [],
+      "owner_approved": false
+    },
+    "record_run": "46086445652",
+    "record_attempt": "1"
   }
 ]
