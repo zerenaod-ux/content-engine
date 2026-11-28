@@ -1,11 +1,11 @@
 {
   "state": "awaiting_next_unattended_delivery",
-  "checked_at": "2026-11-28T01:20:02.725418+00:00",
+  "checked_at": "2026-11-28T01:52:42.186080+00:00",
   "verified": false,
   "note": "Manual proof videos and skipped quota slots do not prove a newly generated unattended video.",
   "next_eligible_slot": "2026-11-28T03:05:00-06:00",
   "daily_target": 3,
-  "completed_today": 7,
+  "completed_today": 8,
   "quota_reason": "A generation run is already active",
   "schedule_note": "An intended start window, not a completion promise; queued jobs and GitHub schedule delays are possible."
 }
