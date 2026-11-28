@@ -903,7 +903,46 @@
    "ready_for_future_publish": false,
    "record": "delete/ce-20261128-0026/46094299841-1.json",
    "history": []
+  },
+  {
+   "tag": "ce-20261127-2325",
+   "title": "How a Simple Crank Lifts a Platform ⚙️",
+   "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@441ee3dd06f0b45a77336597942f9528a8077419/videos/ce-20261127-2325.mp4",
+   "folder": "delete",
+   "issue_number": 81,
+   "issue_url": "https://github.com/zerenaod-ux/content-engine/issues/81",
+   "reviewed_at": "2026-11-28T01:43:12.380648+00:00",
+   "publishing_enabled": false,
+   "ready_for_future_publish": false,
+   "record": "delete/ce-20261127-2325/46094316385-1.json",
+   "history": []
+  },
+  {
+   "tag": "ce-20261127-2349",
+   "title": "How a Worm Gear Powers Slow Rotation ⚙️",
+   "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@28a18d68b5ada1f218e55e07342f0eee005eeb46/videos/ce-20261127-2349.mp4",
+   "folder": "delete",
+   "issue_number": 82,
+   "issue_url": "https://github.com/zerenaod-ux/content-engine/issues/82",
+   "reviewed_at": "2026-11-28T01:43:12.612467+00:00",
+   "publishing_enabled": false,
+   "ready_for_future_publish": false,
+   "record": "delete/ce-20261127-2349/46094316385-1.json",
+   "history": []
+  },
+  {
+   "tag": "ce-20261128-0130",
+   "title": "Why a Winch Crank Lifts Only Slightly ⚙️",
+   "video": "https://cdn.jsdelivr.net/gh/zerenaod-ux/content-engine@e37919a1a7549c1b9dab9cf86218e2b4293a6fd7/videos/ce-20261128-0130.mp4",
+   "folder": "saved",
+   "issue_number": 84,
+   "issue_url": "https://github.com/zerenaod-ux/content-engine/issues/84",
+   "reviewed_at": "2026-11-28T01:43:13.095340+00:00",
+   "publishing_enabled": false,
+   "ready_for_future_publish": true,
+   "record": "saved/ce-20261128-0130/46094316385-1.json",
+   "history": []
   }
  ],
- "updated_at": "2026-11-28T01:41:03.585199+00:00"
+ "updated_at": "2026-11-28T01:43:13.095340+00:00"
 }
