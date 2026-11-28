@@ -7,13 +7,13 @@
     "19:05"
   ],
   "due_slots": 2,
-  "ready_today": 6,
+  "ready_today": 7,
   "daily_target": 3,
   "unused_visuals": 0,
   "should_build": false,
   "reason": "A generation run is already active",
-  "pending_review": 3,
+  "pending_review": 4,
   "dispatches": 0,
   "requested_at": 0,
-  "checked_at": "2026-11-27T23:59:36.588472+00:00"
+  "checked_at": "2026-11-28T00:30:11.416713+00:00"
 }
