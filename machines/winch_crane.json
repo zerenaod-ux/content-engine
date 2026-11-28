@@ -1,0 +1,150 @@
+{
+ "key": "winch_crane",
+ "module": "studio_lib.winch_crane",
+ "family": "winch_crane",
+ "pattern": "\\b(crane\\ winch|hand\\ winch|hoist|rope\\ drum|winch)s?\\b",
+ "detect": "crane\\ winch|hand\\ winch|hoist|rope\\ drum|winch",
+ "block": "(?!x)x",
+ "description": "A hand crank turns a small pinion, which turns a big gear and rope drum that lifts a crate; no crane arm, motor or people shown",
+ "actions": [
+  "intro",
+  "cutaway",
+  "drive",
+  "response",
+  "hold",
+  "repeat",
+  "limit",
+  "payoff"
+ ],
+ "facts": {
+  "intro": "Introduce a recognizable hand winch: a red crank on a small steel gear, a big brass gear on the same axle as an orange rope drum, and a wooden crate hanging from a rope. Everything is still, with the crate low.",
+  "cutaway": "Inside are the small steel pinion, the big brass gear that its teeth mesh with, and the rope drum on the same axle as that big gear.",
+  "drive": "A push turns the crank and the small pinion. Its teeth drive the big gear, the drum turns with it, and the rope winds up so the crate climbs.",
+  "response": "The crank keeps turning. The big gear has more than twice as many teeth, so the drum turns slowly while the crank turns fast, which gives a strong lift.",
+  "hold": "No part moves for this explanation. The pinion has ten teeth and the big gear twenty-six, so one crank turn moves the drum a little more than a third of a turn.",
+  "repeat": "A second push turns the crank again. The drum winds in more rope and the crate rises higher, by the same small amount for every crank turn.",
+  "limit": "The crank turns backwards for a moment. The drum unwinds, the rope pays out and the crate sinks, because nothing else holds the drum.",
+  "payoff": "Crank, pinion, big gear, drum and rope work together: many easy turns of the crank become a strong, slow lift of a heavy crate. No crane arm or motor is shown."
+ },
+ "source": "https://en.wikipedia.org/wiki/Winch",
+ "contract": {
+  "subjects": [
+   "\\b(crank|crate|drum|gears)",
+   "\\b(crank|drum|gears|pinion)",
+   "\\b(crank|crate|drum|gears)",
+   "\\b(crate|drum|gears|rope)",
+   "\\b(crate|drum|gears|rope)",
+   "\\b(crank|crate|drum|gears)",
+   "\\b(crank|crate|drum|rope)",
+   "\\b(crank|crate|gears|rope)"
+  ],
+  "moves": {
+   "1": {
+    "cut": 1
+   },
+   "2": {
+    "crank": 1,
+    "rise": 1
+   },
+   "3": {
+    "crank": 1,
+    "rise": 1
+   },
+   "5": {
+    "crank": 1,
+    "rise": 1
+   },
+   "6": {
+    "crank": -1,
+    "rise": -1
+   },
+   "7": {
+    "cut": -1
+   }
+  },
+  "holds": {
+   "0": [
+    "crank",
+    "cut",
+    "rise"
+   ],
+   "1": [
+    "crank",
+    "rise"
+   ],
+   "2": [
+    "cut"
+   ],
+   "3": [
+    "cut"
+   ],
+   "4": [
+    "crank",
+    "cut",
+    "rise"
+   ],
+   "5": [
+    "cut"
+   ],
+   "6": [
+    "cut"
+   ],
+   "7": [
+    "crank",
+    "rise"
+   ]
+  },
+  "visible": [
+   [
+    2,
+    "frame"
+   ],
+   [
+    2,
+    "drum"
+   ],
+   [
+    2,
+    "gears"
+   ],
+   [
+    2,
+    "crank"
+   ],
+   [
+    2,
+    "rope"
+   ],
+   [
+    2,
+    "crate"
+   ]
+  ]
+ },
+ "transitions": [
+  "cutaway",
+  "payoff"
+ ],
+ "anchors": {
+  "cutaway": "drum|gears|pinion",
+  "payoff": "crate|drum|lifted|rope"
+ },
+ "narration_rules": [
+  {
+   "pattern": "\\b(motor|engine|crane arm|boat|anchor|truck|person|people|worker)s?\\b",
+   "message": "no motor, boat or person is depicted; speak only of the crank, gears, drum, rope and crate"
+  },
+  {
+   "pattern": "\\b(cutaway|covers?|illustrated|simplified)\\b",
+   "message": "do not narrate the cover, cutaway or illustration; say what the real parts do"
+  }
+ ],
+ "cue_bans": [],
+ "bounds": [],
+ "label": {
+  "from": 1,
+  "to": 6,
+  "text": "Cutaway \u00b7 simplified hand winch \u00b7 input turn illustrated"
+ },
+ "title": "hand winch"
+}

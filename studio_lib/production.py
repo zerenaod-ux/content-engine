@@ -28,7 +28,9 @@ def _choose_topic(history_path=Path('data/scenes/history.json')):
     pairs=novelty.available_pairs(REGISTRY,rows,os.environ.get('GITHUB_RUN_ID'))
     if os.environ.get('CE_FORCE_RECIPE')=='true':return recipe_topic(rows)   # manual test only; automatic kit fallback PAUSED 2026-11-23 (owner: far weaker than hand-built machines)
     if not pairs:raise ValueError('No unused hand-built machine or story remains; kit-recipe fallback is paused until the owner approves it')
-    key,sid=stories.pick(pairs,rows,winners.weights())
+    from studio_lib import variety
+    key,sid=stories.pick(variety.prefer(pairs,rows),rows,winners.weights())
+    os.environ['CE_HOOK_STYLE']=variety.hook_style(rows)
     os.environ['CE_STORY']=sid or ''
     available={key:REGISTRY[key]}
     brief=stories.brief(key,sid) if sid else ''
