@@ -1803,5 +1803,17 @@
     "category": "tested mechanism",
     "record_run": "46083549834",
     "record_attempt": "1"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "",
+    "date": "2026-11-28",
+    "topic": "Why turning a steering wheel moves a rack sideways",
+    "title": "Why Steering Wheel Turns Move Rack \u2699\ufe0f",
+    "subject": "rack_pinion",
+    "keywords": [],
+    "category": "tested mechanism",
+    "record_run": "46086445652",
+    "record_attempt": "1"
   }
 ]
