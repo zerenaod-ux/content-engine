@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-11-28T03:53:21.776233+00:00",
+  "checked_at": "2026-11-28T07:58:08.649589+00:00",
   "read_only": true,
   "complete": true,
   "platforms": {
@@ -551,10 +551,10 @@
     "available": true,
     "platforms": {
       "youtube": {
-        "views": 518.0,
-        "reactions": 4.0,
+        "views": 905.0,
+        "reactions": 10.0,
         "reported_posts": 6,
-        "source_updated_at": "2026-11-27T06:26:56.618Z"
+        "source_updated_at": "2026-11-28T04:55:19.647Z"
       },
       "instagram": {
         "views": 523.0,
