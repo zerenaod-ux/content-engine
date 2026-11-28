@@ -1,0 +1,13 @@
+{
+  "run_id": "46087777495",
+  "attempt": 1,
+  "kind": "daily-short",
+  "stage": "Daily target covered",
+  "label": "Daily target covered",
+  "updated_at": "2026-11-28T00:29:18.622434+00:00",
+  "source_branch": "main",
+  "owner_approved": false,
+  "state": "idle",
+  "reason": "Daily output target already covered",
+  "retryable": false
+}
