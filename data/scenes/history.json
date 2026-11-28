@@ -1829,5 +1829,17 @@
     "record_run": "46081401124",
     "record_attempt": "2",
     "owner": "46081401124"
+  },
+  {
+    "techniques": [],
+    "failure_cause": "",
+    "date": "2026-11-28",
+    "topic": "Why each turn of the winch crank lifts the crate only a little",
+    "title": "Why a Winch Crank Lifts Only Slightly \u2699\ufe0f",
+    "subject": "winch_crane",
+    "keywords": [],
+    "category": "tested mechanism",
+    "record_run": "46092483779",
+    "record_attempt": "1"
   }
 ]
